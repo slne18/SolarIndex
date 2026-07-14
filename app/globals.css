@@ -1,0 +1,314 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+  width: 100%;
+}
+
+body {
+  @apply min-h-screen bg-night-950 text-slate-200 antialiased;
+  width: 100%;
+  overflow-x: clip;
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+
+  .site-header {
+    @apply sticky top-0 z-40 w-full max-w-[100vw] border-b border-white/[0.06] bg-night-950 backdrop-blur-xl;
+    padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  }
+
+  .header-bar {
+    @apply flex h-[4.75rem] w-full min-w-0 items-center gap-4 sm:gap-6;
+  }
+
+  .header-brand {
+    @apply flex shrink-0 items-center gap-3 font-extrabold tracking-tight;
+  }
+
+  .header-brand-text {
+    @apply text-xl leading-none sm:text-[1.65rem];
+  }
+
+  .header-nav {
+    @apply flex min-w-0 flex-1 items-center justify-end gap-0.5 sm:gap-1;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-solar/50 focus-visible:ring-offset-2 focus-visible:ring-offset-night;
+  }
+
+  .btn-solar {
+    @apply btn bg-solar text-night shadow-md shadow-solar/20 hover:bg-solar-300 hover:shadow-glow active:scale-[0.98];
+  }
+
+  .btn-mint {
+    @apply btn bg-mint text-night shadow-md shadow-[0_4px_14px_-4px_rgba(52,211,153,0.45)] hover:bg-mint-400 hover:shadow-[0_0_48px_-12px_rgba(52,211,153,0.35)] active:scale-[0.98] focus-visible:ring-mint/50;
+  }
+
+  .btn-ghost {
+    @apply btn border border-white/[0.12] bg-white/[0.05] text-slate-200 hover:border-white/25 hover:bg-white/[0.08];
+  }
+
+  .card {
+    @apply rounded-2xl border border-white/[0.12] bg-night-800/65 shadow-card backdrop-blur-md;
+  }
+
+  .card-interactive {
+    @apply card transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.14] hover:shadow-card-hover;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1 text-xs font-medium tracking-wide text-slate-300;
+  }
+
+  .pill-accent {
+    @apply pill border-solar/25 bg-solar/[0.08] text-solar-300;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-white/[0.12] bg-night-800/90 px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-solar/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-solar/30;
+  }
+
+  .nav-link {
+    @apply rounded-lg px-3 py-2 text-sm text-slate-400 transition hover:bg-white/[0.04] hover:text-white;
+  }
+
+  .section-title {
+    @apply text-2xl font-bold tracking-tight text-white sm:text-3xl;
+  }
+
+  .section-lead {
+    @apply mt-2 w-full max-w-none text-base leading-relaxed text-slate-400;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-solar-300 via-solar to-solar-600 bg-clip-text text-transparent;
+  }
+
+  /* Hero + zones sombres — même bleu que le header */
+  .hero-surface {
+    @apply bg-night-950 text-slate-200;
+  }
+
+  /* Homepage — sections claires */
+  .surface-light {
+    @apply bg-white text-slate-800;
+  }
+
+  .surface-light .section-title {
+    @apply text-slate-900;
+  }
+
+  .surface-light .section-lead {
+    @apply text-slate-600;
+  }
+
+  .surface-light .section-lead strong {
+    @apply font-medium text-slate-800;
+  }
+
+  .surface-light .card,
+  .surface-light .card-interactive {
+    @apply border-slate-200 bg-white shadow-[0_8px_30px_-10px_rgba(15,23,42,0.12)];
+  }
+
+  .surface-light .card-interactive:hover {
+    @apply border-slate-300 shadow-[0_16px_40px_-12px_rgba(15,23,42,0.15)];
+  }
+
+  .surface-light .card-header {
+    @apply border-slate-100;
+  }
+
+  .surface-light .milestone-card {
+    @apply border-slate-200 bg-slate-50;
+  }
+
+  .surface-light .milestone-card:hover {
+    @apply border-solar/40 bg-solar/[0.06] shadow-[0_8px_32px_-12px_rgba(232,168,32,0.25)];
+  }
+
+  .surface-light .milestone-dot {
+    @apply border-slate-300 bg-white text-slate-500;
+  }
+
+  .surface-light .milestone-year {
+    @apply text-slate-700;
+  }
+
+  .surface-light .milestone-card:hover .milestone-year {
+    @apply text-slate-900;
+  }
+
+  .surface-light .milestone-surface {
+    @apply text-slate-800;
+  }
+
+  .surface-light .milestone-card:hover .milestone-surface {
+    @apply text-slate-900;
+  }
+
+  .surface-light .milestone-fine-box {
+    @apply border-slate-200 bg-white;
+  }
+
+  .surface-light .milestone-fine-value {
+    @apply text-slate-800;
+  }
+
+  .surface-light .price-card-title {
+    @apply text-slate-500;
+  }
+
+  .surface-light .price-card-price {
+    @apply text-slate-900;
+  }
+
+  .surface-light .price-card-features {
+    @apply text-slate-600;
+  }
+
+  .surface-light .btn-ghost {
+    @apply border-slate-300 bg-slate-50 text-slate-700 hover:border-slate-400 hover:bg-slate-100;
+  }
+
+  .surface-light .cta-card-title {
+    @apply text-slate-900;
+  }
+
+  .surface-light .cta-card-lead {
+    @apply text-slate-600;
+  }
+
+  .surface-light .catalog-heading {
+    @apply text-slate-900;
+  }
+
+  .surface-light select,
+  .surface-light input:not([type="checkbox"]) {
+    @apply border-slate-300 bg-white text-slate-800 placeholder:text-slate-400 focus:border-solar/60;
+  }
+
+  .surface-light .input {
+    @apply border-slate-300 bg-white text-slate-800 placeholder:text-slate-400 focus:border-solar/40;
+  }
+
+  .surface-light .catalog-view-toggle {
+    @apply border-slate-300 bg-slate-100;
+  }
+
+  .surface-light .catalog-view-toggle button:not(.bg-solar) {
+    @apply text-slate-600 hover:text-slate-900;
+  }
+
+  .surface-light table thead {
+    @apply border-slate-200 bg-slate-50 text-slate-500;
+  }
+
+  .surface-light table tbody tr {
+    @apply border-b border-slate-100 hover:bg-slate-50;
+  }
+
+  .surface-light table .table-cell-title,
+  .surface-light table a.table-cell-title {
+    color: rgb(15 23 42);
+  }
+
+  .surface-light table a.table-cell-title:hover {
+    color: #e8a820;
+  }
+
+  .surface-light table td.text-slate-300,
+  .surface-light table .text-slate-300 {
+    color: rgb(71 85 105);
+  }
+
+  .surface-light table a.rounded-lg {
+    @apply border-slate-300 text-slate-700 hover:bg-slate-100;
+  }
+
+  .surface-light .catalog-table-wrap {
+    @apply rounded-xl border-slate-200 bg-white;
+  }
+
+  .surface-light .catalog-empty {
+    @apply border-slate-200 bg-slate-50 text-slate-500;
+  }
+
+  .surface-light h1 {
+    @apply text-slate-900;
+  }
+
+  .surface-light .card .card-title-white,
+  .surface-light .card strong.text-white {
+    color: rgb(15 23 42);
+  }
+
+  .surface-light .guarantee-banner {
+    @apply border-solar/25 bg-solar/[0.08] text-slate-600;
+  }
+
+  .surface-light .back-link {
+    @apply text-slate-500 hover:text-slate-900;
+  }
+
+  .surface-light .detail-value {
+    @apply text-slate-900;
+  }
+
+  .catalog-thead {
+    @apply border-white/10 bg-night-700/40 text-slate-400;
+  }
+
+  .surface-light .catalog-thead {
+    @apply border-slate-200 bg-slate-50 text-slate-500;
+  }
+
+  .catalog-tbody {
+    @apply divide-white/5;
+  }
+
+  .surface-light .catalog-tbody {
+    @apply divide-slate-100;
+  }
+
+  .catalog-row {
+    @apply hover:bg-white/5;
+  }
+
+  .surface-light .catalog-row {
+    @apply border-slate-100 hover:bg-slate-50;
+  }
+
+  /* Footer clair */
+  .footer-light {
+    @apply mt-0 border-t border-slate-200 bg-white text-slate-600;
+  }
+
+  .footer-light .footer-brand {
+    @apply text-slate-900;
+  }
+
+  .footer-light .footer-heading {
+    @apply text-slate-800;
+  }
+
+  .footer-light .footer-link {
+    @apply text-slate-500 transition hover:text-slate-900;
+  }
+
+  .footer-light .footer-copy {
+    @apply border-slate-100 text-slate-400;
+  }
+}

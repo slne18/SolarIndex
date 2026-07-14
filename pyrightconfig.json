@@ -1,0 +1,4 @@
+{
+  "include": ["lib", "scripts", "solarindex_pipeline.py"],
+  "extraPaths": ["."]
+}
