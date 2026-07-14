@@ -205,7 +205,7 @@ create policy "Profile visible par son propriétaire"
 ```
 01 · Extraction OSM          02 · Enrichissement B2B       03 · Lead exclusif livré
 Détection automatique des    Identification du propriétaire   Un seul acheteur par lead.
-parkings ≥ 1 500 m² via      via cadastre + SIRENE.           Fiche complète livrée par
+parkings ≥ 1 500 m² via      via cadastre + SIREN.           Fiche complète livrée par
 Open Data et calcul de       Code NAF, dirigeant, contact.    email + dashboard.
 surface géodésique.
 ```

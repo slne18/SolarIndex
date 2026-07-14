@@ -17,7 +17,7 @@ export async function verifySiret(siretRaw: string): Promise<SiretLookupResult> 
   try {
     const res = await fetch(`${API_RECHERCHE}?q=${encodeURIComponent(siret)}&page=1&per_page=5`);
     if (!res.ok) {
-      return { ok: false, siret, siren: "", entreprise: "", error: "API SIRENE indisponible." };
+      return { ok: false, siret, siren: "", entreprise: "", error: "API SIREN indisponible." };
     }
     const json = await res.json();
     const results = json.results ?? [];
@@ -27,13 +27,13 @@ export async function verifySiret(siretRaw: string): Promise<SiretLookupResult> 
         r.matching_etablissements?.some((e: { siret: string }) => e.siret === siret),
     );
     if (!match) {
-      return { ok: false, siret, siren: "", entreprise: "", error: "SIRET introuvable dans SIRENE." };
+      return { ok: false, siret, siren: "", entreprise: "", error: "SIRET introuvable dans SIREN." };
     }
     const siren = String(match.siren ?? siret.slice(0, 9));
     const entreprise =
       match.nom_complet || match.nom_raison_sociale || match.denomination || "";
     return { ok: true, siret, siren, entreprise };
   } catch {
-    return { ok: false, siret, siren: "", entreprise: "", error: "Erreur réseau SIRENE." };
+    return { ok: false, siret, siren: "", entreprise: "", error: "Erreur réseau SIREN." };
   }
 }

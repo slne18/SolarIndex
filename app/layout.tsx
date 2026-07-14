@@ -79,7 +79,7 @@ function Footer({ light = false }: { light?: boolean }) {
         <div className="text-sm">
           <div className={light ? "footer-heading font-semibold" : "font-semibold text-slate-200"}>Conformité</div>
           <p className="mt-4 leading-relaxed text-slate-500">
-            OpenStreetMap · Etalab · SIRENE · MAJIC.
+            OpenStreetMap · Etalab · SIREN · MAJIC.
             Personnes morales uniquement — art. 6.1.f RGPD.
           </p>
         </div>

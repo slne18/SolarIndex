@@ -1,11 +1,11 @@
 """
-Backfill enrichissement national (BAN + apicarto + SIRENE + bypasses 2/3/5)
+Backfill enrichissement national (BAN + apicarto + SIREN + bypasses 2/3/5)
 sur les leads déjà en base — sans re-scanner Overpass.
 
 Cible : detection IN ('libre', 'a_verifier'), adresse IS NULL, statut != 'vendu',
 tri surface_m2 DESC. Reprise automatique si interruption (même filtre).
 
-Pause 0,5 s entre chaque appel BAN / apicarto / SIRENE (ENRICH_API_PAUSE_S).
+Pause 0,5 s entre chaque appel BAN / apicarto / SIREN (ENRICH_API_PAUSE_S).
 
 Usage :
   .venv/bin/python scripts/backfill_enrich.py [--limit N] [--dry-run] [--estimate-only]
@@ -31,7 +31,7 @@ HEADERS = {
     "Content-Type": "application/json",
 }
 PAGE = 50
-API_CALLS_PER_LEAD = 3  # BAN, apicarto, SIRENE
+API_CALLS_PER_LEAD = 3  # BAN, apicarto, SIREN
 LOG_PATH = os.environ.get("ENRICH_BACKFILL_LOG", "/tmp/enrich_backfill.log")
 
 QUERY = {

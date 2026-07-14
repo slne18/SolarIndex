@@ -44,7 +44,7 @@ export default function LeadsSolutionSection() {
         <StepCard
           n="02"
           title="Enrichissement propriétaire"
-          text="Chaque site est relié à sa parcelle cadastrale, son adresse, l'exploitant SIRENE et le propriétaire foncier MAJIC — personnes morales uniquement."
+          text="Chaque site est relié à sa parcelle cadastrale, son adresse, l'exploitant SIREN et le propriétaire foncier MAJIC — personnes morales uniquement."
           tag="Résolution B2B"
         />
         <StepCard

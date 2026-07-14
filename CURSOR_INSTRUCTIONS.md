@@ -20,7 +20,7 @@ Script Python complet et fonctionnel. Il fait :
 3. Filtrage : surface ≥ 1 500 m² (seuil APER), flag "URGENCE_ABSOLUE" si ≥ 10 000 m²
 4. Détection ombrières existantes : requête Overpass `power=generator/plant + source=solar` + calcul `pv_overlap_ratio` (ratio de recouvrement géométrique OSM en Lambert-93, via STRtree)
 5. Classification : `equipe` (overlap ≥ 50 %), `a_verifier` (5–50 %), `libre` (< 5 %)
-6. Enrichissement B2B : géocodage inversé BAN → adresse + INSEE ; parcelle cadastrale IGN ; entreprise via SIRENE ; exclusion entités publiques (catégories juridiques préfixe 7/4) ; priorisation codes NAF (grande distribution 47.11F/D, logistique 52.10B, cliniques 86.10Z)
+6. Enrichissement B2B : géocodage inversé BAN → adresse + INSEE ; parcelle cadastrale IGN ; entreprise via SIREN ; exclusion entités publiques (catégories juridiques préfixe 7/4) ; priorisation codes NAF (grande distribution 47.11F/D, logistique 52.10B, cliniques 86.10Z)
 7. Valorisation : `surface_solaire = surface × 0.50` ; `kWc = surface_solaire / 5` ; `valeur_chantier = kWc × 1200€`
 8. Export CSV local
 
@@ -339,7 +339,7 @@ params = {
 Ajouter `surface_cadastrale_m2` à la table `leads` dans Supabase.
 
 ### 3. Propriétaire foncier réel via Pappers (qualité contact)
-Après identification SIRENE, appeler l'API Pappers pour remonter la chaîne capitalistique. Si la société trouvée a un actionnaire majoritaire personne morale, stocker les deux : `siren_exploitant` + `siren_proprietaire`. Afficher les deux sur la fiche lead avec le label approprié ("Exploitant légal APER" / "Propriétaire des murs").
+Après identification SIREN, appeler l'API Pappers pour remonter la chaîne capitalistique. Si la société trouvée a un actionnaire majoritaire personne morale, stocker les deux : `siren_exploitant` + `siren_proprietaire`. Afficher les deux sur la fiche lead avec le label approprié ("Exploitant légal APER" / "Propriétaire des murs").
 
 ```python
 # Pappers API — actionnaires

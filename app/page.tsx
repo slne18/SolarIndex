@@ -29,7 +29,7 @@ export default function HomePage() {
               <p>Deux sources de chantiers.</p>
               <p>
                 <strong className="font-medium text-slate-300">Leads automatisés</strong> — nos outils
-                repèrent en ligne chaque parking ≥ 1 500 m², l&apos;enrichissent cadastre & SIRENE et le
+                repèrent en ligne chaque parking ≥ 1 500 m², l&apos;enrichissent cadastre & SIREN et le
                 scorent pour une prospection B2B.
               </p>
               <p>

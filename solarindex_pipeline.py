@@ -84,9 +84,9 @@ RETRY_BACKOFF_S = 5         # Attente (croissante) entre deux tentatives
 # ─── APIs publiques d'enrichissement (Étapes 2 & 3, gratuites, sans clé) ───────
 API_ADRESSE_REVERSE = "https://api-adresse.data.gouv.fr/reverse/"          # BAN — géocodage inversé
 API_CADASTRE_PARCELLE = "https://apicarto.ign.fr/api/cadastre/parcelle"   # IGN — parcelle cadastrale
-API_RECHERCHE_ENTREPRISES = "https://recherche-entreprises.api.gouv.fr/near_point"  # SIRENE simplifiée
+API_RECHERCHE_ENTREPRISES = "https://recherche-entreprises.api.gouv.fr/near_point"  # SIREN simplifiée
 ENRICH_PAUSE_S = 0.25        # Pause legacy entre leads (enrich_dataframe département)
-ENRICH_API_PAUSE_S = 0.5     # Pause entre appels BAN / apicarto / SIRENE (backfill national)
+ENRICH_API_PAUSE_S = 0.5     # Pause entre appels BAN / apicarto / SIREN (backfill national)
 SEARCH_RADIUS_KM = 0.1       # Rayon de recherche d'entreprise autour du parking
 SCORE_MIN_CONFIANCE = 0.7    # Sous ce score BAN, on déclenche le vote sur le bbox
 
@@ -564,7 +564,7 @@ def resolve_surface(surface_osm: float,
 # ─── Étape 3 : Identification de l'entreprise (API Recherche d'entreprises) ───
 def search_company(lat: float, lon: float) -> dict:
     """
-    API Recherche d'entreprises (SIRENE simplifiée, gratuite, sans clé).
+    API Recherche d'entreprises (SIREN simplifiée, gratuite, sans clé).
     Cherche les établissements dont le siège est proche du parking, exclut les
     acteurs publics, et privilégie les codes NAF à forte valeur (loi APER).
     """
@@ -1153,7 +1153,7 @@ def run_vision_batch(leads: list[dict]) -> dict:
     return out
 
 
-# ─── Enrichissement d'un lead (BAN + cadastre + SIRENE + bypasses 2/3/5) ─────
+# ─── Enrichissement d'un lead (BAN + cadastre + SIREN + bypasses 2/3/5) ─────
 def enrich_lead(lat: float, lon: float, surface_osm: float,
                 score_confiance: float = 0.5, bbox=None,
                 ville_osm: str = "") -> tuple[dict, list[str]]:
@@ -1186,7 +1186,7 @@ def enrich_lead(lat: float, lon: float, surface_osm: float,
         ent = search_company(lat, lon)
         time.sleep(ENRICH_API_PAUSE_S)
     except Exception as exc:
-        errors.append(f"SIRENE:{type(exc).__name__}:{exc}")
+        errors.append(f"SIREN:{type(exc).__name__}:{exc}")
         ent = {"siren": "", "raison_sociale": "", "code_naf": "",
                "libelle_naf": "", "secteur_cible": "", "naf_prioritaire": False}
 

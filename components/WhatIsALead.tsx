@@ -30,7 +30,7 @@ export default function WhatIsALead({ compact = false }: { compact?: boolean }) 
         <li className="flex gap-2">
           <span className="text-solar">✓</span>
           <span>
-            <strong className="text-slate-100">Contacts B2B</strong> — exploitant du site (SIRENE)
+            <strong className="text-slate-100">Contacts B2B</strong> — exploitant du site (SIREN)
             et propriétaire foncier (MAJIC DGFiP) : SIREN, NAF, dirigeants et coordonnées lorsque
             identifiés.
           </span>

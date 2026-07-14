@@ -104,7 +104,7 @@ function LeadsCatalog() {
             <p className="pill-accent w-fit">Leads automatisés</p>
             <h1 className="section-title mt-4">Catalogue de leads APER</h1>
             <p className="mt-2 max-w-2xl text-slate-500">
-              Parkings repérés en ligne, enrichis cadastre & SIRENE, scorés pour la prospection B2B.
+              Parkings repérés en ligne, enrichis cadastre & SIREN, scorés pour la prospection B2B.
             </p>
           </div>
 

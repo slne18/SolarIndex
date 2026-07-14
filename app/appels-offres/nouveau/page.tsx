@@ -107,7 +107,7 @@ function NouveauRfpForm() {
             placeholder="44306184100047"
           />
         </Field>
-        <Field label="Entreprise (auto SIRENE)">
+        <Field label="Entreprise (auto SIREN)">
           <input className="input" value={entreprise} readOnly placeholder="Raison sociale" />
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">

@@ -233,7 +233,7 @@ solar = compute_solar_potential(surface_retenue)
 ## Bypass 3 — Propriétaire foncier réel (Pappers API)
 
 ### Objectif
-SIRENE retourne l'exploitant du site (la société qui y opère). Pour les grandes surfaces et les foncières, le propriétaire des murs est une entité différente — et c'est lui qui doit légalement équiper le parking (loi APER art. L111-19-1 : obligation sur le propriétaire OU l'exploitant, priorité propriétaire). Remonter la chaîne capitalistique via Pappers pour identifier les deux.
+SIREN retourne l'exploitant du site (la société qui y opère). Pour les grandes surfaces et les foncières, le propriétaire des murs est une entité différente — et c'est lui qui doit légalement équiper le parking (loi APER art. L111-19-1 : obligation sur le propriétaire OU l'exploitant, priorité propriétaire). Remonter la chaîne capitalistique via Pappers pour identifier les deux.
 
 ### API utilisée
 ```
@@ -382,7 +382,7 @@ def resolve_proprietaire(siren_exploitant: str,
 
 **Intégration dans le pipeline :**
 ```python
-# Après l'enrichissement SIRENE (étape 3 existante)
+# Après l'enrichissement SIREN (étape 3 existante)
 if record.get("siren") and PAPPERS_TOKEN:
     prop = resolve_proprietaire(record["siren"], PAPPERS_TOKEN)
     record.update(prop)
@@ -892,7 +892,7 @@ for el in elements:
     record["surface_m2"]      = surface_retenue
     record["source_surface"]  = source
 
-    # Bypass 3 : propriétaire réel (après SIRENE)
+    # Bypass 3 : propriétaire réel (après SIREN)
     if record.get("siren"):
         prop = resolve_proprietaire(record["siren"], PAPPERS_TOKEN)
         record.update(prop)
