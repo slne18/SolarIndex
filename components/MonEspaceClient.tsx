@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBrowserClient, getAccessToken } from "@/lib/supabaseBrowser";
-import { euros, nf } from "@/lib/format";
+import { euros, formatCoords, nf } from "@/lib/format";
 import { displayRecouvrementSummary } from "@/lib/pv-overlap";
 import type { LeadRow } from "@/lib/types";
 
@@ -18,17 +18,10 @@ interface SubscriptionQuota {
   periodEnd: string | null;
 }
 
-interface SampleQuota {
-  remaining: number;
-  departement: string | null;
-  needsOnboarding: boolean;
-}
-
 export default function MonEspaceClient() {
   const [leads, setLeads] = useState<OwnedLead[] | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [sub, setSub] = useState<SubscriptionQuota | null>(null);
-  const [sample, setSample] = useState<SampleQuota | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -41,10 +34,9 @@ export default function MonEspaceClient() {
       const { data: u } = await getBrowserClient().auth.getUser();
       setEmail(u.user?.email ?? null);
 
-      const [leadsRes, subRes, sampleRes] = await Promise.all([
+      const [leadsRes, subRes] = await Promise.all([
         fetch("/api/my-leads", { headers: { Authorization: `Bearer ${token}` } }),
         fetch("/api/subscription", { headers: { Authorization: `Bearer ${token}` } }),
-        fetch("/api/sample", { headers: { Authorization: `Bearer ${token}` } }),
       ]);
 
       if (!leadsRes.ok) {
@@ -57,9 +49,6 @@ export default function MonEspaceClient() {
 
       if (subRes.ok) {
         setSub(await subRes.json());
-      }
-      if (sampleRes.ok) {
-        setSample(await sampleRes.json());
       }
     })();
   }, []);
@@ -76,8 +65,7 @@ export default function MonEspaceClient() {
           <p className="pill-accent w-fit">Compte installateur</p>
           <h1 className="section-title mt-4">Mon espace personnel</h1>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-400">
-            Vos leads achetés, vos crédits pack et votre échantillon gratuit — tout ce dont vous
-            avez besoin pour prospecter.
+            Vos leads achetés et vos crédits pack — tout ce dont vous avez besoin pour prospecter.
           </p>
           {email ? <p className="mt-2 text-sm text-slate-500">{email}</p> : null}
         </div>
@@ -85,27 +73,6 @@ export default function MonEspaceClient() {
           Se déconnecter
         </button>
       </div>
-
-      {sample && sample.remaining > 0 && !sub?.active && (
-        <div className="card mt-8 border-solar/30 bg-solar/5 p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <div className="text-sm font-semibold text-solar">Échantillon gratuit</div>
-              <p className="mt-1 text-sm text-slate-400">
-                <strong className="text-white">{sample.remaining}</strong> lead
-                {sample.remaining > 1 ? "s" : ""} restant{sample.remaining > 1 ? "s" : ""}
-                {sample.departement ? <> · département {sample.departement}</> : null}
-              </p>
-            </div>
-            <Link
-              href={sample.needsOnboarding ? "/onboarding" : `/leads?departement=${sample.departement}`}
-              className="btn-solar !py-2 text-sm"
-            >
-              {sample.needsOnboarding ? "Choisir mon département" : "Utiliser mon échantillon"}
-            </Link>
-          </div>
-        </div>
-      )}
 
       {sub?.active && (
         <div className="card mt-8 border-solar/30 p-5">
@@ -124,7 +91,7 @@ export default function MonEspaceClient() {
         </div>
       )}
 
-      {!sub?.active && (!sample || sample.remaining === 0) && (
+      {!sub?.active && (
         <div className="card mt-8 p-5 text-sm text-slate-400">
           Pas de crédits pack actifs.{" "}
           <Link href="/pack-territoire" className="text-solar underline">
@@ -137,7 +104,7 @@ export default function MonEspaceClient() {
         <div>
           <h2 className="text-lg font-semibold text-white">Mes leads achetés</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Coordonnées complètes · SIREN, contacts, adresse, parcelle
+            Coordonnées complètes · SIREN, dirigeants, adresse, parcelle
           </p>
         </div>
         <Link href="/leads" className="btn-ghost !py-2 text-sm">
@@ -164,6 +131,9 @@ export default function MonEspaceClient() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="font-semibold">{l.raison_sociale || l.nom_osm || "Parking"}</div>
+                  {l.nom_osm && l.raison_sociale && l.nom_osm !== l.raison_sociale ? (
+                    <div className="text-xs text-slate-500">Site : {l.nom_osm}</div>
+                  ) : null}
                   <div className="text-sm text-slate-400">
                     {l.ville || "—"} ({l.departement}) · {nf(l.surface_m2)} m² · {nf(l.puissance_kwc)} kWc
                     {" · "}
@@ -175,7 +145,7 @@ export default function MonEspaceClient() {
                     <div className="font-semibold text-solar">{euros(l.valeur_chantier_eur)}</div>
                     <div className="text-slate-500">chantier estimé</div>
                   </div>
-                  <Link href={`/leads/${l.id}`} className="btn-ghost !px-3 !py-1.5 text-xs">
+                  <Link href={`/leads/${l.id}?from=mon-espace`} className="btn-ghost !px-3 !py-1.5 text-xs">
                     Voir la fiche complète
                   </Link>
                 </div>
@@ -187,16 +157,14 @@ export default function MonEspaceClient() {
                   k="Dirigeant exploitant"
                   v={formatDirigeant(l.dirigeant_exploitant ?? l.dirigeant_nom, l.dirigeant_exploitant_qualite)}
                 />
-                <Info k="Tél. exploitant" v={l.telephone_exploitant ?? l.telephone} />
                 <Info k="Propriétaire foncier" v={l.proprietaire_foncier} />
                 <Info
                   k="Dirigeant propriétaire"
                   v={formatDirigeant(l.dirigeant_proprietaire, l.dirigeant_proprietaire_qualite)}
                 />
-                <Info k="Tél. propriétaire" v={l.telephone_proprietaire} />
-                <Info k="Email" v={l.email_contact} />
                 <Info k="Adresse" v={l.adresse} wide />
                 <Info k="Parcelle" v={l.id_parcelle} />
+                <Info k="Coordonnées GPS" v={formatCoords(l.latitude, l.longitude)} wide />
               </div>
             </div>
           ))}

@@ -1,5 +1,5 @@
 import { getUserIdFromRequest } from "@/lib/auth";
-import { canViewLeadDepartement, getCatalogAccess } from "@/lib/catalog-access";
+import { getCatalogAccess } from "@/lib/catalog-access";
 import { getCatalogStats } from "@/lib/catalog-stats";
 import { LeadSort, PAGE_SIZE, queryLeads } from "@/lib/db";
 import { toPublicLead } from "@/lib/leads";
@@ -18,22 +18,12 @@ const VALID_FLAGS = ["URGENCE_ABSOLUE", "CONFORME_REQUIS"];
 export async function GET(req: Request) {
   const userId = await getUserIdFromRequest(req);
   const access = userId ? await getCatalogAccess(userId) : ANONYMOUS_CATALOG_ACCESS;
-  if (userId && access.needsOnboarding) {
-    return Response.json(
-      { error: "Choisissez votre département échantillon.", needsOnboarding: true },
-      { status: 403, headers: NO_STORE },
-    );
-  }
 
   const { searchParams } = new URL(req.url);
 
   const region = searchParams.get("region") || undefined;
-  let departement = searchParams.get("departement") || undefined;
+  const departement = searchParams.get("departement") || undefined;
   const naf = searchParams.get("naf") || undefined;
-
-  if (access.departementLock) {
-    departement = access.departementLock;
-  }
 
   const flagRaw = searchParams.get("flag") || undefined;
   const flag = flagRaw && VALID_FLAGS.includes(flagRaw) ? flagRaw : undefined;

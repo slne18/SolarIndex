@@ -51,10 +51,8 @@ export default function LeadDemoFiche() {
             <LeadField label="Propriétaire foncier" value={DEMO_FICHE.proprietaire} />
             <LeadField label="SIREN propriétaire" value={DEMO_FICHE.proprietaire_siren} />
             <LeadField label="Dirigeant propriétaire" value={`${DEMO_FICHE.dirigeant_proprietaire} · ${DEMO_FICHE.dirigeant_proprietaire_qualite}`} />
-            <LeadField label="Contact" value={DEMO_FICHE.contact_nom} />
-            <LeadField label="Fonction" value={DEMO_FICHE.contact_fonction} />
-            <LeadField label="Email" value={DEMO_FICHE.contact_email} highlight />
-            <LeadField label="Téléphone" value={DEMO_FICHE.contact_telephone} highlight />
+            <LeadField label="Adresse" value={DEMO_FICHE.adresse} wide />
+            <LeadField label="Parcelle cadastrale" value={DEMO_FICHE.id_parcelle} />
             <LeadField label="Prospection" value={DEMO_FICHE.prospection} wide />
           </dl>
         </div>

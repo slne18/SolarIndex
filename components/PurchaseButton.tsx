@@ -14,7 +14,6 @@ interface PurchaseButtonProps {
   disabled?: boolean;
   disabledReason?: "sold_out" | "owned";
   full?: boolean;
-  sampleRemaining?: number;
 }
 
 export default function PurchaseButton({
@@ -26,7 +25,6 @@ export default function PurchaseButton({
   disabled,
   disabledReason = "sold_out",
   full,
-  sampleRemaining = 0,
 }: PurchaseButtonProps) {
   const router = useRouter();
   const plausible = useSolarAnalytics();
@@ -51,14 +49,9 @@ export default function PurchaseButton({
     );
   }
 
-  const label =
-    sampleRemaining > 0
-      ? `Débloquer ce lead — gratuit (${sampleRemaining} restant${sampleRemaining > 1 ? "s" : ""})`
-      : `Acheter ce lead — ${prix} €`;
-
   return (
     <button onClick={onClick} className={`btn-solar ${full ? "w-full" : ""}`}>
-      {label}
+      {`Acheter ce lead — ${prix} €`}
     </button>
   );
 }

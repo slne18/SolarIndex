@@ -16,9 +16,7 @@ export const DEMO_FICHE = {
   proprietaire_siren: "539 882 104",
   dirigeant_proprietaire: "Mme A. Bellevue",
   dirigeant_proprietaire_qualite: "Gérante",
-  contact_nom: "M. Laurent D.",
-  contact_fonction: "Directeur site",
-  contact_email: "l.dubois@hyperdistribution.fr",
-  contact_telephone: "05 56 12 34 56",
-  prospection: "TEL OK",
+  adresse: "12 avenue des Pins, 33300 Bordeaux Lac",
+  id_parcelle: "33 012 000 AB 0123",
+  prospection: "Dirigeants identifiés · SIREN vérifié",
 } as const;

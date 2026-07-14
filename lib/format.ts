@@ -29,3 +29,16 @@ export function scoreLabel(score: number | null | undefined): string {
   if (s >= 0.5) return "Moyen";
   return "À vérifier";
 }
+
+export function formatCoords(
+  lat: number | null | undefined,
+  lng: number | null | undefined,
+): string | null {
+  if (lat == null || lng == null || Number.isNaN(lat) || Number.isNaN(lng)) return null;
+  if (lat === 0 && lng === 0) return null;
+  return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+}
+
+export function openStreetMapUrl(lat: number, lng: number, zoom = 17): string {
+  return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=${zoom}/${lat}/${lng}`;
+}

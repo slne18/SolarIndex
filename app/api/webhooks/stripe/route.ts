@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   if (!isStripeConfigured()) {
     return new Response("Stripe non configuré.", { status: 503 });
   }
-  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  const secret = process.env.STRIPE_WEBHOOK_SECRET?.trim();
   if (!secret) {
     return new Response("STRIPE_WEBHOOK_SECRET manquant.", { status: 503 });
   }
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   const sig = req.headers.get("stripe-signature");
   if (!sig) return new Response("Signature manquante.", { status: 400 });
 
-  const raw = await req.text();
+  const raw = Buffer.from(await req.arrayBuffer()).toString("utf8");
   let event: Stripe.Event;
   try {
     event = getStripe().webhooks.constructEvent(raw, sig, secret);

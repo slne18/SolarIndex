@@ -23,7 +23,7 @@ export default function LoginPage() {
     const sp = new URLSearchParams(window.location.search);
     const next = sp.get("next");
     if (isSignup && (!next || next === "/leads" || next.startsWith("/leads"))) {
-      return "/onboarding";
+      return "/leads";
     }
     return next || "/mon-espace";
   }
@@ -87,7 +87,7 @@ export default function LoginPage() {
           <p className="mt-1 text-sm text-slate-400">
             {mode === "signup"
               ? "Compte requis pour parcourir le catalogue et recevoir vos leads."
-              : "Accédez à vos leads achetés et à votre échantillon gratuit."}
+              : "Accédez à vos leads achetés et à votre espace client."}
           </p>
 
           <form onSubmit={onSubmit} className="mt-6 space-y-4">

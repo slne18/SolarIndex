@@ -11,7 +11,6 @@ import { VISION_COVERAGE_EQUIPE } from "@/lib/pv-overlap";
 import type { PublicLead } from "@/lib/types";
 import LeadFilters from "@/components/LeadFilters";
 import LeadTable from "@/components/LeadTable";
-import SampleBanner from "@/components/SampleBanner";
 import LeadsSolutionSection from "@/components/LeadsSolutionSection";
 import LeadDemoFiche from "@/components/LeadDemoFiche";
 import FranceMap from "@/components/FranceMap";
@@ -25,7 +24,6 @@ function LeadsCatalog() {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(0);
-  const [deptLock, setDeptLock] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<CatalogView>(
@@ -44,10 +42,6 @@ function LeadsCatalog() {
       });
       const data = await res.json().catch(() => ({}));
 
-      if (res.status === 403 && data.needsOnboarding) {
-        router.replace("/onboarding");
-        return;
-      }
       if (!res.ok) {
         setError(data.error || "Impossible de charger le catalogue.");
         setLeads([]);
@@ -59,7 +53,6 @@ function LeadsCatalog() {
       setTotal(data.total ?? 0);
       setTotalPages(data.totalPages ?? 0);
       setPage(data.page ?? 0);
-      setDeptLock(data.catalog?.departementLock ?? null);
     } catch {
       setError("Erreur réseau.");
     } finally {
@@ -139,8 +132,6 @@ function LeadsCatalog() {
         <CatalogViewToggle view={view} onChange={setCatalogView} />
       </div>
 
-      <SampleBanner />
-
       <p className="guarantee-banner mt-4 rounded-xl border px-4 py-3 text-sm leading-relaxed">
         <span className="font-semibold text-solar">Garantie non-négociable</span>
         {" — "}
@@ -163,7 +154,7 @@ function LeadsCatalog() {
       ) : null}
 
       <div ref={listRef} className="mt-6">
-        <LeadFilters lockedDepartement={deptLock} />
+        <LeadFilters />
       </div>
 
       <div className="mt-6">

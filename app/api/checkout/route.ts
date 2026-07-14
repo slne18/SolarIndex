@@ -1,12 +1,10 @@
 import { getBearerToken } from "@/lib/auth";
 import { getAnonClient } from "@/lib/supabase";
 import { getLeadById, userOwnsLead } from "@/lib/db";
-import { afterSampleRedemption, afterSubscriptionRedemption } from "@/lib/fulfillment";
+import { afterSubscriptionRedemption } from "@/lib/fulfillment";
 import { isLeadSellable } from "@/lib/leads";
 import { isLeadSlotOpen } from "@/lib/lead-slots";
 import { getStripe, isStripeConfigured, prixLeadCentimes } from "@/lib/stripe";
-import { canViewLeadDepartement, getCatalogAccess } from "@/lib/catalog-access";
-import { getSampleQuota, redeemSampleLead } from "@/lib/sample";
 import { getSubscriptionQuota, redeemSubscriptionLead } from "@/lib/subscription";
 
 export const dynamic = "force-dynamic";
@@ -70,50 +68,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const access = await getCatalogAccess(user.id);
-  if (access.needsOnboarding) {
-    return Response.json(
-      { error: "Choisissez votre département échantillon avant d'acheter." },
-      { status: 403, headers: NO_STORE },
-    );
-  }
-  if (!canViewLeadDepartement(access, lead.departement)) {
-    return Response.json(
-      { error: `Échantillon limité au département ${access.departementLock}.` },
-      { status: 403, headers: NO_STORE },
-    );
-  }
-
   const appUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
-
-  // Crédit échantillon gratuit (1 lead / département verrouillé).
-  const sample = await getSampleQuota(user.id);
-  if (sample.remaining > 0) {
-    try {
-      const ok = await redeemSampleLead({ leadId: lead.id, userId: user.id });
-      if (!ok) {
-        return Response.json(
-          { error: "Impossible d'utiliser un crédit échantillon (lead indisponible ou hors département)." },
-          { status: 409, headers: NO_STORE },
-        );
-      }
-      await afterSampleRedemption(lead.id, user.id);
-      return Response.json(
-        {
-          redeemed: true,
-          sample: true,
-          url: `${appUrl}/success?sample=1`,
-          remaining: sample.remaining - 1,
-        },
-        { headers: NO_STORE },
-      );
-    } catch (e) {
-      return Response.json(
-        { error: "Échec de la rédemption échantillon.", details: String(e) },
-        { status: 500, headers: NO_STORE },
-      );
-    }
-  }
 
   // Crédit Pack Territoire (5 leads, achat unique).
   const quota = await getSubscriptionQuota(user.id);

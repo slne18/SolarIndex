@@ -79,7 +79,7 @@ export default function SeoZonePage({
 
       <h2 className="mt-10 text-lg font-semibold">Leads disponibles</h2>
       <p className="mt-1 text-sm text-slate-400">
-        Aperçu public — coordonnées entreprise débloquées après inscription.
+        Aperçu public — identité entreprise débloquée après achat.
       </p>
 
       {leads.length === 0 ? (
@@ -141,7 +141,7 @@ export default function SeoZonePage({
         <Link href="/leads" className="btn-solar">
           Tous les leads
         </Link>
-        <Link href="/login?mode=signup&next=/onboarding" className="btn-ghost">
+        <Link href="/login?mode=signup&next=/leads" className="btn-ghost">
           Créer un compte
         </Link>
       </div>

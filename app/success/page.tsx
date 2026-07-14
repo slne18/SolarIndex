@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SuccessAnalytics from "@/components/SuccessAnalytics";
+import SuccessFulfillment from "@/components/SuccessFulfillment";
 
 export const dynamic = "force-dynamic";
 
@@ -51,9 +52,12 @@ export default function SuccessPage({
           <Link href="/leads" className="btn-ghost">Parcourir les leads</Link>
         </div>
         {!redeemed && !packWelcome && (
-          <p className="mt-6 text-xs text-slate-500">
-            Confirmation Stripe · livraison automatique par webhook (quelques secondes).
-          </p>
+          <>
+            <SuccessFulfillment sessionId={searchParams.session_id} />
+            <p className="mt-6 text-xs text-slate-500">
+              Confirmation Stripe · livraison automatique (webhook + secours sur cette page).
+            </p>
+          </>
         )}
       </div>
     </div>

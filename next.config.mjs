@@ -13,6 +13,11 @@ const nextConfig = {
         destination: "/mon-espace",
         permanent: true,
       },
+      {
+        source: "/onboarding",
+        destination: "/leads",
+        permanent: true,
+      },
     ];
   },
 };

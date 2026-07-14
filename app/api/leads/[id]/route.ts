@@ -1,5 +1,5 @@
 import { getUserIdFromRequest } from "@/lib/auth";
-import { canViewLeadDepartement, getCatalogAccess } from "@/lib/catalog-access";
+import { getCatalogAccess } from "@/lib/catalog-access";
 import { getLeadById, userOwnsLead } from "@/lib/db";
 import { isLeadSellable, toOwnedLead, toPublicLead } from "@/lib/leads";
 import { isLeadSlotOpen, MAX_BUYERS_PER_LEAD } from "@/lib/lead-slots";
@@ -18,12 +18,6 @@ export async function GET(
 ) {
   const userId = await getUserIdFromRequest(req);
   const access = userId ? await getCatalogAccess(userId) : ANONYMOUS_CATALOG_ACCESS;
-  if (userId && access.needsOnboarding) {
-    return Response.json(
-      { error: "Choisissez votre département échantillon.", needsOnboarding: true },
-      { status: 403, headers: NO_STORE },
-    );
-  }
 
   let lead;
   try {
@@ -55,15 +49,6 @@ export async function GET(
     return Response.json(
       { error: "Lead introuvable." },
       { status: 404, headers: NO_STORE },
-    );
-  }
-
-  if (!isOwned && !canViewLeadDepartement(access, lead.departement)) {
-    return Response.json(
-      {
-        error: `Échantillon limité au département ${access.departementLock}. Passez au paiement ou épuisez vos crédits gratuits pour élargir.`,
-      },
-      { status: 403, headers: NO_STORE },
     );
   }
 

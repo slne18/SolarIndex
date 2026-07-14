@@ -23,8 +23,8 @@ vi.mock("@/lib/catalog-access", () => ({
   getCatalogAccess: vi.fn().mockResolvedValue({
     needsOnboarding: false,
     departementLock: null,
-    sampleRemaining: 1,
-    sampleDepartement: "33",
+    sampleRemaining: 0,
+    sampleDepartement: null,
     subscriptionActive: false,
   }),
   canViewLeadDepartement: vi.fn().mockReturnValue(true),

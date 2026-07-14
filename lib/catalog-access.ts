@@ -1,19 +1,23 @@
 import { getSubscriptionQuota } from "./subscription";
 import { getUserProfile } from "./profile";
 
-export const SAMPLE_LEADS_QUOTA = 1;
-
 export interface CatalogAccess {
-  /** Doit choisir un département échantillon avant le catalogue. */
   needsOnboarding: boolean;
-  /** Filtre forcé tant qu'il reste des crédits échantillon (sans abo). */
   departementLock: string | null;
   sampleRemaining: number;
   sampleDepartement: string | null;
   subscriptionActive: boolean;
 }
 
-/** Règles d'accès au catalogue selon profil + abonnement. */
+const NO_SAMPLE_ACCESS: CatalogAccess = {
+  needsOnboarding: false,
+  departementLock: null,
+  sampleRemaining: 0,
+  sampleDepartement: null,
+  subscriptionActive: false,
+};
+
+/** Règles d'accès au catalogue (sans échantillon gratuit). */
 export async function getCatalogAccess(userId: string): Promise<CatalogAccess> {
   const [profile, sub] = await Promise.all([
     getUserProfile(userId),
@@ -21,42 +25,19 @@ export async function getCatalogAccess(userId: string): Promise<CatalogAccess> {
   ]);
 
   if (!profile) {
-    return {
-      needsOnboarding: true,
-      departementLock: null,
-      sampleRemaining: 0,
-      sampleDepartement: null,
-      subscriptionActive: false,
-    };
+    return NO_SAMPLE_ACCESS;
   }
 
-  const sampleRemaining = profile.sample_leads_remaining ?? 0;
-  const sampleDepartement = profile.sample_departement;
-  const subscriptionActive = sub.active;
-
-  const needsOnboarding = !sampleDepartement && sampleRemaining > 0 && !subscriptionActive;
-
-  const departementLock =
-    !subscriptionActive && sampleRemaining > 0 && sampleDepartement
-      ? sampleDepartement
-      : null;
-
   return {
-    needsOnboarding,
-    departementLock,
-    sampleRemaining,
-    sampleDepartement,
-    subscriptionActive,
+    ...NO_SAMPLE_ACCESS,
+    subscriptionActive: sub.active,
   };
 }
 
 /** Vérifie qu'un lead disponible est visible pour cet utilisateur. */
 export function canViewLeadDepartement(
-  access: CatalogAccess,
-  leadDepartement: string,
+  _access: CatalogAccess,
+  _leadDepartement: string,
 ): boolean {
-  if (access.departementLock) {
-    return leadDepartement === access.departementLock;
-  }
   return true;
 }

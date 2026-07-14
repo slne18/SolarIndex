@@ -13,7 +13,6 @@ import RequireAuth from "@/components/RequireAuth";
 function CheckoutContent({ leadId }: { leadId: string }) {
   const router = useRouter();
   const [lead, setLead] = useState<PublicLead | null>(null);
-  const [sampleRemaining, setSampleRemaining] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,16 +25,11 @@ function CheckoutContent({ leadId }: { leadId: string }) {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json().catch(() => ({}));
-        if (res.status === 403 && data.needsOnboarding) {
-          router.replace("/onboarding");
-          return;
-        }
         if (!res.ok) {
           setError(data.error || "Lead introuvable.");
           return;
         }
         setLead(data.lead);
-        setSampleRemaining(data.catalog?.sampleRemaining ?? 0);
       } catch {
         setError("Erreur réseau.");
       } finally {
@@ -57,7 +51,6 @@ function CheckoutContent({ leadId }: { leadId: string }) {
     );
   }
 
-  const prix = sampleRemaining > 0 ? 0 : lead.prix_lead;
   const recouvrement = displayRecouvrementSummary(lead);
 
   return (
@@ -81,18 +74,10 @@ function CheckoutContent({ leadId }: { leadId: string }) {
             <Row k="Puissance estimée" v={`${nf(lead.puissance_kwc)} kWc`} />
             <Row k="Valeur chantier" v={eurosCompact(lead.valeur_chantier_eur)} />
             <div className="my-2 border-t border-white/10" />
-            <Row
-              k={sampleRemaining > 0 ? "Échantillon" : "Prix du lead"}
-              v={sampleRemaining > 0 ? "Gratuit (crédit échantillon)" : `${lead.prix_lead} €`}
-              strong
-            />
+            <Row k="Prix du lead" v={`${lead.prix_lead} €`} strong />
           </div>
 
-          <PayButton
-            leadId={lead.id}
-            prix={prix}
-            sampleRemaining={sampleRemaining}
-          />
+          <PayButton leadId={lead.id} prix={lead.prix_lead} />
         </div>
       </div>
     </div>

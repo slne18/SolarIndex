@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { LeadRow } from "./types";
-import { euros, nf } from "./format";
+import { euros, nf, formatCoords } from "./format";
 import { LEAD_REPLACEMENT_GUARANTEE_EMAIL } from "./guarantee";
 
 // Envoi d'emails via Resend. Si RESEND_API_KEY est absent, on ne lève pas
@@ -37,7 +37,6 @@ function leadCsv(lead: LeadRow): string {
     "libelle_naf", "dirigeant_exploitant", "dirigeant_exploitant_qualite",
     "dirigeant_proprietaire", "dirigeant_proprietaire_qualite",
     "proprietaire_foncier", "siren_proprietaire_foncier",
-    "telephone_exploitant", "telephone_proprietaire", "email_contact",
     "latitude", "longitude",
   ];
   const esc = (v: unknown) => {
@@ -93,18 +92,16 @@ export async function sendLeadDeliveryEmail(
   const html = `
   <div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:560px;margin:auto;">
     <h1 style="font-size:20px;color:#0f172a;">Votre lead est débloqué</h1>
-    <p style="color:#475569;">Merci pour votre achat. Voici les coordonnées complètes du prospect.</p>
+    <p style="color:#475569;">Merci pour votre achat. Voici la fiche complète du prospect.</p>
     <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:12px;">
       ${row("Exploitant", lead.raison_sociale)}
       ${row("SIREN exploitant", lead.siren)}
       ${row("Dirigeant exploitant", lead.dirigeant_exploitant ?? lead.dirigeant_nom)}
-      ${row("Tél. exploitant", lead.telephone_exploitant ?? lead.telephone)}
       ${row("Propriétaire foncier", lead.proprietaire_foncier)}
       ${row("SIREN propriétaire", lead.siren_proprietaire_foncier)}
       ${row("Dirigeant propriétaire", lead.dirigeant_proprietaire)}
-      ${row("Tél. propriétaire", lead.telephone_proprietaire)}
-      ${row("Email", lead.email_contact)}
       ${row("Adresse", lead.adresse)}
+      ${row("Coordonnées GPS", formatCoords(lead.latitude, lead.longitude))}
       ${row("Ville", `${lead.ville || "—"} (${lead.departement})`)}
       ${row("Parcelle cadastrale", lead.id_parcelle)}
       ${row("Surface parking", `${nf(lead.surface_m2)} m²`)}
