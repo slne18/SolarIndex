@@ -1,14 +1,13 @@
 import { getBearerToken } from "@/lib/auth";
 import { getAnonClient } from "@/lib/supabase";
 import { getCatalogAccess } from "@/lib/catalog-access";
-import { getSampleQuota } from "@/lib/sample";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 const NO_STORE = { "Cache-Control": "no-store, max-age=0" } as const;
 
-// GET /api/sample — quota échantillon + règles catalogue.
+// GET /api/sample — compat API (échantillon désactivé, quota toujours 0).
 export async function GET(req: Request) {
   const token = getBearerToken(req);
   if (!token) {
@@ -20,13 +19,13 @@ export async function GET(req: Request) {
   }
 
   try {
-    const [sample, access] = await Promise.all([
-      getSampleQuota(userData.user.id),
-      getCatalogAccess(userData.user.id),
-    ]);
+    const access = await getCatalogAccess(userData.user.id);
     return Response.json(
       {
-        ...sample,
+        remaining: 0,
+        quota: 0,
+        departement: null,
+        departementLocked: false,
         needsOnboarding: access.needsOnboarding,
         departementLock: access.departementLock,
         subscriptionActive: access.subscriptionActive,
