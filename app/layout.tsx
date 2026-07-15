@@ -18,6 +18,10 @@ export const metadata: Metadata = {
   title: "SolarIndex — Leads parkings APER & appels d'offres solaires",
   description:
     "Deux produits : catalogue automatisé de parkings non conformes (loi APER) et marketplace d'appels d'offres déposés par les gérants.",
+  icons: {
+    icon: [{ url: "/icon", type: "image/png" }],
+    apple: [{ url: "/apple-icon", type: "image/png" }],
+  },
 };
 
 export const viewport = {
