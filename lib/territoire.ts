@@ -3,7 +3,7 @@ import { MAX_BUYERS_PER_LEAD } from "./lead-slots";
 import { VISION_COVERAGE_EQUIPE } from "./pv-overlap";
 import { leadTier } from "./leads";
 import { SURFACE_GRAY_LOW_MAX_M2 } from "./surface-thresholds";
-import { bboxAroundPoint, haversineKm } from "./verifier/geo";
+import type { DetectionEtat, FlagUrgence, LeadStatut, SourceSurface } from "./types";
 
 export type TerritoireRadiusKm = 25 | 50 | 100;
 
@@ -19,26 +19,28 @@ export type TerritoireSummary = {
   pipelineEur: number;
 };
 
-type LeadRow = {
+import { bboxAroundPoint, haversineKm } from "./verifier/geo";
+
+type TerritoireLeadRow = {
   latitude: number;
   longitude: number;
   departement: string;
-  flag_urgence: string;
+  flag_urgence: FlagUrgence;
   valeur_chantier_eur: number | null;
   surface_m2: number;
   score_confiance: number;
-  statut: string;
+  statut: LeadStatut;
   buyers_count: number;
   siren: string | null;
   id_parcelle: string | null;
   adresse: string | null;
-  detection: string;
+  detection: DetectionEtat;
   vision_surface_couverte_pct: number | null;
   surface_tag_present: boolean | null;
-  source_surface: string | null;
+  source_surface: SourceSurface | null;
 };
 
-function isSellable(row: LeadRow): boolean {
+function isSellable(row: TerritoireLeadRow): boolean {
   return (
     row.statut === "disponible" &&
     row.buyers_count < MAX_BUYERS_PER_LEAD &&
@@ -53,10 +55,10 @@ function isSellable(row: LeadRow): boolean {
   );
 }
 
-async function fetchSellableLeads(): Promise<LeadRow[]> {
+async function fetchSellableLeads(): Promise<TerritoireLeadRow[]> {
   const supabase = getAdminClient();
   const pageSize = 1000;
-  const rows: LeadRow[] = [];
+  const rows: TerritoireLeadRow[] = [];
   let offset = 0;
 
   while (true) {
@@ -80,7 +82,7 @@ async function fetchSellableLeads(): Promise<LeadRow[]> {
       .range(offset, offset + pageSize - 1);
 
     if (error) throw error;
-    const batch = (data ?? []) as LeadRow[];
+    const batch = (data ?? []) as TerritoireLeadRow[];
     rows.push(...batch.filter(isSellable));
     if (batch.length < pageSize) break;
     offset += pageSize;
@@ -89,7 +91,10 @@ async function fetchSellableLeads(): Promise<LeadRow[]> {
   return rows;
 }
 
-function aggregate(leads: LeadRow[], meta: Omit<TerritoireSummary, "total" | "urgences" | "standard" | "premium" | "pipelineEur">): TerritoireSummary {
+function aggregate(
+  leads: TerritoireLeadRow[],
+  meta: Omit<TerritoireSummary, "total" | "urgences" | "standard" | "premium" | "pipelineEur">,
+): TerritoireSummary {
   let urgences = 0;
   let standard = 0;
   let premium = 0;
