@@ -38,12 +38,6 @@ function Header() {
     <header className="site-header">
       <div className="header-bar">
         <div className="header-start">
-          <Link href="/leads" className="nav-link header-product-link">
-            Leads auto
-          </Link>
-          <Link href="/appels-offres" className="nav-link header-product-link hidden min-[420px]:inline-flex">
-            Appels d&apos;offres
-          </Link>
           <Link href="/" className="header-brand group">
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-solar to-solar-600 text-night shadow-glow transition group-hover:scale-[1.02] sm:h-11 sm:w-11">
               <SolarIndexIcon size={20} className="sm:h-[22px] sm:w-[22px]" />
@@ -52,6 +46,14 @@ function Header() {
               Solar<span className="text-solar">Index</span>
             </span>
           </Link>
+          <nav className="header-product-nav" aria-label="Produits">
+            <Link href="/leads" className="nav-link header-product-link">
+              Leads auto
+            </Link>
+            <Link href="/appels-offres" className="nav-link header-product-link hidden min-[420px]:inline-flex">
+              Appels d&apos;offres
+            </Link>
+          </nav>
         </div>
         <nav className="header-nav" aria-label="Compte utilisateur">
           <HeaderAuthNav />

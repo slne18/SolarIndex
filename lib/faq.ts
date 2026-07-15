@@ -57,7 +57,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     id: "gdpr",
     question: "SolarIndex est-il conforme au RGPD ?",
     answer:
-      "SolarIndex cible exclusivement des personnes morales et des données B2B issues de sources publiques ou déposées volontairement (appels d'offres). Le traitement repose notamment sur l'intérêt légitime de prospection B2B. Consultez notre politique de confidentialité pour vos droits.",
+      "SolarIndex cible exclusivement des personnes morales et des données B2B. Le traitement repose notamment sur l'intérêt légitime de prospection B2B. La mesure d'audience utilise Plausible (sans cookies publicitaires). Vos droits (accès, rectification, effacement, etc.) s'exercent surtout sur votre compte installateur ou vos dépôts d'appels d'offres — voir la Politique de confidentialité, section 6.",
   },
   {
     id: "account",

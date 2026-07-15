@@ -1,14 +1,21 @@
 import PlausibleProvider from "next-plausible";
-
-const src = process.env.NEXT_PUBLIC_PLAUSIBLE_SRC;
+import {
+  isPlausibleEnabled,
+  PLAUSIBLE_DOMAIN,
+  PLAUSIBLE_SCRIPT_SRC,
+} from "@/lib/plausible-config";
 
 export default function AnalyticsProvider({ children }: { children: React.ReactNode }) {
-  if (!src) return <>{children}</>;
+  if (!isPlausibleEnabled()) return <>{children}</>;
+
+  const trackInDev = process.env.PLAUSIBLE_DEV === "true";
+  const legacyScript = PLAUSIBLE_SCRIPT_SRC.includes("/script.js");
 
   return (
     <PlausibleProvider
-      src={src}
-      enabled={process.env.NODE_ENV === "production" || process.env.PLAUSIBLE_DEV === "true"}
+      enabled={process.env.NODE_ENV === "production" || trackInDev}
+      scriptProps={legacyScript ? { "data-domain": PLAUSIBLE_DOMAIN } : undefined}
+      init={{ captureOnLocalhost: trackInDev }}
     >
       {children}
     </PlausibleProvider>
