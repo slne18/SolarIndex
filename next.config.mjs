@@ -18,16 +18,6 @@ const nextConfig = {
         destination: "/leads",
         permanent: true,
       },
-      {
-        source: "/favicon.png",
-        destination: "/icon",
-        permanent: true,
-      },
-      {
-        source: "/favicon.ico",
-        destination: "/icon",
-        permanent: true,
-      },
     ];
   },
 };

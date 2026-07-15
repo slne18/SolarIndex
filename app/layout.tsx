@@ -19,8 +19,11 @@ export const metadata: Metadata = {
   description:
     "Deux produits : catalogue automatisé de parkings non conformes (loi APER) et marketplace d'appels d'offres déposés par les gérants.",
   icons: {
-    icon: [{ url: "/icon", type: "image/png" }],
-    apple: [{ url: "/apple-icon", type: "image/png" }],
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.png", type: "image/png", sizes: "32x32" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
   },
 };
 
