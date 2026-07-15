@@ -16,6 +16,11 @@ function NouveauRfpForm() {
   const [msg, setMsg] = useState<string | null>(null);
   const [entreprise, setEntreprise] = useState("");
   const [siret, setSiret] = useState("");
+  const [adresse, setAdresse] = useState("");
+  const [surfaceEstimee, setSurfaceEstimee] = useState("");
+  const [derogPente, setDerogPente] = useState(false);
+  const [derogAbf, setDerogAbf] = useState(false);
+  const [notesParticulieres, setNotesParticulieres] = useState("");
 
   useEffect(() => {
     if (sp.get("verified") === "1") {
@@ -23,6 +28,14 @@ function NouveauRfpForm() {
     } else if (sp.get("error")) {
       setMsg("Lien de confirmation invalide ou expiré.");
     }
+    const qAdresse = sp.get("adresse");
+    if (qAdresse) setAdresse(qAdresse);
+    const qSurface = sp.get("surface_estimee_m2");
+    if (qSurface) setSurfaceEstimee(qSurface);
+    const qNotes = sp.get("notes_particulieres");
+    if (qNotes) setNotesParticulieres(qNotes);
+    if (sp.get("derogation_pente") === "1") setDerogPente(true);
+    if (sp.get("derogation_abf") === "1") setDerogAbf(true);
   }, [sp]);
 
   async function onSiretBlur() {
@@ -127,19 +140,45 @@ function NouveauRfpForm() {
           </Field>
         </div>
         <Field label="Adresse du parking" required>
-          <input name="adresse" required className="input" placeholder="Adresse complète" />
+          <input
+            name="adresse"
+            required
+            className="input"
+            placeholder="Adresse complète"
+            value={adresse}
+            onChange={(e) => setAdresse(e.target.value)}
+          />
         </Field>
         <Field label="Surface estimée (m²)">
-          <input name="surface_estimee_m2" type="number" min={1500} className="input" />
+          <input
+            name="surface_estimee_m2"
+            type="number"
+            min={1500}
+            className="input"
+            value={surfaceEstimee}
+            onChange={(e) => setSurfaceEstimee(e.target.value)}
+          />
         </Field>
         <label className="flex items-center gap-2">
           <input type="checkbox" name="deja_equipe_partiel" /> Parking déjà équipé partiellement
         </label>
         <label className="flex items-center gap-2">
-          <input type="checkbox" name="derogation_pente" /> Terrain en pente / dérogation possible
+          <input
+            type="checkbox"
+            name="derogation_pente"
+            checked={derogPente}
+            onChange={(e) => setDerogPente(e.target.checked)}
+          />{" "}
+          Terrain en pente / dérogation possible
         </label>
         <label className="flex items-center gap-2">
-          <input type="checkbox" name="derogation_abf" /> Zone ABF / contrainte patrimoniale
+          <input
+            type="checkbox"
+            name="derogation_abf"
+            checked={derogAbf}
+            onChange={(e) => setDerogAbf(e.target.checked)}
+          />{" "}
+          Zone ABF / contrainte patrimoniale
         </label>
         <Field label="Budget indicatif (optionnel)">
           <input name="budget_indicatif" className="input" placeholder="Ex. 800 k€ – 1,2 M€" />
@@ -148,7 +187,13 @@ function NouveauRfpForm() {
           <input name="delai_souhaite" className="input" placeholder="Ex. Mise en service 2027" />
         </Field>
         <Field label="Particularités">
-          <textarea name="notes_particulieres" rows={3} className="input" />
+          <textarea
+            name="notes_particulieres"
+            rows={3}
+            className="input"
+            value={notesParticulieres}
+            onChange={(e) => setNotesParticulieres(e.target.value)}
+          />
         </Field>
         <label className="flex gap-2 text-xs text-slate-400">
           <input type="checkbox" name="consentement_rgpd" required className="mt-1" />

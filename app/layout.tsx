@@ -91,6 +91,10 @@ function Footer({ light = false }: { light?: boolean }) {
           <ul className="mt-4 space-y-2.5 text-slate-500">
             <li><Link href="/leads" className={light ? "footer-link" : "transition hover:text-white"}>Leads détectés</Link></li>
             <li><Link href="/appels-offres" className={light ? "footer-link" : "transition hover:text-white"}>Appels d&apos;offres</Link></li>
+            <li><Link href="/verifier" className={light ? "footer-link" : "transition hover:text-white"}>Vérifier éligibilité</Link></li>
+            <li><Link href="/simulateur" className={light ? "footer-link" : "transition hover:text-white"}>Simulateur ombrières</Link></li>
+            <li><Link href="/observatoire" className={light ? "footer-link" : "transition hover:text-white"}>Observatoire APER</Link></li>
+            <li><Link href="/territoire" className={light ? "footer-link" : "transition hover:text-white"}>Calculateur territoire</Link></li>
             <li><Link href="/#tarifs" className={light ? "footer-link" : "transition hover:text-white"}>Tarifs</Link></li>
           </ul>
         </div>

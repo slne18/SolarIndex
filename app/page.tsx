@@ -9,6 +9,7 @@ import { PRIX_RFP, RFP_SURFACE_TIER_M2 } from "@/lib/rfp";
 import { APER_DEADLINES, APER_LAW_REF, APER_OBLIGATION_SUMMARY, APER_PUBLIC_PARKS_NOTE } from "@/lib/aper-law";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import JsonLd from "@/components/JsonLd";
+import RegulatoryCountdown from "@/components/RegulatoryCountdown";
 import { buildPageMetadata } from "@/lib/seo-config";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
@@ -109,6 +110,23 @@ export default function HomePage() {
           </h2>
           <p className="section-lead mt-4">{APER_OBLIGATION_SUMMARY}</p>
           <p className="mt-3 text-xs text-slate-500">{APER_LAW_REF}</p>
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-2">
+            <RegulatoryCountdown variant="full" obligation="50" />
+            <RegulatoryCountdown variant="full" obligation="40" />
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href="/verifier" className="btn-solar">
+              Vérifier mon parking (gratuit)
+            </Link>
+            <Link href="/simulateur" className="btn-ghost border-slate-300 text-slate-700 hover:bg-slate-100">
+              Simulateur rentabilité
+            </Link>
+            <Link href="/observatoire" className="btn-ghost border-slate-300 text-slate-700 hover:bg-slate-100">
+              Observatoire national
+            </Link>
+          </div>
 
           <AperTimeline />
 

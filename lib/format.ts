@@ -5,6 +5,10 @@ export function nf(n: number | null | undefined): string {
   return Math.round(n).toLocaleString("fr-FR");
 }
 
+export function nfSurface(n: number | null | undefined): string {
+  return nf(n);
+}
+
 export function euros(n: number | null | undefined): string {
   if (n == null || Number.isNaN(n)) return "—";
   return `${Math.round(n).toLocaleString("fr-FR")} €`;
