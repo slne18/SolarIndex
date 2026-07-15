@@ -7,6 +7,8 @@ import HeaderAuthNav from "@/components/HeaderAuthNav";
 import HeaderSignupCta from "@/components/HeaderSignupCta";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site";
+import { SEO_DEFAULT_DESCRIPTION, SEO_KEYWORDS } from "@/lib/seo-config";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -15,9 +17,21 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "SolarIndex — Leads parkings APER & appels d'offres solaires",
-  description:
-    "Deux produits : catalogue automatisé de parkings non conformes (loi APER) et marketplace d'appels d'offres déposés par les gérants.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "SolarIndex — Leads parkings APER & appels d'offres solaires",
+    template: "%s | SolarIndex",
+  },
+  description: SEO_DEFAULT_DESCRIPTION,
+  keywords: SEO_KEYWORDS,
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    siteName: "SolarIndex",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },

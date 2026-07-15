@@ -4,6 +4,8 @@ import type { SeoLeadPreview, SeoZoneStats } from "@/lib/seo-leads";
 import { departementToSlug, getDepartmentsForRegion, regionToSlug } from "@/lib/seo-zones";
 import LeadTierBadge from "@/components/LeadTierBadge";
 import { FlagBadge } from "@/components/LeadTable";
+import JsonLd from "@/components/JsonLd";
+import { absoluteUrl } from "@/lib/seo-config";
 
 interface SeoZonePageProps {
   regionName: string;
@@ -25,10 +27,37 @@ export default function SeoZonePage({
     : regionName;
   const deptLinks =
     !departementCode ? getDepartmentsForRegion(regionName) : [];
+  const pagePath =
+    breadcrumb[breadcrumb.length - 1]?.href ??
+    (departementCode
+      ? `/leads/${regionToSlug(regionName)}/${departementToSlug(departementCode)}`
+      : `/leads/${regionToSlug(regionName)}`);
 
   return (
     <div className="container-x py-10">
-      <nav className="text-sm text-slate-400">
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: breadcrumb.map((item, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              name: item.label,
+              ...(item.href ? { item: absoluteUrl(item.href) } : {}),
+            })),
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: `Leads parking loi APER — ${zoneTitle}`,
+            description: `${stats.leadCount} parkings non conformes identifiés en ${zoneTitle}.`,
+            url: absoluteUrl(pagePath),
+            inLanguage: "fr-FR",
+          },
+        ]}
+      />
+      <nav className="text-sm text-slate-400" aria-label="Fil d'Ariane">
         {breadcrumb.map((item, i) => (
           <span key={item.label}>
             {i > 0 && " · "}
