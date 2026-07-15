@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import HeaderAuthNav from "@/components/HeaderAuthNav";
 import HeaderSignupCta from "@/components/HeaderSignupCta";
+import HeaderToolsNav from "@/components/HeaderToolsNav";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
@@ -60,6 +62,7 @@ function Header() {
             <Link href="/appels-offres" className="nav-link header-product-link hidden min-[420px]:inline-flex">
               Appels d&apos;offres
             </Link>
+            <HeaderToolsNav />
           </nav>
         </div>
         <nav className="header-nav" aria-label="Compte utilisateur">
@@ -92,7 +95,7 @@ function Footer({ light = false }: { light?: boolean }) {
             <li><Link href="/leads" className={light ? "footer-link" : "transition hover:text-white"}>Leads détectés</Link></li>
             <li><Link href="/appels-offres" className={light ? "footer-link" : "transition hover:text-white"}>Appels d&apos;offres</Link></li>
             <li><Link href="/verifier" className={light ? "footer-link" : "transition hover:text-white"}>Vérifier éligibilité</Link></li>
-            <li><Link href="/simulateur" className={light ? "footer-link" : "transition hover:text-white"}>Simulateur ombrières</Link></li>
+            <li><Link href="/simulateur" className={light ? "footer-link" : "transition hover:text-white"}>Gains &amp; économies parking</Link></li>
             <li><Link href="/observatoire" className={light ? "footer-link" : "transition hover:text-white"}>Observatoire APER</Link></li>
             <li><Link href="/territoire" className={light ? "footer-link" : "transition hover:text-white"}>Calculateur territoire</Link></li>
             <li><Link href="/#tarifs" className={light ? "footer-link" : "transition hover:text-white"}>Tarifs</Link></li>
@@ -150,6 +153,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main>{children}</main>
           {!isAdmin && <Footer light={isLightFooter} />}
         </AnalyticsProvider>
+        <Analytics />
       </body>
     </html>
   );

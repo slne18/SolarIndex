@@ -20,8 +20,7 @@ export default function ObservatoirePage() {
         <p className="pill-accent w-fit">Open Data</p>
         <h1 className="section-title mt-4">Observatoire national APER</h1>
         <p className="section-lead mt-3 max-w-3xl">
-          Statistiques agrégées par département — aucune donnée individuelle de lead. Carte
-          partageable pour la presse et les professionnels du photovoltaïque.
+          Statistiques agrégées par département — alignées sur le catalogue de leads disponibles.
         </p>
         <div className="mt-10">
           <ObservatoireClient />

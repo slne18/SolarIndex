@@ -48,6 +48,8 @@ export interface RfpSubmissionRow {
   notes_particulieres: string | null;
   photos_urls: string[] | null;
   consentement_rgpd: boolean;
+  est_personne_publique: boolean;
+  acceptation_conditions_deposant: boolean;
   acheteurs_count: number;
   acheteurs_max: number;
 }

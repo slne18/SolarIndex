@@ -6,6 +6,7 @@ import { getAccessToken } from "@/lib/supabaseBrowser";
 import { catalogAuthHeaders } from "@/lib/preview-catalog";
 import { nf } from "@/lib/format";
 import type { OwnedRfp, PublicRfp } from "@/lib/rfp";
+import RfpLegalNotice from "@/components/RfpLegalNotice";
 import RfpPurchaseButton from "@/components/RfpPurchaseButton";
 
 function Masked({ label }: { label: string }) {
@@ -71,9 +72,9 @@ export default function RfpDetailClient({ id }: { id: string }) {
       <div className="mt-4 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <div>
           <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-300">
-            Appel d&apos;offres actif
+            Projet actif
           </span>
-          <h1 className="mt-4 text-2xl font-bold">Projet parking soumis par un gérant</h1>
+          <h1 className="mt-4 text-2xl font-bold">Projet parking — consultation installateurs</h1>
           <p className="mt-2 text-slate-600">
             Publié le {new Date(rfp.created_at).toLocaleDateString("fr-FR")}
             {rfp.departement ? ` · Dép. ${rfp.departement}` : ""}
@@ -119,13 +120,17 @@ export default function RfpDetailClient({ id }: { id: string }) {
             <div className="text-sm text-slate-400">Accès installateur</div>
             <div className="mt-1 text-3xl font-bold text-solar">{rfp.prix_acces} €</div>
             <p className="mt-2 text-sm text-slate-400">
-              Contact direct fourni volontairement par le gérant.
+              Coordonnées fournies volontairement par le déposant (mise en relation commerciale, hors
+              marché public).
               {rfp.acheteurs_count > 0
                 ? ` ${rfp.acheteurs_count} installateur${rfp.acheteurs_count > 1 ? "s ont" : " a"} déjà débloqué l'accès.`
                 : null}
             </p>
+            <div className="mt-4">
+              <RfpLegalNotice variant="installer" />
+            </div>
             {owned ? (
-              <p className="mt-4 text-sm text-emerald-300">Vous avez débloqué cet appel d&apos;offres.</p>
+              <p className="mt-4 text-sm text-emerald-300">Vous avez débloqué ce projet.</p>
             ) : (
               <div className="mt-4">
                 <RfpPurchaseButton rfpId={rfp.id} prixAcces={rfp.prix_acces} />

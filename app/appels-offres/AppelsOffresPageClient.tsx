@@ -3,6 +3,7 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import RfpLegalNotice from "@/components/RfpLegalNotice";
 import { nf } from "@/lib/format";
 import { PRIX_RFP, type PublicRfp } from "@/lib/rfp";
 import FranceMap from "@/components/FranceMap";
@@ -110,17 +111,24 @@ function AppelsOffresCatalog() {
       <div className="container-x py-10 sm:py-12">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="section-title">Appels d&apos;offres</h1>
+          <h1 className="section-title">Consultation installateurs</h1>
           <p className="mt-2 text-slate-600">
-            {loading ? "Chargement…" : `${nf(total)} demandes publiées · ${PRIX_RFP.sous_10000}–${PRIX_RFP.a_partir_10000} € par accès`}
+            {loading ? "Chargement…" : `${nf(total)} projets déposés · ${PRIX_RFP.sous_10000}–${PRIX_RFP.a_partir_10000} € par accès`}
+          </p>
+          <p className="mt-1 text-xs text-slate-500">
+            Mise en relation commerciale privée — hors marchés publics
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <Link href="/login?mode=signup&next=/appels-offres/nouveau" className="btn-solar !py-2">
-            Soumettre un appel d&apos;offres
+            Déposer un projet
           </Link>
           <CatalogViewToggle view={view} onChange={setCatalogView} />
         </div>
+      </div>
+
+      <div className="mb-6">
+        <RfpLegalNotice variant="catalog" />
       </div>
 
       {view === "map" ? (

@@ -4,9 +4,9 @@ import { buildPageMetadata } from "@/lib/seo-config";
 export const dynamic = "force-dynamic";
 
 export const metadata = buildPageMetadata({
-  title: "Appels d'offres ombrières parking — projets gérants",
+  title: "Consultation installateurs — projets parking déposés",
   description:
-    "Projets solaires déposés par les gérants de parkings prêts à équiper. Accès aux coordonnées du déposant pour installateurs photovoltaïques.",
+    "Projets solaires déposés par des gérants de parkings privés. Mise en relation commerciale hors marchés publics. Accès aux coordonnées pour installateurs photovoltaïques.",
   path: "/appels-offres",
 });
 

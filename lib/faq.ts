@@ -13,9 +13,9 @@ export const FAQ_ITEMS: FaqItem[] = [
   },
   {
     id: "products",
-    question: "Quelle différence entre leads automatisés et appels d'offres ?",
+    question: "Quelle différence entre leads automatisés et consultation installateurs ?",
     answer:
-      "Les leads automatisés sont détectés et enrichis par nos outils (OpenStreetMap, cadastre, SIREN, MAJIC). Les appels d'offres sont des projets déposés volontairement par un gérant ou propriétaire via notre formulaire, avec ses coordonnées directes après achat.",
+      "Les leads automatisés sont détectés et enrichis par nos outils (OpenStreetMap, cadastre, SIREN, MAJIC). Les « appels d'offres » du site sont en réalité des projets déposés volontairement par un gérant ou propriétaire privé via notre formulaire : c'est une mise en relation commerciale, pas une procédure de marché public. Les installateurs achètent l'accès à vos coordonnées volontairement communiquées.",
   },
   {
     id: "lead-content",
@@ -43,9 +43,15 @@ export const FAQ_ITEMS: FaqItem[] = [
   },
   {
     id: "rfp-deposit",
-    question: "Comment déposer un appel d'offres ?",
+    question: "Comment déposer un projet parking (consultation installateurs) ?",
     answer:
-      "Créez un compte, puis utilisez le formulaire « Déposer un projet ». Votre demande est vérifiée par email puis modérée avant publication. Les installateurs achètent l'accès à vos coordonnées volontairement communiquées.",
+      "Créez un compte (acteurs privés uniquement), puis utilisez le formulaire « Déposer un projet ». Vous confirmez que vous n'êtes pas une personne publique soumise au Code de la commande publique. Votre demande est vérifiée par email puis modérée. Jusqu'à 5 installateurs peuvent acheter l'accès à vos coordonnées pour vous proposer un devis — vous restez libre de choisir.",
+  },
+  {
+    id: "rfp-legal",
+    question: "SolarIndex remplace-t-il un appel d'offres public ?",
+    answer:
+      "Non. SolarIndex organise une mise en relation commerciale privée entre gestionnaires de parkings et installateurs solaires. Ce n'est pas une plateforme BOAMP, ni une procédure de marchés publics. Les collectivités et établissements publics ne peuvent pas déposer via notre formulaire. Les simulateurs et vérificateurs APER sont indicatifs et ne remplacent pas un avis administratif ou juridique.",
   },
   {
     id: "data-sources",

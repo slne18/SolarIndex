@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import RfpLegalNotice from "@/components/RfpLegalNotice";
 import { euros, eurosCompact, nf, nfSurface } from "@/lib/format";
 import {
   DEFAULT_AUTOCONSUMPTION_RATIO,
@@ -230,8 +231,11 @@ export default function SimulateurClient() {
           </div>
 
           <Link href={ctaHref} className="btn-mint inline-flex w-full justify-center sm:w-auto">
-            Recevoir des devis gratuits d&apos;installateurs
+            Déposer un projet — recevoir des propositions
           </Link>
+          <div className="mt-4">
+            <RfpLegalNotice variant="compact" />
+          </div>
         </div>
       </div>
 
@@ -239,8 +243,9 @@ export default function SimulateurClient() {
         <div className="card p-5 text-sm text-slate-300">
           <p className="font-semibold text-white">Pour les gestionnaires de parking</p>
           <p className="mt-2 leading-relaxed">
-            Estimez la rentabilité d&apos;ombrières solaires avant de vous engager. SolarIndex met
-            ensuite votre projet en relation avec des installateurs qualifiés — sans engagement.
+            Voyez ce que vous pouvez gagner (économies, revenus solaires, amende évitée) avant de
+            consulter des installateurs qualifiés via notre formulaire (acteurs privés, hors marchés
+            publics).
           </p>
         </div>
         <div className="card p-5 text-xs leading-relaxed text-slate-500">

@@ -2,6 +2,10 @@ import { randomBytes } from "crypto";
 import { getUserIdFromRequest } from "@/lib/auth";
 import { queryRfpSubmissions, RFP_PAGE_SIZE, createRfpSubmission } from "@/lib/rfp-db";
 import { inferGeoFromAddress, toPublicRfp, type RfpStatut } from "@/lib/rfp";
+import {
+  type RfpDeposantChecklistId,
+  validateRfpDeposantDeclarations,
+} from "@/lib/rfp-legal";
 import { verifySiret } from "@/lib/sirene";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +31,15 @@ interface SubmitBody {
   budget_indicatif?: string;
   delai_souhaite?: string;
   notes_particulieres?: string;
+  est_personne_publique?: boolean;
+  acceptation_non_marche_public?: boolean;
+  acceptation_mise_en_relation?: boolean;
+  acceptation_multi_installateurs?: boolean;
+  acceptation_exactitude?: boolean;
+  acceptation_sans_garantie?: boolean;
+  acceptation_cgv_deposant?: boolean;
   consentement_rgpd?: boolean;
+  checklist?: Partial<Record<RfpDeposantChecklistId, boolean>>;
 }
 
 // GET /api/rfp — catalogue appels d'offres publiés (masqué)
@@ -93,8 +105,19 @@ export async function POST(req: Request) {
   if (!body.adresse?.trim()) {
     return Response.json({ error: "Adresse requise." }, { status: 400, headers: NO_STORE });
   }
-  if (!body.consentement_rgpd) {
-    return Response.json({ error: "Consentement RGPD requis." }, { status: 400, headers: NO_STORE });
+  const legalCheck = validateRfpDeposantDeclarations({
+    est_personne_publique: !!body.est_personne_publique,
+    acceptation_non_marche_public: !!body.acceptation_non_marche_public,
+    acceptation_mise_en_relation: !!body.acceptation_mise_en_relation,
+    acceptation_multi_installateurs: !!body.acceptation_multi_installateurs,
+    acceptation_exactitude: !!body.acceptation_exactitude,
+    acceptation_sans_garantie: !!body.acceptation_sans_garantie,
+    acceptation_cgv_deposant: !!body.acceptation_cgv_deposant,
+    consentement_rgpd: !!body.consentement_rgpd,
+    checklist: body.checklist,
+  });
+  if (!legalCheck.ok) {
+    return Response.json({ error: legalCheck.error }, { status: 400, headers: NO_STORE });
   }
 
   const siretCheck = body.siret?.trim()
@@ -139,6 +162,8 @@ export async function POST(req: Request) {
       notes_particulieres: body.notes_particulieres?.trim() || null,
       photos_urls: null,
       consentement_rgpd: true,
+      est_personne_publique: false,
+      acceptation_conditions_deposant: true,
     });
 
     return Response.json(

@@ -48,13 +48,15 @@ export default function ObservatoireClient() {
   return (
     <div className="space-y-8">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Kpi label="Parkings ≥ 1 500 m²" value={nf(data.totals.count)} />
-        <Kpi label="Surface totale" value={`${nfSurface(data.totals.surfaceM2)} m²`} />
-        <Kpi label="Pipeline estimée" value={eurosCompact(data.totals.pipelineEur)} />
+        <Kpi label="Leads disponibles (catalogue)" value={nf(data.totals.catalogCount)} />
+        <Kpi label="Surface catalogue" value={`${nfSurface(data.totals.surfaceM2)} m²`} />
+        <Kpi label="Pipeline catalogue" value={eurosCompact(data.totals.pipelineEur)} />
         <Kpi
-          label="Déjà équipés (estim.)"
+          label="Déjà équipés repérés"
           value={
-            data.totals.equippedPct != null ? `${data.totals.equippedPct} %` : "—"
+            data.totals.equippedPct != null
+              ? `${nf(data.totals.equippedCount)} (${data.totals.equippedPct} %)`
+              : "—"
           }
         />
       </div>
@@ -64,7 +66,7 @@ export default function ObservatoireClient() {
           {franceMap.locations.map((loc) => {
             const dept = loc.id.replace("FR-", "");
             const stat = byDept.get(dept);
-            const count = stat?.count ?? 0;
+            const count = stat?.catalogCount ?? 0;
             return (
               <path
                 key={loc.id}
@@ -87,12 +89,9 @@ export default function ObservatoireClient() {
             style={{ left: hover.x + 12, top: hover.y + 12 }}
           >
             <p className="font-bold text-slate-900">Dép. {hover.dept}</p>
-            <p>{nf(byDept.get(hover.dept)!.count)} parkings</p>
-            <p>{nfSurface(byDept.get(hover.dept)!.surfaceM2)} m²</p>
-            <p>{eurosCompact(byDept.get(hover.dept)!.pipelineEur)}</p>
-            {byDept.get(hover.dept)!.equippedPct != null && (
-              <p>{byDept.get(hover.dept)!.equippedPct} % équipés</p>
-            )}
+            <p>{nf(byDept.get(hover.dept)!.catalogCount)} leads catalogue</p>
+            <p>{nf(byDept.get(hover.dept)!.equippedCount)} équipés repérés</p>
+            <p>{eurosCompact(byDept.get(hover.dept)!.pipelineEur)} pipeline</p>
           </div>
         )}
       </div>
@@ -102,22 +101,20 @@ export default function ObservatoireClient() {
           <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
             <tr>
               <th className="px-4 py-3">Dép.</th>
-              <th className="px-4 py-3">Parkings</th>
+              <th className="px-4 py-3">Catalogue</th>
+              <th className="px-4 py-3">Équipés</th>
               <th className="px-4 py-3">Surface (m²)</th>
               <th className="px-4 py-3">Pipeline</th>
-              <th className="px-4 py-3">Équipés</th>
             </tr>
           </thead>
           <tbody>
             {data.departements.slice(0, 20).map((d) => (
               <tr key={d.departement} className="border-b border-slate-100">
                 <td className="px-4 py-2 font-medium">{d.departement}</td>
-                <td className="px-4 py-2">{nf(d.count)}</td>
+                <td className="px-4 py-2">{nf(d.catalogCount)}</td>
+                <td className="px-4 py-2">{nf(d.equippedCount)}</td>
                 <td className="px-4 py-2">{nfSurface(d.surfaceM2)}</td>
                 <td className="px-4 py-2">{eurosCompact(d.pipelineEur)}</td>
-                <td className="px-4 py-2">
-                  {d.equippedPct != null ? `${d.equippedPct} %` : "—"}
-                </td>
               </tr>
             ))}
           </tbody>

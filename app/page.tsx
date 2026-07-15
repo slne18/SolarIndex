@@ -111,23 +111,6 @@ export default function HomePage() {
           <p className="section-lead mt-4">{APER_OBLIGATION_SUMMARY}</p>
           <p className="mt-3 text-xs text-slate-500">{APER_LAW_REF}</p>
 
-          <div className="mt-8 grid gap-4 lg:grid-cols-2">
-            <RegulatoryCountdown variant="full" obligation="50" />
-            <RegulatoryCountdown variant="full" obligation="40" />
-          </div>
-
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/verifier" className="btn-solar">
-              Vérifier mon parking (gratuit)
-            </Link>
-            <Link href="/simulateur" className="btn-ghost border-slate-300 text-slate-700 hover:bg-slate-100">
-              Simulateur rentabilité
-            </Link>
-            <Link href="/observatoire" className="btn-ghost border-slate-300 text-slate-700 hover:bg-slate-100">
-              Observatoire national
-            </Link>
-          </div>
-
           <AperTimeline />
 
           <p className="mt-4 text-xs leading-relaxed text-slate-500">{APER_PUBLIC_PARKS_NOTE}</p>
@@ -189,11 +172,12 @@ export default function HomePage() {
       {/* ─── TARIFS APPELS D'OFFRES ─── */}
       <section id="tarifs-appels-offres" className="border-t border-slate-200/80 py-14 sm:py-20">
         <div className="container-x">
-          <SectionEyebrow>Appels d&apos;offres</SectionEyebrow>
+          <SectionEyebrow>Consultation installateurs</SectionEyebrow>
           <h2 className="section-title mt-3">Projets déposés par les gérants</h2>
           <p className="section-lead">
-            Contact direct fourni volontairement par le propriétaire ou exploitant du parking. Tarif
-            selon la surface estimée du projet.
+            Contact direct fourni volontairement par le propriétaire ou exploitant privé du parking.
+            Mise en relation commerciale — ne remplace pas un marché public. Tarif selon la surface
+            estimée du projet.
           </p>
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             <PriceCard
@@ -203,9 +187,9 @@ export default function HomePage() {
                 "Accès aux coordonnées du gérant",
                 "Surface estimée inférieure à 10 000 m²",
                 "Budget et délai indicatifs inclus",
-                "Paiement unique par appel d'offres",
+                "Paiement unique par accès projet",
               ]}
-              cta="Voir les appels d'offres"
+              cta="Voir les projets déposés"
               href="/appels-offres"
             />
             <PriceCard
@@ -215,13 +199,20 @@ export default function HomePage() {
                 "Accès aux coordonnées du gérant",
                 "Grands parkings et zones commerciales",
                 "Projets à plus forte valeur chantier",
-                "Paiement unique par appel d'offres",
+                "Paiement unique par accès projet",
               ]}
-              cta="Voir les appels d'offres"
+              cta="Voir les projets déposés"
               href="/appels-offres?surface_min=10000"
               popular
             />
           </div>
+          <p className="mt-4 text-center text-xs text-slate-500">
+            Consultation installateurs = mise en relation commerciale privée. Ne remplace pas un marché
+            public.{" "}
+            <Link href="/legal/cgv#rfp-deposants" className="text-solar-600 hover:underline">
+              CGV §6
+            </Link>
+          </p>
         </div>
       </section>
 
@@ -256,6 +247,11 @@ function AperTimeline() {
       <div className="card-header border-b px-6 py-4 sm:px-8">
         <h3 className="font-semibold text-slate-900">Calendrier de mise en conformité</h3>
         <p className="mt-1 text-sm text-slate-500">Parcs privés · seuil selon la superficie du parking</p>
+      </div>
+
+      <div className="grid gap-4 border-b border-slate-200 px-6 py-6 sm:grid-cols-2 sm:px-8">
+        <RegulatoryCountdown variant="timeline" obligation="40" />
+        <RegulatoryCountdown variant="timeline" obligation="50" />
       </div>
 
       <div className="group/timeline grid gap-4 px-6 py-8 sm:grid-cols-2 sm:gap-5 sm:px-8 sm:py-10">

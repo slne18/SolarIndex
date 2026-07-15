@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import LegalPageShell from "@/components/LegalPageShell";
 import { CONTACT_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site";
+import { RFP_MAX_BUYERS_PER_SUBMISSION } from "@/lib/rfp-legal";
 
 export const metadata: Metadata = {
   title: `Politique de confidentialité — ${SITE_NAME}`,
@@ -30,8 +31,11 @@ export default function ConfidentialitePage() {
             cadastre, OpenStreetMap, MAJIC) — personnes morales uniquement.
           </li>
           <li>
-            <strong>Appels d&apos;offres</strong> : coordonnées volontairement déposées par le gérant
-            ou propriétaire (nom, email, téléphone, SIRET, description du projet).
+            <strong>Appels d&apos;offres / consultation installateurs</strong> : coordonnées
+            volontairement déposées par le gérant ou propriétaire privé (nom, email, téléphone,
+            SIRET, description du projet). Transmission possible à plusieurs installateurs
+            professionnels ayant acheté l&apos;accès (jusqu&apos;à {RFP_MAX_BUYERS_PER_SUBMISSION}{" "}
+            par dépôt).
           </li>
           <li>
             <strong>Paiements</strong> : traités par Stripe ; nous ne stockons pas vos numéros de
@@ -65,6 +69,10 @@ export default function ConfidentialitePage() {
             Mesure d&apos;audience et amélioration du site — art. 6.1.f RGPD (intérêt légitime),
             via Plausible, outil configuré sans cookies publicitaires.
           </li>
+          <li>
+            Transmission des coordonnées d&apos;un dépôt de projet aux installateurs ayant payé
+            l&apos;accès — art. 6.1.b RGPD (exécution du service) et consentement du déposant.
+          </li>
           <li>Obligations comptables et légales — art. 6.1.c RGPD.</li>
         </ul>
       </section>
@@ -74,7 +82,9 @@ export default function ConfidentialitePage() {
         <p>
           Sous-traitants : Supabase (hébergement base de données), Vercel (hébergement application),
           Stripe (paiement), Resend (emails transactionnels le cas échéant), Plausible Analytics
-          (statistiques de fréquentation). Aucune revente de données personnelles à des tiers.
+          (statistiques de fréquentation). Installateurs professionnels ayant acheté l&apos;accès à
+          un dépôt de projet (coordonnées du déposant uniquement, dans la limite prévue aux CGV).
+          Aucune revente de données personnelles à des tiers.
         </p>
       </section>
 
@@ -84,6 +94,10 @@ export default function ConfidentialitePage() {
           <li>Compte client : durée de la relation commerciale + 3 ans.</li>
           <li>Factures et preuves d&apos;achat : 10 ans.</li>
           <li>Logs techniques : 12 mois maximum.</li>
+          <li>
+            Dépôts de projets publiés : durée de publication + 3 ans après clôture ou retrait, sauf
+            obligation légale contraire ou demande d&apos;effacement fondée.
+          </li>
           <li>Statistiques Plausible : selon la politique de conservation de Plausible (données agrégées).</li>
         </ul>
       </section>

@@ -9,10 +9,9 @@ import {
 } from "@/lib/aper-deadlines";
 
 export interface CountdownProps {
-  variant?: "compact" | "full";
+  variant?: "compact" | "full" | "timeline";
   targetDate?: string;
   obligation?: "40" | "50";
-  /** "light" sur fond blanc (landing), "dark" sur fond night (verifier). */
   theme?: "light" | "dark";
 }
 
@@ -30,18 +29,24 @@ export default function RegulatoryCountdown({
   const target = resolveTarget(obligation, targetDate);
   const progress = countdownProgress(APER_LAW_START, target);
   const days = daysUntil(target);
-  const title =
-    obligation === "40"
-      ? "Échéance obligation 40 %"
-      : "Échéance obligation 50 %";
-  const dateLabel = target.toLocaleDateString("fr-FR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "Europe/Paris",
-  });
-
   const dark = theme === "dark";
+
+  if (variant === "timeline") {
+    return (
+      <div className="rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-4">
+        <div className="h-2.5 overflow-hidden rounded-full bg-slate-200">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-solar to-solar-600 transition-all"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <p className="mt-3 text-lg font-bold tabular-nums text-slate-900">
+          {days} jours restants
+        </p>
+        <p className="mt-1 text-xs text-slate-500">Loi APER · depuis janv. 2024</p>
+      </div>
+    );
+  }
 
   if (variant === "compact") {
     return (
@@ -72,18 +77,17 @@ export default function RegulatoryCountdown({
     );
   }
 
+  const dateLabel = target.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Europe/Paris",
+  });
+
   return (
     <div className={`${dark ? "card" : "rounded-2xl border border-slate-200 bg-white"} p-5 sm:p-6`}>
       <div
-        className={`flex items-center gap-2 text-sm font-semibold ${
-          dark ? "text-slate-200" : "text-slate-900"
-        }`}
-      >
-        <span aria-hidden>🕐</span>
-        {title}
-      </div>
-      <div
-        className={`mt-4 h-3 overflow-hidden rounded-full ${
+        className={`mt-0 h-3 overflow-hidden rounded-full ${
           dark ? "bg-white/10" : "bg-slate-200"
         }`}
       >
@@ -92,20 +96,13 @@ export default function RegulatoryCountdown({
           style={{ width: `${progress}%` }}
         />
       </div>
-      <div
-        className={`mt-2 flex items-center justify-between text-xs ${
-          dark ? "text-slate-500" : "text-slate-500"
-        }`}
-      >
-        <span>{progress} % du délai écoulé</span>
-        <span>Loi APER · depuis janv. 2024</span>
-      </div>
-      <p
-        className={`mt-4 text-2xl font-bold ${dark ? "text-white" : "text-slate-900"}`}
-      >
+      <p className={`mt-4 text-2xl font-bold ${dark ? "text-white" : "text-slate-900"}`}>
         {days} jours restants
       </p>
-      <p className={`text-sm ${dark ? "text-slate-400" : "text-slate-600"}`}>
+      <p className={`mt-1 text-xs ${dark ? "text-slate-500" : "text-slate-500"}`}>
+        Loi APER · depuis janv. 2024
+      </p>
+      <p className={`mt-1 text-sm ${dark ? "text-slate-400" : "text-slate-600"}`}>
         ({dateLabel})
       </p>
     </div>
