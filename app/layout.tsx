@@ -30,21 +30,23 @@ function Header() {
   return (
     <header className="site-header">
       <div className="header-bar">
-        <Link href="/" className="header-brand group">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-solar to-solar-600 text-night shadow-glow transition group-hover:scale-[1.02] sm:h-11 sm:w-11">
-            <SolarIndexIcon size={20} className="sm:h-[22px] sm:w-[22px]" />
-          </span>
-          <span className="header-brand-text whitespace-nowrap">
-            Solar<span className="text-solar">Index</span>
-          </span>
-        </Link>
-        <nav className="header-nav" aria-label="Navigation principale">
-          <Link href="/leads" className="nav-link hidden sm:inline-flex">
+        <div className="header-start">
+          <Link href="/leads" className="nav-link header-product-link">
             Leads auto
           </Link>
-          <Link href="/appels-offres" className="nav-link hidden sm:inline-flex">
+          <Link href="/appels-offres" className="nav-link header-product-link hidden min-[420px]:inline-flex">
             Appels d&apos;offres
           </Link>
+          <Link href="/" className="header-brand group">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-solar to-solar-600 text-night shadow-glow transition group-hover:scale-[1.02] sm:h-11 sm:w-11">
+              <SolarIndexIcon size={20} className="sm:h-[22px] sm:w-[22px]" />
+            </span>
+            <span className="header-brand-text whitespace-nowrap">
+              Solar<span className="text-solar">Index</span>
+            </span>
+          </Link>
+        </div>
+        <nav className="header-nav" aria-label="Compte utilisateur">
           <HeaderAuthNav />
           <HeaderSignupCta />
         </nav>
@@ -77,15 +79,33 @@ function Footer({ light = false }: { light?: boolean }) {
           </ul>
         </div>
         <div className="text-sm">
-          <div className={light ? "footer-heading font-semibold" : "font-semibold text-slate-200"}>Conformité</div>
-          <p className="mt-4 leading-relaxed text-slate-500">
-            OpenStreetMap · Etalab · SIREN · MAJIC.
-            Personnes morales uniquement — art. 6.1.f RGPD.
-          </p>
+          <div className={light ? "footer-heading font-semibold" : "font-semibold text-slate-200"}>Légal</div>
+          <ul className="mt-4 space-y-2.5 text-slate-500">
+            <li>
+              <Link href="/legal/confidentialite" className={light ? "footer-link" : "transition hover:text-white"}>
+                Politique de confidentialité
+              </Link>
+            </li>
+            <li>
+              <Link href="/legal/mentions-legales" className={light ? "footer-link" : "transition hover:text-white"}>
+                Mentions légales
+              </Link>
+            </li>
+            <li>
+              <Link href="/legal/cgv" className={light ? "footer-link" : "transition hover:text-white"}>
+                CGV
+              </Link>
+            </li>
+            <li>
+              <Link href="/faq" className={light ? "footer-link" : "transition hover:text-white"}>
+                FAQ
+              </Link>
+            </li>
+          </ul>
         </div>
       </div>
       <div className={`py-6 text-center text-xs ${light ? "footer-copy border-t" : "border-t border-white/[0.06] text-slate-600"}`}>
-        © {new Date().getFullYear()} SolarIndex
+        © {new Date().getFullYear()} SolarIndex · OpenStreetMap · Etalab · SIREN · MAJIC
       </div>
     </footer>
   );
@@ -96,7 +116,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const isAdmin = pathname.startsWith("/admin");
   const isHome = pathname === "/";
   const isLightFooter =
-    isHome || pathname.startsWith("/leads") || pathname.startsWith("/appels-offres");
+    isHome ||
+    pathname.startsWith("/leads") ||
+    pathname.startsWith("/appels-offres") ||
+    pathname.startsWith("/legal") ||
+    pathname.startsWith("/faq");
 
   return (
     <html lang="fr" className={jakarta.variable}>
