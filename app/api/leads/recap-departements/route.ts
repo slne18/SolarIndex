@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
-const CACHE_KEY = "leads:recap-departements";
+const CACHE_KEY = "leads:recap-departements:v2";
 
 export async function GET() {
   const cached = cacheGet<Awaited<ReturnType<typeof getLeadsRecapStats>>>(CACHE_KEY);

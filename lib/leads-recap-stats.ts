@@ -1,12 +1,16 @@
 import { getAdminClient } from "./supabase";
 import { MAX_BUYERS_PER_LEAD } from "./lead-slots";
 import { PV_OVERLAP_EQUIPE, VISION_COVERAGE_EQUIPE } from "./pv-overlap";
-import { SURFACE_APER_MIN_M2, SURFACE_GRAY_LOW_MAX_M2 } from "./surface-thresholds";
+import {
+  SURFACE_APER_MIN_M2,
+  SURFACE_GRAY_LOW_MAX_M2,
+  SURFACE_URGENCE_M2,
+} from "./surface-thresholds";
 
 export type LeadsRecapDeptStat = {
   departement: string;
   catalogCount: number;
-  /** Leads exclus du catalogue car considérés déjà équipés (OSM, photo ou statut pipeline). */
+  /** Leads exclus du catalogue — considérés comme déjà équipés. */
   considereCommeEquipeCount: number;
   surfaceM2: number;
   pipelineEur: number;
@@ -19,7 +23,6 @@ export type LeadsRecapResponse = {
     considereCommeEquipeCount: number;
     surfaceM2: number;
     pipelineEur: number;
-    considereCommeEquipePct: number | null;
   };
 };
 
@@ -30,6 +33,7 @@ type CatalogRow = {
 };
 
 type ExcludedRow = {
+  id: string;
   departement: string;
 };
 
@@ -85,39 +89,65 @@ async function paginateCatalog(): Promise<Map<string, LeadsRecapDeptStat>> {
   return map;
 }
 
-/** Leads hors vente car considérés conformes / déjà équipés (aligné exclusions catalogue). */
+/**
+ * Leads exclus de la vente car considérés équipés :
+ * - statut pipeline « equipe »
+ * - recouvrement OSM ≥ 50 %
+ * - grand parking (≥ 10 000 m²) avec photo > 45 %
+ */
 async function paginateConsidereCommeEquipe(map: Map<string, LeadsRecapDeptStat>): Promise<void> {
   const supabase = getAdminClient();
   const pageSize = 1000;
-  let offset = 0;
+  const seen = new Set<string>();
 
-  const exclusionFilter = [
-    "detection.eq.equipe",
-    `vision_surface_couverte_pct.gt.${VISION_COVERAGE_EQUIPE}`,
-    `pv_overlap_pct.gte.${PV_OVERLAP_EQUIPE}`,
-  ].join(",");
+  async function ingest(filter: (offset: number) => Promise<ExcludedRow[]>) {
+    let offset = 0;
+    while (true) {
+      const rows = await filter(offset);
+      for (const row of rows) {
+        if (seen.has(row.id)) continue;
+        seen.add(row.id);
+        const dept = String(row.departement);
+        const cur = map.get(dept) ?? emptyDept(dept);
+        cur.considereCommeEquipeCount += 1;
+        map.set(dept, cur);
+      }
+      if (rows.length < pageSize) break;
+      offset += pageSize;
+    }
+  }
 
-  while (true) {
-    const { data, error } = await supabase
+  const base = () =>
+    supabase
       .from("leads")
-      .select("departement")
+      .select("id, departement")
       .gte("surface_m2", SURFACE_APER_MIN_M2)
       .not("departement", "is", null)
-      .or(exclusionFilter)
-      .order("id")
-      .range(offset, offset + pageSize - 1);
+      .order("id");
 
+  await ingest(async (offset) => {
+    const { data, error } = await base().eq("detection", "equipe").range(offset, offset + pageSize - 1);
     if (error) throw error;
-    const rows = (data ?? []) as ExcludedRow[];
-    for (const row of rows) {
-      const dept = String(row.departement);
-      const cur = map.get(dept) ?? emptyDept(dept);
-      cur.considereCommeEquipeCount += 1;
-      map.set(dept, cur);
-    }
-    if (rows.length < pageSize) break;
-    offset += pageSize;
-  }
+    return (data ?? []) as ExcludedRow[];
+  });
+
+  await ingest(async (offset) => {
+    const { data, error } = await base()
+      .neq("detection", "equipe")
+      .gte("pv_overlap_pct", PV_OVERLAP_EQUIPE)
+      .range(offset, offset + pageSize - 1);
+    if (error) throw error;
+    return (data ?? []) as ExcludedRow[];
+  });
+
+  await ingest(async (offset) => {
+    const { data, error } = await base()
+      .gte("surface_m2", SURFACE_URGENCE_M2)
+      .gt("vision_surface_couverte_pct", VISION_COVERAGE_EQUIPE)
+      .range(offset, offset + pageSize - 1);
+    if (error) throw error;
+    return (data ?? []) as ExcludedRow[];
+  });
 }
 
 export async function getLeadsRecapStats(): Promise<LeadsRecapResponse> {
@@ -131,7 +161,7 @@ export async function getLeadsRecapStats(): Promise<LeadsRecapResponse> {
       pipelineEur: Math.round(d.pipelineEur),
     }))
     .filter((d) => d.catalogCount > 0 || d.considereCommeEquipeCount > 0)
-    .sort((a, b) => b.catalogCount - a.catalogCount);
+    .sort((a, b) => b.catalogCount - a.catalogCount || b.considereCommeEquipeCount - a.considereCommeEquipeCount);
 
   const catalogCount = departements.reduce((s, d) => s + d.catalogCount, 0);
   const considereCommeEquipeCount = departements.reduce(
@@ -140,7 +170,6 @@ export async function getLeadsRecapStats(): Promise<LeadsRecapResponse> {
   );
   const surfaceM2 = departements.reduce((s, d) => s + d.surfaceM2, 0);
   const pipelineEur = departements.reduce((s, d) => s + d.pipelineEur, 0);
-  const denom = catalogCount + considereCommeEquipeCount;
 
   return {
     departements,
@@ -149,8 +178,6 @@ export async function getLeadsRecapStats(): Promise<LeadsRecapResponse> {
       considereCommeEquipeCount,
       surfaceM2,
       pipelineEur,
-      considereCommeEquipePct:
-        denom > 0 ? Math.round((considereCommeEquipeCount / denom) * 100) : null,
     },
   };
 }

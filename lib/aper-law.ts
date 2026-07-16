@@ -16,7 +16,6 @@ export const APER_DEADLINES = [
     surface: "≥ 10 000 m²",
     fine: "40 000 €/an",
     targetDate: "2026-07-01",
-    status: "passed" as const,
   },
   {
     id: "small" as const,
@@ -26,11 +25,32 @@ export const APER_DEADLINES = [
     surface: "1 500 à 10 000 m²",
     fine: "20 000 €/an",
     targetDate: "2028-07-01",
-    status: "current" as const,
   },
 ] as const;
 
 export type AperDeadlineWave = (typeof APER_DEADLINES)[number]["id"];
+
+export type AperWaveStatus = "passed" | "current" | "upcoming";
+
+export function parseAperWaveTargetDate(targetDate: string): Date {
+  return new Date(`${targetDate}T00:00:00+02:00`);
+}
+
+/** Statut calendrier calculé à la date du jour (prochaine vague = première échéance future). */
+export function getAperWaveStatus(waveId: AperDeadlineWave, now = new Date()): AperWaveStatus {
+  const sorted = [...APER_DEADLINES].sort(
+    (a, b) =>
+      parseAperWaveTargetDate(a.targetDate).getTime() -
+      parseAperWaveTargetDate(b.targetDate).getTime(),
+  );
+  const nextFuture = sorted.find((w) => now < parseAperWaveTargetDate(w.targetDate));
+  const wave = getAperDeadlineWave(waveId);
+  const target = parseAperWaveTargetDate(wave.targetDate);
+
+  if (now >= target) return "passed";
+  if (nextFuture?.id === waveId) return "current";
+  return "upcoming";
+}
 
 export function getAperDeadlineWave(id: AperDeadlineWave) {
   const wave = APER_DEADLINES.find((w) => w.id === id);

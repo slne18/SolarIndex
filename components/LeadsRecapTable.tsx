@@ -42,16 +42,13 @@ export default function LeadsRecapTable() {
         <div>
           <h3 className="text-sm font-semibold text-slate-800">Récapitulatif par département</h3>
           <p className="mt-1 text-xs text-slate-500">
-            Aligné sur le catalogue vendable · « Considéré comme équipé » = exclus de la vente
-            (recouvrement OSM ≥ 50 %, photo &gt; 45 % ou statut pipeline équipé).
+            Aligné sur le catalogue vendable · « Considéré comme équipé » = recouvrement OSM ≥ 50 % ou,
+            pour grand parking, photo &gt; 45 %.
           </p>
         </div>
         <p className="text-xs text-slate-500">
           {nf(totals.catalogCount)} catalogue · {nf(totals.considereCommeEquipeCount)} considérés
           équipés
-          {totals.considereCommeEquipePct != null
-            ? ` (${totals.considereCommeEquipePct} % du périmètre repéré)`
-            : null}
         </p>
       </div>
 

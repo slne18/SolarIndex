@@ -175,9 +175,8 @@ export default function HomePage() {
           <SectionEyebrow>Consultation installateurs</SectionEyebrow>
           <h2 className="section-title mt-3">Projets déposés par les gérants</h2>
           <p className="section-lead">
-            Contact direct fourni volontairement par le propriétaire ou exploitant privé du parking.
-            Mise en relation commerciale — ne remplace pas un marché public. Tarif selon la surface
-            estimée du projet.
+            Coordonnées partagées gratuitement par des gérants privés — mise en relation commerciale,
+            hors marché public.
           </p>
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             <PriceCard
@@ -207,10 +206,9 @@ export default function HomePage() {
             />
           </div>
           <p className="mt-4 text-center text-xs text-slate-500">
-            Consultation installateurs = mise en relation commerciale privée. Ne remplace pas un marché
-            public.{" "}
+            Détails juridiques :{" "}
             <Link href="/legal/cgv#rfp-deposants" className="text-solar-600 hover:underline">
-              CGV §6
+              CGV §6 — dépôts de projets
             </Link>
           </p>
         </div>
@@ -249,90 +247,10 @@ function AperTimeline() {
         <p className="mt-1 text-sm text-slate-500">Parcs privés · seuil selon la superficie du parking</p>
       </div>
 
-      <div className="grid gap-4 border-b border-slate-200 px-6 py-6 sm:grid-cols-2 sm:px-8">
-        <RegulatoryCountdown variant="timeline" wave="large" />
-        <RegulatoryCountdown variant="timeline" wave="small" />
-      </div>
-
-      <div className="group/timeline grid gap-4 px-6 py-8 sm:grid-cols-2 sm:gap-5 sm:px-8 sm:py-10">
-        {APER_DEADLINES.map((step, index) => (
-          <AperMilestone key={step.id} {...step} index={index} />
+      <div className="grid gap-4 px-6 py-6 sm:grid-cols-2 sm:gap-5 sm:px-8 sm:py-8">
+        {APER_DEADLINES.map((step) => (
+          <RegulatoryCountdown key={step.id} variant="timeline" wave={step.id} />
         ))}
-      </div>
-    </div>
-  );
-}
-
-function AperMilestone({
-  year,
-  month,
-  date,
-  surface,
-  fine,
-  status,
-  index,
-}: {
-  year: string;
-  month: string;
-  date: string;
-  surface: string;
-  fine: string;
-  status: "passed" | "current" | "upcoming";
-  index: number;
-}) {
-  const isNext = status === "current";
-
-  return (
-    <div
-      className="milestone-card group/milestone relative rounded-2xl border p-5 transition-all duration-300 ease-out sm:p-6 group-hover/timeline:opacity-40 hover:!opacity-100"
-    >
-      <div className="flex items-start gap-4">
-        <div
-          className="milestone-dot grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 text-sm font-bold transition-all duration-300 group-hover/milestone:border-solar group-hover/milestone:bg-solar group-hover/milestone:text-night group-hover/milestone:shadow-glow"
-          aria-hidden
-        >
-          {status === "passed" ? (
-            <svg
-              className="transition-colors duration-300 group-hover/milestone:text-night"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <path d="M5 12l5 5L19 7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          ) : (
-            index + 1
-          )}
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="milestone-year text-3xl font-extrabold tabular-nums tracking-tight transition-colors duration-300">
-              {year}
-            </span>
-            <span className="text-sm font-medium uppercase tracking-wider text-slate-500">{month}</span>
-            {isNext ? (
-              <span className="rounded-full bg-solar/0 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-solar opacity-0 transition-all duration-300 group-hover/milestone:bg-solar/15 group-hover/milestone:opacity-100">
-                Prochaine vague
-              </span>
-            ) : null}
-          </div>
-
-          <p className="milestone-surface mt-3 text-lg font-semibold transition-colors duration-300">
-            {surface}
-          </p>
-          <p className="mt-1 text-sm text-slate-500">{date}</p>
-
-          <div className="milestone-fine-box mt-4 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm transition-colors duration-300 group-hover/milestone:border-solar/20 group-hover/milestone:bg-solar/[0.08]">
-            <span className="text-slate-500">Amende max.</span>
-            <span className="milestone-fine-value font-semibold tabular-nums transition-colors duration-300 group-hover/milestone:text-solar">
-              {fine}
-            </span>
-          </div>
-        </div>
       </div>
     </div>
   );

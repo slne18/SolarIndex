@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   APER_DEADLINE_40,
   APER_DEADLINE_50,
@@ -8,7 +9,12 @@ import {
   countdownProgress,
   daysUntil,
 } from "@/lib/aper-deadlines";
-import { getAperDeadlineWave, type AperDeadlineWave } from "@/lib/aper-law";
+import {
+  APER_DEADLINES,
+  getAperDeadlineWave,
+  getAperWaveStatus,
+  type AperDeadlineWave,
+} from "@/lib/aper-law";
 
 export interface CountdownProps {
   variant?: "compact" | "full" | "timeline";
@@ -38,41 +44,92 @@ export default function RegulatoryCountdown({
   obligation = "50",
   theme = "light",
 }: CountdownProps) {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const tick = () => setNow(new Date());
+    tick();
+    const id = window.setInterval(tick, 60_000);
+    return () => window.clearInterval(id);
+  }, []);
+
   const target = resolveTarget(wave, obligation, targetDate);
-  const progress = countdownProgress(APER_LAW_START, target);
-  const days = daysUntil(target);
+  const progress = countdownProgress(APER_LAW_START, target, now);
+  const days = daysUntil(target, now);
   const dark = theme === "dark";
   const waveMeta = wave ? getAperDeadlineWave(wave) : null;
+  const waveStatus = wave ? getAperWaveStatus(wave, now) : null;
+  const waveIndex = wave ? APER_DEADLINES.findIndex((w) => w.id === wave) : -1;
 
   if (variant === "timeline" && waveMeta) {
+    const passed = waveStatus === "passed";
+
     return (
-      <div className="rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-4">
-        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-          <span className="text-2xl font-extrabold tabular-nums text-slate-900">{waveMeta.year}</span>
-          <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
-            {waveMeta.month}
-          </span>
-          {waveMeta.status === "current" ? (
-            <span className="rounded-full bg-solar/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-solar-700">
-              Prochaine vague
-            </span>
-          ) : null}
-        </div>
-        <p className="mt-2 text-sm font-semibold text-slate-800">{waveMeta.surface}</p>
-        <p className="text-xs text-slate-500">{waveMeta.date}</p>
-        <p className="mt-2 text-xs text-slate-500">
-          Amende max. <span className="font-semibold text-slate-700">{waveMeta.fine}</span>
-        </p>
-        <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-slate-200">
+      <div
+        className={`milestone-card rounded-2xl border p-5 transition-all sm:p-6 ${
+          passed ? "border-slate-200 bg-slate-50/60 opacity-90" : "border-slate-200 bg-white"
+        }`}
+      >
+        <div className="flex items-start gap-4">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-solar to-solar-600 transition-all"
-            style={{ width: `${progress}%` }}
-          />
+            className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 text-sm font-bold ${
+              passed
+                ? "border-solar/40 bg-solar/10 text-solar"
+                : waveStatus === "current"
+                  ? "border-solar bg-solar text-night shadow-glow"
+                  : "border-slate-300 text-slate-500"
+            }`}
+            aria-hidden
+          >
+            {passed ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M5 12l5 5L19 7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            ) : (
+              waveIndex + 1
+            )}
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-3xl font-extrabold tabular-nums tracking-tight text-slate-900">
+                {waveMeta.year}
+              </span>
+              <span className="text-sm font-medium uppercase tracking-wider text-slate-500">
+                {waveMeta.month}
+              </span>
+              {waveStatus === "current" ? (
+                <span className="rounded-full bg-solar/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-solar-700">
+                  Prochaine vague
+                </span>
+              ) : null}
+              {passed ? (
+                <span className="rounded-full bg-slate-200/80 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+                  Échéance atteinte
+                </span>
+              ) : null}
+            </div>
+
+            <p className="mt-3 text-lg font-semibold text-slate-900">{waveMeta.surface}</p>
+            <p className="mt-1 text-sm text-slate-500">{waveMeta.date}</p>
+
+            <div className="mt-4 inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm">
+              <span className="text-slate-500">Amende max.</span>
+              <span className="font-semibold tabular-nums text-slate-800">{waveMeta.fine}</span>
+            </div>
+
+            <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-slate-200">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-solar to-solar-600 transition-all duration-500"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <p className="mt-3 text-lg font-bold tabular-nums text-slate-900">
+              {days > 0 ? `${days} jours restants` : "Échéance atteinte"}
+            </p>
+            <p className="mt-1 text-xs text-slate-500">Loi APER · depuis janv. 2024</p>
+          </div>
         </div>
-        <p className="mt-3 text-lg font-bold tabular-nums text-slate-900">
-          {days > 0 ? `${days} jours restants` : "Échéance atteinte"}
-        </p>
-        <p className="mt-1 text-xs text-slate-500">Loi APER · depuis janv. 2024</p>
       </div>
     );
   }
@@ -136,6 +193,7 @@ export default function RegulatoryCountdown({
         <div className="mb-4">
           <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
             {waveMeta.year} · {waveMeta.surface}
+            {waveStatus === "current" ? " · Prochaine vague" : null}
           </p>
           <p className="mt-1 text-sm text-slate-600">Amende max. {waveMeta.fine}</p>
         </div>
