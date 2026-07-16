@@ -85,7 +85,7 @@ def _fetch_batch(limit: int, exclude_ids: set[str] | None = None) -> list[dict]:
     r = requests.get(
         REST,
         params={
-            "select": "id,latitude,longitude,surface_osm_m2,surface_m2,score_confiance,ville",
+            "select": "id,osm_id,latitude,longitude,surface_osm_m2,surface_m2,score_confiance,ville",
             **QUERY,
             "order": "surface_m2.desc,id.asc",
             "limit": min(need, 200),
@@ -149,6 +149,9 @@ def run(limit: int, dry_run: bool, estimate_only: bool) -> None:
                 _log(f"⚠️  {len(failed_ids)} leads en échec PATCH — arrêt pour éviter boucle.")
             break
 
+        osm_ids = [int(r["osm_id"]) for r in rows if r.get("osm_id")]
+        geoms = pipe.fetch_parking_geoms_by_osm_ids(osm_ids) if osm_ids else {}
+
         for row in rows:
             lead_id = row["id"]
             lat = float(row["latitude"])
@@ -156,9 +159,14 @@ def run(limit: int, dry_run: bool, estimate_only: bool) -> None:
             surf = row.get("surface_osm_m2") or row.get("surface_m2") or 0
             score = float(row.get("score_confiance") or 0.5)
             ville = row.get("ville") or ""
+            osm_id = row.get("osm_id")
+            polygon_coords = geoms.get(int(osm_id)) if osm_id is not None else None
 
             try:
-                result, errs = pipe.enrich_lead(lat, lon, float(surf), score, None, ville)
+                result, errs = pipe.enrich_lead(
+                    lat, lon, float(surf), score, None, ville,
+                    polygon_coords=polygon_coords,
+                )
                 if errs:
                     errors += 1
                     _log(f"⚠️  {lead_id} · {' · '.join(errs)}")

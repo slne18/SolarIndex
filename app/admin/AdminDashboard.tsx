@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { AdminClientsByRegion, AdminDashboardData } from "@/lib/admin-data";
+import type { RfpSubmissionRow } from "@/lib/rfp";
 import { ADMIN_LEAD_CSV_COLUMNS } from "@/lib/admin-csv";
 import {
   adminFetch,
@@ -114,6 +115,9 @@ export default function AdminDashboard() {
   const [notifyMessage, setNotifyMessage] = useState("");
   const [notifyStatus, setNotifyStatus] = useState<string | null>(null);
 
+  const [rfpQueue, setRfpQueue] = useState<RfpSubmissionRow[]>([]);
+  const [rfpActionId, setRfpActionId] = useState<string | null>(null);
+
   const verifyAndLoad = useCallback(async (token?: string) => {
     setLoading(true);
     setError(null);
@@ -145,9 +149,10 @@ export default function AdminDashboard() {
       });
 
       const errors: string[] = [];
-      const [leadsRes, clientsRes] = await Promise.all([
+      const [leadsRes, clientsRes, rfpRes] = await Promise.all([
         adminFetch(`/api/admin/leads?${q}`),
         adminFetch("/api/admin/clients"),
+        adminFetch("/api/admin/rfp"),
       ]);
 
       if (leadsRes.ok) {
@@ -171,6 +176,15 @@ export default function AdminDashboard() {
         setClients([]);
         const body = await clientsRes.json().catch(() => ({}));
         errors.push(body.error || `Clients HTTP ${clientsRes.status}`);
+      }
+
+      if (rfpRes.ok) {
+        const rfpJson = await rfpRes.json();
+        setRfpQueue(rfpJson.rfps ?? []);
+      } else {
+        setRfpQueue([]);
+        const body = await rfpRes.json().catch(() => ({}));
+        errors.push(body.error || `RFP HTTP ${rfpRes.status}`);
       }
 
       if (errors.length > 0) {
@@ -262,6 +276,26 @@ export default function AdminDashboard() {
       return;
     }
     setNotifyStatus(`${data.sent} email(s) envoyé(s) · ${data.recipients} destinataires.`);
+  }
+
+  async function moderateRfp(id: string, action: "publie" | "rejete") {
+    setRfpActionId(id);
+    try {
+      const res = await adminFetch("/api/admin/rfp", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, action }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(data.error || "Modération échouée.");
+        return;
+      }
+      setRfpQueue((prev) => prev.filter((r) => r.id !== id));
+      await verifyAndLoad();
+    } finally {
+      setRfpActionId(null);
+    }
   }
 
   const totalPages = useMemo(
@@ -394,6 +428,70 @@ export default function AdminDashboard() {
           )}
         </section>
       )}
+
+      {/* 2b. Modération consultations installateurs */}
+      <section className="card p-6">
+        <h2 className="text-lg font-semibold">Consultations installateurs — modération</h2>
+        <p className="mt-2 text-sm text-slate-400">
+          Projets déposés par des gérants privés, email vérifié. Publier pour les rendre visibles
+          sur <code className="text-solar">/appels-offres</code>, ou rejeter.
+        </p>
+        {rfpQueue.length === 0 ? (
+          <p className="mt-4 text-sm text-slate-500">Aucune soumission en attente.</p>
+        ) : (
+          <ul className="mt-4 space-y-4">
+            {rfpQueue.map((rfp) => (
+              <li
+                key={rfp.id}
+                className="rounded-lg border border-white/10 bg-night-800/50 p-4 text-sm"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <div className="font-semibold text-white">{rfp.entreprise}</div>
+                    <div className="mt-1 text-slate-400">
+                      {rfp.contact_nom}
+                      {rfp.contact_fonction ? ` · ${rfp.contact_fonction}` : ""}
+                    </div>
+                    <div className="mt-2 text-slate-300">
+                      {rfp.adresse}
+                      {rfp.departement ? ` · dépt ${rfp.departement}` : ""}
+                    </div>
+                    {rfp.surface_estimee_m2 ? (
+                      <div className="mt-1 tabular-nums text-slate-400">
+                        ~{nf(rfp.surface_estimee_m2)} m²
+                      </div>
+                    ) : null}
+                    {rfp.notes_particulieres ? (
+                      <p className="mt-2 text-xs text-slate-500">{rfp.notes_particulieres}</p>
+                    ) : null}
+                    <p className="mt-2 text-xs text-slate-500">
+                      Déposé le {new Date(rfp.created_at).toLocaleString("fr-FR")}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 gap-2">
+                    <button
+                      type="button"
+                      className="btn-solar text-xs"
+                      disabled={rfpActionId === rfp.id}
+                      onClick={() => moderateRfp(rfp.id, "publie")}
+                    >
+                      Publier
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-ghost text-xs text-red-300"
+                      disabled={rfpActionId === rfp.id}
+                      onClick={() => moderateRfp(rfp.id, "rejete")}
+                    >
+                      Rejeter
+                    </button>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       {/* 3. Leads */}
       <section className="card overflow-hidden p-6">

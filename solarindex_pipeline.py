@@ -18,6 +18,7 @@ Usage :
 """
 
 import argparse
+import importlib
 import os
 import math
 import json
@@ -26,6 +27,7 @@ import time
 import sys
 from collections import Counter
 from pathlib import Path
+from types import ModuleType
 import requests
 import pandas as pd
 from shapely.geometry import Polygon
@@ -61,7 +63,7 @@ def _load_dotenv(path: str = ".env.local") -> None:
         pass
 
 
-_load_dotenv()
+_load_dotenv(str(_ROOT / ".env.local"))
 
 # ─── Constantes Métier ─────────────────────────────────────────────────────────
 SURFACE_MIN_M2 = 1_500          # Seuil légal loi APER
@@ -469,31 +471,94 @@ def reverse_geocode(lat: float, lon: float,
 
 
 # ─── Étape 2b : Identifiant de parcelle cadastrale (IGN apicarto) ─────────────
-def _parcelle_one(lat: float, lon: float) -> dict | None:
-    """
-    Un seul appel IGN apicarto. Retourne {idu, contenance} de la parcelle au
-    point, ou None. `contenance` = surface cadastrale officielle en m² (bypass 2).
-    """
-    geom = f'{{"type":"Point","coordinates":[{lon},{lat}]}}'
-    data = _get_json(API_CADASTRE_PARCELLE, {"geom": geom})
-    if not data or not data.get("features"):
-        return None
-    props = data["features"][0].get("properties", {})
+def _parcelle_props_from_feature(feat: dict) -> dict | None:
+    """Extrait idu + contenance d'une feature GeoJSON apicarto."""
+    props = feat.get("properties", {})
     idu = props.get("idu") or (
-        f"{props.get('code_dep','')}{props.get('code_com','')}"
-        f"{props.get('section','')}{props.get('numero','')}"
+        f"{props.get('code_dep', '')}{props.get('code_com', '')}"
+        f"{props.get('section', '')}{props.get('numero', '')}"
     )
     if not idu:
         return None
     try:
-        contenance = float(props.get("contenance")) if props.get("contenance") is not None else None
+        contenance = (
+            float(props.get("contenance"))
+            if props.get("contenance") is not None
+            else None
+        )
     except (TypeError, ValueError):
         contenance = None
     return {"idu": idu, "contenance": contenance}
 
 
+def _parcelle_one(lat: float, lon: float) -> dict | None:
+    """Un point → parcelle apicarto ({idu, contenance}) ou None."""
+    geom = f'{{"type":"Point","coordinates":[{lon},{lat}]}}'
+    data = _get_json(API_CADASTRE_PARCELLE, {"geom": geom})
+    if not data or not data.get("features"):
+        return None
+    return _parcelle_props_from_feature(data["features"][0])
+
+
+def _parcelles_in_polygon(coords: list[tuple[float, float]]) -> list[dict]:
+    """
+    Parcelles cadastrales intersectant le polygone parking (coords lon, lat).
+    Bypass multi-parcelle : somme les contenances et retient la parcelle principale.
+    """
+    if len(coords) < 3:
+        return []
+    ring = [[lon, lat] for lon, lat in coords]
+    if ring[0] != ring[-1]:
+        ring.append(ring[0])
+    geom = json.dumps({"type": "Polygon", "coordinates": [ring]}, separators=(",", ":"))
+    data = _get_json(API_CADASTRE_PARCELLE, {"geom": geom}, timeout=45)
+    if not data or not data.get("features"):
+        return []
+    out: list[dict] = []
+    seen: set[str] = set()
+    for feat in data["features"]:
+        p = _parcelle_props_from_feature(feat)
+        if p and p["idu"] not in seen:
+            seen.add(p["idu"])
+            out.append(p)
+    return out
+
+
+def _merge_parcelles_hits(parcels: list[dict], lat: float, lon: float) -> dict:
+    """Fusionne plusieurs parcelles : idu principal + somme des contenances."""
+    if not parcels:
+        return {"id_parcelle": "", "parcelle_methode": "", "surface_cadastrale_m2": None}
+
+    primary = parcels[0]
+    centre = _parcelle_one(lat, lon)
+    if centre:
+        for p in parcels:
+            if p["idu"] == centre["idu"]:
+                primary = p
+                break
+    else:
+        with_cont = [p for p in parcels if p.get("contenance")]
+        if with_cont:
+            primary = max(with_cont, key=lambda p: p["contenance"] or 0)
+
+    contenances = [p["contenance"] for p in parcels if p.get("contenance")]
+    surface_sum = round(sum(contenances), 1) if contenances else primary.get("contenance")
+
+    if len(parcels) == 1:
+        methode = "polygone OSM"
+    else:
+        methode = f"multi_parcelle ({len(parcels)} parcelles)"
+
+    return {
+        "id_parcelle": primary["idu"],
+        "parcelle_methode": methode,
+        "surface_cadastrale_m2": surface_sum,
+    }
+
+
 def get_parcelle(lat: float, lon: float,
-                 bbox: tuple[float, float, float, float] | None = None) -> dict:
+                 bbox: tuple[float, float, float, float] | None = None,
+                 polygon_coords: list[tuple[float, float]] | None = None) -> dict:
     """
     API Carto IGN (couche Cadastre) : identifiant unique (IDU) de la parcelle.
 
@@ -501,8 +566,16 @@ def get_parcelle(lat: float, lon: float,
     (zone non cadastrée, voirie…), on interroge les 4 coins du bounding box et
     on retient l'IDU majoritaire (vote) — utile quand un grand parking déborde
     sur plusieurs parcelles ou que le centroïde tombe sur du domaine public.
+
+    Si `polygon_coords` est fourni (géométrie OSM du parking), interroge d'abord
+    toutes les parcelles intersectant le polygone (multi-parcelle).
     """
     vide = {"id_parcelle": "", "parcelle_methode": "", "surface_cadastrale_m2": None}
+
+    if polygon_coords and len(polygon_coords) >= 3:
+        multi = _parcelles_in_polygon(polygon_coords)
+        if multi:
+            return _merge_parcelles_hits(multi, lat, lon)
 
     centre = _parcelle_one(lat, lon)
     if centre:
@@ -758,7 +831,7 @@ def registry_solar_powers(insee: str) -> list[float] | None:
 def registry_match_count(parking_kwc: float, powers: list[float] | None) -> int:
     """
     Nombre d'installations du registre dont la puissance est cohérente avec une
-    ombrière sur CE parking (bande [0.5×, 3×] la puissance estimée). Retourne -1
+    ombrière sur CE parking (bande [0.5×, 1.5×] la puissance estimée). Retourne -1
     si la commune n'a pas pu être interrogée.
     """
     if powers is None:
@@ -1027,13 +1100,20 @@ def _anthropic_text(content: object) -> str:
     return ""
 
 
+def _anthropic_module() -> ModuleType | None:
+    """Import paresseux du SDK Anthropic (optionnel — vision ombrières)."""
+    try:
+        return importlib.import_module("anthropic")
+    except ImportError:
+        return None
+
+
 def check_vision_ombriere(image_b64: str) -> dict:
     """Appelle Claude Haiku sur une orthophoto. None si erreur/clé absente."""
     if not ANTHROPIC_KEY:
         return {"ombriere_detectee": None, "confidence": 0.0, "notes": "pas_de_cle"}
-    try:
-        import anthropic
-    except ImportError:
+    anthropic = _anthropic_module()
+    if anthropic is None:
         return {"ombriere_detectee": None, "confidence": 0.0, "notes": "anthropic_absent"}
     try:
         client = anthropic.Anthropic(api_key=ANTHROPIC_KEY)
@@ -1115,9 +1195,8 @@ def run_vision_on(records: list[dict]) -> None:
 
 def run_vision_batch(leads: list[dict]) -> dict:
     """Batch API Anthropic (−50 %) pour > 100 images. Returns: osm_id → vision."""
-    try:
-        import anthropic
-    except ImportError:
+    anthropic = _anthropic_module()
+    if anthropic is None:
         return {}
     client = anthropic.Anthropic(api_key=ANTHROPIC_KEY)
     reqs = []
@@ -1156,10 +1235,11 @@ def run_vision_batch(leads: list[dict]) -> dict:
 # ─── Enrichissement d'un lead (BAN + cadastre + SIREN + bypasses 2/3/5) ─────
 def enrich_lead(lat: float, lon: float, surface_osm: float,
                 score_confiance: float = 0.5, bbox=None,
-                ville_osm: str = "") -> tuple[dict, list[str]]:
+                ville_osm: str = "",
+                polygon_coords: list[tuple[float, float]] | None = None) -> tuple[dict, list[str]]:
     """
     Enrichit un seul parking : géocodage, parcelle, entreprise, surface cadastrale,
-    propriétaire (Pappers si clé), dérogations pente/ABF.
+    propriétaire foncier (MAJIC), dirigeants (RNE), dérogations pente/ABF.
 
     Returns:
         (result, errors) — result avec noms de colonnes pipeline/CSV ;
@@ -1176,7 +1256,7 @@ def enrich_lead(lat: float, lon: float, surface_osm: float,
                "geocode_score": 0.0, "geocode_methode": ""}
 
     try:
-        parc = get_parcelle(lat, lon, bbox)
+        parc = get_parcelle(lat, lon, bbox, polygon_coords=polygon_coords)
         time.sleep(ENRICH_API_PAUSE_S)
     except Exception as exc:
         errors.append(f"APICARTO:{type(exc).__name__}:{exc}")
@@ -1304,7 +1384,15 @@ def enrich_dataframe(df: pd.DataFrame, max_rows: int = 0) -> pd.DataFrame:
         score = float(df.at[rang, "score_confiance"] if "score_confiance" in df.columns else 0.5)
         ville = str(df.at[rang, "ville_osm"] if "ville_osm" in df.columns else "")
 
-        result, errs = enrich_lead(lat, lon, surf_osm, score, bbox, ville)
+        polygon_coords = None
+        if "_parking_coords" in df.columns:
+            raw = df.at[rang, "_parking_coords"]
+            if isinstance(raw, list) and len(raw) >= 3:
+                polygon_coords = raw
+
+        result, errs = enrich_lead(
+            lat, lon, surf_osm, score, bbox, ville, polygon_coords=polygon_coords,
+        )
         for col, val in result.items():
             if col in df.columns:
                 df.at[rang, col] = val
@@ -1427,7 +1515,7 @@ def run_pipeline(dept_id: str, output_path: str,
             "pv_overlap_pct": round(pv_overlap, 3),
             "pv_registry_count": -1,
             "detection": "",
-            # Colonnes à enrichir (Étapes 2 & 3 — API Cadastre + Pappers)
+            # Colonnes à enrichir (Étapes 2 & 3 — cadastre IGN + Recherche entreprises)
             "adresse_cadastre": "",
             "code_insee": "",
             "geocode_score": 0.0,
@@ -1440,7 +1528,7 @@ def run_pipeline(dept_id: str, output_path: str,
             "libelle_naf": "",
             "secteur_cible": "",
             "naf_prioritaire": False,
-            # Bypass 3 : propriétaire foncier (Pappers Immobilier)
+            # Bypass 3 : propriétaire foncier (MAJIC DGFiP, jointure parcelle)
             "proprietaire_foncier": None,
             "siren_proprietaire_foncier": None,
             # Bypass 5 : dérogations APER
@@ -1452,6 +1540,8 @@ def run_pipeline(dept_id: str, output_path: str,
             "vision_confidence": None,
             "vision_checked_at": None,
             "vision_surface_couverte_pct": None,
+            # Géométrie OSM (enrichissement multi-parcelle — non exportée CSV)
+            "_parking_coords": coords,
         })
 
     print(f"    → {len(records)} parkings retenus (surface ≥ {SURFACE_MIN_M2} m²)")
@@ -1538,7 +1628,8 @@ def run_pipeline(dept_id: str, output_path: str,
                 time.sleep(0.2)
 
     print(f"[EXPORT] 💾 Export CSV → {output_path}")
-    df.to_csv(output_path, index=True, index_label="rang", encoding="utf-8-sig")
+    export_df = df.drop(columns=["_parking_coords"], errors="ignore")
+    export_df.to_csv(output_path, index=True, index_label="rang", encoding="utf-8-sig")
     suffixe = "" if enrich else " (lancez avec --enrich pour l'enrichissement B2B)"
     print(f"    ✅ Export terminé{suffixe}.")
 

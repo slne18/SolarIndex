@@ -1,4 +1,5 @@
 import { getCatalogStats } from "./catalog-stats";
+import { countRfpPendingModeration } from "./rfp-db";
 import { getAdminClient } from "./supabase";
 import { TERRITOIRE_PACK_EUR } from "./subscription";
 import { MAX_BUYERS_PER_LEAD } from "./lead-slots";
@@ -116,6 +117,7 @@ export async function getAdminDashboard(): Promise<AdminDashboardData> {
     majicBacklogRes,
     majicTableRes,
     catalogStats,
+    rfpModerationRes,
   ] = await Promise.all([
     supabase
       .from("purchases")
@@ -157,6 +159,7 @@ export async function getAdminDashboard(): Promise<AdminDashboardData> {
       .from("majic_proprietaires")
       .select("id_parcelle", { count: "exact", head: true }),
     getCatalogStats(),
+    countRfpPendingModeration(),
   ]);
 
   const purchasesMonthEur = (purchasesMonthRes.data ?? []).reduce(
@@ -183,6 +186,17 @@ export async function getAdminDashboard(): Promise<AdminDashboardData> {
   const clientsActifsCount = activeIds.size;
 
   const alerts: AdminAlert[] = [];
+
+  const rfpModerationCount = rfpModerationRes ?? 0;
+  if (rfpModerationCount > 0) {
+    alerts.push({
+      id: "rfp-moderation",
+      severity: "warning",
+      title: "Consultations installateurs à modérer",
+      detail: `${rfpModerationCount} projet(s) vérifiés par email — publier ou rejeter dans la section ci-dessous.`,
+      count: rfpModerationCount,
+    });
+  }
 
   const pendingCount = pendingOldRes.count ?? 0;
   if (pendingCount > 0) {

@@ -101,3 +101,39 @@ export async function verifyRfpEmail(token: string): Promise<RfpSubmissionRow | 
   if (updErr) throw updErr;
   return updated as RfpSubmissionRow;
 }
+
+/** Soumissions en attente de modération manuelle (email vérifié). */
+export async function queryRfpModerationQueue(): Promise<RfpSubmissionRow[]> {
+  const { data, error } = await getAdminClient()
+    .from("rfp_submissions")
+    .select("*")
+    .eq("statut", "en_attente_moderation")
+    .order("created_at", { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as RfpSubmissionRow[];
+}
+
+export async function countRfpPendingModeration(): Promise<number> {
+  const { count, error } = await getAdminClient()
+    .from("rfp_submissions")
+    .select("id", { count: "exact", head: true })
+    .eq("statut", "en_attente_moderation");
+  if (error) throw error;
+  return count ?? 0;
+}
+
+export async function moderateRfpSubmission(
+  id: string,
+  action: "publie" | "rejete",
+): Promise<RfpSubmissionRow> {
+  const { data, error } = await getAdminClient()
+    .from("rfp_submissions")
+    .update({ statut: action })
+    .eq("id", id)
+    .eq("statut", "en_attente_moderation")
+    .select("*")
+    .single();
+  if (error) throw error;
+  if (!data) throw new Error("Soumission introuvable ou déjà modérée.");
+  return data as RfpSubmissionRow;
+}
