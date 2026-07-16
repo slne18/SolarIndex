@@ -41,9 +41,10 @@ export default function LeadsRecapTable() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h3 className="text-sm font-semibold text-slate-800">Récapitulatif par département</h3>
-          <p className="mt-1 text-xs text-slate-500">
-            Aligné sur le catalogue vendable · « Considéré comme équipé » = recouvrement OSM ≥ 50 % ou,
-            pour grand parking, photo &gt; 45 %.
+          <p className="mt-1 max-w-3xl text-xs text-slate-500">
+            Aligné sur le catalogue vendable · « Considéré comme équipé » = recouvrement OSM ≥ 50 %,
+            grand parking avec photo &gt; 45 %, parkings sans SIREN ou parcelle cadastrale identifiable,
+            ou en zone grise (1 500–1 600 m²).
           </p>
         </div>
         <p className="text-xs text-slate-500">

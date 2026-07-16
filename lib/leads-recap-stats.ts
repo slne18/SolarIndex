@@ -7,7 +7,7 @@ import { SURFACE_GRAY_LOW_MAX_M2 } from "./surface-thresholds";
 export type LeadsRecapDeptStat = {
   departement: string;
   catalogCount: number;
-  /** Leads exclus du catalogue — considérés comme déjà équipés. */
+  /** Leads hors catalogue vendable (équipés, zone grise, enrichissement incomplet). */
   considereCommeEquipeCount: number;
   surfaceM2: number;
   pipelineEur: number;

@@ -14,8 +14,12 @@ interface FranceMapProps {
   theme?: "dark" | "light";
 }
 
+/** Rouge distinct du dégradé jaune « densité » de la carte. */
+const SELECTED_FILL = "#dc2626";
+const SELECTED_STROKE = "#991b1b";
+
 function deptFill(count: number, max: number, selected: boolean, light: boolean): string {
-  if (selected) return "#f5b301";
+  if (selected) return SELECTED_FILL;
   if (max <= 0 || count <= 0) {
     return light ? "#e2e8f0" : "rgba(255,255,255,0.08)";
   }
@@ -99,7 +103,7 @@ export default function FranceMap({
                   key={loc.id}
                   d={loc.path}
                   fill={deptFill(count, maxTotal, selected, light)}
-                  stroke={selected ? "#f5b301" : light ? "rgba(15,23,42,0.22)" : "rgba(255,255,255,0.25)"}
+                  stroke={selected ? SELECTED_STROKE : light ? "rgba(15,23,42,0.22)" : "rgba(255,255,255,0.25)"}
                   strokeWidth={selected ? 1.2 : 0.5}
                   className="cursor-pointer transition-colors hover:opacity-90"
                   onClick={() => onSelectDepartement(loc.id)}
@@ -153,14 +157,24 @@ export default function FranceMap({
         </div>
       ) : null}
 
-      <div className={`mt-3 flex items-center justify-center gap-2 text-xs ${light ? "text-slate-500" : "text-slate-500"}`}>
-        <span>Moins</span>
-        <div
-          className={`h-2 w-32 rounded-full bg-gradient-to-r ${
-            light ? "from-slate-200 via-slate-400 to-solar" : "from-night-700 via-slate-600 to-solar"
-          }`}
-        />
-        <span>Plus</span>
+      <div className={`mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs ${light ? "text-slate-500" : "text-slate-500"}`}>
+        <div className="flex items-center gap-2">
+          <span>Moins</span>
+          <div
+            className={`h-2 w-32 rounded-full bg-gradient-to-r ${
+              light ? "from-slate-200 via-slate-400 to-solar" : "from-night-700 via-slate-600 to-solar"
+            }`}
+          />
+          <span>Plus</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span
+            className="inline-block h-2.5 w-2.5 rounded-sm border border-red-800"
+            style={{ backgroundColor: SELECTED_FILL }}
+            aria-hidden
+          />
+          <span>Sélection</span>
+        </div>
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ function RfpFilters() {
     if (value) next.set(key, value);
     else next.delete(key);
     next.delete("page");
-    router.push(`/appels-offres?${next.toString()}`);
+    router.replace(`/appels-offres?${next.toString()}`, { scroll: false });
   }
 
   return (
@@ -96,7 +96,7 @@ function AppelsOffresCatalog() {
     q.delete("page");
     q.set("view", "list");
     setView("list");
-    router.push(`/appels-offres?${q.toString()}`);
+    router.push(`/appels-offres?${q.toString()}`, { scroll: false });
     setTimeout(() => listRef.current?.scrollIntoView({ behavior: "smooth" }), 150);
   }
 

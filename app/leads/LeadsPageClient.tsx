@@ -84,7 +84,7 @@ function LeadsCatalog() {
     q.delete("page");
     q.set("view", "list");
     setView("list");
-    router.push(`/leads?${q.toString()}`);
+    router.push(`/leads?${q.toString()}`, { scroll: false });
     setTimeout(() => listRef.current?.scrollIntoView({ behavior: "smooth" }), 150);
   }
 

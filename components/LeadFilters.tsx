@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const REGIONS = [
   "Auvergne-Rhône-Alpes", "Bourgogne-Franche-Comté", "Bretagne",
@@ -31,10 +31,24 @@ export default function LeadFilters({ lockedDepartement }: { lockedDepartement?:
       if (value) next.set(key, value);
       else next.delete(key);
       next.delete("page"); // tout changement de filtre repart page 0
-      router.push(`/leads?${next.toString()}`);
+      router.replace(`/leads?${next.toString()}`, { scroll: false });
     },
     [params, router],
   );
+
+  const activeDept = lockedDepartement ?? params.get("departement") ?? "";
+  const [deptDraft, setDeptDraft] = useState(activeDept);
+
+  useEffect(() => {
+    setDeptDraft(activeDept);
+  }, [activeDept]);
+
+  const commitDepartement = useCallback(() => {
+    if (lockedDepartement) return;
+    const trimmed = deptDraft.trim();
+    if (trimmed === (params.get("departement") ?? "")) return;
+    update("departement", trimmed);
+  }, [deptDraft, lockedDepartement, params, update]);
 
   return (
     <div className="card sticky top-16 z-30 flex flex-wrap items-center gap-3 p-4">
@@ -50,17 +64,20 @@ export default function LeadFilters({ lockedDepartement }: { lockedDepartement?:
       </select>
 
       <input
-        className={`${selectCls} w-28 ${lockedDepartement ? "cursor-not-allowed opacity-60" : ""}`}
+        className={`${selectCls} w-28 ${
+          activeDept ? "border-red-500/70 bg-red-950/25 text-red-100 focus:border-red-500/80" : ""
+        } ${lockedDepartement ? "cursor-not-allowed opacity-60" : ""}`}
         placeholder="Dépt (33)"
-        value={lockedDepartement ?? params.get("departement") ?? ""}
+        value={deptDraft}
         readOnly={!!lockedDepartement}
         disabled={!!lockedDepartement}
-        onBlur={(e) => {
-          if (!lockedDepartement) update("departement", e.target.value.trim());
-        }}
+        onChange={(e) => setDeptDraft(e.target.value)}
+        onBlur={commitDepartement}
         onKeyDown={(e) => {
           if (!lockedDepartement && e.key === "Enter") {
-            update("departement", (e.target as HTMLInputElement).value.trim());
+            e.preventDefault();
+            commitDepartement();
+            (e.target as HTMLInputElement).blur();
           }
         }}
       />
