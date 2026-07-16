@@ -8,6 +8,8 @@ export const DEMO_FICHE = {
   puissance_kwc: 2240,
   valeur_chantier_eur: 2688000,
   score_confiance: 0.87,
+  completude_pct: 88,
+  recouvrement: "< 5 %",
   exploitant: "SAS Hyper Distribution Atlantique",
   exploitant_siren: "812 453 721",
   dirigeant_exploitant: "M. Laurent D.",
@@ -18,5 +20,5 @@ export const DEMO_FICHE = {
   dirigeant_proprietaire_qualite: "Gérante",
   adresse: "12 avenue des Pins, 33300 Bordeaux Lac",
   id_parcelle: "33 012 000 AB 0123",
-  prospection: "Dirigeants identifiés · SIREN vérifié",
+  prospection: "Dirigeant identifié · SIREN · parcelle · GPS",
 } as const;

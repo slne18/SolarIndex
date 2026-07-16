@@ -38,6 +38,7 @@ export async function GET(req: Request) {
 
   const hideAverifier = searchParams.get("fiabilite") === "verifies";
   const premiumOnly = searchParams.get("tier") === "premium";
+  const dirigeantOnly = searchParams.get("dirigeant") === "1";
 
   const pageRaw = Number(searchParams.get("page") || "0");
   const page = Number.isFinite(pageRaw) && pageRaw >= 0 ? Math.floor(pageRaw) : 0;
@@ -55,6 +56,7 @@ export async function GET(req: Request) {
         page,
         hideAverifier,
         premiumOnly,
+        dirigeantOnly,
       }),
       getCatalogStats(),
     ]);

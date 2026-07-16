@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Backfill dirigeants exploitant / propriétaire (+ téléphone best-effort).
+Backfill dirigeants exploitant / propriétaire (open data SIREN).
 
 Reprise automatique : relancer la même commande après une coupure (timeout réseau).
 Seuls les leads vendables avec dirigeant_exploitant IS NULL sont retraités
@@ -10,7 +10,6 @@ Usage :
   .venv/bin/python scripts/backfill_dirigeants.py [--limit N] [--dry-run] [--all]
 
 Pré-requis : NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (.env.local)
-Optionnel : PAPPERS_API_TOKEN pour téléphones (faible couverture open data seule)
 """
 from __future__ import annotations
 

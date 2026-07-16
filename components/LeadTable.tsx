@@ -3,6 +3,7 @@ import type { PublicLead } from "@/lib/types";
 import { eurosCompact, nf, scoreLabel } from "@/lib/format";
 import LeadAvailabilityBadge from "@/components/LeadAvailabilityBadge";
 import LeadTierBadge from "@/components/LeadTierBadge";
+import LeadCompletenessBadge, { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
 import { isLeadSlotOpen } from "@/lib/lead-slots";
 
 function FlagBadge({ flag }: { flag: string }) {
@@ -44,6 +45,7 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
               <th className="px-4 py-3">Flag</th>
               <th className="px-4 py-3">Ville (Dépt)</th>
               <th className="px-4 py-3">Tier</th>
+              <th className="px-4 py-3">Signaux</th>
               <th className="px-4 py-3 text-right">Surface</th>
               <th className="px-4 py-3 text-right">kWc</th>
               <th className="px-4 py-3 text-right">Valeur chantier</th>
@@ -65,6 +67,12 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
                 </td>
                 <td className="px-4 py-3">
                   <LeadTierBadge tier={lead.tier} compact />
+                </td>
+                <td className="px-4 py-3">
+                  <div className="flex flex-wrap gap-1.5">
+                    {lead.has_dirigeant ? <LeadDirigeantBadge compact /> : null}
+                    <LeadCompletenessBadge pct={lead.completude_pct} compact />
+                  </div>
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums">{nf(lead.surface_m2)} m²</td>
                 <td className="px-4 py-3 text-right tabular-nums">{nf(lead.puissance_kwc)}</td>

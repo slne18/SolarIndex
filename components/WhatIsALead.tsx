@@ -3,9 +3,8 @@ export default function WhatIsALead({ compact = false }: { compact?: boolean }) 
     return (
       <p className="text-sm text-slate-400">
         Un <strong className="font-medium text-slate-200">lead</strong> est une opportunité
-        commerciale documentée : parking éligible APER + contacts B2B (exploitant et propriétaire
-        des murs lorsque identifiés). Ce n&apos;est pas un contrat signé — c&apos;est un signal
-        de prospection qualifié.
+        commerciale documentée : parking éligible APER + identité entreprise (SIREN, parcelle,
+        GPS). Ce n&apos;est pas un contrat signé — c&apos;est un signal de prospection qualifié.
       </p>
     );
   }
@@ -30,9 +29,8 @@ export default function WhatIsALead({ compact = false }: { compact?: boolean }) 
         <li className="flex gap-2">
           <span className="text-solar">✓</span>
           <span>
-            <strong className="text-slate-100">Contacts B2B</strong> — exploitant du site (SIREN)
-            et propriétaire foncier (MAJIC DGFiP) : SIREN, NAF et dirigeants lorsque
-            identifiés.
+            <strong className="text-slate-100">Identité B2B</strong> — exploitant (SIREN, NAF),
+            dirigeants lorsque identifiés, propriétaire foncier MAJIC, adresse et coordonnées GPS.
           </span>
         </li>
         <li className="flex gap-2">

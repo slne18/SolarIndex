@@ -1,9 +1,7 @@
 """
-Enrichissement dirigeants + téléphone (best-effort) pour un SIREN.
+Enrichissement dirigeants pour un SIREN (open data Recherche d'entreprises).
 
-Sources :
-  - Dirigeants : API Recherche d'entreprises (open data, sans clé)
-  - Téléphone : scan compléments open data, puis Pappers si PAPPERS_API_TOKEN est défini
+SolarIndex livre identité + parcelle + GPS — pas de canal téléphone/email.
 """
 from __future__ import annotations
 

@@ -19,7 +19,10 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: { region: string } }) {
   if (isLeadUuid(params.region)) {
-    return { title: "Fiche lead APER | SolarIndex" };
+    return {
+      title: "Fiche lead APER | SolarIndex",
+      robots: { index: false, follow: false },
+    };
   }
   const regionName = regionFromSlug(params.region);
   if (!regionName) return {};

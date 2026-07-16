@@ -27,7 +27,7 @@ export default function CatalogViewToggle({
           view === "list" ? "bg-solar text-night font-semibold" : "text-slate-300 hover:text-white"
         }`}
       >
-        Vue Liste complète
+        Vue Liste
       </button>
     </div>
   );

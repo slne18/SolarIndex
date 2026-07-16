@@ -139,6 +139,8 @@ describe("toPublicLead", () => {
     }
     expect(pub.prix_lead).toBe(100);
     expect(pub.tier).toBe("standard");
+    expect(pub.has_dirigeant).toBe(true);
+    expect(pub.completude_pct).toBeGreaterThan(0);
     // Les champs publics restent présents
     expect(pub.ville).toBe("Bordeaux");
     expect(pub.valeur_chantier_eur).toBe(2640000);

@@ -59,11 +59,13 @@ export function buildPageMetadata(params: {
       locale: "fr_FR",
       url,
       siteName: SITE_NAME,
+      images: [{ url: absoluteUrl("/icon"), width: 512, height: 512, alt: SITE_NAME }],
     },
     twitter: {
       card: "summary_large_image",
       title: params.title,
       description,
+      images: [absoluteUrl("/icon")],
     },
     alternates: {
       canonical: url,

@@ -94,6 +94,10 @@ export type PublicLead = Omit<LeadRow, (typeof SENSITIVE_FIELDS)[number]> & {
   prix_lead: number;
   max_buyers: number;
   isOwned?: boolean;
+  /** Dirigeant exploitant identifié (sans exposer le nom). */
+  has_dirigeant: boolean;
+  /** Complétude documentaire 0–100 (SIREN, parcelle, dirigeants…). */
+  completude_pct: number;
 };
 
 // Champs sensibles : jamais exposés sauf à l'acheteur du lead.

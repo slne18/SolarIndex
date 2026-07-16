@@ -10,6 +10,7 @@ import {
 } from "./types";
 import { getRegion } from "./regions";
 import { isLeadPremium } from "./lead-confidence";
+import { leadCompleteness } from "./lead-completeness";
 import { MAX_BUYERS_PER_LEAD } from "./lead-slots";
 import { isVisionEquippedPct } from "./pv-overlap";
 import {
@@ -128,16 +129,25 @@ export function toPublicLead(lead: LeadRow): PublicLead {
     delete clone[field];
   }
   const tier = leadTier(lead);
+  const { pct, hasDirigeant } = leadCompleteness(lead);
   clone.tier = tier;
   clone.prix_lead = computePrixLeadFromRow(lead);
   clone.max_buyers = MAX_BUYERS_PER_LEAD;
+  clone.has_dirigeant = hasDirigeant;
+  clone.completude_pct = pct;
   return clone as PublicLead;
 }
 
 // Ajoute tier + prix sans masquer (lead possédé par l'acheteur).
-export function toOwnedLead(lead: LeadRow): LeadRow & { tier: LeadTier; prix_lead: number } {
+export function toOwnedLead(lead: LeadRow): LeadRow & {
+  tier: LeadTier;
+  prix_lead: number;
+  has_dirigeant: boolean;
+  completude_pct: number;
+} {
   const tier = leadTier(lead);
-  return { ...lead, tier, prix_lead: computePrixLeadFromRow(lead) };
+  const { pct, hasDirigeant } = leadCompleteness(lead);
+  return { ...lead, tier, prix_lead: computePrixLeadFromRow(lead), has_dirigeant: hasDirigeant, completude_pct: pct };
 }
 
 // Transforme une ligne brute du pipeline Python en ligne insérable dans `leads`.

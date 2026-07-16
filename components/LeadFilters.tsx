@@ -30,14 +30,31 @@ export default function LeadFilters({ lockedDepartement }: { lockedDepartement?:
       const next = new URLSearchParams(params.toString());
       if (value) next.set(key, value);
       else next.delete(key);
-      next.delete("page"); // tout changement de filtre repart page 0
+      next.delete("page");
       router.replace(`/leads?${next.toString()}`, { scroll: false });
     },
     [params, router],
   );
 
+  const clearAll = useCallback(() => {
+    const next = new URLSearchParams();
+    const view = params.get("view");
+    if (view) next.set("view", view);
+    router.replace(`/leads?${next.toString()}`, { scroll: false });
+  }, [params, router]);
+
   const activeDept = lockedDepartement ?? params.get("departement") ?? "";
   const [deptDraft, setDeptDraft] = useState(activeDept);
+  const hasActiveFilters =
+    !!params.get("region") ||
+    !!params.get("departement") ||
+    !!params.get("surface_min") ||
+    !!params.get("flag") ||
+    !!params.get("tier") ||
+    !!params.get("fiabilite") ||
+    !!params.get("naf") ||
+    params.get("dirigeant") === "1" ||
+    (params.get("sort") && params.get("sort") !== "valeur");
 
   useEffect(() => {
     setDeptDraft(activeDept);
@@ -114,6 +131,16 @@ export default function LeadFilters({ lockedDepartement }: { lockedDepartement?:
 
       <select
         className={selectCls}
+        value={params.get("dirigeant") ?? ""}
+        onChange={(e) => update("dirigeant", e.target.value === "1" ? "1" : "")}
+        title="Dirigeant exploitant identifié via open data SIREN"
+      >
+        <option value="">Dirigeant : tous</option>
+        <option value="1">Dirigeant identifié</option>
+      </select>
+
+      <select
+        className={selectCls}
         value={params.get("fiabilite") ?? ""}
         onChange={(e) => update("fiabilite", e.target.value)}
         title="Détection de panneaux solaires existants"
@@ -131,6 +158,12 @@ export default function LeadFilters({ lockedDepartement }: { lockedDepartement?:
           if (e.key === "Enter") update("naf", (e.target as HTMLInputElement).value.trim());
         }}
       />
+
+      {hasActiveFilters ? (
+        <button type="button" onClick={clearAll} className="btn-ghost !py-2 text-xs">
+          Effacer filtres
+        </button>
+      ) : null}
 
       <div className="ml-auto flex items-center gap-2">
         <span className="text-xs text-slate-400">Trier :</span>

@@ -92,6 +92,7 @@ export function confidenceFactors(
     | "derogation_pente"
     | "derogation_abf"
     | "pv_overlap_pct"
+    | "pv_registry_count"
     | "vision_surface_couverte_pct"
     | "vision_ortho_date"
     | "flag_urgence"
@@ -103,6 +104,7 @@ export function confidenceFactors(
   const visionPct = formatVisionCoveragePct(lead.vision_surface_couverte_pct);
   const visionEquipped = isVisionEquippedPct(lead.vision_surface_couverte_pct);
   const overlapRatio = lead.pv_overlap_pct ?? 0;
+  const registryCount = lead.pv_registry_count ?? 0;
   const equipementOk = isUrgence
     ? lead.detection !== "equipe" &&
       !!lead.vision_checked_at &&
@@ -144,6 +146,14 @@ export function confidenceFactors(
         lead.derogation_pente || lead.derogation_abf
           ? "Pente forte et/ou zone ABF : démarches supplémentaires possibles."
           : "Pas d'alerte pente/ABF majeure dans nos sources.",
+    },
+    {
+      ok: registryCount === 0,
+      label: "Registre PV communal (ODRÉ)",
+      detail:
+        registryCount > 0
+          ? `${registryCount} installation${registryCount > 1 ? "s" : ""} photovoltaïque${registryCount > 1 ? "s" : ""} de puissance comparable recensée${registryCount > 1 ? "s" : ""} dans la commune. Signal communal uniquement — sans lien établi avec ce parking précis.`
+          : "Aucune installation comparable recensée dans la commune (registre ODRÉ).",
     },
   ];
 }

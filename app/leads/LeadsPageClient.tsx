@@ -149,41 +149,45 @@ function LeadsCatalog() {
             theme="light"
           />
           <p className="mt-4 text-center text-sm text-slate-500">
-            Cliquez sur un département pour filtrer la liste ci-dessous.
+            Cliquez sur un département pour ouvrir la liste filtrée.
           </p>
           <LeadsRecapTable />
         </div>
       ) : null}
 
-      <div ref={listRef} className="mt-6">
-        <LeadFilters />
-      </div>
+      {view === "list" ? (
+        <>
+          <div ref={listRef} className="mt-6">
+            <LeadFilters />
+          </div>
 
-      <div className="mt-6">
-        {loading ? (
-          <p className="text-slate-600">Chargement des leads…</p>
-        ) : (
-          <LeadTable leads={leads} />
-        )}
-      </div>
+          <div className="mt-6">
+            {loading ? (
+              <p className="text-slate-600">Chargement des leads…</p>
+            ) : (
+              <LeadTable leads={leads} />
+            )}
+          </div>
 
-      {totalPages > 1 && (
-        <div className="mt-6 flex items-center justify-center gap-4">
-          {page > 0 ? (
-            <Link href={mkHref(page - 1)} className="btn-ghost !py-2">← Précédent</Link>
-          ) : (
-            <span className="btn cursor-not-allowed opacity-40">← Précédent</span>
+          {totalPages > 1 && (
+            <div className="mt-6 flex items-center justify-center gap-4">
+              {page > 0 ? (
+                <Link href={mkHref(page - 1)} className="btn-ghost !py-2">← Précédent</Link>
+              ) : (
+                <span className="btn cursor-not-allowed opacity-40">← Précédent</span>
+              )}
+              <span className="text-sm text-slate-500">
+                Page {page + 1} / {totalPages}
+              </span>
+              {page < totalPages - 1 ? (
+                <Link href={mkHref(page + 1)} className="btn-ghost !py-2">Suivant →</Link>
+              ) : (
+                <span className="btn cursor-not-allowed opacity-40">Suivant →</span>
+              )}
+            </div>
           )}
-          <span className="text-sm text-slate-500">
-            Page {page + 1} / {totalPages}
-          </span>
-          {page < totalPages - 1 ? (
-            <Link href={mkHref(page + 1)} className="btn-ghost !py-2">Suivant →</Link>
-          ) : (
-            <span className="btn cursor-not-allowed opacity-40">Suivant →</span>
-          )}
-        </div>
-      )}
+        </>
+      ) : null}
         </div>
       </div>
     </>

@@ -21,7 +21,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     id: "lead-content",
     question: "Que contient une fiche lead après achat ?",
     answer:
-      "Surface, localisation, score de confiance, exploitant et SIREN, dirigeants identifiés, propriétaire foncier, adresse, parcelle cadastrale et coordonnées GPS. Les leads ne comprennent pas de numéro de téléphone ni d'email de contact exploitant.",
+      "Surface, localisation, indice de confiance, exploitant (SIREN et raison sociale), dirigeants lorsque identifiés via open data, propriétaire foncier MAJIC, adresse, parcelle cadastrale et coordonnées GPS. Pas de canal direct (téléphone ou email) : vous prospectez via l'identité légale et la localisation exacte.",
   },
   {
     id: "exclusivity",

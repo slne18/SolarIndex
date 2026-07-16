@@ -22,6 +22,8 @@ export interface LeadQueryOptions {
   hideAverifier?: boolean;
   /** Filtre tier Premium (critères pipeline stricts). */
   premiumOnly?: boolean;
+  /** Uniquement les leads avec dirigeant exploitant identifié. */
+  dirigeantOnly?: boolean;
   /** Inclure les leads vendus (admin). Par défaut : catalogue = disponibles uniquement. */
   includeSold?: boolean;
 }
@@ -69,6 +71,9 @@ function applyCatalogFilters(query: SupabaseQuery, opts: LeadQueryOptions): Supa
       .eq("surface_tag_present", true)
       .eq("source_surface", "cadastre")
       .gte("score_confiance", 0.8);
+  }
+  if (opts.dirigeantOnly) {
+    query = query.or("dirigeant_exploitant.not.is.null,dirigeant_nom.not.is.null");
   }
   return query;
 }

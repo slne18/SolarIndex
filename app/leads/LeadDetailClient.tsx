@@ -16,6 +16,7 @@ import SolarSimulator from "@/components/SolarSimulator";
 import PurchaseButton from "@/components/PurchaseButton";
 import { FlagBadge } from "@/components/LeadTable";
 import LeadTierBadge from "@/components/LeadTierBadge";
+import LeadCompletenessBadge, { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
 import LeadConfidencePanel from "@/components/LeadConfidencePanel";
 import LeadAvailabilityBadge from "@/components/LeadAvailabilityBadge";
 import { catalogAuthHeaders } from "@/lib/preview-catalog";
@@ -113,6 +114,10 @@ function LeadDetailContent({ id }: { id: string }) {
           <div className="flex flex-wrap items-center gap-3">
             <FlagBadge flag={lead.flag_urgence} />
             <LeadTierBadge tier={lead.tier} />
+            {lead.has_dirigeant ? <LeadDirigeantBadge /> : null}
+            {"completude_pct" in lead && typeof lead.completude_pct === "number" ? (
+              <LeadCompletenessBadge pct={lead.completude_pct} />
+            ) : null}
             <LeadAvailabilityBadge available={slotOpen} />
             <span className="text-xs text-slate-400" title="Qualité des sources — pas une probabilité de vente">
               Confiance {(lead.score_confiance ?? 0).toFixed(2)} · {scoreLabel(lead.score_confiance)}
@@ -120,8 +125,9 @@ function LeadDetailContent({ id }: { id: string }) {
           </div>
 
           <p className="mt-3 text-sm text-slate-400">
-            Fiche de prospection B2B : parking APER qualifié + contacts entreprise débloqués à
-            l&apos;achat. L&apos;indice de confiance résume la fiabilité de chaque signal.
+            Fiche de prospection B2B : parking APER qualifié + identité entreprise (SIREN, parcelle,
+            GPS) débloquée à l&apos;achat. L&apos;indice de confiance résume la fiabilité de chaque
+            signal.
           </p>
 
           <h1 className="mt-4 text-3xl font-bold tracking-tight">{displayName}</h1>
@@ -190,8 +196,8 @@ function LeadDetailContent({ id }: { id: string }) {
             </h2>
             <p className="mt-2 text-sm text-slate-400">
               {isOwned
-                ? "Coordonnées complètes de ce lead — exploitant, propriétaire foncier et parcelle."
-                : "Un lead = parking qualifié + contacts B2B débloqués à l'achat."}
+                ? "Identité entreprise, parcelle cadastrale et coordonnées GPS."
+                : "Identité entreprise + parcelle + GPS — débloqués à l'achat."}
             </p>
             <div className="mt-4">
               {isOwned ? (
@@ -289,20 +295,6 @@ function LeadDetailContent({ id }: { id: string }) {
               Valeur de chantier estimée : <span className="text-solar">{euros(lead.valeur_chantier_eur)}</span>.
             </p>
           </div>
-
-
-          {lead.detection !== "equipe" && (lead.pv_registry_count ?? 0) > 0 && (
-            <div className="card mt-4 p-5 text-sm text-slate-400">
-              <div className="font-semibold text-slate-200">À titre indicatif</div>
-              <p className="mt-2">
-                {lead.pv_registry_count} installation{(lead.pv_registry_count ?? 0) > 1 ? "s" : ""}{" "}
-                photovoltaïque{(lead.pv_registry_count ?? 0) > 1 ? "s" : ""} de puissance comparable
-                {" "}recensée{(lead.pv_registry_count ?? 0) > 1 ? "s" : ""} dans la commune (registre
-                ODRÉ). Information communale, sans lien établi avec ce parking précis : elle
-                n&apos;indique pas que ce parking est équipé.
-              </p>
-            </div>
-          )}
         </aside>
       </div>
     </div>
