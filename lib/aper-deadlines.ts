@@ -2,8 +2,15 @@ import { SURFACE_APER_MIN_M2, SURFACE_URGENCE_M2 } from "./surface-thresholds";
 import { formatAperAnnualFine } from "./aper-fine";
 
 export const APER_LAW_START = new Date("2024-01-01T00:00:00+01:00");
+
+/** Vague ≥ 10 000 m² — 1er juillet 2026 (obligation 40 % puis 50 %). */
 export const APER_DEADLINE_40 = new Date("2026-07-01T00:00:00+02:00");
+
+/** Seconde étape grands parcs — obligation 50 % au 1er juillet 2027. */
 export const APER_DEADLINE_50 = new Date("2027-07-01T00:00:00+02:00");
+
+/** Vague 1 500 à 10 000 m² — 1er juillet 2028. */
+export const APER_DEADLINE_SMALL_WAVE = new Date("2028-07-01T00:00:00+02:00");
 
 export const PENTE_DEROGATION_PCT = 5;
 
@@ -45,7 +52,7 @@ export function applicableAperDeadline(surfaceM2: number): {
   }
   return {
     ratio: "50 %",
-    date: "1er juillet 2027",
+    date: "1er juillet 2028",
   };
 }
 

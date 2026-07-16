@@ -250,13 +250,13 @@ function AperTimeline() {
       </div>
 
       <div className="grid gap-4 border-b border-slate-200 px-6 py-6 sm:grid-cols-2 sm:px-8">
-        <RegulatoryCountdown variant="timeline" obligation="40" />
-        <RegulatoryCountdown variant="timeline" obligation="50" />
+        <RegulatoryCountdown variant="timeline" wave="large" />
+        <RegulatoryCountdown variant="timeline" wave="small" />
       </div>
 
       <div className="group/timeline grid gap-4 px-6 py-8 sm:grid-cols-2 sm:gap-5 sm:px-8 sm:py-10">
         {APER_DEADLINES.map((step, index) => (
-          <AperMilestone key={step.date} {...step} index={index} />
+          <AperMilestone key={step.id} {...step} index={index} />
         ))}
       </div>
     </div>

@@ -18,7 +18,7 @@ describe("aper-deadlines", () => {
 
   it("returns deadline by surface", () => {
     expect(applicableAperDeadline(12_000).date).toContain("2026");
-    expect(applicableAperDeadline(3000).date).toContain("2027");
+    expect(applicableAperDeadline(3000).date).toContain("2028");
   });
 
   it("counts down days", () => {

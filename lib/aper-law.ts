@@ -9,22 +9,34 @@ export const APER_SOLAR_RATIO_LABEL = "50 %";
 /** Échéances pour les parcs privés (hors concession publique) — critère : superficie en m². */
 export const APER_DEADLINES = [
   {
+    id: "large" as const,
     year: "2026",
     month: "Juillet",
     date: "1er juillet 2026",
     surface: "≥ 10 000 m²",
     fine: "40 000 €/an",
+    targetDate: "2026-07-01",
     status: "passed" as const,
   },
   {
+    id: "small" as const,
     year: "2028",
     month: "Juillet",
     date: "1er juillet 2028",
     surface: "1 500 à 10 000 m²",
     fine: "20 000 €/an",
+    targetDate: "2028-07-01",
     status: "current" as const,
   },
 ] as const;
+
+export type AperDeadlineWave = (typeof APER_DEADLINES)[number]["id"];
+
+export function getAperDeadlineWave(id: AperDeadlineWave) {
+  const wave = APER_DEADLINES.find((w) => w.id === id);
+  if (!wave) throw new Error(`Unknown APER deadline wave: ${id}`);
+  return wave;
+}
 
 export const APER_OBLIGATION_SUMMARY =
   "Tout parc de stationnement extérieur d'au moins 1 500 m² doit être équipé d'ombrières solaires couvrant au minimum 50 % de sa superficie (panneaux photovoltaïques sur la totalité de la partie supérieure).";

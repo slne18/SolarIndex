@@ -18,6 +18,11 @@ const nextConfig = {
         destination: "/leads",
         permanent: true,
       },
+      {
+        source: "/observatoire",
+        destination: "/leads?view=map",
+        permanent: true,
+      },
     ];
   },
 };

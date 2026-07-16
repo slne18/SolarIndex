@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 const TOOLS = [
   { href: "/verifier", label: "Éligibilité APER" },
   { href: "/simulateur", label: "Gains & économies" },
-  { href: "/observatoire", label: "Observatoire national" },
 ] as const;
 
 export default function HeaderToolsNav() {

@@ -14,6 +14,7 @@ import LeadTable from "@/components/LeadTable";
 import LeadsSolutionSection from "@/components/LeadsSolutionSection";
 import LeadDemoFiche from "@/components/LeadDemoFiche";
 import FranceMap from "@/components/FranceMap";
+import LeadsRecapTable from "@/components/LeadsRecapTable";
 import CatalogViewToggle, { type CatalogView } from "@/components/CatalogViewToggle";
 
 function LeadsCatalog() {
@@ -150,6 +151,7 @@ function LeadsCatalog() {
           <p className="mt-4 text-center text-sm text-slate-500">
             Cliquez sur un département pour filtrer la liste ci-dessous.
           </p>
+          <LeadsRecapTable />
         </div>
       ) : null}
 

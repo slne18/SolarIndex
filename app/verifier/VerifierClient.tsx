@@ -242,8 +242,8 @@ export default function VerifierClient() {
       </div>
 
       <aside className="space-y-4">
-        <RegulatoryCountdown variant="full" obligation="50" theme="dark" />
-        <RegulatoryCountdown variant="full" obligation="40" theme="dark" />
+        <RegulatoryCountdown variant="full" wave="large" theme="dark" />
+        <RegulatoryCountdown variant="full" wave="small" theme="dark" />
         <p className="text-xs leading-relaxed text-slate-500">
           Outil indicatif basé sur OpenStreetMap, le cadastre IGN et les données
           d&apos;altimétrie. Ne remplace pas une étude réglementaire officielle.
