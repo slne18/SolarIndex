@@ -231,7 +231,7 @@ export default function SimulateurClient() {
           </div>
 
           <Link href={ctaHref} className="btn-mint inline-flex w-full justify-center sm:w-auto">
-            Déposer un projet — recevoir des propositions
+            Déposer un projet
           </Link>
           <div className="mt-4">
             <RfpLegalNotice variant="compact" />

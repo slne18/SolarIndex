@@ -14,7 +14,7 @@ export default function LeadsRecapTable() {
       setLoading(true);
       setError(false);
       try {
-        const res = await fetch("/api/leads/recap-departements");
+        const res = await fetch("/api/leads/recap-departements", { cache: "no-store" });
         if (!res.ok) throw new Error("fetch failed");
         setData(await res.json());
       } catch {
