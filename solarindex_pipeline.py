@@ -73,15 +73,18 @@ M2_PAR_KWC = 5                  # 5 m² de structure pour 1 kWc (standard ombri�
 COUT_KWC_EUR = 1_200            # Coût moyen marché installation commerciale (€/kWc)
 
 # Plusieurs serveurs miroirs Overpass : on bascule sur le suivant en cas de
-# timeout (504) ou d'indisponibilité. Le serveur principal est souvent saturé.
+# timeout (504) ou d'indisponibilité. kumi/private.coffee avant overpass-api.de
+# (souvent moins saturés pour les requêtes par ID).
 OVERPASS_MIRRORS = [
-    "https://overpass-api.de/api/interpreter",
     "https://overpass.kumi.systems/api/interpreter",
     "https://overpass.private.coffee/api/interpreter",
+    "https://overpass-api.de/api/interpreter",
     "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
 ]
 MAX_RETRIES = 3              # Tentatives par serveur
 RETRY_BACKOFF_S = 5         # Attente (croissante) entre deux tentatives
+OVERPASS_GEOM_CHUNK = 20    # IDs OSM par requête géométrie (backfill) — petit = moins de 504
+OVERPASS_GEOM_PAUSE_S = 3.0   # Pause entre lots géométrie (politesse API publique)
 
 # ─── APIs publiques d'enrichissement (Étapes 2 & 3, gratuites, sans clé) ───────
 API_ADRESSE_REVERSE = "https://api-adresse.data.gouv.fr/reverse/"          # BAN — géocodage inversé
@@ -210,10 +213,12 @@ out geom;
 
 
 # ─── Récupération Overpass robuste (miroirs + retries) ────────────────────────
-def fetch_overpass(query: str) -> list[dict]:
+def fetch_overpass(query: str, *, verbose: bool = True) -> list[dict]:
     """
     Envoie la requête Overpass en basculant sur plusieurs serveurs miroirs et
     en réessayant en cas d'erreur transitoire (504, 502, timeout réseau).
+
+    verbose=False : logs réduits (backfill géométries — moins de bruit sur les 504).
 
     Returns:
         La liste des éléments OSM ("elements").
@@ -225,7 +230,8 @@ def fetch_overpass(query: str) -> list[dict]:
         host = mirror.split("/")[2]
         for attempt in range(1, MAX_RETRIES + 1):
             try:
-                print(f"    → Serveur {host} (tentative {attempt}/{MAX_RETRIES})...")
+                if verbose:
+                    print(f"    → Serveur {host} (tentative {attempt}/{MAX_RETRIES})...")
                 response = requests.post(
                     mirror,
                     data={"data": query},
@@ -235,16 +241,21 @@ def fetch_overpass(query: str) -> list[dict]:
                 # 504/502/429 = surcharge serveur : on réessaie / on bascule
                 if response.status_code in (429, 502, 503, 504):
                     last_error = f"{response.status_code} sur {host}"
-                    print(f"      ⏳ {response.status_code} (serveur saturé), nouvel essai...")
+                    if verbose:
+                        print(f"      ⏳ {response.status_code} (serveur saturé), nouvel essai...")
                     time.sleep(RETRY_BACKOFF_S * attempt)
                     continue
                 response.raise_for_status()
                 return response.json().get("elements", [])
             except requests.RequestException as e:
                 last_error = str(e)
-                print(f"      ⚠️  {e}")
+                if verbose:
+                    print(f"      ⚠️  {e}")
                 time.sleep(RETRY_BACKOFF_S * attempt)
-        print(f"    ✗ {host} indisponible, passage au serveur suivant.")
+        if verbose:
+            print(f"    ✗ {host} indisponible, passage au serveur suivant.")
+        elif last_error:
+            print(f"    ⏳ Overpass saturé ({host}) → miroir suivant…")
 
     raise RuntimeError(
         f"Tous les serveurs Overpass ont échoué. Dernière erreur : {last_error}. "
@@ -715,33 +726,105 @@ def fetch_solar_index(dept_id: str) -> tuple[STRtree | None, list[Polygon]]:
 
 
 def fetch_parking_geoms_by_osm_ids(
-    osm_ids: list[int], chunk_size: int = 80,
+    osm_ids: list[int],
+    chunk_size: int = OVERPASS_GEOM_CHUNK,
+    *,
+    verbose: bool = False,
+    persist: bool = True,
+    geom_pause: float | None = None,
 ) -> dict[int, list[tuple[float, float]]]:
-    """Géométries parking (lon, lat) par osm_id — pour backfill recouvrement PV."""
+    """
+    Géométries parking (lon, lat) par osm_id — pour backfill multi-parcelle.
+
+    - Lots petits (défaut 20 ids) pour limiter les 504
+    - Cache disque data/cache/osm_geoms.json (reprises sans re-taper Overpass)
+    - Si un lot échoue : split automatique en deux sous-lots
+    """
+    cache = _load_osm_geom_cache()
+    missing = [int(x) for x in osm_ids if int(x) not in cache]
+    pause = OVERPASS_GEOM_PAUSE_S if geom_pause is None else geom_pause
+    if missing:
+        for i in range(0, len(missing), chunk_size):
+            chunk = missing[i : i + chunk_size]
+            cache.update(_fetch_geom_chunk(chunk, verbose=verbose))
+            if persist:
+                _save_osm_geom_cache(cache)
+            time.sleep(pause)
+    return {int(oid): cache[int(oid)] for oid in osm_ids if int(oid) in cache}
+
+
+_osm_geom_disk_cache: dict[int, list[tuple[float, float]]] | None = None
+
+
+def _osm_geom_cache_path() -> Path:
+    return _ROOT / "data" / "cache" / "osm_geoms.json"
+
+
+def _load_osm_geom_cache() -> dict[int, list[tuple[float, float]]]:
+    global _osm_geom_disk_cache
+    if _osm_geom_disk_cache is not None:
+        return _osm_geom_disk_cache
     out: dict[int, list[tuple[float, float]]] = {}
-    if not osm_ids:
-        return out
-    for i in range(0, len(osm_ids), chunk_size):
-        chunk = osm_ids[i : i + chunk_size]
-        ids = ",".join(str(x) for x in chunk)
-        query = f"""
+    path = _osm_geom_cache_path()
+    try:
+        if path.exists():
+            raw = json.loads(path.read_text(encoding="utf-8"))
+            for key, coords in raw.items():
+                if isinstance(coords, list) and len(coords) >= 3:
+                    out[int(key)] = [(float(lon), float(lat)) for lon, lat in coords]
+    except (OSError, json.JSONDecodeError, TypeError, ValueError):
+        out = {}
+    _osm_geom_disk_cache = out
+    return out
+
+
+def _save_osm_geom_cache(cache: dict[int, list[tuple[float, float]]]) -> None:
+    path = _osm_geom_cache_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    serial = {str(k): v for k, v in cache.items()}
+    path.write_text(json.dumps(serial, separators=(",", ":")), encoding="utf-8")
+
+
+def _overpass_geom_query(ids: list[int]) -> str:
+    ids_s = ",".join(str(x) for x in ids)
+    return f"""
 [out:json][timeout:180];
 (
-  way(id:{ids});
-  relation(id:{ids});
+  way(id:{ids_s});
+  relation(id:{ids_s});
 );
 out geom;
 """.strip()
-        try:
-            for el in fetch_overpass(query):
-                oid = el.get("id")
-                coords = extract_coords_from_element(el)
-                if oid is not None and coords:
-                    out[int(oid)] = coords
-        except RuntimeError as e:
-            print(f"      ⚠️  Géométries parking (chunk {i // chunk_size + 1}) : {e}")
-        time.sleep(0.5)
-    return out
+
+
+def _fetch_geom_chunk(
+    ids: list[int],
+    *,
+    verbose: bool = False,
+) -> dict[int, list[tuple[float, float]]]:
+    """Un lot d'IDs OSM ; en cas d'échec total, split récursif en deux."""
+    if not ids:
+        return {}
+    try:
+        out: dict[int, list[tuple[float, float]]] = {}
+        for el in fetch_overpass(_overpass_geom_query(ids), verbose=verbose):
+            oid = el.get("id")
+            coords = extract_coords_from_element(el)
+            if oid is not None and coords:
+                out[int(oid)] = coords
+        return out
+    except RuntimeError:
+        if len(ids) <= 1:
+            if verbose:
+                print(f"      ⚠️  géométrie osm_id={ids[0]} introuvable (Overpass)")
+            return {}
+        mid = len(ids) // 2
+        if not verbose:
+            print(f"    ↳ lot {len(ids)} ids saturé → split {mid}+{len(ids) - mid}")
+        return {
+            **_fetch_geom_chunk(ids[:mid], verbose=verbose),
+            **_fetch_geom_chunk(ids[mid:], verbose=verbose),
+        }
 
 
 def parking_polygon_l93(

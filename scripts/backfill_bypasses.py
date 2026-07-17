@@ -10,6 +10,8 @@ Réutilise resolve_proprietaire_foncier (pipeline) et apply_vision_result (visio
 
 Usage :
   .venv/bin/python scripts/backfill_bypasses.py --mode proprietaire [--limit N] [--dry-run]
+  .venv/bin/python scripts/backfill_bypasses.py --mode proprietaire --refresh
+    # Recalcule propriétaire même si déjà renseigné (après multi-parcelle)
   .venv/bin/python scripts/backfill_bypasses.py --mode vision       [--limit N] [--dry-run]
   .venv/bin/python scripts/backfill_bypasses.py --mode vision_pct   [--limit N] [--dry-run]
 
@@ -86,10 +88,11 @@ def _majic_count() -> int:
 
 
 # ─── Mode 3 : propriétaire foncier (MAJIC DGFiP, jointure parcelle) ───────────
-def backfill_proprietaire(limit: int, dry_run: bool) -> None:
+def backfill_proprietaire(limit: int, dry_run: bool, refresh: bool = False) -> None:
     """
     Jointure leads.id_parcelle → majic_proprietaires (tri surface_m2 DESC).
     Sans --limit : appelle la RPC SQL backfill_proprietaire_from_majic (bulk).
+    Avec --refresh : recalcule même les leads qui ont déjà un propriétaire.
     """
     n_majic = _majic_count()
     if n_majic == -1:
@@ -101,7 +104,7 @@ def backfill_proprietaire(limit: int, dry_run: bool) -> None:
         sys.exit(1)
     print(f"📚 majic_proprietaires : {n_majic:,} parcelles PM")
 
-    if limit == 0 and not dry_run:
+    if limit == 0 and not dry_run and not refresh:
         r = requests.post(
             f"{REST}/rpc/backfill_proprietaire_from_majic",
             headers={**HEADERS, "Prefer": "return=representation"},
@@ -119,22 +122,26 @@ def backfill_proprietaire(limit: int, dry_run: bool) -> None:
             print(f"✅ Terminé : {count} lead(s) enrichi(s) via jointure MAJIC.")
             return
 
-    done = resolved = 0
+    done = resolved = updated = 0
     cache: dict[str, dict] = {}
+    offset = 0
     while True:
         fetch_n = min(PAGE, limit - done) if limit else PAGE
         if limit and fetch_n <= 0:
             break
-        rows = _get({
-            "select": "id,id_parcelle,surface_m2",
+        params: dict = {
+            "select": "id,id_parcelle,surface_m2,proprietaire_foncier,siren_proprietaire_foncier",
             "id_parcelle": "not.is.null",
-            "proprietaire_foncier": "is.null",
             "order": "surface_m2.desc",
-            "offset": 0,
+            "offset": offset,
             "limit": fetch_n,
-        })
+        }
+        if not refresh:
+            params["proprietaire_foncier"] = "is.null"
+        rows = _get(params)
         if not rows:
             break
+        offset += len(rows)
         for row in rows:
             ref = (row.get("id_parcelle") or "").strip()
             if not ref:
@@ -144,10 +151,23 @@ def backfill_proprietaire(limit: int, dry_run: bool) -> None:
             prop = cache[ref]
             if prop.get("proprietaire_foncier"):
                 resolved += 1
+            new_prop = prop.get("proprietaire_foncier")
+            new_siren = prop.get("siren_proprietaire_foncier")
+            old_prop = row.get("proprietaire_foncier")
+            old_siren = row.get("siren_proprietaire_foncier")
+            changed = (new_prop != old_prop) or (new_siren != old_siren)
+            if refresh and not changed:
+                done += 1
+                if limit and done >= limit:
+                    print(f"→ Limite {limit} atteinte. {done} leads, {updated} mis à jour.")
+                    return
+                continue
+            if changed:
+                updated += 1
             if not dry_run:
                 _patch(row["id"], {
-                    "proprietaire_foncier": prop.get("proprietaire_foncier"),
-                    "siren_proprietaire_foncier": prop.get("siren_proprietaire_foncier"),
+                    "proprietaire_foncier": new_prop,
+                    "siren_proprietaire_foncier": new_siren,
                 })
             done += 1
             if done % 500 == 0:
@@ -159,11 +179,18 @@ def backfill_proprietaire(limit: int, dry_run: bool) -> None:
             break
 
     if done == 0:
-        print("✅ Aucun lead avec parcelle sans propriétaire foncier à traiter.")
+        msg = (
+            "Aucun lead à traiter."
+            if refresh
+            else "Aucun lead avec parcelle sans propriétaire foncier à traiter."
+        )
+        print(f"✅ {msg}")
     elif dry_run:
-        print(f"✅ Dry-run : {done} lead(s) traitables, {resolved} match MAJIC estimés.")
+        extra = f", {updated} changement(s) estimé(s)" if refresh else ""
+        print(f"✅ Dry-run : {done} lead(s) traitables, {resolved} match MAJIC estimés{extra}.")
     else:
-        print(f"✅ Terminé : {done} leads, {resolved} propriétaires PM identifiés.")
+        extra = f", {updated} mis à jour" if refresh else ""
+        print(f"✅ Terminé : {done} leads, {resolved} propriétaires PM identifiés{extra}.")
 
 
 # ─── Mode 4 : vision ombrières (Haiku, Batch API −50 %) ───────────────────────
@@ -426,6 +453,11 @@ def main() -> None:
                     help="vision_pct : appels synchrones (plus lent, pas d'attente batch)")
     ap.add_argument("--chunk-size", type=int, default=25,
                     help="vision : leads par lot (défaut 25, réduire si erreurs SSL)")
+    ap.add_argument(
+        "--refresh",
+        action="store_true",
+        help="proprietaire : recalcule même si proprietaire_foncier déjà renseigné",
+    )
     args = ap.parse_args()
 
     if not SUPABASE_URL or not SERVICE_KEY:
@@ -434,7 +466,7 @@ def main() -> None:
 
     print(f"[backfill] mode={args.mode} limit={args.limit or '∞'} dry_run={args.dry_run}")
     if args.mode == "proprietaire":
-        backfill_proprietaire(args.limit, args.dry_run)
+        backfill_proprietaire(args.limit, args.dry_run, refresh=args.refresh)
     elif args.mode == "vision":
         backfill_vision(args.limit, args.dry_run, chunk=args.chunk_size)
     else:

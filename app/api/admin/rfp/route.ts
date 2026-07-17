@@ -3,6 +3,10 @@ import {
   moderateRfpSubmission,
   queryRfpModerationQueue,
 } from "@/lib/rfp-db";
+import {
+  sendRfpPublishedEmail,
+  sendRfpRejectedEmail,
+} from "@/lib/email-rfp";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +36,11 @@ export async function PATCH(req: Request) {
       );
     }
     const row = await moderateRfpSubmission(id, action);
-    return Response.json({ rfp: row });
+    const emailSent =
+      action === "publie"
+        ? await sendRfpPublishedEmail(row)
+        : await sendRfpRejectedEmail(row);
+    return Response.json({ rfp: row, email_sent: emailSent });
   } catch (e) {
     console.error("[admin/rfp PATCH]", e);
     const msg = e instanceof Error ? e.message : "Modération échouée.";

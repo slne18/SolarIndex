@@ -7,6 +7,7 @@ import {
   validateRfpDeposantDeclarations,
 } from "@/lib/rfp-legal";
 import { verifySiret } from "@/lib/sirene";
+import { sendRfpVerificationEmail } from "@/lib/email-rfp";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -166,12 +167,20 @@ export async function POST(req: Request) {
       acceptation_conditions_deposant: true,
     });
 
+    const emailSent = await sendRfpVerificationEmail(
+      contactEmail,
+      verifyUrl,
+      row.entreprise,
+    );
+
     return Response.json(
       {
         id: row.id,
         message:
           "Demande enregistrée. Confirmez votre email pour passer en modération (publication sous 48 h).",
-        verify_url_dev: process.env.NODE_ENV === "development" ? verifyUrl : undefined,
+        email_sent: emailSent,
+        verify_url_dev:
+          process.env.NODE_ENV === "development" && !emailSent ? verifyUrl : undefined,
       },
       { status: 201, headers: NO_STORE },
     );
