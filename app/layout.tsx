@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
-import PersonaProvider from "@/components/PersonaProvider";
+import { PersonaProvider } from "@/components/PersonaProvider";
 import SiteHeader from "@/components/SiteHeader";
 import NewsTickerBanner from "@/components/NewsTickerBanner";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
