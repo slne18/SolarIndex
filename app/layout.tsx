@@ -4,9 +4,8 @@ import { headers } from "next/headers";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
-import HeaderAuthNav from "@/components/HeaderAuthNav";
-import HeaderSignupCta from "@/components/HeaderSignupCta";
-import HeaderToolsNav from "@/components/HeaderToolsNav";
+import PersonaProvider from "@/components/PersonaProvider";
+import SiteHeader from "@/components/SiteHeader";
 import NewsTickerBanner from "@/components/NewsTickerBanner";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
 import "./globals.css";
@@ -44,35 +43,7 @@ export const viewport = {
 };
 
 function Header() {
-  return (
-    <header className="site-header">
-      <div className="header-bar">
-        <div className="header-start">
-          <Link href="/" className="header-brand group">
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-solar to-solar-600 text-night shadow-glow transition group-hover:scale-[1.02] sm:h-11 sm:w-11">
-              <SolarIndexIcon size={20} className="sm:h-[22px] sm:w-[22px]" />
-            </span>
-            <span className="header-brand-text whitespace-nowrap">
-              Solar<span className="text-solar">Index</span>
-            </span>
-          </Link>
-          <nav className="header-product-nav" aria-label="Produits">
-            <Link href="/leads" className="nav-link header-product-link">
-              Leads auto
-            </Link>
-            <Link href="/appels-offres" className="nav-link header-product-link hidden min-[420px]:inline-flex">
-              Appels d&apos;offres
-            </Link>
-            <HeaderToolsNav />
-          </nav>
-        </div>
-        <nav className="header-nav" aria-label="Compte utilisateur">
-          <HeaderAuthNav />
-          <HeaderSignupCta />
-        </nav>
-      </div>
-    </header>
-  );
+  return <SiteHeader />;
 }
 
 function Footer({ light = false }: { light?: boolean }) {
@@ -149,14 +120,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="fr" className={jakarta.variable}>
       <body className={`${jakarta.className} min-h-screen`}>
         <AnalyticsProvider>
-          {!isAdmin && (
-            <div className="site-chrome">
-              <NewsTickerBanner />
-              <Header />
-            </div>
-          )}
-          <main>{children}</main>
-          {!isAdmin && <Footer light={isLightFooter} />}
+          <PersonaProvider>
+            {!isAdmin && (
+              <div className="site-chrome">
+                <NewsTickerBanner />
+                <Header />
+              </div>
+            )}
+            <main>{children}</main>
+            {!isAdmin && <Footer light={isLightFooter} />}
+          </PersonaProvider>
         </AnalyticsProvider>
         <Analytics />
       </body>

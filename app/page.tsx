@@ -8,6 +8,7 @@ import {
 import { PRIX_RFP, RFP_SURFACE_TIER_M2 } from "@/lib/rfp";
 import { APER_DEADLINES, APER_LAW_REF, APER_OBLIGATION_SUMMARY, APER_PUBLIC_PARKS_NOTE } from "@/lib/aper-law";
 import SectionEyebrow from "@/components/SectionEyebrow";
+import HomeHeroPersona from "@/components/HomeHeroPersona";
 import JsonLd from "@/components/JsonLd";
 import RegulatoryCountdown from "@/components/RegulatoryCountdown";
 import { buildPageMetadata } from "@/lib/seo-config";
@@ -45,60 +46,7 @@ export default function HomePage() {
         ]}
       />
       {/* ─── HERO ─── */}
-      <section className="hero-surface relative overflow-hidden">
-        <div className="container-x relative pt-14 pb-8 sm:pt-20 sm:pb-10">
-          <div className="mx-auto max-w-3xl text-center animate-fade-up">
-            <p className="pill-accent mx-auto w-fit">
-              Parkings solaires APER · France entière
-            </p>
-            <h1 className="mt-6 text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
-              Repérez les parkings non conformes APER{" "}
-              <span className="text-gradient">avant l&apos;amende.</span>
-            </h1>
-            <div className="mx-auto mt-5 max-w-2xl space-y-3 text-base leading-relaxed text-slate-400 sm:text-lg">
-              <p>Deux sources de chantiers.</p>
-              <p>
-                <strong className="font-medium text-slate-300">Leads automatisés</strong> — nos outils
-                repèrent en ligne chaque parking ≥ 1 500 m², l&apos;enrichissent cadastre & SIREN et le
-                scorent pour une prospection B2B.
-              </p>
-              <p>
-                <strong className="font-medium text-slate-300">Appels d&apos;offres</strong> — projets
-                déposés directement par les gérants prêts à équiper.
-              </p>
-            </div>
-            <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-              <Link href="/leads" className="btn-solar min-w-[15.5rem]">
-                <RadarIcon />
-                Accéder aux leads
-              </Link>
-              <Link href="/appels-offres" className="btn-mint min-w-[15.5rem]">
-                <DocumentIcon />
-                Accéder aux appels d&apos;offres
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex justify-center pb-14 sm:pb-16">
-          <a
-            href="#loi-aper"
-            className="group flex flex-col items-center gap-1 text-xs font-medium uppercase tracking-widest text-slate-500 transition hover:text-slate-300"
-          >
-            Découvrir
-            <svg
-              className="mt-1 h-4 w-4 animate-bounce text-slate-600 group-hover:text-solar"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden
-            >
-              <path d="M12 5v14M5 12l7 7 7-7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </a>
-        </div>
-      </section>
+      <HomeHeroPersona />
 
       <div className="surface-light">
       {/* ─── LOI APER ─── */}
@@ -303,26 +251,5 @@ function PriceCard({
         {cta}
       </Link>
     </div>
-  );
-}
-
-function RadarIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-      <circle cx="12" cy="12" r="9" opacity="0.35" />
-      <circle cx="12" cy="12" r="5.5" opacity="0.55" />
-      <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
-      <path d="M12 12 L20 6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function DocumentIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-      <path d="M8 4h8l2 2v14H6V4h2z" strokeLinejoin="round" />
-      <path d="M8 4v2h8V4" />
-      <path d="M9 11h6M9 14h6M9 17h4" strokeLinecap="round" opacity="0.85" />
-    </svg>
   );
 }

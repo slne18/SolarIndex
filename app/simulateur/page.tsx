@@ -1,3 +1,4 @@
+import PersonaToolCta from "@/components/PersonaToolCta";
 import { buildPageMetadata } from "@/lib/seo-config";
 import SimulateurClient from "./SimulateurClient";
 
@@ -30,6 +31,7 @@ export default function SimulateurPage() {
       <div className="mt-8">
         <SimulateurClient />
       </div>
+      <PersonaToolCta />
     </div>
   );
 }
