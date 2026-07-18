@@ -71,3 +71,31 @@ export function HeroActionDocumentIcon() {
     </svg>
   );
 }
+
+export function HeroActionCheckIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+      <path d="M9 11l3 3L22 4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function HeroActionCalculatorIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+      <rect x="5" y="3" width="14" height="18" rx="2" />
+      <path d="M8 7h8" strokeLinecap="round" />
+      <path d="M8 11h2M12 11h2M16 11h2M8 15h2M12 15h2M16 15h2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function HeroActionUploadIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+      <path d="M12 16V4M12 4l4 4M12 4L8 8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" strokeLinecap="round" />
+    </svg>
+  );
+}

@@ -5,8 +5,11 @@ import { useEffect } from "react";
 import { PERSONA_LABELS, type Persona } from "@/lib/persona";
 import { usePersona } from "@/components/PersonaProvider";
 import HeroActionList, {
+  HeroActionCalculatorIcon,
+  HeroActionCheckIcon,
   HeroActionDocumentIcon,
   HeroActionRadarIcon,
+  HeroActionUploadIcon,
 } from "@/components/HeroActionList";
 
 const PERSONA_CARDS: {
@@ -150,7 +153,7 @@ function InstallerHero({ onSwitch }: { onSwitch: () => void }) {
           },
           {
             href: "/appels-offres",
-            label: "Appels d'offres",
+            label: "Consulter les appels d'offres",
             hint: "Projets déposés par les gérants",
             icon: <HeroActionDocumentIcon />,
           },
@@ -184,19 +187,19 @@ function OwnerHero({ onSwitch }: { onSwitch: () => void }) {
             href: "/verifier",
             label: "Vérifier mon parking",
             hint: "Éligibilité APER · gratuit",
-            step: 1,
+            icon: <HeroActionCheckIcon />,
           },
           {
             href: "/simulateur",
             label: "Simuler gains & économies",
             hint: "ROI et amende évitée",
-            step: 2,
+            icon: <HeroActionCalculatorIcon />,
           },
           {
             href: "/appels-offres/nouveau",
             label: "Déposer mon projet",
             hint: "Recevoir des propositions",
-            step: 3,
+            icon: <HeroActionUploadIcon />,
           },
         ]}
       />

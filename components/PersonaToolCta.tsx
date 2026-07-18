@@ -1,7 +1,12 @@
 "use client";
 
 import { usePersona } from "@/components/PersonaProvider";
-import HeroActionList from "@/components/HeroActionList";
+import HeroActionList, {
+  HeroActionCalculatorIcon,
+  HeroActionDocumentIcon,
+  HeroActionRadarIcon,
+  HeroActionUploadIcon,
+} from "@/components/HeroActionList";
 
 export default function PersonaToolCta() {
   const { persona, ready } = usePersona();
@@ -25,11 +30,13 @@ export default function PersonaToolCta() {
               href: "/leads",
               label: "Parcourir les leads",
               hint: "Catalogue automatisé",
+              icon: <HeroActionRadarIcon />,
             },
             {
               href: "/appels-offres",
-              label: "Appels d'offres",
+              label: "Consulter les appels d'offres",
               hint: "Projets déposés",
+              icon: <HeroActionDocumentIcon />,
             },
           ]}
         />
@@ -53,13 +60,13 @@ export default function PersonaToolCta() {
             href: "/appels-offres/nouveau",
             label: "Déposer mon projet",
             hint: "Mise en relation installateurs",
-            step: 1,
+            icon: <HeroActionUploadIcon />,
           },
           {
             href: "/simulateur",
             label: "Simuler mes gains",
             hint: "ROI et économies",
-            step: 2,
+            icon: <HeroActionCalculatorIcon />,
           },
         ]}
       />
