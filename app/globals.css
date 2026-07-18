@@ -442,6 +442,10 @@ body {
     @apply hidden items-center rounded-lg border border-white/10 bg-white/[0.04] p-0.5 min-[640px]:inline-flex;
   }
 
+  .persona-switcher-left {
+    @apply inline-flex;
+  }
+
   .persona-switcher-skeleton {
     @apply h-8 w-44;
   }

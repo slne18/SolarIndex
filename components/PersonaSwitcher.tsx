@@ -5,7 +5,13 @@ import { usePersona } from "@/components/PersonaProvider";
 
 const OPTIONS: Persona[] = ["installer", "owner"];
 
-export default function PersonaSwitcher({ compact = false }: { compact?: boolean }) {
+export default function PersonaSwitcher({
+  compact = false,
+  className = "",
+}: {
+  compact?: boolean;
+  className?: string;
+}) {
   const { persona, ready, setPersona } = usePersona();
 
   if (!ready) {
@@ -19,7 +25,7 @@ export default function PersonaSwitcher({ compact = false }: { compact?: boolean
 
   return (
     <div
-      className="persona-switcher"
+      className={`persona-switcher ${className}`.trim()}
       role="group"
       aria-label="Choisir votre profil"
     >

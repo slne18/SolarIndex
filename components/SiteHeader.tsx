@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import HeaderAuthNav from "@/components/HeaderAuthNav";
 import HeaderSignupCta from "@/components/HeaderSignupCta";
 import HeaderProductNav from "@/components/HeaderProductNav";
 import PersonaSwitcher from "@/components/PersonaSwitcher";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
-import { usePersona } from "@/components/PersonaProvider";
 
 export default function SiteHeader() {
-  const { persona, ready } = usePersona();
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   return (
     <header className="site-header">
@@ -23,18 +24,14 @@ export default function SiteHeader() {
               Solar<span className="text-solar">Index</span>
             </span>
           </Link>
-          <HeaderProductNav />
+          {isHome ? (
+            <PersonaSwitcher compact className="persona-switcher-left" />
+          ) : (
+            <HeaderProductNav />
+          )}
         </div>
         <nav className="header-nav" aria-label="Compte utilisateur">
-          {ready && persona === "owner" ? (
-            <Link
-              href="/appels-offres/nouveau"
-              className="btn-solar mr-1 hidden px-3 py-2 text-xs min-[520px]:inline-flex sm:text-sm"
-            >
-              Déposer mon projet
-            </Link>
-          ) : null}
-          <PersonaSwitcher compact />
+          {!isHome ? <PersonaSwitcher compact /> : null}
           <HeaderAuthNav />
           <HeaderSignupCta />
         </nav>
