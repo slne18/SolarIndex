@@ -29,7 +29,9 @@ export default function NewsTickerBanner() {
   return (
     <aside className="news-ticker" aria-label="Actualités ombrières solaires et loi APER">
       <div className="news-ticker-inner">
-        <span className="news-ticker-badge">Actu</span>
+        <span className="news-ticker-badge" aria-hidden>
+          Actu APER
+        </span>
         <div className="news-ticker-viewport">
           <div className="news-ticker-track">
             <TickerSegment copy="a" />

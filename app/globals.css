@@ -349,17 +349,19 @@ body {
   }
 
   .news-ticker {
-    @apply border-b border-white/[0.06] bg-night-900/95 text-xs text-slate-400;
+    @apply border-b border-solar/25 bg-gradient-to-r from-solar/10 via-night-900 to-solar/10 text-sm text-slate-200;
     padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
     padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+    box-shadow: inset 0 1px 0 rgba(232, 168, 32, 0.12);
   }
 
   .news-ticker-inner {
-    @apply flex h-9 items-center gap-3;
+    @apply flex h-12 items-center gap-4 sm:h-[3.25rem] sm:gap-5;
   }
 
   .news-ticker-badge {
-    @apply shrink-0 rounded-md bg-solar/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-solar;
+    @apply shrink-0 rounded-lg border border-solar/35 bg-solar/20 px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-solar sm:text-xs;
+    box-shadow: 0 0 20px -6px rgba(232, 168, 32, 0.45);
   }
 
   .news-ticker-viewport {
@@ -367,31 +369,31 @@ body {
     mask-image: linear-gradient(
       to right,
       transparent,
-      black 2rem,
-      black calc(100% - 2rem),
+      black 2.5rem,
+      black calc(100% - 2.5rem),
       transparent
     );
   }
 
   .news-ticker-track {
     @apply flex w-max items-center;
-    animation: news-ticker-scroll 55s linear infinite;
+    animation: news-ticker-scroll 65s linear infinite;
   }
 
   .news-ticker-item {
-    @apply inline-flex shrink-0 items-center gap-2 pr-8;
+    @apply inline-flex shrink-0 items-center gap-2.5 pr-10 sm:gap-3 sm:pr-12;
   }
 
   .news-ticker-source {
-    @apply shrink-0 font-semibold text-slate-300;
+    @apply shrink-0 text-sm font-bold text-white sm:text-[0.9375rem];
   }
 
   .news-ticker-link {
-    @apply whitespace-nowrap text-slate-400 transition hover:text-solar;
+    @apply whitespace-nowrap font-medium text-slate-200 underline decoration-solar/30 underline-offset-4 transition hover:text-solar hover:decoration-solar/70;
   }
 
   .news-ticker-sep {
-    @apply ml-6 text-[8px] text-solar/50;
+    @apply ml-2 text-[10px] text-solar/70 sm:text-xs;
   }
 
   @keyframes news-ticker-scroll {
