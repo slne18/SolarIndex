@@ -22,8 +22,12 @@ body {
     @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
   }
 
+  .site-chrome {
+    @apply sticky top-0 z-40 w-full max-w-[100vw];
+  }
+
   .site-header {
-    @apply sticky top-0 z-40 w-full max-w-[100vw] border-b border-white/[0.06] bg-night-950 backdrop-blur-xl;
+    @apply w-full border-b border-white/[0.06] bg-night-950 backdrop-blur-xl;
     padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
     padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
   }
@@ -342,5 +346,71 @@ body {
 
   .legal-prose a {
     @apply text-solar underline decoration-solar/40 underline-offset-2 hover:decoration-solar;
+  }
+
+  .news-ticker {
+    @apply border-b border-white/[0.06] bg-night-900/95 text-xs text-slate-400;
+    padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  }
+
+  .news-ticker-inner {
+    @apply flex h-9 items-center gap-3;
+  }
+
+  .news-ticker-badge {
+    @apply shrink-0 rounded-md bg-solar/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-solar;
+  }
+
+  .news-ticker-viewport {
+    @apply min-w-0 flex-1 overflow-hidden;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 2rem,
+      black calc(100% - 2rem),
+      transparent
+    );
+  }
+
+  .news-ticker-track {
+    @apply flex w-max items-center;
+    animation: news-ticker-scroll 55s linear infinite;
+  }
+
+  .news-ticker-item {
+    @apply inline-flex shrink-0 items-center gap-2 pr-8;
+  }
+
+  .news-ticker-source {
+    @apply shrink-0 font-semibold text-slate-300;
+  }
+
+  .news-ticker-link {
+    @apply whitespace-nowrap text-slate-400 transition hover:text-solar;
+  }
+
+  .news-ticker-sep {
+    @apply ml-6 text-[8px] text-solar/50;
+  }
+
+  @keyframes news-ticker-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .news-ticker-viewport {
+      mask-image: none;
+      @apply overflow-x-auto;
+    }
+
+    .news-ticker-track {
+      animation: none;
+    }
   }
 }

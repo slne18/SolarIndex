@@ -9,8 +9,11 @@ Usage :
   .venv/bin/python scripts/backfill_multi_parcelle.py --workers 6
   .venv/bin/python scripts/backfill_multi_parcelle.py --all
 
-Reprise après crash : relance la même commande (offset sauvegardé automatiquement).
+Reprise après crash / Ctrl+C : relance la même commande (offset sauvegardé automatiquement).
   .venv/bin/python scripts/backfill_multi_parcelle.py --no-resume
+
+Premier run sans fichier de progression (ancienne version) : reprendre manuellement.
+  .venv/bin/python scripts/backfill_multi_parcelle.py --workers 6 --offset 4720
 
 Pré-requis :
   NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (.env.local)
@@ -20,6 +23,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import signal
 import sys
 import threading
 import time
@@ -337,76 +341,103 @@ def run(
     )
 
     offset = start_offset
+    committed_offset = start_offset
     if offset > 0:
         print(f"▶ Reprise à l'offset {offset:,}")
     else:
         print("▶ Démarrage offset 0")
+    if not dry_run and offset > 0:
+        _save_progress(offset, sellable_only)
 
     totals = BatchStats()
     caches = SharedCaches()
     t0 = time.time()
 
-    while True:
-        batch_size = PAGE if not limit else min(PAGE, limit - totals.recalculated)
-        if batch_size <= 0:
-            break
-        rows = _fetch_batch(batch_size, offset, sellable_only=sellable_only)
-        if not rows:
-            break
-        offset += len(rows)
-
-        osm_ids = [int(r["osm_id"]) for r in rows]
-        geoms = pipe.fetch_parking_geoms_by_osm_ids(
-            osm_ids,
-            verbose=False,
-            geom_pause=BACKFILL_GEOM_PAUSE_S,
-        )
-
+    def _persist_progress() -> None:
         if dry_run:
-            for row in rows:
-                part = _process_row(
-                    row,
-                    geoms.get(int(row["osm_id"])),
-                    refresh_proprietaire,
-                    caches,
-                    skip_unchanged=skip_unchanged,
-                    dry_run=True,
-                )
-                _merge_stats(totals, part)
-        else:
-            with ThreadPoolExecutor(max_workers=workers) as pool:
-                futures = [
-                    pool.submit(
-                        _process_row,
+            return
+        _save_progress(committed_offset, sellable_only)
+
+    def _on_stop(signum: int, _frame: object) -> None:
+        sig = signal.Signals(signum).name
+        print(f"\n⏸  Interruption ({sig}) — progression sauvegardée à l'offset {committed_offset:,}")
+        _persist_progress()
+        sys.exit(130 if signum == signal.SIGINT else 143)
+
+    signal.signal(signal.SIGINT, _on_stop)
+    signal.signal(signal.SIGTERM, _on_stop)
+
+    try:
+        while True:
+            batch_size = PAGE if not limit else min(PAGE, limit - totals.recalculated)
+            if batch_size <= 0:
+                break
+            rows = _fetch_batch(batch_size, offset, sellable_only=sellable_only)
+            if not rows:
+                break
+            offset += len(rows)
+
+            osm_ids = [int(r["osm_id"]) for r in rows]
+            geoms = pipe.fetch_parking_geoms_by_osm_ids(
+                osm_ids,
+                verbose=False,
+                geom_pause=BACKFILL_GEOM_PAUSE_S,
+            )
+
+            if dry_run:
+                for row in rows:
+                    part = _process_row(
                         row,
                         geoms.get(int(row["osm_id"])),
                         refresh_proprietaire,
                         caches,
                         skip_unchanged=skip_unchanged,
-                        dry_run=False,
+                        dry_run=True,
                     )
-                    for row in rows
-                ]
-                for fut in as_completed(futures):
-                    _merge_stats(totals, fut.result())
+                    _merge_stats(totals, part)
+            else:
+                with ThreadPoolExecutor(max_workers=workers) as pool:
+                    futures = [
+                        pool.submit(
+                            _process_row,
+                            row,
+                            geoms.get(int(row["osm_id"])),
+                            refresh_proprietaire,
+                            caches,
+                            skip_unchanged=skip_unchanged,
+                            dry_run=False,
+                        )
+                        for row in rows
+                    ]
+                    for fut in as_completed(futures):
+                        _merge_stats(totals, fut.result())
 
-            _save_progress(offset, sellable_only)
+                committed_offset = offset
+                _persist_progress()
 
-        elapsed = max(time.time() - t0, 1.0)
-        rate = totals.recalculated / elapsed * 60
-        print(
-            f"  {offset:,} parcourus · {totals.recalculated:,} recalculés · "
-            f"{totals.patched:,} patchés · {totals.skipped_unchanged:,} skip (inchangé) · "
-            f"{totals.multi_parcelle} multi · {totals.parcel_changed} parcelle Δ · "
-            f"~{rate:.0f}/min"
-        )
-
-        if limit and totals.recalculated >= limit:
+            elapsed = max(time.time() - t0, 1.0)
+            rate = totals.recalculated / elapsed * 60
             print(
-                f"✅ Limite atteinte : {offset:,} parcourus, {totals.recalculated:,} recalculés, "
-                f"{totals.patched:,} patchés, {totals.skipped_unchanged:,} inchangés."
+                f"  {offset:,} parcourus · {totals.recalculated:,} recalculés · "
+                f"{totals.patched:,} patchés · {totals.skipped_unchanged:,} skip (inchangé) · "
+                f"{totals.multi_parcelle} multi · {totals.parcel_changed} parcelle Δ · "
+                f"~{rate:.0f}/min"
             )
-            return
+
+            if limit and totals.recalculated >= limit:
+                print(
+                    f"✅ Limite atteinte : {offset:,} parcourus, {totals.recalculated:,} recalculés, "
+                    f"{totals.patched:,} patchés, {totals.skipped_unchanged:,} inchangés."
+                )
+                return
+    except BaseException:
+        if not dry_run:
+            print(
+                f"\n⚠️  Erreur — progression sauvegardée à l'offset {committed_offset:,} "
+                f"(relancez la même commande pour reprendre)"
+            )
+            _persist_progress()
+        raise
 
     _clear_progress()
     elapsed = max(time.time() - t0, 1.0)

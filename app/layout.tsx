@@ -7,6 +7,7 @@ import AnalyticsProvider from "@/components/AnalyticsProvider";
 import HeaderAuthNav from "@/components/HeaderAuthNav";
 import HeaderSignupCta from "@/components/HeaderSignupCta";
 import HeaderToolsNav from "@/components/HeaderToolsNav";
+import NewsTickerBanner from "@/components/NewsTickerBanner";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
@@ -148,7 +149,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="fr" className={jakarta.variable}>
       <body className={`${jakarta.className} min-h-screen`}>
         <AnalyticsProvider>
-          {!isAdmin && <Header />}
+          {!isAdmin && (
+            <div className="site-chrome">
+              <NewsTickerBanner />
+              <Header />
+            </div>
+          )}
           <main>{children}</main>
           {!isAdmin && <Footer light={isLightFooter} />}
         </AnalyticsProvider>
