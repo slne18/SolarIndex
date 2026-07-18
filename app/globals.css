@@ -457,4 +457,45 @@ body {
   .persona-switcher-btn-active {
     @apply bg-solar text-night shadow-sm hover:text-night;
   }
+
+  .hero-actions {
+    @apply mx-auto mt-8 flex w-full max-w-lg flex-col gap-2.5;
+  }
+
+  .hero-actions-compact {
+    @apply mt-4 max-w-none;
+  }
+
+  .hero-action {
+    @apply flex items-center gap-3 rounded-xl border border-white/[0.12] bg-white/[0.04] px-4 py-3.5 text-left transition duration-200 hover:border-white/25 hover:bg-white/[0.08];
+  }
+
+  .hero-action-step,
+  .hero-action-icon {
+    @apply grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-night-800/80 text-slate-300;
+  }
+
+  .hero-action-step {
+    @apply text-xs font-bold tabular-nums text-slate-400;
+  }
+
+  .hero-action-body {
+    @apply min-w-0 flex-1;
+  }
+
+  .hero-action-label {
+    @apply block text-sm font-semibold text-slate-100;
+  }
+
+  .hero-action-hint {
+    @apply mt-0.5 block text-xs font-normal text-slate-500;
+  }
+
+  .hero-action-arrow {
+    @apply shrink-0 text-slate-500 transition group-hover:text-slate-300;
+  }
+
+  .hero-action:hover .hero-action-arrow {
+    @apply translate-x-0.5 text-slate-300;
+  }
 }

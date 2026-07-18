@@ -1,9 +1,13 @@
 "use client";
 
 import type { ReactNode } from "react";
-import Link from "next/link";
+import { useEffect } from "react";
 import { PERSONA_LABELS, type Persona } from "@/lib/persona";
 import { usePersona } from "@/components/PersonaProvider";
+import HeroActionList, {
+  HeroActionDocumentIcon,
+  HeroActionRadarIcon,
+} from "@/components/HeroActionList";
 
 const PERSONA_CARDS: {
   id: Persona;
@@ -41,19 +45,21 @@ const PERSONA_CARDS: {
 ];
 
 export default function HomeHeroPersona() {
-  const { persona, ready, setPersona, clearPersona } = usePersona();
+  const { persona, sessionPick, ready, setPersona, clearPersona } = usePersona();
+
+  useEffect(() => {
+    clearPersona();
+  }, [clearPersona]);
+
+  const showChooser = !ready || persona === null || !sessionPick;
 
   return (
     <section className="hero-surface relative overflow-hidden">
       <div className="container-x relative pt-14 pb-8 sm:pt-20 sm:pb-10">
         <div className="mx-auto max-w-4xl text-center animate-fade-up">
-          <p className="pill-accent mx-auto w-fit">
-            Parkings solaires APER · France entière
-          </p>
-
-          {!ready || persona === null ? (
+          {showChooser ? (
             <>
-              <h1 className="mt-6 text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
+              <h1 className="text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
                 La loi APER concerne{" "}
                 <span className="text-gradient">installateurs et propriétaires.</span>
               </h1>
@@ -134,14 +140,22 @@ function InstallerHero({ onSwitch }: { onSwitch: () => void }) {
           déposés par des gérants prêts à équiper.
         </p>
       </div>
-      <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-        <Link href="/leads" className="btn-solar min-w-[15.5rem]">
-          Accéder aux leads
-        </Link>
-        <Link href="/appels-offres" className="btn-mint min-w-[15.5rem]">
-          Appels d&apos;offres
-        </Link>
-      </div>
+      <HeroActionList
+        items={[
+          {
+            href: "/leads",
+            label: "Accéder aux leads",
+            hint: "Catalogue automatisé · prospection B2B",
+            icon: <HeroActionRadarIcon />,
+          },
+          {
+            href: "/appels-offres",
+            label: "Appels d'offres",
+            hint: "Projets déposés par les gérants",
+            icon: <HeroActionDocumentIcon />,
+          },
+        ]}
+      />
       <SwitchProfileButton onSwitch={onSwitch} />
     </>
   );
@@ -164,17 +178,28 @@ function OwnerHero({ onSwitch }: { onSwitch: () => void }) {
           puis dépôt de projet modéré pour être contacté par des professionnels.
         </p>
       </div>
-      <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-        <Link href="/verifier" className="btn-solar min-w-[15.5rem]">
-          Vérifier mon parking
-        </Link>
-        <Link href="/simulateur" className="btn-ghost min-w-[15.5rem]">
-          Simuler gains &amp; économies
-        </Link>
-        <Link href="/appels-offres/nouveau" className="btn-mint min-w-[15.5rem]">
-          Déposer mon projet
-        </Link>
-      </div>
+      <HeroActionList
+        items={[
+          {
+            href: "/verifier",
+            label: "Vérifier mon parking",
+            hint: "Éligibilité APER · gratuit",
+            step: 1,
+          },
+          {
+            href: "/simulateur",
+            label: "Simuler gains & économies",
+            hint: "ROI et amende évitée",
+            step: 2,
+          },
+          {
+            href: "/appels-offres/nouveau",
+            label: "Déposer mon projet",
+            hint: "Recevoir des propositions",
+            step: 3,
+          },
+        ]}
+      />
       <SwitchProfileButton onSwitch={onSwitch} />
     </>
   );
