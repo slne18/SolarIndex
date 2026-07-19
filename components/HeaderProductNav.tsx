@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usePersona } from "@/components/PersonaProvider";
-import HeaderToolsNav from "@/components/HeaderToolsNav";
 
 function navLinkClass(active: boolean) {
   return `nav-link header-product-link ${active ? "text-white" : ""}`;
@@ -51,7 +50,12 @@ export default function HeaderProductNav() {
       >
         Appels d&apos;offres
       </Link>
-      <HeaderToolsNav />
+      <Link
+        href="/territoire"
+        className={`${navLinkClass(pathname.startsWith("/territoire"))} hidden min-[520px]:inline-flex`}
+      >
+        Leads dans ma zone
+      </Link>
     </nav>
   );
 }
