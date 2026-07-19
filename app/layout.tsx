@@ -6,7 +6,6 @@ import { Analytics } from "@vercel/analytics/react";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import { PersonaProvider } from "@/components/PersonaProvider";
 import SiteHeader from "@/components/SiteHeader";
-import NewsTickerBanner from "@/components/NewsTickerBanner";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
@@ -123,7 +122,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <PersonaProvider>
             {!isAdmin && (
               <div className="site-chrome">
-                <NewsTickerBanner />
                 <Header />
               </div>
             )}

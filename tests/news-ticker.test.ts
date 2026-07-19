@@ -14,6 +14,15 @@ describe("NEWS_TICKER_ITEMS", () => {
     for (const item of NEWS_TICKER_ITEMS) {
       expect(item.url.startsWith("https://")).toBe(true);
       expect(item.headline.length).toBeGreaterThan(10);
+      expect(item.excerpt.length).toBeGreaterThan(40);
+    }
+  });
+
+  it("inclut des illustrations pour les articles disponibles", () => {
+    const withImage = NEWS_TICKER_ITEMS.filter((item) => item.imageUrl);
+    expect(withImage.length).toBeGreaterThanOrEqual(2);
+    for (const item of withImage) {
+      expect(item.imageUrl?.startsWith("https://")).toBe(true);
     }
   });
 });

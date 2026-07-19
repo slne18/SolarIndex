@@ -348,70 +348,68 @@ body {
     @apply text-solar underline decoration-solar/40 underline-offset-2 hover:decoration-solar;
   }
 
-  .news-ticker {
-    @apply border-b border-solar-600 bg-solar text-sm text-night;
-    padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
-    padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  .home-news-banner {
+    @apply border-y border-solar-600/40 bg-solar;
   }
 
-  .news-ticker-inner {
-    @apply flex h-12 items-center gap-4 sm:h-[3.25rem] sm:gap-5;
+  .home-news-banner-panel {
+    @apply mx-auto overflow-hidden rounded-2xl border border-night/10 bg-night/[0.04] shadow-sm;
   }
 
-  .news-ticker-badge {
-    @apply shrink-0 rounded-lg border border-night/15 bg-night px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-solar sm:text-xs;
+  .home-news-banner-panel-split {
+    @apply grid gap-0 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-stretch;
   }
 
-  .news-ticker-viewport {
-    @apply min-w-0 flex-1 overflow-hidden;
-    mask-image: linear-gradient(
-      to right,
-      transparent,
-      black 2.5rem,
-      black calc(100% - 2.5rem),
-      transparent
-    );
+  .home-news-banner-panel-text {
+    @apply mx-auto max-w-3xl;
   }
 
-  .news-ticker-track {
-    @apply flex w-max items-center;
-    animation: news-ticker-scroll 65s linear infinite;
+  .home-news-banner-media {
+    @apply relative m-0 min-h-[12rem] bg-night/5 sm:min-h-[14rem] lg:min-h-[18rem];
   }
 
-  .news-ticker-item {
-    @apply inline-flex shrink-0 items-center gap-2.5 pr-10 sm:gap-3 sm:pr-12;
+  .home-news-banner-image {
+    @apply h-full w-full object-cover;
   }
 
-  .news-ticker-source {
-    @apply shrink-0 text-sm font-extrabold text-night sm:text-[0.9375rem];
+  .home-news-banner-body {
+    @apply flex flex-col items-center px-6 py-8 text-center sm:px-10 sm:py-10;
   }
 
-  .news-ticker-link {
-    @apply whitespace-nowrap font-semibold text-night/85 underline decoration-night/35 underline-offset-4 transition hover:text-night hover:decoration-night/70;
+  .home-news-banner-panel-split .home-news-banner-body {
+    @apply justify-center lg:px-8 lg:py-10;
   }
 
-  .news-ticker-sep {
-    @apply ml-2 text-[10px] text-night/45 sm:text-xs;
+  .home-news-banner-eyebrow {
+    @apply flex flex-wrap items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-night/70 sm:text-sm;
   }
 
-  @keyframes news-ticker-scroll {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
+  .home-news-banner-badge {
+    @apply rounded-lg border border-night/15 bg-night px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-solar sm:text-[11px];
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .news-ticker-viewport {
-      mask-image: none;
-      @apply overflow-x-auto;
-    }
+  .home-news-banner-excerpt {
+    @apply mt-5 max-w-2xl text-lg font-medium leading-relaxed text-night/90 sm:mt-6 sm:text-xl sm:leading-relaxed;
+  }
 
-    .news-ticker-track {
-      animation: none;
-    }
+  .home-news-banner-headline {
+    @apply mt-4 max-w-xl text-sm font-semibold leading-snug text-night/75 sm:text-base;
+  }
+
+  .home-news-banner-link {
+    @apply mt-6 inline-flex items-center gap-1 rounded-lg border border-night/20 bg-night px-5 py-2.5 text-sm font-bold text-solar transition hover:bg-night/90;
+  }
+
+  .home-news-banner-nav {
+    @apply mt-5 flex justify-center gap-2;
+  }
+
+  .home-news-banner-dot {
+    @apply h-2.5 w-2.5 rounded-full border border-night/25 bg-night/10 transition hover:bg-night/25;
+  }
+
+  .home-news-banner-dot-active {
+    @apply scale-110 border-night bg-night;
   }
 
   .persona-cards {

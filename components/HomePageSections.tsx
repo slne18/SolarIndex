@@ -16,6 +16,7 @@ import {
 } from "@/lib/aper-law";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import RegulatoryCountdown from "@/components/RegulatoryCountdown";
+import HomeFeaturedNewsBanner from "@/components/HomeFeaturedNewsBanner";
 import { usePersona } from "@/components/PersonaProvider";
 
 export default function HomePageSections() {
@@ -27,6 +28,7 @@ export default function HomePageSections() {
     <>
       <div className="surface-light">
         <LoiAperSection />
+        <HomeFeaturedNewsBanner />
         {showChooser ? <HomeSignupCta /> : null}
       </div>
       {showInstaller ? <InstallerTarifsSections /> : null}
