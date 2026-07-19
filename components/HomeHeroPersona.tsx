@@ -132,7 +132,7 @@ function InstallerHero() {
           {
             href: "/leads",
             label: "Accéder aux leads",
-            hint: "Parkings ≥ 1 500 m² repérés, enrichis cadastre & SIREN, scorés pour la prospection",
+            hint: "Repérés automatiquement par nos algorithmes · parkings ≥ 1 500 m² · cadastre & SIREN",
             icon: <HeroActionRadarIcon />,
           },
           {
@@ -158,27 +158,28 @@ function OwnerHero() {
         <span className="text-gradient">par la loi APER ?</span>
       </h1>
       <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-400 sm:text-lg">
-        Vérifiez gratuitement votre obligation, estimez vos gains, puis déposez votre projet pour
-        recevoir des propositions d&apos;installateurs solaires — sans engagement.
+        Vérifiez votre obligation, estimez vos gains, puis déposez votre projet pour recevoir des
+        propositions d&apos;installateurs solaires.
       </p>
       <HeroActionList
+        badge="Gratuit · sans engagement"
         items={[
           {
             href: "/verifier",
             label: "Vérifier mon parking",
-            hint: "Éligibilité APER · outil gratuit",
+            hint: "Éligibilité APER et échéances",
             icon: <HeroActionCheckIcon />,
           },
           {
             href: "/simulateur",
             label: "Simuler gains & économies",
-            hint: "ROI et amende évitée · outil gratuit",
+            hint: "ROI estimé et amende évitée",
             icon: <HeroActionCalculatorIcon />,
           },
           {
             href: "/appels-offres/nouveau",
             label: "Déposer mon projet",
-            hint: "Gratuit · installateurs vous contactent avec des propositions",
+            hint: "Des installateurs vous envoient leurs propositions",
             icon: <HeroActionUploadIcon />,
           },
         ]}

@@ -12,13 +12,18 @@ export interface HeroActionItem {
 export default function HeroActionList({
   items,
   className = "",
+  badge,
 }: {
   items: HeroActionItem[];
   className?: string;
+  /** Court libellé au-dessus de la liste (ex. gratuité). */
+  badge?: string;
 }) {
   return (
-    <div className={`hero-actions ${className}`.trim()}>
-      {items.map((item) => (
+    <div className="hero-actions-wrap">
+      {badge ? <p className="hero-actions-badge">{badge}</p> : null}
+      <div className={`hero-actions ${badge ? "mt-3" : "mt-8"} ${className}`.trim()}>
+        {items.map((item) => (
         <Link key={item.href} href={item.href} className="hero-action group">
           {item.step != null ? (
             <span className="hero-action-step" aria-hidden>
@@ -47,6 +52,7 @@ export default function HeroActionList({
           </svg>
         </Link>
       ))}
+      </div>
     </div>
   );
 }

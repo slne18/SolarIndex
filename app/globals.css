@@ -458,12 +458,20 @@ body {
     @apply bg-solar text-night shadow-sm hover:text-night;
   }
 
+  .hero-actions-wrap {
+    @apply mx-auto w-full max-w-lg;
+  }
+
+  .hero-actions-badge {
+    @apply mx-auto mt-8 w-fit rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1 text-xs font-medium tracking-wide text-slate-400;
+  }
+
   .hero-actions {
-    @apply mx-auto mt-8 flex w-full max-w-lg flex-col gap-2.5;
+    @apply flex w-full flex-col gap-2.5;
   }
 
   .hero-actions-compact {
-    @apply mt-4 max-w-none;
+    @apply max-w-none;
   }
 
   .hero-action {
