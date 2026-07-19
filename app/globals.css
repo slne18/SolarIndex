@@ -120,6 +120,47 @@ body {
     @apply bg-gradient-to-r from-solar-300 via-solar to-solar-600 bg-clip-text text-transparent;
   }
 
+  .solution-metrics-ribbon {
+    @apply relative grid gap-8 border-y border-solar/25 py-8 sm:grid-cols-[1fr_auto_1fr] sm:gap-0 sm:py-10;
+    background: linear-gradient(
+      90deg,
+      rgb(232 168 32 / 0.06) 0%,
+      transparent 35%,
+      transparent 65%,
+      rgb(232 168 32 / 0.04) 100%
+    );
+  }
+
+  .solution-metric {
+    @apply px-1 sm:px-8;
+  }
+
+  .solution-metrics-divider {
+    @apply hidden w-px self-stretch bg-gradient-to-b from-transparent via-white/15 to-transparent sm:block;
+  }
+
+  .solution-metric-title {
+    @apply text-[11px] font-bold uppercase tracking-[0.2em] text-solar/90;
+  }
+
+  .solution-metric-value {
+    @apply mt-2 font-extrabold tabular-nums leading-none tracking-tight text-white;
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+  }
+
+  .solution-metric-suffix {
+    @apply ml-1 text-solar;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .solution-metric-detail {
+    @apply mt-3 text-sm font-medium text-slate-300;
+  }
+
+  .solution-metric-note {
+    @apply mt-2 max-w-sm text-xs leading-relaxed text-slate-500;
+  }
+
   /* Hero + zones sombres — image de fond page d'accueil, plein écran sous le header */
   .hero-surface {
     @apply relative isolate flex min-h-[calc(100dvh-4.75rem)] flex-col bg-night-950 text-slate-200;

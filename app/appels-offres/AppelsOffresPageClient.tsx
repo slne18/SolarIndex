@@ -134,7 +134,10 @@ function AppelsOffresCatalog() {
         </div>
         <div className="flex flex-wrap items-center gap-3">
           {showDepositCta ? (
-            <Link href="/login?mode=signup&next=/appels-offres/nouveau" className="btn-solar !py-2">
+            <Link
+              href="/login?mode=signup&next=/appels-offres/nouveau"
+              className={`${isOwnerView ? "btn-mint" : "btn-solar"} !py-2`}
+            >
               Déposer un projet
             </Link>
           ) : null}

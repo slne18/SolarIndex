@@ -22,7 +22,7 @@ export default function HeaderProductNav() {
         <HeaderOwnerToolsNav />
         <Link
           href="/appels-offres/nouveau"
-          className="nav-link header-product-link text-solar min-[420px]:inline-flex"
+          className="btn-mint shrink-0 !px-3.5 !py-2 text-xs sm:text-sm min-[420px]:inline-flex"
         >
           Déposer mon projet
         </Link>
