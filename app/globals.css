@@ -458,6 +458,88 @@ body {
     @apply bg-solar text-night shadow-sm hover:text-night;
   }
 
+  /* Homepage — bande tarifs installateur (contraste avec surface-light APER) */
+  .surface-pricing {
+    @apply border-t border-solar/20 bg-night-950 text-slate-200;
+    background-image: radial-gradient(
+      ellipse 80% 60% at 50% -10%,
+      rgba(232, 168, 32, 0.08),
+      transparent 55%
+    );
+  }
+
+  .pricing-headline {
+    @apply text-2xl font-bold tracking-tight text-white sm:text-3xl;
+  }
+
+  .pricing-lead {
+    @apply text-base leading-relaxed text-slate-400;
+  }
+
+  .pricing-subhead {
+    @apply text-lg font-semibold text-white sm:text-xl;
+  }
+
+  .pricing-sublead {
+    @apply text-sm leading-relaxed text-slate-500;
+  }
+
+  .pricing-split {
+    @apply mx-auto h-px max-w-6xl bg-gradient-to-r from-transparent via-white/10 to-transparent;
+  }
+
+  .pricing-grid {
+    @apply grid gap-4;
+  }
+
+  .pricing-card {
+    @apply relative flex flex-col rounded-2xl border border-white/[0.08] bg-night-800/50 p-6 backdrop-blur-sm transition duration-200;
+  }
+
+  .pricing-card:hover {
+    @apply border-white/[0.14] bg-night-800/80;
+  }
+
+  .pricing-card-featured {
+    @apply border-solar/35 bg-gradient-to-b from-solar/[0.08] to-night-800/60 shadow-glow;
+  }
+
+  .pricing-card-badge {
+    @apply absolute right-4 top-4 rounded-full bg-solar px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-night;
+  }
+
+  .pricing-card-tag {
+    @apply absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-solar px-3 py-0.5 text-[10px] font-bold uppercase tracking-wide text-night;
+  }
+
+  .pricing-card-title {
+    @apply text-sm font-medium text-slate-400;
+  }
+
+  .pricing-card-price-block {
+    @apply mt-4 flex flex-wrap items-baseline gap-x-2 gap-y-1;
+  }
+
+  .pricing-card-price {
+    @apply text-4xl font-extrabold tabular-nums tracking-tight text-solar sm:text-[2.5rem];
+  }
+
+  .pricing-card-price-note {
+    @apply text-xs font-medium uppercase tracking-wide text-slate-500;
+  }
+
+  .pricing-card-features {
+    @apply mt-6 flex-1 space-y-2 border-t border-white/[0.06] pt-5 text-sm leading-relaxed text-slate-400;
+  }
+
+  .pricing-card-features li {
+    @apply relative pl-4 before:absolute before:left-0 before:text-solar before:content-['·'];
+  }
+
+  .pricing-card-cta {
+    @apply mt-6;
+  }
+
   .hero-actions-wrap {
     @apply mx-auto w-full max-w-lg;
   }

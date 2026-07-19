@@ -24,13 +24,13 @@ export default function HomePageSections() {
   const showInstaller = ready && sessionPick && persona === "installer";
 
   return (
-    <div className="surface-light">
-      <LoiAperSection />
-
+    <>
+      <div className="surface-light">
+        <LoiAperSection />
+        {showChooser ? <HomeSignupCta /> : null}
+      </div>
       {showInstaller ? <InstallerTarifsSections /> : null}
-
-      {showChooser ? <HomeSignupCta /> : null}
-    </div>
+    </>
   );
 }
 
@@ -67,102 +67,109 @@ function InstallerTarifsSections() {
   const premiumHref = "/leads?tier=premium";
 
   return (
-    <>
-      <section id="tarifs" className="py-14 sm:py-20">
-        <div className="container-x">
-          <SectionEyebrow>Tarifs</SectionEyebrow>
-          <h2 className="section-title mt-3">Leads automatisés</h2>
-          <p className="section-lead">
-            Deux niveaux selon la qualité des signaux Open Data. Vous achetez un{" "}
-            <strong>lead de prospection</strong>, jamais un chantier garanti.
-          </p>
-          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <PriceCard
-              title="Lead Standard"
-              price={`${PRIX_LEAD.standard} €`}
-              features={[
-                "Indice de confiance modéré (< 0,80)",
-                "Surface parking parfois à confirmer sur site",
-                "Contacts entreprise inclus",
-                "100 € — même tarif quelle que soit la surface",
-              ]}
-              cta="Parcourir"
-              href="/leads"
-            />
-            <PriceCard
-              title="Lead Premium"
-              price={`${PRIX_LEAD.premium} €`}
-              features={[
-                "Indice de confiance élevé (≥ 0,80)",
-                "Peu de vérifications nécessaires",
-                "Parking sans panneaux repérés",
-                "Revêtement et surface cadastrale confirmés",
-                "~10 % du catalogue",
-              ]}
-              cta="Filtrer Premium"
-              href={premiumHref}
-              popular
-            />
-            <PriceCard
-              title="Pack Territoire"
-              price={`${TERRITOIRE_PACK_EUR} €`}
-              discountBadge={`−${TERRITOIRE_PACK_DISCOUNT_PCT} %`}
-              features={[
-                `${TERRITOIRE_LEADS_QUOTA} leads — achat unique`,
-                "Standard ou Premium : vous choisissez",
-                "Crédit instantané · France entière",
-              ]}
-              cta="Acheter le pack"
-              href="/pack-territoire"
-            />
-          </div>
+    <div className="surface-pricing">
+      <div className="container-x pt-14 sm:pt-16">
+        <SectionEyebrow>Tarifs installateur</SectionEyebrow>
+        <h2 className="pricing-headline mt-3">Choisissez votre accès aux chantiers</h2>
+        <p className="pricing-lead mt-3 max-w-2xl">
+          Paiement à l&apos;unité — leads de prospection ou accès aux coordonnées d&apos;un projet
+          déposé. Aucun abonnement.
+        </p>
+      </div>
+
+      <section id="tarifs" className="container-x py-10 sm:py-12">
+        <h3 className="pricing-subhead">Leads automatisés</h3>
+        <p className="pricing-sublead mt-2 max-w-xl">
+          Deux niveaux selon la qualité Open Data. Vous achetez un lead, jamais un chantier garanti.
+        </p>
+        <div className="pricing-grid mt-8 md:grid-cols-3">
+          <PricingCard
+            title="Lead Standard"
+            price={`${PRIX_LEAD.standard} €`}
+            priceNote="par lead"
+            features={[
+              "Indice de confiance modéré (< 0,80)",
+              "Surface parking parfois à confirmer sur site",
+              "Contacts entreprise inclus",
+              "Même tarif quelle que soit la surface",
+            ]}
+            cta="Parcourir"
+            href="/leads"
+          />
+          <PricingCard
+            title="Lead Premium"
+            price={`${PRIX_LEAD.premium} €`}
+            priceNote="par lead"
+            features={[
+              "Indice de confiance élevé (≥ 0,80)",
+              "Peu de vérifications nécessaires",
+              "Parking sans panneaux repérés",
+              "Revêtement et surface cadastrale confirmés",
+              "~10 % du catalogue",
+            ]}
+            cta="Filtrer Premium"
+            href={premiumHref}
+            featured
+          />
+          <PricingCard
+            title="Pack Territoire"
+            price={`${TERRITOIRE_PACK_EUR} €`}
+            priceNote="achat unique"
+            badge={`−${TERRITOIRE_PACK_DISCOUNT_PCT} %`}
+            features={[
+              `${TERRITOIRE_LEADS_QUOTA} leads crédités`,
+              "Standard ou Premium : vous choisissez",
+              "Crédit instantané · France entière",
+            ]}
+            cta="Acheter le pack"
+            href="/pack-territoire"
+          />
         </div>
       </section>
 
-      <section id="tarifs-appels-offres" className="border-t border-slate-200/80 py-14 sm:py-20">
-        <div className="container-x">
-          <SectionEyebrow>Consultation installateurs</SectionEyebrow>
-          <h2 className="section-title mt-3">Projets déposés par les gérants</h2>
-          <p className="section-lead">
-            Coordonnées partagées gratuitement par des gérants privés — mise en relation commerciale,
-            hors marché public.
-          </p>
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            <PriceCard
-              title={`Parking < ${nfSurface(RFP_SURFACE_TIER_M2)} m²`}
-              price={`${PRIX_RFP.sous_10000} €`}
-              features={[
-                "Accès aux coordonnées du gérant",
-                "Surface estimée inférieure à 10 000 m²",
-                "Budget et délai indicatifs inclus",
-                "Paiement unique par accès projet",
-              ]}
-              cta="Voir les projets déposés"
-              href="/appels-offres"
-            />
-            <PriceCard
-              title={`Parking ≥ ${nfSurface(RFP_SURFACE_TIER_M2)} m²`}
-              price={`${PRIX_RFP.a_partir_10000} €`}
-              features={[
-                "Accès aux coordonnées du gérant",
-                "Grands parkings et zones commerciales",
-                "Projets à plus forte valeur chantier",
-                "Paiement unique par accès projet",
-              ]}
-              cta="Voir les projets déposés"
-              href="/appels-offres?surface_min=10000"
-              popular
-            />
-          </div>
-          <p className="mt-4 text-center text-xs text-slate-500">
-            Détails juridiques :{" "}
-            <Link href="/legal/cgv#rfp-deposants" className="text-solar-600 hover:underline">
-              CGV §6 — dépôts de projets
-            </Link>
-          </p>
+      <div className="pricing-split" aria-hidden />
+
+      <section id="tarifs-appels-offres" className="container-x py-10 pb-16 sm:py-12 sm:pb-20">
+        <h3 className="pricing-subhead">Appels d&apos;offres déposés</h3>
+        <p className="pricing-sublead mt-2 max-w-xl">
+          Coordonnées partagées par des gérants privés — mise en relation commerciale, hors marché
+          public.
+        </p>
+        <div className="pricing-grid mt-8 md:grid-cols-2">
+          <PricingCard
+            title={`Parking < ${nfSurface(RFP_SURFACE_TIER_M2)} m²`}
+            price={`${PRIX_RFP.sous_10000} €`}
+            priceNote="par accès projet"
+            features={[
+              "Coordonnées du gérant",
+              "Surface estimée inférieure à 10 000 m²",
+              "Budget et délai indicatifs inclus",
+            ]}
+            cta="Voir les projets"
+            href="/appels-offres"
+          />
+          <PricingCard
+            title={`Parking ≥ ${nfSurface(RFP_SURFACE_TIER_M2)} m²`}
+            price={`${PRIX_RFP.a_partir_10000} €`}
+            priceNote="par accès projet"
+            features={[
+              "Coordonnées du gérant",
+              "Grands parkings et zones commerciales",
+              "Projets à plus forte valeur chantier",
+            ]}
+            cta="Voir les projets"
+            href="/appels-offres?surface_min=10000"
+            featured
+          />
         </div>
+        <p className="mt-6 text-center text-xs text-slate-500">
+          Détails juridiques :{" "}
+          <Link href="/legal/cgv#rfp-deposants" className="text-solar hover:underline">
+            CGV §6 — dépôts de projets
+          </Link>
+        </p>
       </section>
-    </>
+    </div>
   );
 }
 
@@ -191,48 +198,47 @@ function nfSurface(n: number): string {
   return n.toLocaleString("fr-FR");
 }
 
-function PriceCard({
+function PricingCard({
   title,
   price,
+  priceNote,
   features,
   cta,
   href,
-  popular = false,
-  discountBadge,
+  featured = false,
+  badge,
 }: {
   title: string;
   price: string;
+  priceNote?: string;
   features: string[];
   cta: string;
   href: string;
-  popular?: boolean;
-  discountBadge?: string;
+  featured?: boolean;
+  badge?: string;
 }) {
   return (
-    <div className={`card-interactive relative flex flex-col p-6 ${popular ? "ring-1 ring-solar/30" : ""}`}>
-      {discountBadge ? (
-        <span className="absolute right-4 top-4 rounded-full bg-solar/90 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-night">
-          {discountBadge}
-        </span>
-      ) : null}
-      {popular ? (
-        <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-solar px-3 py-0.5 text-[10px] font-bold uppercase tracking-wide text-night">
-          Populaire
-        </span>
-      ) : null}
-      <div className={`price-card-title text-sm font-medium ${discountBadge ? "pr-16" : ""}`}>{title}</div>
-      <div className="price-card-price mt-2 text-2xl font-bold">{price}</div>
-      <ul className="price-card-features mt-5 flex-1 space-y-2.5 text-sm">
+    <article
+      className={`pricing-card ${featured ? "pricing-card-featured" : ""}`}
+    >
+      {badge ? <span className="pricing-card-badge">{badge}</span> : null}
+      {featured ? <span className="pricing-card-tag">Populaire</span> : null}
+      <h4 className="pricing-card-title">{title}</h4>
+      <div className="pricing-card-price-block">
+        <span className="pricing-card-price">{price}</span>
+        {priceNote ? <span className="pricing-card-price-note">{priceNote}</span> : null}
+      </div>
+      <ul className="pricing-card-features">
         {features.map((f) => (
-          <li key={f} className="flex items-start gap-2.5">
-            <span className="mt-0.5 shrink-0 text-solar">✓</span>
-            <span className="min-w-0 flex-1">{f}</span>
-          </li>
+          <li key={f}>{f}</li>
         ))}
       </ul>
-      <Link href={href} className={`mt-6 w-full ${popular ? "btn-solar" : "btn-ghost"}`}>
+      <Link
+        href={href}
+        className={`pricing-card-cta ${featured ? "btn-solar w-full" : "btn-ghost w-full"}`}
+      >
         {cta}
       </Link>
-    </div>
+    </article>
   );
 }
