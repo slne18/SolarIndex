@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { NEWS_TICKER_ITEMS } from "@/lib/news-ticker";
 
-const ROTATE_MS = 12_000;
+const ROTATE_MS = 30_000;
 
 export default function HomeFeaturedNewsBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -58,8 +58,6 @@ export default function HomeFeaturedNewsBanner() {
             </p>
 
             <blockquote className="home-news-banner-excerpt">&ldquo;{item.excerpt}&rdquo;</blockquote>
-
-            <p className="home-news-banner-headline">{item.headline}</p>
 
             <a
               href={item.url}

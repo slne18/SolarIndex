@@ -348,6 +348,72 @@ body {
     @apply text-solar underline decoration-solar/40 underline-offset-2 hover:decoration-solar;
   }
 
+  .news-ticker {
+    @apply border-b border-solar-600 bg-solar text-sm text-night;
+    padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  }
+
+  .news-ticker-inner {
+    @apply flex h-12 items-center gap-4 sm:h-[3.25rem] sm:gap-5;
+  }
+
+  .news-ticker-badge {
+    @apply shrink-0 rounded-lg border border-night/15 bg-night px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-solar sm:text-xs;
+  }
+
+  .news-ticker-viewport {
+    @apply min-w-0 flex-1 overflow-hidden;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 2.5rem,
+      black calc(100% - 2.5rem),
+      transparent
+    );
+  }
+
+  .news-ticker-track {
+    @apply flex w-max items-center;
+    animation: news-ticker-scroll 65s linear infinite;
+  }
+
+  .news-ticker-item {
+    @apply inline-flex shrink-0 items-center gap-2.5 pr-10 sm:gap-3 sm:pr-12;
+  }
+
+  .news-ticker-source {
+    @apply shrink-0 text-sm font-extrabold text-night sm:text-[0.9375rem];
+  }
+
+  .news-ticker-link {
+    @apply whitespace-nowrap font-semibold text-night/85 underline decoration-night/35 underline-offset-4 transition hover:text-night hover:decoration-night/70;
+  }
+
+  .news-ticker-sep {
+    @apply ml-2 text-[10px] text-night/45 sm:text-xs;
+  }
+
+  @keyframes news-ticker-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .news-ticker-viewport {
+      mask-image: none;
+      @apply overflow-x-auto;
+    }
+
+    .news-ticker-track {
+      animation: none;
+    }
+  }
+
   .home-news-banner {
     @apply border-y border-solar-600/40 bg-solar;
   }
@@ -390,10 +456,6 @@ body {
 
   .home-news-banner-excerpt {
     @apply mt-5 max-w-2xl text-lg font-medium leading-relaxed text-night/90 sm:mt-6 sm:text-xl sm:leading-relaxed;
-  }
-
-  .home-news-banner-headline {
-    @apply mt-4 max-w-xl text-sm font-semibold leading-snug text-night/75 sm:text-base;
   }
 
   .home-news-banner-link {

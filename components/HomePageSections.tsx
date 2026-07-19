@@ -28,7 +28,7 @@ export default function HomePageSections() {
     <>
       <div className="surface-light">
         <LoiAperSection />
-        <HomeFeaturedNewsBanner />
+        {showChooser ? <HomeFeaturedNewsBanner /> : null}
         {showChooser ? <HomeSignupCta /> : null}
       </div>
       {showInstaller ? <InstallerTarifsSections /> : null}

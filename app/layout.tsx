@@ -5,7 +5,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import { PersonaProvider } from "@/components/PersonaProvider";
-import SiteHeader from "@/components/SiteHeader";
+import SiteChrome from "@/components/SiteChrome";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
@@ -42,7 +42,7 @@ export const viewport = {
 };
 
 function Header() {
-  return <SiteHeader />;
+  return <SiteChrome />;
 }
 
 function Footer({ light = false }: { light?: boolean }) {
