@@ -112,9 +112,28 @@ body {
     @apply bg-gradient-to-r from-solar-300 via-solar to-solar-600 bg-clip-text text-transparent;
   }
 
-  /* Hero + zones sombres — même bleu que le header */
+  /* Hero + zones sombres — image de fond page d'accueil */
   .hero-surface {
-    @apply bg-night-950 text-slate-200;
+    @apply relative isolate min-h-[32rem] bg-night-950 text-slate-200 sm:min-h-[36rem];
+  }
+
+  .hero-surface::before {
+    content: "";
+    @apply pointer-events-none absolute inset-0 -z-20;
+    background-image: url("/images/hero-home.png");
+    background-size: cover;
+    background-position: center 35%;
+  }
+
+  .hero-surface::after {
+    content: "";
+    @apply pointer-events-none absolute inset-0 -z-10;
+    background: linear-gradient(
+      180deg,
+      rgb(10 15 28 / 0.78) 0%,
+      rgb(10 15 28 / 0.68) 45%,
+      rgb(10 15 28 / 0.84) 100%
+    );
   }
 
   /* Homepage — sections claires */
@@ -479,7 +498,7 @@ body {
   }
 
   .persona-card {
-    @apply flex flex-col items-start rounded-2xl border border-white/[0.12] bg-night-800/70 p-6 text-left transition duration-200 hover:-translate-y-0.5 hover:border-solar/40 hover:bg-night-800 hover:shadow-glow;
+    @apply flex flex-col items-start rounded-2xl border border-white/[0.12] bg-night-900/80 p-6 text-left backdrop-blur-sm transition duration-200 hover:-translate-y-0.5 hover:border-solar/40 hover:bg-night-900/90 hover:shadow-glow;
   }
 
   .persona-card-icon {
@@ -617,7 +636,7 @@ body {
   }
 
   .hero-action {
-    @apply flex items-center gap-3 rounded-xl border border-white/[0.12] bg-white/[0.04] px-4 py-3.5 text-left transition duration-200 hover:border-white/25 hover:bg-white/[0.08];
+    @apply flex items-center gap-3 rounded-xl border border-white/[0.12] bg-night-900/75 px-4 py-3.5 text-left backdrop-blur-sm transition duration-200 hover:border-white/25 hover:bg-night-900/90;
   }
 
   .hero-action-step,

@@ -95,11 +95,11 @@ export default function HomeHeroPersona() {
       <div className="flex justify-center pb-14 sm:pb-16">
         <a
           href="#loi-aper"
-          className="group flex flex-col items-center gap-1 text-xs font-medium uppercase tracking-widest text-slate-500 transition hover:text-slate-300"
+          className="group flex flex-col items-center gap-1 text-xs font-medium uppercase tracking-widest text-slate-300 transition hover:text-white"
         >
           Découvrir
           <svg
-            className="mt-1 h-4 w-4 animate-bounce text-slate-600 group-hover:text-solar"
+            className="mt-1 h-4 w-4 animate-bounce text-slate-400 group-hover:text-solar"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
