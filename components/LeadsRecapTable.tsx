@@ -53,9 +53,9 @@ export default function LeadsRecapTable() {
         </p>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="leads-recap-scroll max-h-80 overflow-y-auto overflow-x-auto rounded-xl border border-slate-200 bg-white sm:max-h-96">
         <table className="min-w-full text-left text-sm">
-          <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
+          <thead className="sticky top-0 z-10 border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500 shadow-[0_1px_0_0_rgb(226_232_240)]">
             <tr>
               <th className="px-4 py-3">Dép.</th>
               <th className="px-4 py-3">Catalogue</th>
@@ -75,7 +75,7 @@ export default function LeadsRecapTable() {
               </tr>
             ))}
           </tbody>
-          <tfoot className="border-t border-slate-200 bg-slate-50/80 text-sm font-semibold">
+          <tfoot className="sticky bottom-0 z-10 border-t border-slate-200 bg-slate-50 text-sm font-semibold shadow-[0_-1px_0_0_rgb(226_232_240)]">
             <tr>
               <td className="px-4 py-2">Total</td>
               <td className="px-4 py-2">{nf(totals.catalogCount)}</td>

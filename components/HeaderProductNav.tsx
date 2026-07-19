@@ -1,11 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import HeaderOwnerToolsNav from "@/components/HeaderOwnerToolsNav";
-import HeaderInstallerChantiersNav from "@/components/HeaderInstallerChantiersNav";
 import { usePersona } from "@/components/PersonaProvider";
+import { isInstallerAppelsOffresPath } from "@/lib/installer-nav";
+
+function navLinkClass(active: boolean) {
+  return `nav-link header-product-link ${active ? "text-white" : ""}`;
+}
 
 export default function HeaderProductNav() {
+  const pathname = usePathname();
   const { persona, ready } = usePersona();
 
   if (!ready) return null;
@@ -26,7 +32,15 @@ export default function HeaderProductNav() {
 
   return (
     <nav className="header-product-nav" aria-label="Produits installateur">
-      <HeaderInstallerChantiersNav />
+      <Link href="/leads" className={navLinkClass(pathname.startsWith("/leads"))}>
+        Leads auto
+      </Link>
+      <Link
+        href="/appels-offres"
+        className={`${navLinkClass(isInstallerAppelsOffresPath(pathname))} hidden min-[420px]:inline-flex`}
+      >
+        Appels d&apos;offres
+      </Link>
     </nav>
   );
 }

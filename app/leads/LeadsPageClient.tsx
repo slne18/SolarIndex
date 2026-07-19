@@ -82,7 +82,9 @@ function LeadsCatalog() {
     q.delete("page");
     setView("list");
     router.push(`/leads?${q.toString()}`, { scroll: false });
-    setTimeout(() => listRef.current?.scrollIntoView({ behavior: "smooth" }), 150);
+    setTimeout(() => {
+      document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" });
+    }, 150);
   }
 
   const mkHref = (p: number) => {
@@ -124,18 +126,6 @@ function LeadsCatalog() {
 
           <LeadsSolutionSection />
           <LeadDemoFiche />
-
-          <section id="ma-zone" className="mt-12 scroll-mt-24 border-t border-white/[0.08] pt-10">
-            <p className="pill-accent w-fit">Leads dans ma zone</p>
-            <h2 className="section-title mt-4">Combien de leads autour de vous ?</h2>
-            <p className="mt-2 max-w-2xl text-slate-500">
-              Estimez le pipeline disponible par adresse ou par département — idéal avant d&apos;acheter
-              le Pack Territoire.
-            </p>
-            <div className="mt-6">
-              <TerritoireClient embedded onExploreCatalog={exploreCatalogFromZone} />
-            </div>
-          </section>
         </div>
       </div>
 
@@ -220,6 +210,22 @@ function LeadsCatalog() {
           )}
         </>
       ) : null}
+        </div>
+      </div>
+
+      <div className="hero-surface border-t border-white/[0.06]">
+        <div className="container-x py-10 sm:py-12">
+          <section id="ma-zone" className="scroll-mt-24">
+            <p className="pill-accent w-fit">Leads dans ma zone</p>
+            <h2 className="section-title mt-4">Combien de leads autour de vous ?</h2>
+            <p className="mt-2 max-w-2xl text-slate-500">
+              Estimez le pipeline disponible par adresse ou par département — idéal avant d&apos;acheter
+              le Pack Territoire.
+            </p>
+            <div className="mt-6">
+              <TerritoireClient embedded onExploreCatalog={exploreCatalogFromZone} />
+            </div>
+          </section>
         </div>
       </div>
     </>

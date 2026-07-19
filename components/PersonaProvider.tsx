@@ -40,6 +40,9 @@ export function PersonaProvider({ children }: { children: ReactNode }) {
     writeStoredPersona(next);
     setPersonaState(next);
     setSessionPick(true);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
   }, []);
 
   const clearPersona = useCallback(() => {
