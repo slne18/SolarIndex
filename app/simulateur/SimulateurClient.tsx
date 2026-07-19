@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import RfpLegalNotice from "@/components/RfpLegalNotice";
+import { usePersona } from "@/components/PersonaProvider";
+import { showOwnerProjectDeposit } from "@/lib/persona";
 import { euros, eurosCompact, nf, nfSurface } from "@/lib/format";
 import {
   DEFAULT_AUTOCONSUMPTION_RATIO,
@@ -15,6 +17,8 @@ import { formatAperAnnualFine } from "@/lib/aper-fine";
 type SurfaceMode = "direct" | "dimensions";
 
 export default function SimulateurClient() {
+  const { persona, ready } = usePersona();
+  const showDepositCta = !ready || showOwnerProjectDeposit(persona);
   const [surfaceMode, setSurfaceMode] = useState<SurfaceMode>("direct");
   const [surfaceM2, setSurfaceM2] = useState(5000);
   const [lengthM, setLengthM] = useState(100);
@@ -230,9 +234,11 @@ export default function SimulateurClient() {
             </p>
           </div>
 
-          <Link href={ctaHref} className="btn-mint inline-flex w-full justify-center sm:w-auto">
-            Déposer un projet
-          </Link>
+          {showDepositCta ? (
+            <Link href={ctaHref} className="btn-mint inline-flex w-full justify-center sm:w-auto">
+              Déposer un projet
+            </Link>
+          ) : null}
           <div className="mt-4">
             <RfpLegalNotice variant="compact" />
           </div>

@@ -1,17 +1,28 @@
 "use client";
 
 import Link from "next/link";
+import { usePersona } from "@/components/PersonaProvider";
 import { nf } from "@/lib/format";
+import { showOwnerProjectDeposit } from "@/lib/persona";
 import type { PublicRfp } from "@/lib/rfp";
 
 export default function RfpTable({ rfps }: { rfps: PublicRfp[] }) {
+  const { persona, ready } = usePersona();
+  const isOwnerView = ready && persona === "owner";
+  const showDepositCta = !ready || showOwnerProjectDeposit(persona);
+
   if (rfps.length === 0) {
     return (
       <p className="catalog-empty rounded-xl border p-8 text-center">
-        Aucun appel d&apos;offres publié pour l&apos;instant.{" "}
-        <Link href="/login?mode=signup&next=/appels-offres/nouveau" className="text-solar underline">
-          Soumettre le vôtre
-        </Link>
+        Aucun appel d&apos;offres publié pour l&apos;instant.
+        {showDepositCta ? (
+          <>
+            {" "}
+            <Link href="/login?mode=signup&next=/appels-offres/nouveau" className="text-solar underline">
+              Soumettre le vôtre
+            </Link>
+          </>
+        ) : null}
       </p>
     );
   }
@@ -25,7 +36,7 @@ export default function RfpTable({ rfps }: { rfps: PublicRfp[] }) {
             <th className="px-4 py-3">Localisation</th>
             <th className="px-4 py-3">Surface</th>
             <th className="px-4 py-3">Délai</th>
-            <th className="px-4 py-3">Accès</th>
+            {!isOwnerView ? <th className="px-4 py-3">Accès</th> : null}
           </tr>
         </thead>
         <tbody>
@@ -45,7 +56,9 @@ export default function RfpTable({ rfps }: { rfps: PublicRfp[] }) {
               </td>
               <td className="px-4 py-3">{r.surface_estimee_m2 ? `${nf(r.surface_estimee_m2)} m²` : "—"}</td>
               <td className="px-4 py-3 text-slate-400">{r.delai_souhaite || "—"}</td>
-              <td className="px-4 py-3 font-semibold text-solar">{r.prix_acces} €</td>
+              {!isOwnerView ? (
+                <td className="px-4 py-3 font-semibold text-solar">{r.prix_acces} €</td>
+              ) : null}
             </tr>
           ))}
         </tbody>

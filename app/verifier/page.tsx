@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import PersonaToolCta from "@/components/PersonaToolCta";
 import { buildPageMetadata } from "@/lib/seo-config";
 import VerifierClient from "./VerifierClient";
 
@@ -32,7 +31,6 @@ export default function VerifierPage() {
           <VerifierClient />
         </div>
       </Suspense>
-      <PersonaToolCta />
     </div>
   );
 }

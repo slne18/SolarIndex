@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import RegulatoryCountdown from "@/components/RegulatoryCountdown";
+import { usePersona } from "@/components/PersonaProvider";
+import { showOwnerProjectDeposit } from "@/lib/persona";
 import { nf, nfSurface } from "@/lib/format";
 import { PENTE_DEROGATION_PCT } from "@/lib/verifier/derogations";
 import type { VerifierResult } from "@/lib/verifier/run";
@@ -16,6 +18,8 @@ type BanFeature = {
 };
 
 export default function VerifierClient() {
+  const { persona, ready } = usePersona();
+  const showDepositCta = !ready || showOwnerProjectDeposit(persona);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<BanFeature[]>([]);
   const [selected, setSelected] = useState<{ label: string; lat: number; lon: number } | null>(null);
@@ -234,9 +238,11 @@ export default function VerifierClient() {
 
             <DerogationBlock result={result} />
 
-            <Link href={rfpHref()} className="btn-mint inline-flex w-full justify-center sm:w-auto">
-              Recevoir des devis gratuits
-            </Link>
+            {showDepositCta ? (
+              <Link href={rfpHref()} className="btn-mint inline-flex w-full justify-center sm:w-auto">
+                Recevoir des devis gratuits
+              </Link>
+            ) : null}
           </div>
         )}
       </div>

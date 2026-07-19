@@ -33,3 +33,8 @@ export const PERSONA_LABELS: Record<Persona, string> = {
   installer: "Installateur",
   owner: "Propriétaire",
 };
+
+/** CTA « déposer un projet » réservés au parcours propriétaire. */
+export function showOwnerProjectDeposit(persona: Persona | null): boolean {
+  return persona !== "installer";
+}

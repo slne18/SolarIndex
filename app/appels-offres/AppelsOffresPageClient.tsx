@@ -4,6 +4,8 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import RfpLegalNotice from "@/components/RfpLegalNotice";
+import { usePersona } from "@/components/PersonaProvider";
+import { showOwnerProjectDeposit } from "@/lib/persona";
 import { nf } from "@/lib/format";
 import { PRIX_RFP, type PublicRfp } from "@/lib/rfp";
 import FranceMap from "@/components/FranceMap";
@@ -52,6 +54,9 @@ function RfpFilters() {
 function AppelsOffresCatalog() {
   const router = useRouter();
   const params = useSearchParams();
+  const { persona, ready } = usePersona();
+  const isOwnerView = ready && persona === "owner";
+  const showDepositCta = !ready || showOwnerProjectDeposit(persona);
   const listRef = useRef<HTMLDivElement>(null);
   const [rfps, setRfps] = useState<PublicRfp[]>([]);
   const [total, setTotal] = useState(0);
@@ -106,23 +111,33 @@ function AppelsOffresCatalog() {
     return `/appels-offres?${q.toString()}`;
   };
 
+  const subtitle = loading
+    ? "Chargement…"
+    : isOwnerView
+      ? `${nf(total)} projets sur la plateforme · Dépôt de projet gratuit`
+      : `${nf(total)} projets déposés · ${PRIX_RFP.sous_10000}–${PRIX_RFP.a_partir_10000} € par accès`;
+
   return (
     <div className="surface-light min-h-[50vh]">
       <div className="container-x py-10 sm:py-12">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="section-title">Consultation installateurs</h1>
-          <p className="mt-2 text-slate-600">
-            {loading ? "Chargement…" : `${nf(total)} projets déposés · ${PRIX_RFP.sous_10000}–${PRIX_RFP.a_partir_10000} € par accès`}
-          </p>
+          <h1 className="section-title">
+            {isOwnerView ? "Recevez des propositions d'installateurs" : "Consultation installateurs"}
+          </h1>
+          <p className="mt-2 text-slate-600">{subtitle}</p>
           <p className="mt-1 text-xs text-slate-500">
-            Mise en relation commerciale privée — hors marchés publics
+            {isOwnerView
+              ? "Gratuit pour vous · mise en relation commerciale privée, hors marchés publics"
+              : "Mise en relation commerciale privée — hors marchés publics"}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <Link href="/login?mode=signup&next=/appels-offres/nouveau" className="btn-solar !py-2">
-            Déposer un projet
-          </Link>
+          {showDepositCta ? (
+            <Link href="/login?mode=signup&next=/appels-offres/nouveau" className="btn-solar !py-2">
+              Déposer un projet
+            </Link>
+          ) : null}
           <CatalogViewToggle view={view} onChange={setCatalogView} />
         </div>
       </div>
