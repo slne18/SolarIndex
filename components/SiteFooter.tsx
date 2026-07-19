@@ -8,9 +8,7 @@ import { usePersona } from "@/components/PersonaProvider";
 const INSTALLER_LINKS = [
   { href: "/leads", label: "Leads détectés" },
   { href: "/appels-offres", label: "Appels d'offres" },
-  { href: "/verifier", label: "Vérifier éligibilité" },
-  { href: "/simulateur", label: "Gains & économies parking" },
-  { href: "/territoire", label: "Calculateur territoire" },
+  { href: "/territoire", label: "Leads dans ma zone" },
   { href: "/#tarifs", label: "Tarifs" },
 ] as const;
 

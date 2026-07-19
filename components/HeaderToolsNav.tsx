@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const TOOLS = [
+  { href: "/territoire", label: "Leads dans ma zone" },
   { href: "/verifier", label: "Éligibilité APER" },
   { href: "/simulateur", label: "Gains & économies" },
 ] as const;
@@ -20,7 +21,7 @@ export default function HeaderToolsNav() {
         aria-haspopup="true"
         aria-expanded="false"
       >
-        Outils de vérification
+        Outils
         <svg
           className="h-3.5 w-3.5 opacity-60 transition group-hover:rotate-180"
           viewBox="0 0 24 24"
