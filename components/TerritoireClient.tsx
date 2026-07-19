@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { TERRITOIRE_LEADS_QUOTA, TERRITOIRE_PACK_EUR } from "@/lib/subscription";
 import { eurosCompact, nf } from "@/lib/format";
 import type { TerritoireRadiusKm, TerritoireSummary } from "@/lib/territoire";
@@ -25,7 +26,14 @@ const DEPARTEMENTS = [
   "2A", "2B",
 ];
 
-export default function TerritoireClient() {
+export default function TerritoireClient({
+  embedded = false,
+  onExploreCatalog,
+}: {
+  embedded?: boolean;
+  onExploreCatalog?: (departement?: string) => void;
+}) {
+  const router = useRouter();
   const [mode, setMode] = useState<"address" | "departement">("address");
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<BanFeature[]>([]);
@@ -77,11 +85,21 @@ export default function TerritoireClient() {
     }
   }
 
+  const exploreDepartement = summary?.departement ?? undefined;
+
   const exploreHref = useMemo(() => {
     if (!summary) return "/leads";
-    if (summary.departement) return `/leads?departement=${summary.departement}`;
-    return "/leads";
+    if (summary.departement) return `/leads?departement=${summary.departement}&view=list`;
+    return "/leads?view=list";
   }, [summary]);
+
+  function handleExplore() {
+    if (embedded && onExploreCatalog) {
+      onExploreCatalog(exploreDepartement);
+      return;
+    }
+    router.push(exploreHref);
+  }
 
   return (
     <div className="max-w-2xl">
@@ -169,7 +187,7 @@ export default function TerritoireClient() {
         )}
 
         <button type="button" className="btn-solar w-full" onClick={runAnalysis} disabled={loading}>
-          {loading ? "Calcul en cours…" : "Analyser mon territoire"}
+          {loading ? "Calcul en cours…" : "Compter les leads dans ma zone"}
         </button>
       </div>
 
@@ -201,9 +219,15 @@ export default function TerritoireClient() {
             <Link href="/pack-territoire" className="btn-solar">
               Pack Territoire — {TERRITOIRE_PACK_EUR} €, {TERRITOIRE_LEADS_QUOTA} leads
             </Link>
-            <Link href={exploreHref} className="btn-ghost">
-              Explorer tous les leads de cette zone →
-            </Link>
+            {embedded ? (
+              <button type="button" className="btn-ghost" onClick={handleExplore}>
+                Explorer le catalogue filtré →
+              </button>
+            ) : (
+              <Link href={exploreHref} className="btn-ghost">
+                Explorer tous les leads de cette zone →
+              </Link>
+            )}
           </div>
         </div>
       )}

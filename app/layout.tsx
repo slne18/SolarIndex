@@ -6,6 +6,7 @@ import AnalyticsProvider from "@/components/AnalyticsProvider";
 import { PersonaProvider } from "@/components/PersonaProvider";
 import SiteChrome from "@/components/SiteChrome";
 import SiteFooter from "@/components/SiteFooter";
+import ScrollToTopOnNavigate from "@/components/ScrollToTopOnNavigate";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
 import { SEO_DEFAULT_DESCRIPTION, SEO_KEYWORDS } from "@/lib/seo-config";
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${jakarta.className} min-h-screen`}>
         <AnalyticsProvider>
           <PersonaProvider>
+            <ScrollToTopOnNavigate />
             {!isAdmin && (
               <div className="site-chrome">
                 <Header />

@@ -26,7 +26,6 @@ export const SEO_STATIC_PATHS: {
   { path: "/appels-offres", changeFrequency: "daily", priority: 0.85 },
   { path: "/pack-territoire", changeFrequency: "monthly", priority: 0.7 },
   { path: "/verifier", changeFrequency: "weekly", priority: 0.85 },
-  { path: "/territoire", changeFrequency: "weekly", priority: 0.75 },
   { path: "/simulateur", changeFrequency: "weekly", priority: 0.85 },
   { path: "/faq", changeFrequency: "monthly", priority: 0.6 },
   { path: "/legal/confidentialite", changeFrequency: "monthly", priority: 0.3 },

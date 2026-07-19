@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export const metadata = buildPageMetadata({
   title: "Catalogue leads parking APER — France",
   description:
-    "Parcourez les parkings non conformes à la loi APER par région et département. Fiches B2B avec SIREN, dirigeants et parcelle cadastrale pour installateurs photovoltaïques.",
+    "Parcourez les parkings non conformes à la loi APER par région et département. Estimez les leads dans votre zone, fiches B2B avec SIREN et parcelle cadastrale.",
   path: "/leads",
 });
 

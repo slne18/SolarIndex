@@ -13,6 +13,7 @@ import LeadFilters from "@/components/LeadFilters";
 import LeadTable from "@/components/LeadTable";
 import LeadsSolutionSection from "@/components/LeadsSolutionSection";
 import LeadDemoFiche from "@/components/LeadDemoFiche";
+import TerritoireClient from "@/components/TerritoireClient";
 import FranceMap from "@/components/FranceMap";
 import LeadsRecapTable from "@/components/LeadsRecapTable";
 import CatalogViewToggle, { type CatalogView } from "@/components/CatalogViewToggle";
@@ -65,6 +66,25 @@ function LeadsCatalog() {
     fetchLeads();
   }, [fetchLeads]);
 
+  useEffect(() => {
+    if (window.location.hash !== "#ma-zone") return;
+    const t = window.setTimeout(() => {
+      document.getElementById("ma-zone")?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  function exploreCatalogFromZone(departement?: string) {
+    const q = new URLSearchParams(params.toString());
+    if (departement) q.set("departement", departement);
+    else q.delete("departement");
+    q.set("view", "list");
+    q.delete("page");
+    setView("list");
+    router.push(`/leads?${q.toString()}`, { scroll: false });
+    setTimeout(() => listRef.current?.scrollIntoView({ behavior: "smooth" }), 150);
+  }
+
   const mkHref = (p: number) => {
     const q = new URLSearchParams(params.toString());
     q.set("page", String(p));
@@ -104,10 +124,22 @@ function LeadsCatalog() {
 
           <LeadsSolutionSection />
           <LeadDemoFiche />
+
+          <section id="ma-zone" className="mt-12 scroll-mt-24 border-t border-white/[0.08] pt-10">
+            <p className="pill-accent w-fit">Leads dans ma zone</p>
+            <h2 className="section-title mt-4">Combien de leads autour de vous ?</h2>
+            <p className="mt-2 max-w-2xl text-slate-500">
+              Estimez le pipeline disponible par adresse ou par département — idéal avant d&apos;acheter
+              le Pack Territoire.
+            </p>
+            <div className="mt-6">
+              <TerritoireClient embedded onExploreCatalog={exploreCatalogFromZone} />
+            </div>
+          </section>
         </div>
       </div>
 
-      <div className="surface-light">
+      <div id="catalog" className="surface-light scroll-mt-24">
         <div className="container-x py-10 sm:py-12">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>

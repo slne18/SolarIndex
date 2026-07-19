@@ -11,6 +11,7 @@ import HeroActionList, {
   HeroActionRadarIcon,
   HeroActionUploadIcon,
 } from "@/components/HeroActionList";
+import { INSTALLER_CHANTIERS_LINKS } from "@/lib/installer-nav";
 
 const PERSONA_CARDS: {
   id: Persona;
@@ -130,15 +131,15 @@ function InstallerHero() {
       <HeroActionList
         items={[
           {
-            href: "/leads",
-            label: "Accéder aux leads",
-            hint: "Repérés automatiquement par nos algorithmes · parkings ≥ 1 500 m² · cadastre & SIREN",
+            href: INSTALLER_CHANTIERS_LINKS[0].href,
+            label: INSTALLER_CHANTIERS_LINKS[0].label,
+            hint: INSTALLER_CHANTIERS_LINKS[0].hint,
             icon: <HeroActionRadarIcon />,
           },
           {
-            href: "/appels-offres",
-            label: "Consulter les appels d'offres",
-            hint: "Projets déposés par les gérants prêts à équiper",
+            href: INSTALLER_CHANTIERS_LINKS[1].href,
+            label: INSTALLER_CHANTIERS_LINKS[1].label,
+            hint: INSTALLER_CHANTIERS_LINKS[1].hint,
             icon: <HeroActionDocumentIcon />,
           },
         ]}

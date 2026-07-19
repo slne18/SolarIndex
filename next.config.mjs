@@ -19,6 +19,11 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: "/territoire",
+        destination: "/leads#ma-zone",
+        permanent: true,
+      },
+      {
         source: "/observatoire",
         destination: "/leads?view=map",
         permanent: true,
