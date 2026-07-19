@@ -112,6 +112,10 @@ body {
     @apply text-2xl font-bold tracking-tight text-white sm:text-3xl;
   }
 
+  .section-subtitle {
+    @apply text-lg font-semibold tracking-tight text-white sm:text-xl;
+  }
+
   .section-lead {
     @apply mt-2 w-full max-w-none text-base leading-relaxed text-slate-400;
   }
@@ -161,6 +165,39 @@ body {
     @apply mt-2 max-w-sm text-xs leading-relaxed text-slate-500;
   }
 
+  .solution-process-list {
+    @apply mt-10 grid gap-0 border-y border-white/10 md:grid-cols-3 md:divide-x md:divide-white/10;
+  }
+
+  .solution-process-item {
+    @apply relative list-none px-0 py-7 md:px-8 md:py-8;
+  }
+
+  .solution-process-item:not(:last-child) {
+    @apply border-b border-white/10 md:border-b-0;
+  }
+
+  .solution-process-item::before {
+    content: "";
+    @apply mb-5 block h-0.5 w-10 bg-solar;
+  }
+
+  .solution-process-num {
+    @apply block text-4xl font-extrabold tabular-nums leading-none text-solar/25;
+  }
+
+  .solution-process-tag {
+    @apply mt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-solar/80;
+  }
+
+  .solution-process-title {
+    @apply mt-2 text-base font-semibold text-white;
+  }
+
+  .solution-process-text {
+    @apply mt-2 text-sm leading-relaxed text-slate-500;
+  }
+
   /* Hero + zones sombres — image de fond page d'accueil, plein écran sous le header */
   .hero-surface {
     @apply relative isolate flex min-h-[calc(100dvh-4.75rem)] flex-col bg-night-950 text-slate-200;
@@ -196,6 +233,10 @@ body {
   }
 
   .surface-light .section-title {
+    @apply text-slate-900;
+  }
+
+  .surface-light .section-subtitle {
     @apply text-slate-900;
   }
 
