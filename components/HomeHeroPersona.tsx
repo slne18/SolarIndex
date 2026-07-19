@@ -58,8 +58,8 @@ export default function HomeHeroPersona() {
 
   return (
     <section className="hero-surface relative overflow-hidden">
-      <div className="container-x relative pt-14 pb-8 sm:pt-20 sm:pb-10">
-        <div className="mx-auto max-w-4xl text-center animate-fade-up">
+      <div className="container-x relative flex flex-1 flex-col justify-center py-10 sm:py-14">
+        <div className="mx-auto w-full max-w-4xl text-center animate-fade-up">
           {showChooser ? (
             <>
               <h1 className="text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
@@ -92,7 +92,7 @@ export default function HomeHeroPersona() {
         </div>
       </div>
 
-      <div className="flex justify-center pb-14 sm:pb-16">
+      <div className="mt-auto flex justify-center pb-8 pt-4 sm:pb-10">
         <a
           href="#loi-aper"
           className="group flex flex-col items-center gap-1 text-xs font-medium uppercase tracking-widest text-slate-300 transition hover:text-white"

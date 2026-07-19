@@ -112,9 +112,14 @@ body {
     @apply bg-gradient-to-r from-solar-300 via-solar to-solar-600 bg-clip-text text-transparent;
   }
 
-  /* Hero + zones sombres — image de fond page d'accueil */
+  /* Hero + zones sombres — image de fond page d'accueil, plein écran sous le header */
   .hero-surface {
-    @apply relative isolate min-h-[32rem] bg-night-950 text-slate-200 sm:min-h-[36rem];
+    @apply relative isolate flex min-h-[calc(100dvh-4.75rem)] flex-col bg-night-950 text-slate-200;
+    min-height: calc(100dvh - 4.75rem);
+  }
+
+  .site-chrome:has(.news-ticker) + main .hero-surface {
+    min-height: calc(100dvh - 8rem);
   }
 
   .hero-surface::before {
@@ -378,7 +383,7 @@ body {
   }
 
   .news-ticker-badge {
-    @apply shrink-0 rounded-lg border border-night/15 bg-night px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-solar sm:text-xs;
+    @apply shrink-0 rounded-lg border border-white/10 bg-night px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-white sm:text-xs;
   }
 
   .news-ticker-viewport {
@@ -438,7 +443,7 @@ body {
   }
 
   .home-news-banner-panel {
-    @apply mx-auto overflow-hidden rounded-2xl border border-night/10 bg-night/[0.04] shadow-sm;
+    @apply mx-auto overflow-hidden rounded-2xl border border-night/20 bg-night text-slate-100 shadow-lg;
   }
 
   .home-news-banner-panel-split {
@@ -466,19 +471,19 @@ body {
   }
 
   .home-news-banner-eyebrow {
-    @apply flex flex-wrap items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-night/70 sm:text-sm;
+    @apply flex flex-wrap items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 sm:text-sm;
   }
 
   .home-news-banner-badge {
-    @apply rounded-lg border border-night/15 bg-night px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-solar sm:text-[11px];
+    @apply rounded-lg border border-white/10 bg-night-950 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-white sm:text-[11px];
   }
 
   .home-news-banner-excerpt {
-    @apply mt-5 max-w-2xl text-lg font-medium leading-relaxed text-night/90 sm:mt-6 sm:text-xl sm:leading-relaxed;
+    @apply mt-5 max-w-2xl text-lg font-medium leading-relaxed text-slate-100 sm:mt-6 sm:text-xl sm:leading-relaxed;
   }
 
   .home-news-banner-link {
-    @apply mt-6 inline-flex items-center gap-1 rounded-lg border border-night/20 bg-night px-5 py-2.5 text-sm font-bold text-solar transition hover:bg-night/90;
+    @apply mt-6 inline-flex items-center gap-1 rounded-lg border border-white/15 bg-night-950 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-night-800;
   }
 
   .home-news-banner-nav {
