@@ -22,7 +22,7 @@ const PERSONA_CARDS: {
     id: "installer",
     title: "Je suis installateur",
     description:
-      "Prospectez des parkings non conformes APER : leads enrichis, appels d'offres et outils de qualification.",
+      "Prospectez des parkings non conformes APER : leads enrichis et appels d'offres.",
     icon: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
         <circle cx="12" cy="12" r="9" opacity="0.35" />
@@ -85,9 +85,9 @@ export default function HomeHeroPersona() {
               </div>
             </>
           ) : persona === "installer" ? (
-            <InstallerHero onSwitch={clearPersona} />
+            <InstallerHero />
           ) : (
-            <OwnerHero onSwitch={clearPersona} />
+            <OwnerHero />
           )}
         </div>
       </div>
@@ -114,15 +114,7 @@ export default function HomeHeroPersona() {
   );
 }
 
-function SwitchProfileButton({ onSwitch }: { onSwitch: () => void }) {
-  return (
-    <button type="button" className="persona-switch-link mt-6" onClick={onSwitch}>
-      Changer de profil
-    </button>
-  );
-}
-
-function InstallerHero({ onSwitch }: { onSwitch: () => void }) {
+function InstallerHero() {
   return (
     <>
       <p className="mt-6 text-xs font-semibold uppercase tracking-widest text-solar">
@@ -132,39 +124,30 @@ function InstallerHero({ onSwitch }: { onSwitch: () => void }) {
         Repérez les parkings non conformes APER{" "}
         <span className="text-gradient">avant l&apos;amende.</span>
       </h1>
-      <div className="mx-auto mt-5 max-w-2xl space-y-3 text-base leading-relaxed text-slate-400 sm:text-lg">
-        <p>Deux sources de chantiers pour votre prospection B2B.</p>
-        <p>
-          <strong className="font-medium text-slate-300">Leads automatisés</strong> — parkings ≥
-          1 500 m² repérés, enrichis cadastre &amp; SIREN, scorés pour la prospection.
-        </p>
-        <p>
-          <strong className="font-medium text-slate-300">Appels d&apos;offres</strong> — projets
-          déposés par des gérants prêts à équiper.
-        </p>
-      </div>
+      <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-400 sm:text-lg">
+        Deux sources de chantiers pour votre prospection B2B.
+      </p>
       <HeroActionList
         items={[
           {
             href: "/leads",
             label: "Accéder aux leads",
-            hint: "Catalogue automatisé · prospection B2B",
+            hint: "Parkings ≥ 1 500 m² repérés, enrichis cadastre & SIREN, scorés pour la prospection",
             icon: <HeroActionRadarIcon />,
           },
           {
             href: "/appels-offres",
             label: "Consulter les appels d'offres",
-            hint: "Projets déposés par les gérants",
+            hint: "Projets déposés par les gérants prêts à équiper",
             icon: <HeroActionDocumentIcon />,
           },
         ]}
       />
-      <SwitchProfileButton onSwitch={onSwitch} />
     </>
   );
 }
 
-function OwnerHero({ onSwitch }: { onSwitch: () => void }) {
+function OwnerHero() {
   return (
     <>
       <p className="mt-6 text-xs font-semibold uppercase tracking-widest text-solar">
@@ -174,36 +157,32 @@ function OwnerHero({ onSwitch }: { onSwitch: () => void }) {
         Votre parking est-il concerné{" "}
         <span className="text-gradient">par la loi APER ?</span>
       </h1>
-      <div className="mx-auto mt-5 max-w-2xl space-y-3 text-base leading-relaxed text-slate-400 sm:text-lg">
-        <p>Vérifiez votre éligibilité, estimez vos gains et recevez des propositions d&apos;installateurs.</p>
-        <p>
-          <strong className="font-medium text-slate-300">Sans engagement</strong> — outils gratuits
-          puis dépôt de projet modéré pour être contacté par des professionnels.
-        </p>
-      </div>
+      <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-400 sm:text-lg">
+        Vérifiez gratuitement votre obligation, estimez vos gains, puis déposez votre projet pour
+        recevoir des propositions d&apos;installateurs solaires — sans engagement.
+      </p>
       <HeroActionList
         items={[
           {
             href: "/verifier",
             label: "Vérifier mon parking",
-            hint: "Éligibilité APER · gratuit",
+            hint: "Éligibilité APER · outil gratuit",
             icon: <HeroActionCheckIcon />,
           },
           {
             href: "/simulateur",
             label: "Simuler gains & économies",
-            hint: "ROI et amende évitée",
+            hint: "ROI et amende évitée · outil gratuit",
             icon: <HeroActionCalculatorIcon />,
           },
           {
             href: "/appels-offres/nouveau",
             label: "Déposer mon projet",
-            hint: "Recevoir des propositions",
+            hint: "Gratuit · installateurs vous contactent avec des propositions",
             icon: <HeroActionUploadIcon />,
           },
         ]}
       />
-      <SwitchProfileButton onSwitch={onSwitch} />
     </>
   );
 }
