@@ -129,7 +129,6 @@ function NouveauRfpForm() {
       type_proprietaire: typeProprietaire || undefined,
       parking_deja_etudie: parkingDejaEtudie,
       documents_complementaires: documentsComplementaires || undefined,
-      acceptation_reference_officielle: aoPublie === "oui" ? declarations.acceptation_reference_officielle : undefined,
       est_personne_publique: false,
       ...declarations,
       checklist,
