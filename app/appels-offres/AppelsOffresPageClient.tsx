@@ -12,11 +12,15 @@ import FranceMap from "@/components/FranceMap";
 import CatalogViewToggle, { type CatalogView } from "@/components/CatalogViewToggle";
 import RfpTable from "@/components/RfpTable";
 
+import RfpTable from "@/components/RfpTable";
+import { SIMULATOR_REGIONS } from "@/lib/solar-simulator";
+import { RFP_OWNER_TYPE_LABELS } from "@/lib/rfp-official";
+
 function RfpFilters() {
   const router = useRouter();
   const params = useSearchParams();
   const selectCls =
-    "rounded-lg border border-white/15 bg-night-700/60 px-3 py-2 text-sm text-slate-100 focus:border-solar/60 focus:outline-none";
+    "rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 focus:border-solar focus:outline-none";
 
   function update(key: string, value: string) {
     const next = new URLSearchParams(params.toString());
@@ -27,26 +31,99 @@ function RfpFilters() {
   }
 
   return (
-    <div className="card flex flex-wrap items-center gap-3 p-4">
-      <input
-        className={`${selectCls} w-28`}
-        placeholder="Dépt (33)"
-        defaultValue={params.get("departement") ?? ""}
-        onBlur={(e) => update("departement", e.target.value.trim())}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") update("departement", (e.target as HTMLInputElement).value.trim());
-        }}
-      />
-      <select
-        className={selectCls}
-        value={params.get("surface_min") ?? ""}
-        onChange={(e) => update("surface_min", e.target.value)}
-      >
-        <option value="">Toutes surfaces</option>
-        <option value="1500">≥ 1 500 m²</option>
-        <option value="5000">≥ 5 000 m²</option>
-        <option value="10000">≥ 10 000 m²</option>
-      </select>
+    <div className="card space-y-3 p-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <input
+          className={`${selectCls} w-28`}
+          placeholder="Dépt (33)"
+          defaultValue={params.get("departement") ?? ""}
+          onBlur={(e) => update("departement", e.target.value.trim())}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") update("departement", (e.target as HTMLInputElement).value.trim());
+          }}
+        />
+        <select
+          className={selectCls}
+          value={params.get("region") ?? ""}
+          onChange={(e) => update("region", e.target.value)}
+        >
+          <option value="">Toutes régions</option>
+          {SIMULATOR_REGIONS.map((r) => (
+            <option key={r} value={r}>
+              {r}
+            </option>
+          ))}
+        </select>
+        <select
+          className={selectCls}
+          value={params.get("surface_min") ?? ""}
+          onChange={(e) => update("surface_min", e.target.value)}
+        >
+          <option value="">Toutes surfaces</option>
+          <option value="1500">≥ 1 500 m²</option>
+          <option value="5000">≥ 5 000 m²</option>
+          <option value="10000">≥ 10 000 m²</option>
+        </select>
+        <select
+          className={selectCls}
+          value={params.get("places_min") ?? ""}
+          onChange={(e) => update("places_min", e.target.value)}
+        >
+          <option value="">Places (min.)</option>
+          <option value="50">≥ 50 places</option>
+          <option value="200">≥ 200 places</option>
+          <option value="500">≥ 500 places</option>
+        </select>
+        <select
+          className={selectCls}
+          value={params.get("puissance_min") ?? ""}
+          onChange={(e) => update("puissance_min", e.target.value)}
+        >
+          <option value="">Puissance (min.)</option>
+          <option value="100">≥ 100 kWc</option>
+          <option value="500">≥ 500 kWc</option>
+          <option value="1000">≥ 1 000 kWc</option>
+        </select>
+        <select
+          className={selectCls}
+          value={params.get("ao_publie") ?? ""}
+          onChange={(e) => update("ao_publie", e.target.value)}
+        >
+          <option value="">AO officiel : tous</option>
+          <option value="1">AO officiel publié</option>
+          <option value="0">Sans lien officiel</option>
+        </select>
+        <select
+          className={selectCls}
+          value={params.get("parking_etudie") ?? ""}
+          onChange={(e) => update("parking_etudie", e.target.value)}
+        >
+          <option value="">Étude : tous</option>
+          <option value="1">Déjà étudié</option>
+          <option value="0">Non étudié</option>
+        </select>
+        <select
+          className={selectCls}
+          value={params.get("aper_eligible") ?? ""}
+          onChange={(e) => update("aper_eligible", e.target.value)}
+        >
+          <option value="">APER : tous</option>
+          <option value="1">Éligible APER</option>
+          <option value="0">Sous seuil APER</option>
+        </select>
+        <select
+          className={selectCls}
+          value={params.get("type_proprietaire") ?? ""}
+          onChange={(e) => update("type_proprietaire", e.target.value)}
+        >
+          <option value="">Type propriétaire</option>
+          {Object.entries(RFP_OWNER_TYPE_LABELS).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }
@@ -123,13 +200,13 @@ function AppelsOffresCatalog() {
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="section-title">
-            {isOwnerView ? "Recevez des propositions d'installateurs" : "Consultation installateurs"}
+            {isOwnerView ? "Recevez des propositions d'installateurs" : "Appels d'offres photovoltaïques"}
           </h1>
           <p className="mt-2 text-slate-600">{subtitle}</p>
           <p className="mt-1 text-xs text-slate-500">
             {isOwnerView
               ? "Gratuit pour vous · mise en relation commerciale privée, hors marchés publics"
-              : "Mise en relation commerciale privée — hors marchés publics"}
+              : "Point d'entrée unique : consultations privées et liens vers dossiers officiels (PLACE, AWS, Megalis…)"}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">

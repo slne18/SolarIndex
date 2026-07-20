@@ -907,4 +907,36 @@ body {
   .hero-action:hover .hero-action-arrow {
     @apply translate-x-0.5 text-slate-300;
   }
+
+  .language-switcher {
+    @apply inline-flex items-center gap-0.5 rounded-lg border border-white/10 bg-night-900/60 p-0.5;
+  }
+
+  .language-switcher-btn {
+    @apply rounded-md px-2 py-1 text-xs font-semibold uppercase tracking-wide text-slate-400 transition hover:text-white;
+  }
+
+  .language-switcher-btn-active {
+    @apply bg-white/10 text-white;
+  }
+
+  .password-input-wrap {
+    @apply relative;
+  }
+
+  .password-input-toggle {
+    @apply absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 text-xs font-medium text-slate-400 transition hover:text-white;
+  }
+
+  .entreprise-autocomplete {
+    @apply relative;
+  }
+
+  .entreprise-autocomplete-list {
+    @apply absolute z-20 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-white/10 bg-night-900 shadow-xl;
+  }
+
+  .entreprise-autocomplete-item {
+    @apply block w-full px-3 py-2.5 text-left text-sm transition hover:bg-white/5;
+  }
 }

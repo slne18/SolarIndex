@@ -25,8 +25,8 @@ export default function RfpLegalNotice({ variant = "compact" }: { variant?: Vari
         <p className="mt-2">{RFP_SERVICE_SUMMARY}</p>
         <p className="mt-2">{RFP_TOOLS_DISCLAIMER}</p>
         <p className="mt-2">
-          <Link href="/legal/cgv#rfp-deposants" className="text-solar hover:underline">
-            Conditions déposants (CGV §6)
+          <Link href="/legal/cgu" className="text-solar hover:underline">
+            CGU déposants
           </Link>
           {" · "}
           <Link href="/legal/confidentialite" className="text-solar hover:underline">
@@ -46,8 +46,8 @@ export default function RfpLegalNotice({ variant = "compact" }: { variant?: Vari
           procédure de marché public. {RFP_TOOLS_DISCLAIMER}
         </p>
         <p className="mt-2">
-          <Link href="/legal/cgv#rfp-deposants" className="text-solar-600 hover:underline">
-            En savoir plus (CGV)
+          <Link href="/legal/cgu" className="text-solar-600 hover:underline">
+            En savoir plus (CGU)
           </Link>
         </p>
       </div>
@@ -57,8 +57,8 @@ export default function RfpLegalNotice({ variant = "compact" }: { variant?: Vari
   return (
     <p className="text-xs leading-relaxed text-slate-500">
       {RFP_LEGAL_LABEL}. {RFP_TOOLS_DISCLAIMER}{" "}
-      <Link href="/legal/cgv#rfp-deposants" className="text-solar-600 hover:underline">
-        CGV
+      <Link href="/legal/cgu" className="text-solar-600 hover:underline">
+        CGU
       </Link>
     </p>
   );

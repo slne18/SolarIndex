@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import HeaderAuthNav from "@/components/HeaderAuthNav";
 import HeaderSignupCta from "@/components/HeaderSignupCta";
 import HeaderProductNav from "@/components/HeaderProductNav";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import PersonaSwitcher from "@/components/PersonaSwitcher";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
 import { usePersona } from "@/components/PersonaProvider";
@@ -40,6 +41,7 @@ export default function SiteHeader() {
           )}
         </div>
         <nav className="header-nav" aria-label="Compte utilisateur">
+          <LanguageSwitcher />
           {!isHome ? <PersonaSwitcher compact /> : null}
           <HeaderAuthNav />
           <HeaderSignupCta />

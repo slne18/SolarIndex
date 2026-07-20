@@ -31,6 +31,13 @@ function NouveauRfpForm() {
   const [derogPente, setDerogPente] = useState(false);
   const [derogAbf, setDerogAbf] = useState(false);
   const [notesParticulieres, setNotesParticulieres] = useState("");
+  const [aoPublie, setAoPublie] = useState<"" | "non" | "oui">("");
+  const [lienOfficiel, setLienOfficiel] = useState("");
+  const [dateLimiteOffres, setDateLimiteOffres] = useState("");
+  const [nombrePlaces, setNombrePlaces] = useState("");
+  const [typeProprietaire, setTypeProprietaire] = useState("");
+  const [parkingDejaEtudie, setParkingDejaEtudie] = useState(false);
+  const [documentsComplementaires, setDocumentsComplementaires] = useState("");
   const [estPersonnePublique, setEstPersonnePublique] = useState<PublicEntityAnswer>("");
   const [checklist, setChecklist] = useState<Record<RfpDeposantChecklistId, boolean>>({
     comparer_devis: false,
@@ -45,7 +52,8 @@ function NouveauRfpForm() {
     acceptation_multi_installateurs: false,
     acceptation_exactitude: false,
     acceptation_sans_garantie: false,
-    acceptation_cgv_deposant: false,
+    acceptation_cgu_deposant: false,
+    acceptation_reference_officielle: false,
     consentement_rgpd: false,
   });
 
@@ -54,9 +62,12 @@ function NouveauRfpForm() {
   const allLegalChecked = useMemo(() => {
     if (blockedPublic) return false;
     const checklistOk = RFP_DEPOSANT_CHECKLIST.every((item) => checklist[item.id]);
-    const declarationsOk = Object.values(declarations).every(Boolean);
+    const declarationsOk = Object.entries(declarations).every(([key, value]) => {
+      if (key === "acceptation_reference_officielle" && aoPublie !== "oui") return true;
+      return value;
+    });
     return checklistOk && declarationsOk && estPersonnePublique === "non";
-  }, [blockedPublic, checklist, declarations, estPersonnePublique]);
+  }, [blockedPublic, checklist, declarations, estPersonnePublique, aoPublie]);
 
   useEffect(() => {
     if (sp.get("verified") === "1") {
@@ -111,6 +122,14 @@ function NouveauRfpForm() {
       budget_indicatif: fd.get("budget_indicatif"),
       delai_souhaite: fd.get("delai_souhaite"),
       notes_particulieres: fd.get("notes_particulieres"),
+      ao_publie_officiellement: aoPublie === "oui",
+      lien_consultation_officielle: aoPublie === "oui" ? lienOfficiel : undefined,
+      date_limite_offres: aoPublie === "oui" ? dateLimiteOffres : undefined,
+      nombre_places: nombrePlaces || undefined,
+      type_proprietaire: typeProprietaire || undefined,
+      parking_deja_etudie: parkingDejaEtudie,
+      documents_complementaires: documentsComplementaires || undefined,
+      acceptation_reference_officielle: aoPublie === "oui" ? declarations.acceptation_reference_officielle : undefined,
       est_personne_publique: false,
       ...declarations,
       checklist,
@@ -142,6 +161,14 @@ function NouveauRfpForm() {
       e.currentTarget.reset();
       setEntreprise("");
       setSiret("");
+      setNotesParticulieres("");
+      setAoPublie("");
+      setLienOfficiel("");
+      setDateLimiteOffres("");
+      setNombrePlaces("");
+      setTypeProprietaire("");
+      setParkingDejaEtudie(false);
+      setDocumentsComplementaires("");
       setEstPersonnePublique("");
       setChecklist({
         comparer_devis: false,
@@ -156,7 +183,8 @@ function NouveauRfpForm() {
         acceptation_multi_installateurs: false,
         acceptation_exactitude: false,
         acceptation_sans_garantie: false,
-        acceptation_cgv_deposant: false,
+        acceptation_cgu_deposant: false,
+        acceptation_reference_officielle: false,
         consentement_rgpd: false,
       });
     } catch {
@@ -307,6 +335,113 @@ function NouveauRfpForm() {
           />
         </Field>
 
+        <fieldset className="space-y-4 rounded-lg border border-white/10 p-4">
+          <legend className="px-1 text-xs font-semibold uppercase tracking-wide text-slate-300">
+            Appel d&apos;offres officiel publié ?
+          </legend>
+          <p className="text-xs leading-relaxed text-slate-500">
+            Si votre consultation est déjà en ligne sur PLACE, AWS, Megalis, Maximilien, etc., indiquez
+            le lien public. SolarIndex référence l&apos;URL sans héberger le DCE.
+          </p>
+          <label className="flex items-start gap-2">
+            <input
+              type="radio"
+              name="ao_publie"
+              required
+              className="mt-1"
+              checked={aoPublie === "non"}
+              onChange={() => setAoPublie("non")}
+            />
+            <span>Non — consultation privée via SolarIndex uniquement</span>
+          </label>
+          <label className="flex items-start gap-2">
+            <input
+              type="radio"
+              name="ao_publie"
+              required
+              className="mt-1"
+              checked={aoPublie === "oui"}
+              onChange={() => setAoPublie("oui")}
+            />
+            <span>Oui — lien vers la plateforme officielle de marchés publics</span>
+          </label>
+          {aoPublie === "oui" ? (
+            <div className="space-y-4 border-t border-white/10 pt-4">
+              <Field label="Lien vers votre appel d'offres officiel" required>
+                <input
+                  required
+                  type="url"
+                  disabled={blockedPublic}
+                  className="input"
+                  placeholder="https://marches-publics.gouv.fr/…"
+                  value={lienOfficiel}
+                  onChange={(e) => setLienOfficiel(e.target.value)}
+                />
+              </Field>
+              <Field label="Date limite de remise des offres" required>
+                <input
+                  required
+                  type="date"
+                  disabled={blockedPublic}
+                  className="input"
+                  value={dateLimiteOffres}
+                  onChange={(e) => setDateLimiteOffres(e.target.value)}
+                />
+              </Field>
+            </div>
+          ) : null}
+        </fieldset>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Nombre de places (optionnel)">
+            <input
+              type="number"
+              min={1}
+              disabled={blockedPublic}
+              className="input"
+              value={nombrePlaces}
+              onChange={(e) => setNombrePlaces(e.target.value)}
+            />
+          </Field>
+          <Field label="Type de propriétaire (optionnel)">
+            <select
+              disabled={blockedPublic}
+              className="input"
+              value={typeProprietaire}
+              onChange={(e) => setTypeProprietaire(e.target.value)}
+            >
+              <option value="">—</option>
+              <option value="prive">Acteur privé</option>
+              <option value="fonciere">Foncière / investisseur</option>
+              <option value="centre_commercial">Centre commercial / retail</option>
+              <option value="concession">Concession / exploitant</option>
+              <option value="autre">Autre</option>
+            </select>
+          </Field>
+        </div>
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            disabled={blockedPublic}
+            checked={parkingDejaEtudie}
+            onChange={(e) => setParkingDejaEtudie(e.target.checked)}
+          />
+          Parking déjà étudié (faisabilité, dimensionnement, etc.)
+        </label>
+        <Field
+          label="Documents complémentaires (optionnel)"
+          hint="Une URL par ligne : présentation, photos, étude. Hors DCE officiel."
+        >
+          <textarea
+            rows={3}
+            disabled={blockedPublic}
+            className="input"
+            placeholder="https://…"
+            value={documentsComplementaires}
+            onChange={(e) => setDocumentsComplementaires(e.target.value)}
+          />
+        </Field>
+
         {!blockedPublic ? (
           <>
             <fieldset className="space-y-3 rounded-lg border border-white/10 p-4">
@@ -336,11 +471,16 @@ function NouveauRfpForm() {
               <legend className="px-1 text-xs font-semibold uppercase tracking-wide text-slate-300">
                 Déclarations et consentements *
               </legend>
-              {Object.values(RFP_DEPOSANT_DECLARATIONS).map((item) => (
+              {Object.values(RFP_DEPOSANT_DECLARATIONS)
+                .filter(
+                  (item) =>
+                    item.id !== "acceptation_reference_officielle" || aoPublie === "oui",
+                )
+                .map((item) => (
                 <label key={item.id} className="flex gap-2 text-xs leading-relaxed text-slate-300">
                   <input
                     type="checkbox"
-                    required
+                    required={item.id !== "acceptation_reference_officielle" || aoPublie === "oui"}
                     className="mt-1 shrink-0"
                     checked={declarations[item.id as keyof typeof declarations]}
                     onChange={(e) =>
@@ -350,14 +490,24 @@ function NouveauRfpForm() {
                       }))
                     }
                   />
-                  {item.id === "acceptation_cgv_deposant" ? (
+                  {item.id === "acceptation_cgu_deposant" ? (
                     <>
                       J&apos;ai lu et j&apos;accepte les{" "}
-                      <Link href="/legal/cgv#rfp-deposants" className="text-solar underline" target="_blank">
-                        conditions applicables aux dépôts de projets (CGV §6)
-                      </Link>
-                      .
+                      <Link href="/legal/cgu" className="text-solar underline" target="_blank">
+                        Conditions générales d&apos;utilisation (CGU)
+                      </Link>{" "}
+                      applicables aux dépôts de projets.
                     </>
+                  ) : item.id === "acceptation_reference_officielle" ? (
+                    aoPublie === "oui" ? (
+                      <>
+                        {RFP_DEPOSANT_DECLARATIONS.reference_officielle.label}{" "}
+                        <Link href="/legal/cgu#reference-officielle" className="text-solar underline" target="_blank">
+                          (CGU)
+                        </Link>
+                        .
+                      </>
+                    ) : null
                   ) : item.id === "consentement_rgpd" ? (
                     <>
                       J&apos;accepte que mes coordonnées professionnelles soient communiquées aux installateurs
@@ -396,10 +546,12 @@ function NouveauRfpForm() {
 function Field({
   label,
   required,
+  hint,
   children,
 }: {
   label: string;
   required?: boolean;
+  hint?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -408,6 +560,7 @@ function Field({
         {label}
         {required ? " *" : ""}
       </span>
+      {hint ? <span className="mb-2 block text-xs text-slate-500">{hint}</span> : null}
       {children}
     </label>
   );

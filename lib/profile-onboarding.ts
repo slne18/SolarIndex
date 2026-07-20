@@ -16,6 +16,11 @@ export const PROJET_DELAI_LABELS: Record<ProjetDelai, string> = {
 export interface ProfileOnboardingInput {
   user_type?: string;
   entreprise?: string;
+  entreprise_etrangere?: boolean;
+  siren?: string;
+  siret?: string;
+  pays_entreprise?: string;
+  immatriculation_etrangere?: string;
   proprietaire_raison_sociale?: string;
   proprietaire_nom?: string;
   responsable_prenom?: string;
@@ -31,6 +36,10 @@ export interface ProfileOnboardingInput {
 export interface ProfileOnboardingPayload {
   user_type: UserType;
   entreprise: string | null;
+  siren: string | null;
+  siret: string | null;
+  pays_entreprise: string | null;
+  immatriculation_etrangere: string | null;
   proprietaire_raison_sociale: string | null;
   proprietaire_nom: string | null;
   responsable_prenom: string;
@@ -41,6 +50,14 @@ export interface ProfileOnboardingPayload {
   surface_m2_estimee: number | null;
   projet_delai: ProjetDelai | null;
   commentaire: string | null;
+}
+
+function normalizeSiren(value: string): string {
+  return value.replace(/\D/g, "").slice(0, 9);
+}
+
+function normalizeSiret(value: string): string {
+  return value.replace(/\D/g, "").slice(0, 14);
 }
 
 function clean(value: unknown): string {
@@ -71,6 +88,11 @@ export function validateProfileOnboarding(
   }
 
   const entreprise = clean(input.entreprise) || null;
+  const entrepriseEtrangere = !!input.entreprise_etrangere;
+  const siren = normalizeSiren(clean(input.siren));
+  const siret = normalizeSiret(clean(input.siret));
+  const paysEntreprise = clean(input.pays_entreprise) || null;
+  const immatriculationEtrangere = clean(input.immatriculation_etrangere) || null;
   const proprietaireRaisonSociale = clean(input.proprietaire_raison_sociale) || null;
   const proprietaireNom = clean(input.proprietaire_nom) || null;
   const responsablePrenom = clean(input.responsable_prenom);
@@ -86,6 +108,28 @@ export function validateProfileOnboarding(
   if (userTypeRaw === "installateur" || userTypeRaw === "gerant_parking") {
     if (!entreprise) {
       return { ok: false, error: "La raison sociale de votre structure est requise." };
+    }
+    if (entrepriseEtrangere) {
+      if (!paysEntreprise || !immatriculationEtrangere) {
+        return {
+          ok: false,
+          error: "Indiquez le pays et le numéro d'immatriculation de votre société étrangère.",
+        };
+      }
+    } else if (siren.length !== 9) {
+      return {
+        ok: false,
+        error: "Sélectionnez votre entreprise dans les suggestions pour enregistrer le SIREN (registre SIRENE).",
+      };
+    }
+  }
+
+  if (userTypeRaw === "proprietaire" && entreprise && entrepriseEtrangere) {
+    if (!paysEntreprise || !immatriculationEtrangere) {
+      return {
+        ok: false,
+        error: "Indiquez le pays et le numéro d'immatriculation de votre société étrangère.",
+      };
     }
   }
 
@@ -127,6 +171,10 @@ export function validateProfileOnboarding(
     data: {
       user_type: userTypeRaw,
       entreprise,
+      siren: siren.length === 9 ? siren : null,
+      siret: siret.length === 14 ? siret : null,
+      pays_entreprise: entrepriseEtrangere ? paysEntreprise : paysEntreprise || "FR",
+      immatriculation_etrangere: entrepriseEtrangere ? immatriculationEtrangere : null,
       proprietaire_raison_sociale: proprietaireRaisonSociale,
       proprietaire_nom: proprietaireNom,
       responsable_prenom: responsablePrenom,

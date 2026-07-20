@@ -61,11 +61,15 @@ export const RFP_DEPOSANT_DECLARATIONS = {
   },
   sans_garantie: {
     id: "acceptation_sans_garantie",
-    label: `${SITE_NAME} modère les dépôts mais ne garantit ni la sélection d'un installateur, ni la conclusion d'un contrat de travaux, ni un résultat économique ou réglementaire.`,
+    label: `${SITE_NAME} ne garantit aucun contact d'installateur, aucune qualité de devis reçu, ni la conclusion d'un contrat. ${SITE_NAME} n'est pas partie au contrat final entre le déposant et un installateur.`,
   },
   cgv: {
-    id: "acceptation_cgv_deposant",
-    label: "J'ai lu et j'accepte les conditions applicables aux dépôts de projets (CGV, section 6).",
+    id: "acceptation_cgu_deposant",
+    label: "J'ai lu et j'accepte les Conditions générales d'utilisation applicables aux dépôts de projets (CGU).",
+  },
+  reference_officielle: {
+    id: "acceptation_reference_officielle",
+    label: `${SITE_NAME} référence uniquement l'URL publique que je fournis (sans héberger le DCE). Je garantis être habilité à publier cette référence ; les documents contractuels restent consultables uniquement sur la plateforme officielle indiquée.`,
   },
   rgpd: {
     id: "consentement_rgpd",
@@ -74,6 +78,12 @@ export const RFP_DEPOSANT_DECLARATIONS = {
 } as const;
 
 export const RFP_INSTALLER_NOTICE = `${SITE_NAME} commercialise l'accès aux coordonnées volontairement déposées par un gestionnaire ou propriétaire. Ce n'est pas un marché public attribué. Le déposant reste libre de choisir son installateur ; plusieurs professionnels peuvent accéder au même dépôt.`;
+
+/** Clause centrale CGV installateurs — pas de garantie de résultat commercial. */
+export const INSTALLER_PURCHASE_IS_INFORMATION_ONLY = `${SITE_NAME} vend un accès à une information professionnelle (fiche lead ou coordonnées d'un déposant), et non la conclusion d'un contrat de travaux, la remise d'un devis signé, ni un chiffre d'affaires. Le paiement n'ouvre aucun droit à un résultat commercial, à une exclusivité ou à une attribution de marché.`;
+
+export const INSTALLER_NO_PERFORMANCE_CLAUSE =
+  "L'installateur reconnaît qu'aucune garantie de prise de contact, de rendez-vous, de devis, de signature de contrat ou de réalisation de chantier n'est incluse dans le prix payé à SolarIndex. En conséquence, l'installateur ne peut pas reprocher légalement à SolarIndex une non-performance commerciale (y compris l'absence totale de retour du déposant ou l'échec de négociations) dès lors que l'information commandée a été délivrée conformément aux présentes CGV.";
 
 export const RFP_TOOLS_DISCLAIMER =
   "Les estimations, scores d'éligibilité APER et simulateurs sont fournis à titre indicatif et ne constituent ni un audit réglementaire, ni un conseil juridique, urbanistique ou fiscal.";
@@ -85,7 +95,7 @@ export interface RfpDeposantDeclarationsInput {
   acceptation_multi_installateurs?: boolean;
   acceptation_exactitude?: boolean;
   acceptation_sans_garantie?: boolean;
-  acceptation_cgv_deposant?: boolean;
+  acceptation_cgu_deposant?: boolean;
   consentement_rgpd?: boolean;
   checklist?: Partial<Record<RfpDeposantChecklistId, boolean>>;
 }
@@ -106,7 +116,7 @@ export function validateRfpDeposantDeclarations(
     "acceptation_multi_installateurs",
     "acceptation_exactitude",
     "acceptation_sans_garantie",
-    "acceptation_cgv_deposant",
+    "acceptation_cgu_deposant",
     "consentement_rgpd",
   ];
 

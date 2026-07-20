@@ -4,6 +4,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import { PersonaProvider } from "@/components/PersonaProvider";
+import { LocaleProvider } from "@/components/LocaleProvider";
 import SiteChrome from "@/components/SiteChrome";
 import SiteFooter from "@/components/SiteFooter";
 import ScrollToTopOnNavigate from "@/components/ScrollToTopOnNavigate";
@@ -60,16 +61,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="fr" className={jakarta.variable}>
       <body className={`${jakarta.className} min-h-screen`}>
         <AnalyticsProvider>
-          <PersonaProvider>
-            <ScrollToTopOnNavigate />
-            {!isAdmin && (
-              <div className="site-chrome">
-                <Header />
-              </div>
-            )}
-            <main>{children}</main>
-            {!isAdmin && <SiteFooter light={isLightFooter} />}
-          </PersonaProvider>
+          <LocaleProvider>
+            <PersonaProvider>
+              <ScrollToTopOnNavigate />
+              {!isAdmin && (
+                <div className="site-chrome">
+                  <Header />
+                </div>
+              )}
+              <main>{children}</main>
+              {!isAdmin && <SiteFooter light={isLightFooter} />}
+            </PersonaProvider>
+          </LocaleProvider>
         </AnalyticsProvider>
         <Analytics />
       </body>

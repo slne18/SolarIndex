@@ -106,8 +106,13 @@ export default function SiteFooter({ light = false }: { light?: boolean }) {
               </Link>
             </li>
             <li>
+              <Link href="/legal/cgu" className={light ? "footer-link" : "transition hover:text-white"}>
+                CGU (déposants)
+              </Link>
+            </li>
+            <li>
               <Link href="/legal/cgv" className={light ? "footer-link" : "transition hover:text-white"}>
-                CGV
+                CGV (installateurs)
               </Link>
             </li>
             <li>

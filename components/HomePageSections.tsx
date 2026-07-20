@@ -166,8 +166,8 @@ function InstallerTarifsSections() {
         </div>
         <p className="mt-6 text-center text-xs text-slate-500">
           Détails juridiques :{" "}
-          <Link href="/legal/cgv#rfp-deposants" className="text-solar hover:underline">
-            CGV §6 — dépôts de projets
+          <Link href="/legal/cgu" className="text-solar hover:underline">
+            CGU — dépôts de projets
           </Link>
         </p>
       </section>

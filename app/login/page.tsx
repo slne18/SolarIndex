@@ -4,8 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
 import { authConfirmRedirectUrl, resolvePostAuthRedirect } from "@/lib/auth-redirect";
+import { useTranslations } from "@/components/LocaleProvider";
+import PasswordInput from "@/components/PasswordInput";
+import type { MessageKey } from "@/lib/i18n";
 
 export default function LoginPage() {
+  const t = useTranslations();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,23 +33,23 @@ export default function LoginPage() {
   }
 
   function authErrorMessage(err: unknown): string {
-    if (!(err instanceof Error)) return "Échec de l'authentification.";
+    if (!(err instanceof Error)) return t("auth.error.generic");
     const code = "code" in err ? String((err as { code?: string }).code) : "";
     const msg = err.message;
     if (code === "email_address_invalid" || /email.*invalid/i.test(msg)) {
-      return "Adresse email refusée. Supabase bloque les adresses de test (ex. test@gmail.com). Utilisez une adresse réaliste, par ex. prenom.nom@gmail.com.";
+      return t("auth.error.emailInvalid");
     }
     if (code === "email_exists" || /already registered/i.test(msg)) {
-      return "Un compte existe déjà avec cet email. Connectez-vous.";
+      return t("auth.error.emailExists");
     }
     if (code === "weak_password" || /password.*at least/i.test(msg)) {
-      return "Mot de passe trop court (6 caractères minimum).";
+      return t("auth.error.weakPassword");
     }
     if (
       code === "over_email_send_rate_limit" ||
       /rate limit|too many.*email|email.*limit/i.test(msg)
     ) {
-      return "Limite d'envoi d'emails atteinte. Attendez environ 1 h, ou connectez-vous si le compte existe déjà.";
+      return t("auth.error.rateLimit");
     }
     return msg;
   }
@@ -73,9 +77,7 @@ export default function LoginPage() {
         if (error) throw error;
         const { data: sess } = await supabase.auth.getSession();
         if (!sess.session) {
-          setMsg(
-            "Compte créé. Vérifiez votre email pour confirmer, puis connectez-vous — vous compléterez ensuite votre profil (installateur, propriétaire ou gérant).",
-          );
+          setMsg(t("auth.signUpConfirmEmail"));
           setMode("signin");
           return;
         }
@@ -97,54 +99,57 @@ export default function LoginPage() {
   return (
     <div className="container-x py-16">
       <div className="mx-auto max-w-md">
-        <Link href="/" className="text-sm text-slate-400 hover:text-white">← Accueil</Link>
+        <Link href="/" className="text-sm text-slate-400 hover:text-white">
+          {t("common.backHome")}
+        </Link>
         <div className="card mt-4 p-7">
           <h1 className="text-2xl font-bold tracking-tight">
-            {mode === "signin" ? "Connexion" : "Créer un espace"}
+            {mode === "signin" ? t("auth.signInTitle") : t("auth.signUpTitle")}
           </h1>
           <p className="mt-1 text-sm text-slate-400">
-            {mode === "signup"
-              ? "Installateurs, propriétaires et gérants de parking — créez votre espace pour parcourir le catalogue de leads ou déposer un projet solaire."
-              : "Accédez à votre espace : leads achetés, projets déposés et catalogue."}
+            {mode === "signin" ? t("auth.signInLead") : t("auth.signUpLead")}
           </p>
 
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
-            <Field label="Email">
+            <Field label={t("auth.email")}>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="input"
-                placeholder="vous@entreprise.fr"
+                placeholder={t("auth.emailPlaceholder")}
               />
             </Field>
-            <Field label="Mot de passe">
-              <input
-                type="password"
-                required
-                minLength={6}
+            <Field label={t("auth.password")}>
+              <PasswordInput
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input"
-                placeholder="••••••••"
+                onChange={setPassword}
+                showLabel={t("auth.showPassword")}
+                hideLabel={t("auth.hidePassword")}
+                required
               />
             </Field>
 
             <button type="submit" disabled={loading} className="btn-solar w-full">
-              {loading ? "…" : mode === "signin" ? "Se connecter" : "Créer mon espace"}
+              {loading
+                ? "…"
+                : mode === "signin"
+                  ? t("auth.signInSubmit")
+                  : t("auth.signUpSubmit")}
             </button>
           </form>
 
           {msg && <p className="mt-4 text-sm text-solar-400">{msg}</p>}
 
           <button
-            onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setMsg(null); }}
+            onClick={() => {
+              setMode(mode === "signin" ? "signup" : "signin");
+              setMsg(null);
+            }}
             className="mt-5 text-sm text-slate-400 hover:text-white"
           >
-            {mode === "signin"
-              ? "Pas encore de compte ? Créer un espace"
-              : "Déjà un compte ? Se connecter"}
+            {mode === "signin" ? t("auth.switchToSignUp") : t("auth.switchToSignIn")}
           </button>
         </div>
       </div>

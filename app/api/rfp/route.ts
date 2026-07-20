@@ -6,6 +6,7 @@ import {
   type RfpDeposantChecklistId,
   validateRfpDeposantDeclarations,
 } from "@/lib/rfp-legal";
+import { validateRfpOfficialFields } from "@/lib/rfp-official-fields";
 import { verifySiret } from "@/lib/sirene";
 import { sendRfpVerificationEmail } from "@/lib/email-rfp";
 
@@ -38,9 +39,23 @@ interface SubmitBody {
   acceptation_multi_installateurs?: boolean;
   acceptation_exactitude?: boolean;
   acceptation_sans_garantie?: boolean;
-  acceptation_cgv_deposant?: boolean;
+  acceptation_cgu_deposant?: boolean;
   consentement_rgpd?: boolean;
   checklist?: Partial<Record<RfpDeposantChecklistId, boolean>>;
+  ao_publie_officiellement?: boolean;
+  lien_consultation_officielle?: string;
+  date_limite_offres?: string;
+  nombre_places?: number | string;
+  type_proprietaire?: string;
+  parking_deja_etudie?: boolean;
+  documents_complementaires?: string;
+  acceptation_reference_officielle?: boolean;
+}
+
+function parseOptionalBool(value: string | null): boolean | undefined {
+  if (value === "1" || value === "true") return true;
+  if (value === "0" || value === "false") return false;
+  return undefined;
 }
 
 // GET /api/rfp — catalogue appels d'offres publiés (masqué)
@@ -50,6 +65,16 @@ export async function GET(req: Request) {
   const region = searchParams.get("region") || undefined;
   const surfaceMinRaw = searchParams.get("surface_min");
   const surfaceMin = surfaceMinRaw ? Number(surfaceMinRaw) : undefined;
+  const placesMinRaw = searchParams.get("places_min");
+  const placesMin = placesMinRaw ? Number(placesMinRaw) : undefined;
+  const puissanceMinRaw = searchParams.get("puissance_min");
+  const puissanceMin = puissanceMinRaw ? Number(puissanceMinRaw) : undefined;
+  const aoPublie = parseOptionalBool(searchParams.get("ao_publie"));
+  const parkingEtudie = parseOptionalBool(searchParams.get("parking_etudie"));
+  const aperEligible = parseOptionalBool(searchParams.get("aper_eligible"));
+  const typeProprietaire = searchParams.get("type_proprietaire") || undefined;
+  const deadlineBefore = searchParams.get("deadline_before") || undefined;
+  const deadlineAfter = searchParams.get("deadline_after") || undefined;
   const pageRaw = Number(searchParams.get("page") || "0");
   const page = Number.isFinite(pageRaw) && pageRaw >= 0 ? Math.floor(pageRaw) : 0;
 
@@ -58,11 +83,26 @@ export async function GET(req: Request) {
       departement,
       region,
       surfaceMin,
+      placesMin,
+      aoPublie,
+      parkingEtudie,
+      typeProprietaire,
+      deadlineBefore,
+      deadlineAfter,
       page,
     });
+    let rfps = rows.map(toPublicRfp);
+    if (typeof puissanceMin === "number" && !Number.isNaN(puissanceMin)) {
+      rfps = rfps.filter((r) => (r.solar?.puissance_kwc ?? 0) >= puissanceMin);
+    }
+    if (aperEligible === true) {
+      rfps = rfps.filter((r) => r.solar?.aper_eligible);
+    } else if (aperEligible === false) {
+      rfps = rfps.filter((r) => !r.solar?.aper_eligible);
+    }
     return Response.json(
       {
-        rfps: rows.map(toPublicRfp),
+        rfps,
         page,
         pageSize: RFP_PAGE_SIZE,
         total: count,
@@ -88,7 +128,8 @@ export async function GET(req: Request) {
 
 // POST /api/rfp — soumission (compte requis)
 export async function POST(req: Request) {
-  if (!(await getUserIdFromRequest(req))) {
+  const userId = await getUserIdFromRequest(req);
+  if (!userId) {
     return Response.json({ error: "Compte requis pour soumettre un appel d'offres." }, { status: 401, headers: NO_STORE });
   }
 
@@ -113,13 +154,37 @@ export async function POST(req: Request) {
     acceptation_multi_installateurs: !!body.acceptation_multi_installateurs,
     acceptation_exactitude: !!body.acceptation_exactitude,
     acceptation_sans_garantie: !!body.acceptation_sans_garantie,
-    acceptation_cgv_deposant: !!body.acceptation_cgv_deposant,
+    acceptation_cgu_deposant: !!body.acceptation_cgu_deposant,
     consentement_rgpd: !!body.consentement_rgpd,
     checklist: body.checklist,
   });
   if (!legalCheck.ok) {
     return Response.json({ error: legalCheck.error }, { status: 400, headers: NO_STORE });
   }
+
+  const officialCheck = validateRfpOfficialFields({
+    ao_publie_officiellement: !!body.ao_publie_officiellement,
+    lien_consultation_officielle: body.lien_consultation_officielle,
+    date_limite_offres: body.date_limite_offres,
+    nombre_places: body.nombre_places,
+    type_proprietaire: body.type_proprietaire,
+    parking_deja_etudie: !!body.parking_deja_etudie,
+    documents_complementaires: body.documents_complementaires,
+  });
+  if (!officialCheck.ok) {
+    return Response.json({ error: officialCheck.error }, { status: 400, headers: NO_STORE });
+  }
+  if (officialCheck.data.ao_publie_officiellement && !body.acceptation_reference_officielle) {
+    return Response.json(
+      {
+        error:
+          "Acceptez la déclaration sur le lien officiel (autorisation de référencement et consultation du DCE sur la plateforme indiquée).",
+      },
+      { status: 400, headers: NO_STORE },
+    );
+  }
+
+  const official = officialCheck.data;
 
   const siretCheck = body.siret?.trim()
     ? await verifySiret(body.siret)
@@ -165,6 +230,14 @@ export async function POST(req: Request) {
       consentement_rgpd: true,
       est_personne_publique: false,
       acceptation_conditions_deposant: true,
+      deposant_user_id: userId,
+      ao_publie_officiellement: official.ao_publie_officiellement,
+      lien_consultation_officielle: official.lien_consultation_officielle,
+      date_limite_offres: official.date_limite_offres,
+      nombre_places: official.nombre_places,
+      type_proprietaire: official.type_proprietaire,
+      parking_deja_etudie: official.parking_deja_etudie,
+      documents_complementaires: official.documents_complementaires,
     });
 
     const emailSent = await sendRfpVerificationEmail(

@@ -8,6 +8,12 @@ import { nf } from "@/lib/format";
 import type { OwnedRfp, PublicRfp } from "@/lib/rfp";
 import RfpLegalNotice from "@/components/RfpLegalNotice";
 import RfpPurchaseButton from "@/components/RfpPurchaseButton";
+import {
+  RfpOfficialBadge,
+  RfpOfficialLinkButton,
+  RfpSolarMetricsCard,
+  formatRfpDeadline,
+} from "@/components/RfpCatalogExtras";
 
 function Masked({ label }: { label: string }) {
   return (
@@ -63,6 +69,7 @@ export default function RfpDetailClient({ id }: { id: string }) {
   }
 
   const owned = isOwned && "entreprise" in rfp;
+  const officialUrl = rfp.ao_publie_officiellement ? rfp.lien_consultation_officielle : null;
 
   return (
     <div className="surface-light min-h-[50vh]">
@@ -71,9 +78,12 @@ export default function RfpDetailClient({ id }: { id: string }) {
 
       <div className="mt-4 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <div>
-          <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-300">
-            Projet actif
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-700">
+              Projet actif
+            </span>
+            <RfpOfficialBadge rfp={rfp} />
+          </div>
           <h1 className="mt-4 text-2xl font-bold">Projet parking — consultation installateurs</h1>
           <p className="mt-2 text-slate-600">
             Publié le {new Date(rfp.created_at).toLocaleDateString("fr-FR")}
@@ -81,14 +91,53 @@ export default function RfpDetailClient({ id }: { id: string }) {
             {rfp.region ? ` · ${rfp.region}` : ""}
           </p>
 
+          {officialUrl ? (
+            <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-5">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p className="font-semibold text-slate-900">Appel d&apos;offres officiel publié</p>
+                  <p className="mt-1 text-sm text-slate-600">
+                    Date limite : <strong>{formatRfpDeadline(rfp.date_limite_offres)}</strong>
+                    {rfp.lien_plateforme_connue ? " · Plateforme reconnue" : " · URL fournie par le déposant"}
+                  </p>
+                  <p className="mt-2 text-xs text-slate-500">
+                    SolarIndex référence ce lien public. Le DCE reste sur la plateforme officielle — nous
+                    n&apos;hébergeons ni ne reproduisons les documents de consultation.
+                  </p>
+                </div>
+                <RfpOfficialLinkButton href={officialUrl} className="btn-mint shrink-0" />
+              </div>
+            </div>
+          ) : null}
+
+          <div className="mt-6">
+            <RfpSolarMetricsCard rfp={rfp} />
+          </div>
+
           <dl className="mt-6 space-y-2 text-sm">
             <Row k="Surface estimée" v={rfp.surface_estimee_m2 ? `${nf(rfp.surface_estimee_m2)} m²` : "—"} />
+            <Row k="Parking déjà étudié" v={rfp.parking_deja_etudie ? "Oui" : "Non"} />
             <Row k="Déjà équipé partiellement" v={rfp.deja_equipe_partiel ? "Oui" : "Non"} />
             <Row k="Dérogation pente possible" v={rfp.derogation_pente ? "Oui" : "Non"} />
             <Row k="Zone ABF possible" v={rfp.derogation_abf ? "Oui" : "Non"} />
             <Row k="Budget indicatif" v={rfp.budget_indicatif || "—"} />
             <Row k="Délai souhaité" v={rfp.delai_souhaite || "—"} />
           </dl>
+
+          {rfp.documents_complementaires.length > 0 ? (
+            <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm">
+              <div className="font-semibold text-slate-800">Documents complémentaires</div>
+              <ul className="mt-2 space-y-1">
+                {rfp.documents_complementaires.map((url) => (
+                  <li key={url}>
+                    <a href={url} target="_blank" rel="noopener noreferrer" className="text-solar-700 underline">
+                      {url}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
 
           {owned ? (
             <div className="card mt-6 p-5 text-sm">
@@ -117,25 +166,38 @@ export default function RfpDetailClient({ id }: { id: string }) {
 
         <aside>
           <div className="card p-6">
-            <div className="text-sm text-slate-400">Accès installateur</div>
-            <div className="mt-1 text-3xl font-bold text-solar">{rfp.prix_acces} €</div>
-            <p className="mt-2 text-sm text-slate-400">
-              Coordonnées fournies volontairement par le déposant (mise en relation commerciale, hors
-              marché public).
-              {rfp.acheteurs_count > 0
-                ? ` ${rfp.acheteurs_count} installateur${rfp.acheteurs_count > 1 ? "s ont" : " a"} déjà débloqué l'accès.`
-                : null}
-            </p>
-            <div className="mt-4">
-              <RfpLegalNotice variant="installer" />
-            </div>
-            {owned ? (
-              <p className="mt-4 text-sm text-emerald-300">Vous avez débloqué ce projet.</p>
-            ) : (
+            {officialUrl ? (
+              <>
+                <div className="text-sm text-slate-400">Accès DCE officiel</div>
+                <p className="mt-2 text-sm text-slate-300">
+                  Gratuit — redirection vers la plateforme de marchés publics indiquée par le déposant.
+                </p>
+                <div className="mt-4">
+                  <RfpOfficialLinkButton href={officialUrl} className="btn-mint w-full" />
+                </div>
+              </>
+            ) : null}
+
+            <div className={officialUrl ? "mt-6 border-t border-white/10 pt-6" : ""}>
+              <div className="text-sm text-slate-400">Accès installateur — contact direct</div>
+              <div className="mt-1 text-3xl font-bold text-solar">{rfp.prix_acces} €</div>
+              <p className="mt-2 text-sm text-slate-400">
+                Coordonnées fournies volontairement par le déposant (mise en relation commerciale privée).
+                {rfp.acheteurs_count > 0
+                  ? ` ${rfp.acheteurs_count} installateur${rfp.acheteurs_count > 1 ? "s ont" : " a"} déjà débloqué l'accès.`
+                  : null}
+              </p>
               <div className="mt-4">
-                <RfpPurchaseButton rfpId={rfp.id} prixAcces={rfp.prix_acces} />
+                <RfpLegalNotice variant="installer" />
               </div>
-            )}
+              {owned ? (
+                <p className="mt-4 text-sm text-emerald-300">Vous avez débloqué ce projet.</p>
+              ) : (
+                <div className="mt-4">
+                  <RfpPurchaseButton rfpId={rfp.id} prixAcces={rfp.prix_acces} />
+                </div>
+              )}
+            </div>
           </div>
         </aside>
       </div>

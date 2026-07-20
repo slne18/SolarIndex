@@ -1,0 +1,78 @@
+import type { MessageKey } from "./fr";
+
+const en: Record<MessageKey, string> = {
+  "lang.fr": "FR",
+  "lang.en": "EN",
+  "common.backHome": "← Home",
+  "common.loading": "Loading…",
+
+  "auth.signInTitle": "Sign in",
+  "auth.signUpTitle": "Create my space",
+  "auth.signInLead": "Access your space: purchased leads, submitted projects, and catalog.",
+  "auth.signUpLead":
+    "Installers, owners and parking operators — create your account to browse the lead catalog or submit a solar project.",
+  "auth.email": "Email",
+  "auth.password": "Password",
+  "auth.showPassword": "Show",
+  "auth.hidePassword": "Hide",
+  "auth.signInSubmit": "Sign in",
+  "auth.signUpSubmit": "Create my space",
+  "auth.switchToSignUp": "No account yet? Create my space",
+  "auth.switchToSignIn": "Already have an account? Sign in",
+  "auth.emailPlaceholder": "you@company.com",
+  "auth.signUpConfirmEmail":
+    "Account created. Check your email to confirm, then sign in — you'll complete your profile next (installer, owner or operator).",
+  "auth.error.generic": "Authentication failed.",
+  "auth.error.emailInvalid": "Email rejected. Use a realistic address, e.g. firstname.lastname@gmail.com.",
+  "auth.error.emailExists": "An account already exists with this email. Sign in.",
+  "auth.error.weakPassword": "Password too short (minimum 6 characters).",
+  "auth.error.rateLimit":
+    "Email sending limit reached. Wait about 1 hour, or sign in if the account already exists.",
+
+  "header.createSpace": "Create my space",
+  "header.signIn": "Sign in",
+  "header.mySpace": "My account",
+
+  "onboarding.title": "Complete your profile",
+  "onboarding.lead":
+    "A few details to tailor SolarIndex to your situation. Fields marked * are required.",
+  "onboarding.userType": "You are *",
+  "onboarding.entrepriseRequired": "Company name",
+  "onboarding.entrepriseOptional": "Company or personal name",
+  "onboarding.entrepriseHintInstallateur": "Your business (installer or operator).",
+  "onboarding.entrepriseHintOwner": "Optional for individual owners.",
+  "onboarding.foreignCompany": "Foreign company (outside French registry)",
+  "onboarding.foreignCountry": "Country of registration",
+  "onboarding.foreignRegistration": "Registration number (local registry)",
+  "onboarding.entrepriseSearchPlaceholder": "Type your company name…",
+  "onboarding.entrepriseSearchHint":
+    "Suggestions from the French national business registry (SIRENE). Pick your company to save the SIREN.",
+  "onboarding.sirenLabel": "SIREN",
+  "onboarding.ownerSection": "Parking owner *",
+  "onboarding.ownerHint": "Company name and/or name of the landowner.",
+  "onboarding.ownerCompany": "Owner company name",
+  "onboarding.ownerName": "Owner name",
+  "onboarding.managerFirstName": "Contact first name",
+  "onboarding.managerLastName": "Contact last name",
+  "onboarding.mobile": "Mobile",
+  "onboarding.officePhone": "Office phone",
+  "onboarding.parkingAddress": "Parking address",
+  "onboarding.surface": "Area to cover (m²)",
+  "onboarding.surfaceHint": "Approximate estimate is fine.",
+  "onboarding.projectHorizon": "Project timeline *",
+  "onboarding.comment": "Comments",
+  "onboarding.commentHint": "Optional — any useful details.",
+  "onboarding.submit": "Save and continue",
+  "onboarding.submitting": "Saving…",
+  "onboarding.loadError": "Could not load your profile.",
+  "onboarding.saveError": "Could not save your profile.",
+  "onboarding.networkError": "Network error.",
+  "userType.installateur": "Installer",
+  "userType.proprietaire": "Owner",
+  "userType.gerant_parking": "Parking operator",
+  "projet.en_cours": "Project in progress",
+  "projet.six_mois": "Within 6 months",
+  "projet.reflexion": "Under consideration",
+};
+
+export default en;

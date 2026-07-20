@@ -9,6 +9,7 @@ import { displayRecouvrementSummary } from "@/lib/pv-overlap";
 import type { LeadRow } from "@/lib/types";
 
 import { MON_ESPACE_PATH } from "@/lib/paths";
+import { DeleteAccountPanel, MyRfpSubmissionsPanel } from "@/components/AccountSettingsPanels";
 
 type OwnedLead = LeadRow & { prix_lead: number };
 
@@ -64,10 +65,10 @@ export default function MonEspaceClient() {
     <div className="container-x py-10 sm:py-12">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="pill-accent w-fit">Compte installateur</p>
+          <p className="pill-accent w-fit">Mon compte</p>
           <h1 className="section-title mt-4">Mon espace personnel</h1>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-400">
-            Vos leads achetés et vos crédits pack — tout ce dont vous avez besoin pour prospecter.
+            Leads achetés, dépôts de projet, crédits pack et paramètres du compte.
           </p>
           {email ? <p className="mt-2 text-sm text-slate-500">{email}</p> : null}
         </div>
@@ -172,6 +173,9 @@ export default function MonEspaceClient() {
           ))}
         </div>
       )}
+
+      <MyRfpSubmissionsPanel />
+      <DeleteAccountPanel />
     </div>
   );
 }

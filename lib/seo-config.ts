@@ -30,6 +30,7 @@ export const SEO_STATIC_PATHS: {
   { path: "/faq", changeFrequency: "monthly", priority: 0.6 },
   { path: "/legal/confidentialite", changeFrequency: "monthly", priority: 0.3 },
   { path: "/legal/mentions-legales", changeFrequency: "monthly", priority: 0.3 },
+  { path: "/legal/cgu", changeFrequency: "monthly", priority: 0.3 },
   { path: "/legal/cgv", changeFrequency: "monthly", priority: 0.3 },
 ];
 

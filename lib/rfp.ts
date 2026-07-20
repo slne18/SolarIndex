@@ -1,4 +1,5 @@
-import { getRegion } from "./regions";
+import { enrichPublicRfp, type PublicRfpEnrichment } from "./rfp-official-fields";
+import type { RfpOwnerType } from "./rfp-official";
 
 /** Seuil surface pour la grille tarifaire appels d'offres (aligné APER 10 000 m²). */
 export const RFP_SURFACE_TIER_M2 = 10_000;
@@ -50,6 +51,14 @@ export interface RfpSubmissionRow {
   consentement_rgpd: boolean;
   est_personne_publique: boolean;
   acceptation_conditions_deposant: boolean;
+  deposant_user_id: string | null;
+  ao_publie_officiellement: boolean;
+  lien_consultation_officielle: string | null;
+  date_limite_offres: string | null;
+  nombre_places: number | null;
+  type_proprietaire: RfpOwnerType | null;
+  parking_deja_etudie: boolean;
+  documents_complementaires: string | null;
   acheteurs_count: number;
   acheteurs_max: number;
 }
@@ -80,15 +89,25 @@ export type PublicRfp = Pick<
   | "budget_indicatif"
   | "delai_souhaite"
   | "acheteurs_count"
+  | "ao_publie_officiellement"
+  | "lien_consultation_officielle"
+  | "date_limite_offres"
+  | "nombre_places"
+  | "type_proprietaire"
+  | "parking_deja_etudie"
 > & {
   prix_acces: number;
   is_owned?: boolean;
   notes_particulieres?: string | null;
+  lien_plateforme_connue: boolean;
+  documents_complementaires: string[];
+  solar: PublicRfpEnrichment["solar"];
 };
 
 export type OwnedRfp = RfpSubmissionRow & { is_owned: true; prix_acces: number };
 
 export function toPublicRfp(row: RfpSubmissionRow): PublicRfp {
+  const extra = enrichPublicRfp(row);
   return {
     id: row.id,
     created_at: row.created_at,
@@ -102,6 +121,15 @@ export function toPublicRfp(row: RfpSubmissionRow): PublicRfp {
     budget_indicatif: row.budget_indicatif,
     delai_souhaite: row.delai_souhaite,
     acheteurs_count: row.acheteurs_count,
+    ao_publie_officiellement: extra.ao_publie_officiellement,
+    lien_consultation_officielle: extra.lien_consultation_officielle,
+    date_limite_offres: extra.date_limite_offres,
+    nombre_places: extra.nombre_places,
+    type_proprietaire: extra.type_proprietaire,
+    parking_deja_etudie: extra.parking_deja_etudie,
+    lien_plateforme_connue: extra.lien_plateforme_connue,
+    documents_complementaires: extra.documents_complementaires,
+    solar: extra.solar,
     prix_acces: computeRfpAccessPrice(row.surface_estimee_m2),
   };
 }

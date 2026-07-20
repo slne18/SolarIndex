@@ -69,6 +69,6 @@ export const FAQ_ITEMS: FaqItem[] = [
     id: "account",
     question: "Puis-je supprimer mon compte ou mes données ?",
     answer:
-      "Oui. Écrivez à contact@solarindex.fr depuis l'adresse email de votre compte. Nous traiterons votre demande dans les délais légaux (accès, rectification, effacement, opposition).",
+      "Oui. Depuis Mon espace, vous pouvez retirer vos annonces de projet et supprimer définitivement votre compte (confirmation requise). Vous pouvez aussi écrire à contact@solarindex.fr. Les preuves comptables des achats passés peuvent être conservées anonymisées conformément à la Politique de confidentialité.",
   },
 ];

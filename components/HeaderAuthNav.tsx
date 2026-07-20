@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBrowserClient, getAccessToken } from "@/lib/supabaseBrowser";
 import { MON_ESPACE_PATH } from "@/lib/paths";
+import { useTranslations } from "@/components/LocaleProvider";
 
 export default function HeaderAuthNav() {
+  const t = useTranslations();
   const [authed, setAuthed] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -34,14 +36,14 @@ export default function HeaderAuthNav() {
   if (authed) {
     return (
       <Link href={MON_ESPACE_PATH} className="nav-link inline-flex font-medium text-slate-200">
-        Mon espace
+        {t("header.mySpace")}
       </Link>
     );
   }
 
   return (
     <Link href={`/login?next=${encodeURIComponent(MON_ESPACE_PATH)}`} className="nav-link hidden sm:inline-flex">
-      Connexion
+      {t("header.signIn")}
     </Link>
   );
 }

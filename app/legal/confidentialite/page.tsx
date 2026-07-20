@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ConfidentialitePage() {
   return (
-    <LegalPageShell title="Politique de confidentialité" updatedAt="15 juillet 2026">
+    <LegalPageShell title="Politique de confidentialité" updatedAt="20 juillet 2026">
       <section>
         <h2>1. Responsable du traitement</h2>
         <p>
@@ -23,8 +23,12 @@ export default function ConfidentialitePage() {
         <h2>2. Données traitées</h2>
         <ul>
           <li>
-            <strong>Compte utilisateur</strong> : email, mot de passe (hashé), nom d&apos;entreprise,
-            historique d&apos;achats.
+            <strong>Compte utilisateur</strong> : suppression en libre-service depuis Mon espace
+            (retrait des annonces actives, anonymisation des dépôts, effacement du compte).
+          </li>
+          <li>
+            <strong>Compte installateur / déposant</strong> : email, profil, historique d&apos;achats
+            ou de dépôts.
           </li>
           <li>
             <strong>Leads automatisés</strong> : données B2B issues de sources publiques (SIREN,
@@ -138,13 +142,14 @@ export default function ConfidentialitePage() {
         <h3 className="mt-6 text-base font-semibold text-slate-800">Quand ces droits s&apos;appliquent-ils ?</h3>
         <ul>
           <li>
-            <strong>Compte installateur</strong> (email, entreprise, achats) : tous les droits
-            ci-dessus s&apos;appliquent. Contact :{" "}
+            <strong>Compte installateur ou déposant</strong> (email, entreprise, achats, dépôts) :
+            accès, rectification, effacement et opposition — aussi via Mon espace (retrait
+            d&apos;annonce, suppression de compte). Contact :{" "}
             <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
           </li>
           <li>
-            <strong>Déposant d&apos;appel d&apos;offres</strong> (coordonnées volontairement transmises) :
-            accès, rectification, effacement et opposition applicables sur vos coordonnées de contact.
+            <strong>Déposant d&apos;appel d&apos;offres</strong> sans compte : effacement sur demande
+            par email.
           </li>
           <li>
             <strong>Données B2B des leads</strong> (exploitants, dirigeants, propriétaires fonciers) :

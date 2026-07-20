@@ -22,10 +22,14 @@ export interface UserProfile {
   projet_delai: ProjetDelai | null;
   commentaire: string | null;
   profile_completed_at: string | null;
+  siren: string | null;
+  siret: string | null;
+  pays_entreprise: string | null;
+  immatriculation_etrangere: string | null;
 }
 
 const PROFILE_SELECT =
-  "id, email, entreprise, plan, abonnement_actif, leads_achetes, sample_leads_remaining, sample_departement, user_type, proprietaire_raison_sociale, proprietaire_nom, responsable_prenom, responsable_nom, telephone, telephone_bureau, adresse_parking, surface_m2_estimee, projet_delai, commentaire, profile_completed_at";
+  "id, email, entreprise, plan, abonnement_actif, leads_achetes, sample_leads_remaining, sample_departement, user_type, proprietaire_raison_sociale, proprietaire_nom, responsable_prenom, responsable_nom, telephone, telephone_bureau, adresse_parking, surface_m2_estimee, projet_delai, commentaire, profile_completed_at, siren, siret, pays_entreprise, immatriculation_etrangere";
 
 export async function getUserProfile(userId: string): Promise<UserProfile | null> {
   const { data, error } = await getAdminClient()

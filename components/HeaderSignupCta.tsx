@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBrowserClient, getAccessToken } from "@/lib/supabaseBrowser";
+import { useTranslations } from "@/components/LocaleProvider";
 
 export default function HeaderSignupCta() {
+  const t = useTranslations();
   const [authed, setAuthed] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function HeaderSignupCta() {
 
   return (
     <Link href="/login?mode=signup&next=/leads" className="btn-solar shrink-0 !px-3.5 !py-2 text-xs sm:text-sm">
-      Créer un espace
+      {t("header.createSpace")}
     </Link>
   );
 }

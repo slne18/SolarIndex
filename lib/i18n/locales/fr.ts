@@ -1,0 +1,78 @@
+const fr = {
+  "lang.fr": "FR",
+  "lang.en": "EN",
+  "common.backHome": "← Accueil",
+  "common.loading": "Chargement…",
+
+  "auth.signInTitle": "Connexion",
+  "auth.signUpTitle": "Créer mon espace",
+  "auth.signInLead": "Accédez à votre espace : leads achetés, projets déposés et catalogue.",
+  "auth.signUpLead":
+    "Installateurs, propriétaires et gérants de parking — créez votre espace pour parcourir le catalogue de leads ou déposer un projet solaire.",
+  "auth.email": "Email",
+  "auth.password": "Mot de passe",
+  "auth.showPassword": "Afficher",
+  "auth.hidePassword": "Masquer",
+  "auth.signInSubmit": "Se connecter",
+  "auth.signUpSubmit": "Créer mon espace",
+  "auth.switchToSignUp": "Pas encore de compte ? Créer mon espace",
+  "auth.switchToSignIn": "Déjà un compte ? Se connecter",
+  "auth.emailPlaceholder": "vous@entreprise.fr",
+  "auth.signUpConfirmEmail":
+    "Compte créé. Vérifiez votre email pour confirmer, puis connectez-vous — vous compléterez ensuite votre profil (installateur, propriétaire ou gérant).",
+  "auth.error.generic": "Échec de l'authentification.",
+  "auth.error.emailInvalid":
+    "Adresse email refusée. Utilisez une adresse réaliste, par ex. prenom.nom@gmail.com.",
+  "auth.error.emailExists": "Un compte existe déjà avec cet email. Connectez-vous.",
+  "auth.error.weakPassword": "Mot de passe trop court (6 caractères minimum).",
+  "auth.error.rateLimit":
+    "Limite d'envoi d'emails atteinte. Attendez environ 1 h, ou connectez-vous si le compte existe déjà.",
+
+  "header.createSpace": "Créer mon espace",
+  "header.signIn": "Connexion",
+  "header.mySpace": "Mon espace",
+
+  "onboarding.title": "Complétez votre profil",
+  "onboarding.lead":
+    "Quelques informations pour adapter SolarIndex à votre situation. Les champs marqués * sont obligatoires.",
+  "onboarding.userType": "Vous êtes *",
+  "onboarding.entrepriseRequired": "Raison sociale",
+  "onboarding.entrepriseOptional": "Raison sociale ou nom",
+  "onboarding.entrepriseHintInstallateur": "Votre structure (exploitant ou société d'installation).",
+  "onboarding.entrepriseHintOwner": "Facultatif pour un propriétaire personne physique.",
+  "onboarding.foreignCompany": "Société étrangère (hors registre français)",
+  "onboarding.foreignCountry": "Pays d'immatriculation",
+  "onboarding.foreignRegistration": "N° d'immatriculation (registre local)",
+  "onboarding.entrepriseSearchPlaceholder": "Tapez le nom de votre société…",
+  "onboarding.entrepriseSearchHint":
+    "Suggestions via le registre national des entreprises (SIRENE). Sélectionnez votre raison sociale pour enregistrer le SIREN.",
+  "onboarding.sirenLabel": "SIREN",
+  "onboarding.ownerSection": "Propriétaire du parking *",
+  "onboarding.ownerHint": "Renseignez la raison sociale et/ou le nom du propriétaire foncier.",
+  "onboarding.ownerCompany": "Raison sociale du propriétaire",
+  "onboarding.ownerName": "Nom du propriétaire",
+  "onboarding.managerFirstName": "Prénom du responsable",
+  "onboarding.managerLastName": "Nom du responsable",
+  "onboarding.mobile": "Mobile",
+  "onboarding.officePhone": "Téléphone bureau",
+  "onboarding.parkingAddress": "Adresse du parking",
+  "onboarding.surface": "Surface à couvrir (m²)",
+  "onboarding.surfaceHint": "Estimation approximative acceptée.",
+  "onboarding.projectHorizon": "Horizon projet *",
+  "onboarding.comment": "Commentaire",
+  "onboarding.commentHint": "Facultatif — précisions utiles pour votre dossier.",
+  "onboarding.submit": "Enregistrer et continuer",
+  "onboarding.submitting": "Enregistrement…",
+  "onboarding.loadError": "Impossible de charger votre profil.",
+  "onboarding.saveError": "Impossible d'enregistrer votre profil.",
+  "onboarding.networkError": "Erreur réseau.",
+  "userType.installateur": "Installateur",
+  "userType.proprietaire": "Propriétaire",
+  "userType.gerant_parking": "Gérant de parking",
+  "projet.en_cours": "Projet en cours",
+  "projet.six_mois": "À 6 mois",
+  "projet.reflexion": "En réflexion",
+} as const;
+
+export type MessageKey = keyof typeof fr;
+export default fr;

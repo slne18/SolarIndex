@@ -7,6 +7,13 @@ export interface RfpQueryOptions {
   departement?: string;
   region?: string;
   surfaceMin?: number;
+  placesMin?: number;
+  puissanceMin?: number;
+  aoPublie?: boolean;
+  parkingEtudie?: boolean;
+  deadlineBefore?: string;
+  deadlineAfter?: string;
+  typeProprietaire?: string;
   page?: number;
 }
 
@@ -30,6 +37,16 @@ export async function queryRfpSubmissions(opts: RfpQueryOptions = {}): Promise<{
   if (typeof opts.surfaceMin === "number" && !Number.isNaN(opts.surfaceMin)) {
     q = q.gte("surface_estimee_m2", opts.surfaceMin);
   }
+  if (typeof opts.placesMin === "number" && !Number.isNaN(opts.placesMin)) {
+    q = q.gte("nombre_places", opts.placesMin);
+  }
+  if (opts.aoPublie === true) q = q.eq("ao_publie_officiellement", true);
+  if (opts.aoPublie === false) q = q.eq("ao_publie_officiellement", false);
+  if (opts.parkingEtudie === true) q = q.eq("parking_deja_etudie", true);
+  if (opts.parkingEtudie === false) q = q.eq("parking_deja_etudie", false);
+  if (opts.typeProprietaire) q = q.eq("type_proprietaire", opts.typeProprietaire);
+  if (opts.deadlineBefore) q = q.lte("date_limite_offres", opts.deadlineBefore);
+  if (opts.deadlineAfter) q = q.gte("date_limite_offres", opts.deadlineAfter);
 
   const { data, count, error } = await q.range(from, to);
   if (error) throw error;
@@ -59,8 +76,9 @@ export async function userOwnsRfp(rfpId: string, userId: string): Promise<boolea
 }
 
 export async function createRfpSubmission(
-  payload: Omit<RfpSubmissionRow, "id" | "created_at" | "acheteurs_count" | "acheteurs_max"> & {
+  payload: Omit<RfpSubmissionRow, "id" | "created_at" | "acheteurs_count" | "acheteurs_max" | "deposant_user_id"> & {
     verification_token: string;
+    deposant_user_id?: string | null;
   },
 ): Promise<RfpSubmissionRow> {
   const { data, error } = await getAdminClient()
