@@ -684,7 +684,7 @@ body {
   }
 
   .simulator-production-self {
-    @apply h-full bg-accent/80;
+    @apply h-full bg-mint/80;
   }
 
   .simulator-production-surplus {
@@ -700,7 +700,7 @@ body {
   }
 
   .simulator-legend-dot-self {
-    @apply bg-accent/80;
+    @apply bg-mint/80;
   }
 
   .simulator-legend-dot-surplus {
@@ -716,8 +716,9 @@ body {
   }
 
   .simulator-donut-track {
-    @apply fill-none stroke-white/10;
-    stroke-width: 16;
+    fill: none;
+    stroke: rgb(255 255 255 / 0.1);
+    stroke-width: 16px;
   }
 
   .simulator-donut-center {
