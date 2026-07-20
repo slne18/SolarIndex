@@ -60,7 +60,7 @@ export default function SiteFooter({ light = false }: { light?: boolean }) {
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-500">
             {persona === "owner"
               ? "Vérifiez votre obligation APER, estimez vos gains et recevez des propositions d'installateurs."
-              : "Leads B2B pour installateurs solaires — pilotés par la contrainte réglementaire APER."}
+              : "Leads APER pour installateurs · éligibilité, gains estimés et propositions d'installateurs pour propriétaires et gérants de parking."}
           </p>
         </div>
 

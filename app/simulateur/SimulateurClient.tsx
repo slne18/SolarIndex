@@ -3,6 +3,12 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import RfpLegalNotice from "@/components/RfpLegalNotice";
+import {
+  SimulatorBenefitDonut,
+  SimulatorParkingVisual,
+  SimulatorResultsSummary,
+  SimulatorRoiTimeline,
+} from "@/components/SimulatorResultVisuals";
 import { usePersona } from "@/components/PersonaProvider";
 import { showOwnerProjectDeposit } from "@/lib/persona";
 import { euros, eurosCompact, nf, nfSurface } from "@/lib/format";
@@ -170,69 +176,79 @@ export default function SimulateurClient() {
             {ELECTRICITY_PRICE_EUR.toLocaleString("fr-FR")} €/kWh.
           </p>
 
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Result
-              label="Surface solaire obligatoire"
-              value={`${nfSurface(result.surfaceSolaireM2)} m²`}
-              sub={`${result.solarRatioLabel} (loi APER)`}
-            />
-            <Result
-              label="Puissance installée estimée"
-              value={`${nf(result.puissanceKwc)} kWc`}
-            />
-            <Result
-              label="Production annuelle estimée"
-              value={`${nf(result.productionKwhPerYear)} kWh/an`}
-              sub={`Zone : ${region}`}
-            />
-            <Result
-              label="Économies autoconsommation"
-              value={euros(result.autoconsommationSavingsEur) + "/an"}
-              sub={`${nf(result.selfConsumedKwh)} kWh autoconsommés`}
-            />
-            <Result
-              label="Revenus revente surplus EDF OA"
-              value={euros(result.surplusRevenueEur) + "/an"}
-              sub={`${nf(result.surplusKwh)} kWh × ${(result.edfOaTariff * 100).toFixed(2)} c€`}
-            />
-            <Result
-              label="Revenus injection totale EDF OA"
-              value={euros(result.edfOaFullInjectionEur) + "/an"}
-              sub="Scénario vente intégrale (indicatif)"
-            />
-            {result.aperEligible && (
-              <Result
-                label="Amende évitée"
-                value={formatAperAnnualFine(result.surfaceM2) + "/an"}
-                highlight
-              />
-            )}
-            <Result
-              label="Coût d'installation estimé"
-              value={eurosCompact(result.installationCostEur)}
-              sub={`${nf(COUT_KWC)} €/kWc marché`}
-            />
+          <SimulatorResultsSummary result={result} />
+
+          <div className="simulator-visuals-grid">
+            <SimulatorParkingVisual result={result} />
+            <SimulatorBenefitDonut result={result} />
           </div>
 
-          <div className="rounded-xl border border-solar/30 bg-solar/10 px-4 py-3 text-sm text-slate-200">
-            <p>
-              <strong className="text-solar">ROI autoconsommation :</strong>{" "}
-              {result.roiYearsAutoconsommation != null
-                ? `${result.roiYearsAutoconsommation} ans`
-                : "—"}{" "}
-              (hors amende évitée)
-            </p>
-            <p className="mt-1">
-              <strong className="text-solar">ROI injection totale :</strong>{" "}
-              {result.roiYearsFullInjection != null
-                ? `${result.roiYearsFullInjection} ans`
-                : "—"}
-            </p>
-            <p className="mt-2 text-xs text-slate-400">
-              Bénéfice annuel autoconsommation (économies + surplus) :{" "}
-              {euros(result.autoconsommationTotalEur)}/an
-            </p>
-          </div>
+          <SimulatorRoiTimeline result={result} />
+
+          <details className="group rounded-xl border border-white/10 bg-night-900/20">
+            <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-slate-300 marker:content-none [&::-webkit-details-marker]:hidden">
+              Voir le détail chiffré
+              <span className="ml-2 text-slate-500 transition group-open:rotate-180">▾</span>
+            </summary>
+            <div className="border-t border-white/[0.06] px-4 pb-4 pt-3">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Result
+                  label="Surface solaire obligatoire"
+                  value={`${nfSurface(result.surfaceSolaireM2)} m²`}
+                  sub={`${result.solarRatioLabel} (loi APER)`}
+                />
+                <Result
+                  label="Puissance installée estimée"
+                  value={`${nf(result.puissanceKwc)} kWc`}
+                />
+                <Result
+                  label="Production annuelle estimée"
+                  value={`${nf(result.productionKwhPerYear)} kWh/an`}
+                  sub={`Zone : ${region}`}
+                />
+                <Result
+                  label="Économies autoconsommation"
+                  value={euros(result.autoconsommationSavingsEur) + "/an"}
+                  sub={`${nf(result.selfConsumedKwh)} kWh autoconsommés`}
+                />
+                <Result
+                  label="Revenus revente surplus EDF OA"
+                  value={euros(result.surplusRevenueEur) + "/an"}
+                  sub={`${nf(result.surplusKwh)} kWh × ${(result.edfOaTariff * 100).toFixed(2)} c€`}
+                />
+                <Result
+                  label="Revenus injection totale EDF OA"
+                  value={euros(result.edfOaFullInjectionEur) + "/an"}
+                  sub="Scénario vente intégrale (indicatif)"
+                />
+                {result.aperEligible && (
+                  <Result
+                    label="Amende évitée"
+                    value={formatAperAnnualFine(result.surfaceM2) + "/an"}
+                    highlight
+                  />
+                )}
+                <Result
+                  label="Coût d'installation estimé"
+                  value={eurosCompact(result.installationCostEur)}
+                  sub={`${nf(COUT_KWC)} €/kWc marché`}
+                />
+              </div>
+
+              <div className="mt-4 rounded-xl border border-solar/30 bg-solar/10 px-4 py-3 text-sm text-slate-200">
+                <p>
+                  <strong className="text-solar">ROI injection totale :</strong>{" "}
+                  {result.roiYearsFullInjection != null
+                    ? `${result.roiYearsFullInjection} ans`
+                    : "—"}
+                </p>
+                <p className="mt-2 text-xs text-slate-400">
+                  Bénéfice annuel autoconsommation (économies + surplus) :{" "}
+                  {euros(result.autoconsommationTotalEur)}/an
+                </p>
+              </div>
+            </div>
+          </details>
 
           {showDepositCta ? (
             <Link href={ctaHref} className="btn-mint inline-flex w-full justify-center sm:w-auto">

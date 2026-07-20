@@ -4,6 +4,9 @@
 
 :root {
   color-scheme: dark;
+  --sim-seg-savings: rgb(52 211 153);
+  --sim-seg-surplus: rgb(232 168 32);
+  --sim-seg-fine: rgb(248 113 113);
 }
 
 html {
@@ -610,6 +613,147 @@ body {
 
   .persona-card-desc {
     @apply mt-2 text-sm leading-relaxed text-slate-400;
+  }
+
+  .simulator-summary-grid {
+    @apply grid gap-3 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .simulator-summary-card {
+    @apply rounded-xl border border-white/10 bg-night-900/40 px-4 py-3;
+  }
+
+  .simulator-summary-card-primary {
+    @apply border-solar/35 bg-solar/10 sm:col-span-2 lg:col-span-1;
+  }
+
+  .simulator-summary-label {
+    @apply text-xs text-slate-500;
+  }
+
+  .simulator-summary-value {
+    @apply mt-1 text-2xl font-bold tabular-nums text-white;
+  }
+
+  .simulator-summary-sub {
+    @apply mt-1 text-xs text-slate-500;
+  }
+
+  .simulator-visuals-grid {
+    @apply grid gap-4 lg:grid-cols-2;
+  }
+
+  .simulator-visual-card {
+    @apply rounded-xl border border-white/10 bg-night-900/30 p-4;
+  }
+
+  .simulator-visual-title {
+    @apply text-sm font-semibold text-slate-200;
+  }
+
+  .simulator-parking-plan {
+    @apply mt-4 flex h-14 overflow-hidden rounded-lg border border-white/10;
+  }
+
+  .simulator-parking-solar {
+    @apply flex min-w-[3rem] items-center justify-center bg-solar/25 px-2 text-center text-[10px] font-semibold uppercase tracking-wide text-solar;
+  }
+
+  .simulator-parking-rest {
+    @apply flex min-w-[2rem] items-center justify-center bg-white/[0.04] px-2 text-[10px] uppercase tracking-wide text-slate-500;
+  }
+
+  .simulator-parking-stats {
+    @apply mt-4 grid grid-cols-3 gap-2 text-center text-xs;
+  }
+
+  .simulator-parking-stats dt {
+    @apply text-slate-500;
+  }
+
+  .simulator-parking-stats dd {
+    @apply mt-0.5 font-semibold tabular-nums text-white;
+  }
+
+  .simulator-visual-caption {
+    @apply mt-5 text-xs font-medium uppercase tracking-wide text-slate-500;
+  }
+
+  .simulator-production-bar {
+    @apply mt-2 flex h-3 overflow-hidden rounded-full bg-white/[0.06];
+  }
+
+  .simulator-production-self {
+    @apply h-full bg-accent/80;
+  }
+
+  .simulator-production-surplus {
+    @apply h-full bg-sky-500/70;
+  }
+
+  .simulator-production-legend {
+    @apply mt-3 space-y-1.5 text-xs text-slate-400;
+  }
+
+  .simulator-legend-dot {
+    @apply inline-block h-2.5 w-2.5 shrink-0 rounded-full;
+  }
+
+  .simulator-legend-dot-self {
+    @apply bg-accent/80;
+  }
+
+  .simulator-legend-dot-surplus {
+    @apply bg-sky-500/70;
+  }
+
+  .simulator-donut-wrap {
+    @apply relative mx-auto my-4 h-40 w-40;
+  }
+
+  .simulator-donut {
+    @apply h-full w-full;
+  }
+
+  .simulator-donut-track {
+    @apply fill-none stroke-white/10;
+    stroke-width: 16;
+  }
+
+  .simulator-donut-center {
+    @apply absolute inset-0 flex flex-col items-center justify-center text-center;
+  }
+
+  .simulator-donut-total {
+    @apply text-lg font-bold tabular-nums text-white;
+  }
+
+  .simulator-donut-total-label {
+    @apply text-xs text-slate-500;
+  }
+
+  .simulator-benefit-legend {
+    @apply space-y-2 text-sm text-slate-400;
+  }
+
+  .simulator-benefit-legend li {
+    @apply flex items-center gap-2;
+  }
+
+  .simulator-roi-bar {
+    @apply rounded-xl border border-white/10 bg-night-900/30 p-4;
+  }
+
+  .simulator-roi-track {
+    @apply relative mt-3 h-2 overflow-hidden rounded-full bg-white/[0.08];
+  }
+
+  .simulator-roi-fill {
+    @apply h-full rounded-full bg-gradient-to-r from-solar/80 to-solar;
+  }
+
+  .simulator-roi-marker {
+    @apply absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-night bg-solar;
   }
 
   .persona-switch-link {
