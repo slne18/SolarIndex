@@ -604,6 +604,10 @@ body {
     @apply mt-4 text-lg font-bold text-white;
   }
 
+  .persona-card-subtitle {
+    @apply mt-0.5 text-xs font-normal text-slate-500;
+  }
+
   .persona-card-desc {
     @apply mt-2 text-sm leading-relaxed text-slate-400;
   }

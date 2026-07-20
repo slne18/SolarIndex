@@ -26,7 +26,7 @@ export default function HeaderSignupCta() {
 
   return (
     <Link href="/login?mode=signup&next=/leads" className="btn-solar shrink-0 !px-3.5 !py-2 text-xs sm:text-sm">
-      Créer un compte
+      Créer un espace
     </Link>
   );
 }

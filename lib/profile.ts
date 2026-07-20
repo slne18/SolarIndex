@@ -1,4 +1,5 @@
 import { getAdminClient } from "./supabase";
+import type { ProjetDelai, UserType } from "./profile-onboarding";
 
 export interface UserProfile {
   id: string;
@@ -9,14 +10,27 @@ export interface UserProfile {
   leads_achetes: number;
   sample_leads_remaining: number;
   sample_departement: string | null;
+  user_type: UserType | null;
+  proprietaire_raison_sociale: string | null;
+  proprietaire_nom: string | null;
+  responsable_prenom: string | null;
+  responsable_nom: string | null;
+  telephone: string | null;
+  telephone_bureau: string | null;
+  adresse_parking: string | null;
+  surface_m2_estimee: number | null;
+  projet_delai: ProjetDelai | null;
+  commentaire: string | null;
+  profile_completed_at: string | null;
 }
+
+const PROFILE_SELECT =
+  "id, email, entreprise, plan, abonnement_actif, leads_achetes, sample_leads_remaining, sample_departement, user_type, proprietaire_raison_sociale, proprietaire_nom, responsable_prenom, responsable_nom, telephone, telephone_bureau, adresse_parking, surface_m2_estimee, projet_delai, commentaire, profile_completed_at";
 
 export async function getUserProfile(userId: string): Promise<UserProfile | null> {
   const { data, error } = await getAdminClient()
     .from("profiles")
-    .select(
-      "id, email, entreprise, plan, abonnement_actif, leads_achetes, sample_leads_remaining, sample_departement",
-    )
+    .select(PROFILE_SELECT)
     .eq("id", userId)
     .maybeSingle();
   if (error) throw error;
@@ -25,6 +39,10 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
     ...data,
     sample_leads_remaining: data.sample_leads_remaining ?? 0,
   };
+}
+
+export function isProfileComplete(profile: Pick<UserProfile, "profile_completed_at">): boolean {
+  return profile.profile_completed_at != null;
 }
 
 export async function setSampleDepartement(

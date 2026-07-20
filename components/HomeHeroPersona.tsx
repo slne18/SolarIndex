@@ -16,6 +16,7 @@ import { INSTALLER_CHANTIERS_LINKS } from "@/lib/installer-nav";
 const PERSONA_CARDS: {
   id: Persona;
   title: string;
+  subtitle?: string;
   description: string;
   icon: ReactNode;
 }[] = [
@@ -36,6 +37,7 @@ const PERSONA_CARDS: {
   {
     id: "owner",
     title: "Je suis propriétaire",
+    subtitle: "ou un gestionnaire de parking",
     description:
       "Vérifiez si vous êtes concerné, estimez vos gains et recevez des propositions d'installateurs.",
     icon: (
@@ -80,6 +82,9 @@ export default function HomeHeroPersona() {
                   >
                     <span className="persona-card-icon">{card.icon}</span>
                     <span className="persona-card-title">{card.title}</span>
+                    {card.subtitle ? (
+                      <span className="persona-card-subtitle">{card.subtitle}</span>
+                    ) : null}
                     <span className="persona-card-desc">{card.description}</span>
                   </button>
                 ))}

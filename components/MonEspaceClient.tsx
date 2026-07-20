@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBrowserClient, getAccessToken } from "@/lib/supabaseBrowser";
+import { ensureProfileComplete } from "@/lib/ensure-profile-complete";
 import { euros, formatCoords, nf } from "@/lib/format";
 import { displayRecouvrementSummary } from "@/lib/pv-overlap";
 import type { LeadRow } from "@/lib/types";
@@ -31,6 +32,7 @@ export default function MonEspaceClient() {
         window.location.href = `/login?next=${encodeURIComponent(MON_ESPACE_PATH)}`;
         return;
       }
+      if (!(await ensureProfileComplete(MON_ESPACE_PATH, token))) return;
       const { data: u } = await getBrowserClient().auth.getUser();
       setEmail(u.user?.email ?? null);
 

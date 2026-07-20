@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
+import { authConfirmRedirectUrl, resolvePostAuthRedirect } from "@/lib/auth-redirect";
 
 export default function LoginPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [entreprise, setEntreprise] = useState("");
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -18,7 +18,7 @@ export default function LoginPage() {
     if (sp.get("mode") === "signup") setMode("signup");
   }, []);
 
-  function nextUrl(isSignup: boolean): string {
+  function defaultNext(isSignup: boolean): string {
     if (typeof window === "undefined") return "/mon-espace";
     const sp = new URLSearchParams(window.location.search);
     const next = sp.get("next");
@@ -44,17 +44,25 @@ export default function LoginPage() {
     return msg;
   }
 
+  async function redirectAfterAuth(token: string, isSignup: boolean) {
+    const destination = await resolvePostAuthRedirect(token, defaultNext(isSignup));
+    window.location.href = destination;
+  }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setMsg(null);
     const supabase = getBrowserClient();
+    const next = defaultNext(mode === "signup");
     try {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { data: { entreprise } },
+          options: {
+            emailRedirectTo: authConfirmRedirectUrl(`/onboarding?next=${encodeURIComponent(next)}`),
+          },
         });
         if (error) throw error;
         const { data: sess } = await supabase.auth.getSession();
@@ -63,11 +71,13 @@ export default function LoginPage() {
           setMode("signin");
           return;
         }
-        window.location.href = nextUrl(true);
+        await redirectAfterAuth(sess.session.access_token, true);
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        window.location.href = nextUrl(false);
+        const token = data.session?.access_token;
+        if (!token) throw new Error("Session introuvable.");
+        await redirectAfterAuth(token, false);
       }
     } catch (err) {
       setMsg(authErrorMessage(err));
@@ -82,25 +92,15 @@ export default function LoginPage() {
         <Link href="/" className="text-sm text-slate-400 hover:text-white">← Accueil</Link>
         <div className="card mt-4 p-7">
           <h1 className="text-2xl font-bold tracking-tight">
-            {mode === "signin" ? "Connexion" : "Créer un espace installateur"}
+            {mode === "signin" ? "Connexion" : "Créer un espace"}
           </h1>
           <p className="mt-1 text-sm text-slate-400">
             {mode === "signup"
-              ? "Compte requis pour parcourir le catalogue et recevoir vos leads."
-              : "Accédez à vos leads achetés et à votre espace client."}
+              ? "Installateurs, propriétaires et gérants de parking — créez votre espace pour parcourir le catalogue de leads ou déposer un projet solaire."
+              : "Accédez à votre espace : leads achetés, projets déposés et catalogue."}
           </p>
 
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
-            {mode === "signup" && (
-              <Field label="Entreprise">
-                <input
-                  value={entreprise}
-                  onChange={(e) => setEntreprise(e.target.value)}
-                  className="input"
-                  placeholder="Ma société d'installation"
-                />
-              </Field>
-            )}
             <Field label="Email">
               <input
                 type="email"

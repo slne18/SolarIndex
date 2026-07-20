@@ -2,13 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { getAccessToken } from "@/lib/supabaseBrowser";
+import { ensureProfileComplete } from "@/lib/ensure-profile-complete";
 
 export default function RequireAuth({
   children,
   nextPath,
+  requireProfile = true,
 }: {
   children: React.ReactNode;
   nextPath?: string;
+  requireProfile?: boolean;
 }) {
   const [ready, setReady] = useState(false);
 
@@ -24,9 +27,14 @@ export default function RequireAuth({
         window.location.href = `/login?next=${encodeURIComponent(next)}`;
         return;
       }
+
+      if (requireProfile) {
+        if (!(await ensureProfileComplete(next, token))) return;
+      }
+
       setReady(true);
     })();
-  }, [nextPath]);
+  }, [nextPath, requireProfile]);
 
   if (!ready) {
     return (

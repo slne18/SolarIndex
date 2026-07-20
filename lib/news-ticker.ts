@@ -11,6 +11,14 @@ export interface NewsTickerItem {
 /** Actualités APER / ombrières — sources presse (liens externes). */
 export const NEWS_TICKER_ITEMS: NewsTickerItem[] = [
   {
+    source: "Le Moniteur",
+    headline:
+      "Solarisation des parkings : seule une fraction minoritaire des surfaces de plus de 10 000 m² sera prête au 1er juillet",
+    excerpt:
+      "Environ 11 000 parkings extérieurs de plus de 10 000 m² devaient être couverts d'ombrières photovoltaïques au 1er juillet 2026. Les indicateurs convergent : la fraction réellement conforme sera très minoritaire, entre instabilité réglementaire, délais de raccordement et parcours projet de 12 à 24 mois.",
+    url: "https://www.lemoniteur.fr/produits-et-materiels/photovoltaique/solarisation-des-parkings-seule-une-fraction-minoritaire-des-surfaces-de-plus-de-10-000-m2-sera-prete-au-1er-juillet.HSVI3HXVYFC2BNWJZ6UEUNTFZ4.html",
+  },
+  {
     source: "L'Echo du Solaire",
     headline:
       "Échéance loi APER dépassée : seuls 10 à 15 % des grands parkings seraient conformes",
