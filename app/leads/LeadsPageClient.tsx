@@ -7,7 +7,6 @@ import { getAccessToken } from "@/lib/supabaseBrowser";
 import { ensureProfileComplete } from "@/lib/ensure-profile-complete";
 import { catalogAuthHeaders } from "@/lib/preview-catalog";
 import { nf } from "@/lib/format";
-import { LEAD_REPLACEMENT_GUARANTEE } from "@/lib/guarantee";
 import { VISION_COVERAGE_EQUIPE } from "@/lib/pv-overlap";
 import type { PublicLead } from "@/lib/types";
 import LeadFilters from "@/components/LeadFilters";
@@ -18,10 +17,12 @@ import TerritoireClient from "@/components/TerritoireClient";
 import FranceMap from "@/components/FranceMap";
 import LeadsRecapTable from "@/components/LeadsRecapTable";
 import CatalogViewToggle, { type CatalogView } from "@/components/CatalogViewToggle";
+import { useTranslations } from "@/components/LocaleProvider";
 
 function LeadsCatalog() {
   const router = useRouter();
   const params = useSearchParams();
+  const t = useTranslations();
   const listRef = useRef<HTMLDivElement>(null);
   const [leads, setLeads] = useState<PublicLead[]>([]);
   const [total, setTotal] = useState(0);
@@ -54,7 +55,7 @@ function LeadsCatalog() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        setError(data.error || "Impossible de charger le catalogue.");
+        setError(data.error || t("leads.loadError"));
         setLeads([]);
         setTotal(0);
         return;
@@ -65,11 +66,11 @@ function LeadsCatalog() {
       setTotalPages(data.totalPages ?? 0);
       setPage(data.page ?? 0);
     } catch {
-      setError("Erreur réseau.");
+      setError(t("onboarding.networkError"));
     } finally {
       setLoading(false);
     }
-  }, [params, router]);
+  }, [params, router, t]);
 
   useEffect(() => {
     fetchLeads();
@@ -126,8 +127,8 @@ function LeadsCatalog() {
       <div className="hero-surface">
         <div className="container-x py-10 sm:py-12">
           <div className="mb-10">
-            <p className="pill-accent w-fit">Leads automatisés</p>
-            <h1 className="section-title mt-4">Catalogue de leads APER</h1>
+            <p className="pill-accent w-fit">{t("leads.pill")}</p>
+            <h1 className="section-title mt-4">{t("leads.title")}</h1>
           </div>
 
           <LeadsSolutionSection />
@@ -139,15 +140,15 @@ function LeadsCatalog() {
         <div className="container-x py-10 sm:py-12">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <h2 className="catalog-heading text-xl font-bold">Parcourir le catalogue</h2>
+              <h2 className="catalog-heading text-xl font-bold">{t("leads.browseTitle")}</h2>
               <p className="mt-2 text-slate-600">
             {loading
-              ? "Chargement…"
+              ? t("common.loading")
               : error
                 ? error
                 : (
                   <>
-                    {nf(total)} opportunités APER
+                    {nf(total)} {t("leads.opportunities")}
                     {params.get("flag") === "URGENCE_ABSOLUE" ? (
                       <span className="mt-1 block text-xs text-slate-500">
                         Parkings ≥ 10 000 m² · photo aérienne analysée · exclus si couverture &gt;{" "}
@@ -162,9 +163,9 @@ function LeadsCatalog() {
       </div>
 
       <p className="guarantee-banner mt-4 rounded-xl border px-4 py-3 text-sm leading-relaxed">
-        <span className="font-semibold text-solar">Garantie non-négociable</span>
+        <span className="font-semibold text-solar">{t("leads.guaranteeTitle")}</span>
         {" — "}
-        {LEAD_REPLACEMENT_GUARANTEE}
+        {t("leads.guaranteeBody")}
       </p>
 
       {view === "map" ? (
@@ -177,7 +178,7 @@ function LeadsCatalog() {
             theme="light"
           />
           <p className="mt-4 text-center text-sm text-slate-500">
-            Cliquez sur un département pour ouvrir la liste filtrée.
+            {t("leads.mapHint")}
           </p>
           <LeadsRecapTable />
         </div>
@@ -191,7 +192,7 @@ function LeadsCatalog() {
 
           <div className="mt-6">
             {loading ? (
-              <p className="text-slate-600">Chargement des leads…</p>
+              <p className="text-slate-600">{t("leads.loadingLeads")}</p>
             ) : (
               <LeadTable leads={leads} />
             )}
@@ -200,17 +201,17 @@ function LeadsCatalog() {
           {totalPages > 1 && (
             <div className="mt-6 flex items-center justify-center gap-4">
               {page > 0 ? (
-                <Link href={mkHref(page - 1)} className="btn-ghost !py-2">← Précédent</Link>
+                <Link href={mkHref(page - 1)} className="btn-ghost !py-2">{t("common.prev")}</Link>
               ) : (
-                <span className="btn cursor-not-allowed opacity-40">← Précédent</span>
+                <span className="btn cursor-not-allowed opacity-40">{t("common.prev")}</span>
               )}
               <span className="text-sm text-slate-500">
-                Page {page + 1} / {totalPages}
+                {t("common.page")} {page + 1} / {totalPages}
               </span>
               {page < totalPages - 1 ? (
-                <Link href={mkHref(page + 1)} className="btn-ghost !py-2">Suivant →</Link>
+                <Link href={mkHref(page + 1)} className="btn-ghost !py-2">{t("common.next")}</Link>
               ) : (
-                <span className="btn cursor-not-allowed opacity-40">Suivant →</span>
+                <span className="btn cursor-not-allowed opacity-40">{t("common.next")}</span>
               )}
             </div>
           )}
@@ -222,12 +223,9 @@ function LeadsCatalog() {
       <div className="hero-surface border-t border-white/[0.06]">
         <div className="container-x py-10 sm:py-12">
           <section id="ma-zone" className="scroll-mt-24">
-            <p className="pill-accent w-fit">Leads dans ma zone</p>
-            <h2 className="section-title mt-4">Combien de leads autour de vous ?</h2>
-            <p className="mt-2 max-w-2xl text-slate-500">
-              Estimez le pipeline disponible par adresse ou par département — idéal avant d&apos;acheter
-              le Pack Territoire.
-            </p>
+            <p className="pill-accent w-fit">{t("leads.zonePill")}</p>
+            <h2 className="section-title mt-4">{t("leads.zoneTitle")}</h2>
+            <p className="mt-2 max-w-2xl text-slate-500">{t("leads.zoneLead")}</p>
             <div className="mt-6">
               <TerritoireClient embedded onExploreCatalog={exploreCatalogFromZone} />
             </div>
@@ -240,7 +238,7 @@ function LeadsCatalog() {
 
 export default function LeadsPageClient() {
   return (
-    <Suspense fallback={<div className="container-x py-16 text-slate-400">Chargement…</div>}>
+    <Suspense fallback={<div className="container-x py-16 text-slate-400">…</div>}>
       <LeadsCatalog />
     </Suspense>
   );

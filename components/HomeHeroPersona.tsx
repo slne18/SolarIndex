@@ -2,8 +2,8 @@
 
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-import { PERSONA_LABELS, type Persona } from "@/lib/persona";
 import { usePersona } from "@/components/PersonaProvider";
+import { useTranslations } from "@/components/LocaleProvider";
 import HeroActionList, {
   HeroActionCalculatorIcon,
   HeroActionCheckIcon,
@@ -12,52 +12,54 @@ import HeroActionList, {
   HeroActionUploadIcon,
 } from "@/components/HeroActionList";
 import { INSTALLER_CHANTIERS_LINKS } from "@/lib/installer-nav";
+import type { Persona } from "@/lib/persona";
 
-const PERSONA_CARDS: {
-  id: Persona;
-  title: string;
-  subtitle?: string;
-  description: string;
-  icon: ReactNode;
-}[] = [
-  {
-    id: "installer",
-    title: "Je suis installateur",
-    description:
-      "Prospectez des parkings non conformes APER : leads enrichis et appels d'offres.",
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
-        <circle cx="12" cy="12" r="9" opacity="0.35" />
-        <circle cx="12" cy="12" r="5.5" opacity="0.55" />
-        <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
-        <path d="M12 12 L20 6" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    id: "owner",
-    title: "Je suis propriétaire",
-    subtitle: "ou un gestionnaire de parking",
-    description:
-      "Vérifiez si vous êtes concerné, estimez vos gains et recevez des propositions d'installateurs.",
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
-        <path d="M4 10h16v10H4z" strokeLinejoin="round" />
-        <path d="M2 10l10-6 10 6" strokeLinejoin="round" />
-        <path d="M9 20v-6h6v6" strokeLinejoin="round" />
-      </svg>
-    ),
-  },
-];
+const CARD_ICONS: Record<Persona, ReactNode> = {
+  installer: (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+      <circle cx="12" cy="12" r="9" opacity="0.35" />
+      <circle cx="12" cy="12" r="5.5" opacity="0.55" />
+      <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
+      <path d="M12 12 L20 6" strokeLinecap="round" />
+    </svg>
+  ),
+  owner: (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+      <path d="M4 10h16v10H4z" strokeLinejoin="round" />
+      <path d="M2 10l10-6 10 6" strokeLinejoin="round" />
+      <path d="M9 20v-6h6v6" strokeLinejoin="round" />
+    </svg>
+  ),
+};
 
 export default function HomeHeroPersona() {
   const { persona, sessionPick, ready, setPersona, clearPersona } = usePersona();
+  const t = useTranslations();
 
   useEffect(() => {
     clearPersona();
   }, [clearPersona]);
 
   const showChooser = !ready || persona === null || !sessionPick;
+
+  const personaCards: {
+    id: Persona;
+    title: string;
+    subtitle?: string;
+    description: string;
+  }[] = [
+    {
+      id: "installer",
+      title: t("home.installerCardTitle"),
+      description: t("home.installerCardDesc"),
+    },
+    {
+      id: "owner",
+      title: t("home.ownerCardTitle"),
+      subtitle: t("home.ownerCardSubtitle"),
+      description: t("home.ownerCardDesc"),
+    },
+  ];
 
   return (
     <section className="hero-surface relative overflow-hidden">
@@ -66,21 +68,21 @@ export default function HomeHeroPersona() {
           {showChooser ? (
             <>
               <h1 className="text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
-                La loi APER concerne{" "}
-                <span className="text-gradient">installateurs et propriétaires.</span>
+                {t("home.chooseTitlePrefix")}
+                <span className="text-gradient">{t("home.chooseTitleAccent")}</span>
               </h1>
               <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-400 sm:text-lg">
-                Choisissez votre profil pour accéder aux bons outils et parcours.
+                {t("home.chooseLead")}
               </p>
               <div className="persona-cards mt-10">
-                {PERSONA_CARDS.map((card) => (
+                {personaCards.map((card) => (
                   <button
                     key={card.id}
                     type="button"
                     className="persona-card"
                     onClick={() => setPersona(card.id)}
                   >
-                    <span className="persona-card-icon">{card.icon}</span>
+                    <span className="persona-card-icon">{CARD_ICONS[card.id]}</span>
                     <span className="persona-card-title">{card.title}</span>
                     {card.subtitle ? (
                       <span className="persona-card-subtitle">{card.subtitle}</span>
@@ -91,9 +93,9 @@ export default function HomeHeroPersona() {
               </div>
             </>
           ) : persona === "installer" ? (
-            <InstallerHero />
+            <InstallerHero t={t} />
           ) : (
-            <OwnerHero />
+            <OwnerHero t={t} />
           )}
         </div>
       </div>
@@ -103,7 +105,7 @@ export default function HomeHeroPersona() {
           href="#loi-aper"
           className="group flex flex-col items-center gap-1 text-xs font-medium uppercase tracking-widest text-slate-300 transition hover:text-white"
         >
-          Découvrir
+          {t("home.discover")}
           <svg
             className="mt-1 h-4 w-4 animate-bounce text-slate-400 group-hover:text-solar"
             viewBox="0 0 24 24"
@@ -120,31 +122,31 @@ export default function HomeHeroPersona() {
   );
 }
 
-function InstallerHero() {
+function InstallerHero({ t }: { t: (key: import("@/lib/i18n").MessageKey) => string }) {
   return (
     <>
       <p className="mt-6 text-xs font-semibold uppercase tracking-widest text-solar">
-        {PERSONA_LABELS.installer}
+        {t("persona.installer")}
       </p>
       <h1 className="mt-3 text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
-        Repérez les parkings non conformes APER{" "}
-        <span className="text-gradient">avant l&apos;amende.</span>
+        {t("home.installerHeroTitle")}{" "}
+        <span className="text-gradient">{t("home.installerHeroAccent")}</span>
       </h1>
       <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-400 sm:text-lg">
-        Deux sources de chantiers pour votre prospection B2B.
+        {t("home.installerHeroLead")}
       </p>
       <HeroActionList
         items={[
           {
             href: INSTALLER_CHANTIERS_LINKS[0].href,
-            label: INSTALLER_CHANTIERS_LINKS[0].label,
-            hint: INSTALLER_CHANTIERS_LINKS[0].hint,
+            label: t("home.installerLeadsLabel"),
+            hint: t("home.installerLeadsHint"),
             icon: <HeroActionRadarIcon />,
           },
           {
             href: INSTALLER_CHANTIERS_LINKS[1].href,
-            label: INSTALLER_CHANTIERS_LINKS[1].label,
-            hint: INSTALLER_CHANTIERS_LINKS[1].hint,
+            label: t("home.installerRfpLabel"),
+            hint: t("home.installerRfpHint"),
             icon: <HeroActionDocumentIcon />,
           },
         ]}
@@ -153,39 +155,38 @@ function InstallerHero() {
   );
 }
 
-function OwnerHero() {
+function OwnerHero({ t }: { t: (key: import("@/lib/i18n").MessageKey) => string }) {
   return (
     <>
       <p className="mt-6 text-xs font-semibold uppercase tracking-widest text-solar">
-        {PERSONA_LABELS.owner}
+        {t("persona.owner")}
       </p>
       <h1 className="mt-3 text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
-        Votre parking est-il concerné{" "}
-        <span className="text-gradient">par la loi APER ?</span>
+        {t("home.ownerHeroTitle")}{" "}
+        <span className="text-gradient">{t("home.ownerHeroAccent")}</span>
       </h1>
       <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-400 sm:text-lg">
-        Vérifiez votre obligation, estimez vos gains, puis déposez votre projet pour recevoir des
-        propositions d&apos;installateurs solaires.
+        {t("home.ownerHeroLead")}
       </p>
       <HeroActionList
-        badge="Gratuit · sans engagement"
+        badge={t("home.freeBadge")}
         items={[
           {
             href: "/verifier",
-            label: "Vérifier mon parking",
-            hint: "Éligibilité APER et échéances",
+            label: t("home.ownerVerifyLabel"),
+            hint: t("home.ownerVerifyHint"),
             icon: <HeroActionCheckIcon />,
           },
           {
             href: "/simulateur",
-            label: "Simuler gains & économies",
-            hint: "ROI estimé et amende évitée",
+            label: t("home.ownerSimLabel"),
+            hint: t("home.ownerSimHint"),
             icon: <HeroActionCalculatorIcon />,
           },
           {
             href: "/appels-offres/nouveau",
-            label: "Déposer mon projet",
-            hint: "Des installateurs vous envoient leurs propositions",
+            label: t("home.ownerDepositLabel"),
+            hint: t("home.ownerDepositHint"),
             icon: <HeroActionUploadIcon />,
           },
         ]}

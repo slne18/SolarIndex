@@ -1,5 +1,8 @@
+"use client";
+
 import SectionEyebrow from "@/components/SectionEyebrow";
 import SolutionStats from "@/components/SolutionStats";
+import { useTranslations } from "@/components/LocaleProvider";
 
 function ProcessStep({
   n,
@@ -25,35 +28,34 @@ function ProcessStep({
 }
 
 export default function LeadsSolutionSection() {
+  const t = useTranslations();
+
   return (
     <section id="solution" className="pb-12">
-      <SectionEyebrow>Solution technique</SectionEyebrow>
-      <h2 className="section-subtitle mt-3">Ce qui distingue un lead SolarIndex</h2>
-      <p className="section-lead mt-4">
-        Face à l&apos;obligation APER, nos outils identifient les parkings concernés, les relient
-        aux entreprises à contacter et vous livrent une liste filtrée.
-      </p>
+      <SectionEyebrow>{t("solution.eyebrow")}</SectionEyebrow>
+      <h2 className="section-subtitle mt-3">{t("solution.title")}</h2>
+      <p className="section-lead mt-4">{t("solution.lead")}</p>
 
       <SolutionStats />
 
-      <ol className="solution-process-list" aria-label="Étapes de constitution d'un lead">
+      <ol className="solution-process-list" aria-label={t("solution.stepsAria")}>
         <ProcessStep
           n="01"
-          title="Parkings cartographiés OSM"
-          text="Identification continue des parkings ≥ 1 500 m² sur OpenStreetMap, avec mesure de surface et détection des panneaux existants."
-          tag="Données publiques"
+          title={t("solution.step1.title")}
+          text={t("solution.step1.text")}
+          tag={t("solution.step1.tag")}
         />
         <ProcessStep
           n="02"
-          title="Enrichissement propriétaire"
-          text="Chaque site est relié à sa parcelle cadastrale, son adresse, l'exploitant SIREN et le propriétaire foncier MAJIC — personnes morales uniquement."
-          tag="Résolution B2B"
+          title={t("solution.step2.title")}
+          text={t("solution.step2.text")}
+          tag={t("solution.step2.tag")}
         />
         <ProcessStep
           n="03"
-          title="Score de confiance par lead"
-          text="Chaque fiche est scorée (0 – 1) : revêtement, cadastre, absence de doute PV, photo aérienne. Plus le score est haut, moins de vérifications avant d'appeler."
-          tag="Fiabilité documentée"
+          title={t("solution.step3.title")}
+          text={t("solution.step3.text")}
+          tag={t("solution.step3.tag")}
         />
       </ol>
     </section>

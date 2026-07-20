@@ -8,16 +8,13 @@ import {
   TERRITOIRE_PACK_EUR,
 } from "@/lib/subscription";
 import { PRIX_RFP, RFP_SURFACE_TIER_M2 } from "@/lib/rfp";
-import {
-  APER_DEADLINES,
-  APER_LAW_REF,
-  APER_OBLIGATION_SUMMARY,
-  APER_PUBLIC_PARKS_NOTE,
-} from "@/lib/aper-law";
+import { APER_DEADLINES } from "@/lib/aper-law";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import RegulatoryCountdown from "@/components/RegulatoryCountdown";
 import HomeFeaturedNewsBanner from "@/components/HomeFeaturedNewsBanner";
 import { usePersona } from "@/components/PersonaProvider";
+import { useLocale, useTranslations } from "@/components/LocaleProvider";
+import { fmt } from "@/lib/i18n/format";
 
 export default function HomePageSections() {
   const { persona, sessionPick, ready } = usePersona();
@@ -37,20 +34,20 @@ export default function HomePageSections() {
 }
 
 function LoiAperSection() {
+  const t = useTranslations();
+
   return (
     <section id="loi-aper" className="py-14 sm:py-20">
       <div className="container-x">
-        <SectionEyebrow>La loi APER</SectionEyebrow>
-        <h2 className="section-title mt-3">Une obligation légale qui crée des chantiers</h2>
-        <p className="section-lead mt-4">{APER_OBLIGATION_SUMMARY}</p>
-        <p className="mt-3 text-xs text-slate-500">{APER_LAW_REF}</p>
+        <SectionEyebrow>{t("home.aperEyebrow")}</SectionEyebrow>
+        <h2 className="section-title mt-3">{t("home.aperTitle")}</h2>
+        <p className="section-lead mt-4">{t("home.aperSummary")}</p>
+        <p className="mt-3 text-xs text-slate-500">{t("home.aperRef")}</p>
 
         <div className="card mt-10 overflow-hidden">
           <div className="card-header border-b px-6 py-4 sm:px-8">
-            <h3 className="font-semibold text-slate-900">Calendrier de mise en conformité</h3>
-            <p className="mt-1 text-sm text-slate-500">
-              Parcs privés · seuil selon la superficie du parking
-            </p>
+            <h3 className="font-semibold text-slate-900">{t("home.aperCalendarTitle")}</h3>
+            <p className="mt-1 text-sm text-slate-500">{t("home.aperCalendarLead")}</p>
           </div>
           <div className="grid gap-4 px-6 py-6 sm:grid-cols-2 sm:gap-5 sm:px-8 sm:py-8">
             {APER_DEADLINES.map((step) => (
@@ -59,72 +56,73 @@ function LoiAperSection() {
           </div>
         </div>
 
-        <p className="mt-4 text-xs leading-relaxed text-slate-500">{APER_PUBLIC_PARKS_NOTE}</p>
+        <p className="mt-4 text-xs leading-relaxed text-slate-500">{t("home.aperPublicNote")}</p>
       </div>
     </section>
   );
 }
 
 function InstallerTarifsSections() {
+  const t = useTranslations();
+  const { locale } = useLocale();
   const premiumHref = "/leads?tier=premium";
+  const surfaceLabel = RFP_SURFACE_TIER_M2.toLocaleString(locale === "en" ? "en-US" : "fr-FR");
 
   return (
     <div className="surface-pricing">
       <div className="container-x pt-14 sm:pt-16">
-        <SectionEyebrow>Tarifs installateur</SectionEyebrow>
-        <h2 className="pricing-headline mt-3">Choisissez votre accès aux chantiers</h2>
-        <p className="pricing-lead mt-3 max-w-2xl">
-          Paiement à l&apos;unité — leads de prospection ou accès aux coordonnées d&apos;un projet
-          déposé. Aucun abonnement.
-        </p>
+        <SectionEyebrow>{t("home.pricingEyebrow")}</SectionEyebrow>
+        <h2 className="pricing-headline mt-3">{t("home.pricingTitle")}</h2>
+        <p className="pricing-lead mt-3 max-w-2xl">{t("home.pricingLead")}</p>
       </div>
 
       <section id="tarifs" className="container-x py-10 sm:py-12">
-        <h3 className="pricing-subhead">Leads automatisés</h3>
-        <p className="pricing-sublead mt-2 max-w-xl">
-          Deux niveaux selon la qualité Open Data. Vous achetez un lead, jamais un chantier garanti.
-        </p>
+        <h3 className="pricing-subhead">{t("home.pricingLeadsHead")}</h3>
+        <p className="pricing-sublead mt-2 max-w-xl">{t("home.pricingLeadsLead")}</p>
         <div className="pricing-grid mt-8 md:grid-cols-3">
           <PricingCard
-            title="Lead Standard"
+            title={t("home.pricingStandardTitle")}
             price={`${PRIX_LEAD.standard} €`}
-            priceNote="par lead"
+            priceNote={t("home.pricingPerLead")}
             features={[
-              "Indice de confiance modéré (< 0,80)",
-              "Surface parking parfois à confirmer sur site",
-              "Contacts entreprise inclus",
-              "Même tarif quelle que soit la surface",
+              t("home.pricingStandardF1"),
+              t("home.pricingStandardF2"),
+              t("home.pricingStandardF3"),
+              t("home.pricingStandardF4"),
             ]}
-            cta="Parcourir"
+            cta={t("home.pricingBrowse")}
             href="/leads"
+            popularLabel={t("home.pricingPopular")}
           />
           <PricingCard
-            title="Lead Premium"
+            title={t("home.pricingPremiumTitle")}
             price={`${PRIX_LEAD.premium} €`}
-            priceNote="par lead"
+            priceNote={t("home.pricingPerLead")}
             features={[
-              "Indice de confiance élevé (≥ 0,80)",
-              "Peu de vérifications nécessaires",
-              "Parking sans panneaux repérés",
-              "Revêtement et surface cadastrale confirmés",
-              "~10 % du catalogue",
+              t("home.pricingPremiumF1"),
+              t("home.pricingPremiumF2"),
+              t("home.pricingPremiumF3"),
+              t("home.pricingPremiumF4"),
+              t("home.pricingPremiumF5"),
             ]}
-            cta="Filtrer Premium"
+            cta={t("home.pricingFilterPremium")}
             href={premiumHref}
             featured
+            popularLabel={t("home.pricingPopular")}
           />
           <PricingCard
-            title="Pack Territoire"
+            title={t("home.pricingTerritoireTitle")}
             price={`${TERRITOIRE_PACK_EUR} €`}
-            priceNote="achat unique"
+            priceNote={t("home.pricingOneTime")}
             badge={`−${TERRITOIRE_PACK_DISCOUNT_PCT} %`}
             features={[
-              `${TERRITOIRE_LEADS_QUOTA} leads crédités`,
-              "Standard ou Premium : vous choisissez",
-              "Crédit instantané · France entière",
+              fmt(t("home.pricingTerritoireF1"), { quota: TERRITOIRE_LEADS_QUOTA }),
+              t("home.pricingTerritoireF2"),
+              t("home.pricingTerritoireF3"),
             ]}
-            cta="Acheter le pack"
+            cta={t("home.pricingBuyPack")}
             href="/pack-territoire"
+            popularLabel={t("home.pricingPopular")}
           />
         </div>
       </section>
@@ -132,42 +130,41 @@ function InstallerTarifsSections() {
       <div className="pricing-split" aria-hidden />
 
       <section id="tarifs-appels-offres" className="container-x py-10 pb-16 sm:py-12 sm:pb-20">
-        <h3 className="pricing-subhead">Appels d&apos;offres déposés</h3>
-        <p className="pricing-sublead mt-2 max-w-xl">
-          Coordonnées partagées par des gérants privés — mise en relation commerciale, hors marché
-          public.
-        </p>
+        <h3 className="pricing-subhead">{t("home.pricingRfpHead")}</h3>
+        <p className="pricing-sublead mt-2 max-w-xl">{t("home.pricingRfpLead")}</p>
         <div className="pricing-grid mt-8 md:grid-cols-2">
           <PricingCard
-            title={`Parking < ${nfSurface(RFP_SURFACE_TIER_M2)} m²`}
+            title={fmt(t("home.pricingRfpSmallTitle"), { surface: surfaceLabel })}
             price={`${PRIX_RFP.sous_10000} €`}
-            priceNote="par accès projet"
+            priceNote={t("home.pricingPerProject")}
             features={[
-              "Coordonnées du gérant",
-              "Surface estimée inférieure à 10 000 m²",
-              "Budget et délai indicatifs inclus",
+              t("home.pricingRfpF1"),
+              t("home.pricingRfpSmallF2"),
+              t("home.pricingRfpSmallF3"),
             ]}
-            cta="Voir les projets"
+            cta={t("home.pricingViewProjects")}
             href="/appels-offres"
+            popularLabel={t("home.pricingPopular")}
           />
           <PricingCard
-            title={`Parking ≥ ${nfSurface(RFP_SURFACE_TIER_M2)} m²`}
+            title={fmt(t("home.pricingRfpLargeTitle"), { surface: surfaceLabel })}
             price={`${PRIX_RFP.a_partir_10000} €`}
-            priceNote="par accès projet"
+            priceNote={t("home.pricingPerProject")}
             features={[
-              "Coordonnées du gérant",
-              "Grands parkings et zones commerciales",
-              "Projets à plus forte valeur chantier",
+              t("home.pricingRfpF1"),
+              t("home.pricingRfpLargeF2"),
+              t("home.pricingRfpLargeF3"),
             ]}
-            cta="Voir les projets"
+            cta={t("home.pricingViewProjects")}
             href="/appels-offres?surface_min=10000"
             featured
+            popularLabel={t("home.pricingPopular")}
           />
         </div>
         <p className="mt-6 text-center text-xs text-slate-500">
-          Détails juridiques :{" "}
+          {t("home.pricingLegal")}{" "}
           <Link href="/legal/cgu" className="text-solar hover:underline">
-            CGU — dépôts de projets
+            {t("home.pricingLegalLink")}
           </Link>
         </p>
       </section>
@@ -176,28 +173,25 @@ function InstallerTarifsSections() {
 }
 
 function HomeSignupCta() {
+  const t = useTranslations();
+
   return (
     <section className="container-x py-16 sm:py-24">
       <div className="card mx-auto max-w-3xl px-8 py-12 text-center sm:px-12">
         <h2 className="cta-card-title text-2xl font-bold tracking-tight sm:text-3xl">
-          L&apos;échéance APER approche.
+          {t("home.signupTitle")}
         </h2>
         <p className="cta-card-lead mx-auto mt-4 max-w-lg text-base leading-relaxed">
-          Des milliers de parkings à équiper : un flux de chantiers régulier, capté avant vos
-          concurrents.
+          {t("home.signupLead")}
         </p>
         <div className="mt-8 flex justify-center">
           <Link href="/login?mode=signup&next=/" className="btn-solar min-w-[14rem]">
-            Créer un compte
+            {t("home.signupCta")}
           </Link>
         </div>
       </div>
     </section>
   );
-}
-
-function nfSurface(n: number): string {
-  return n.toLocaleString("fr-FR");
 }
 
 function PricingCard({
@@ -209,6 +203,7 @@ function PricingCard({
   href,
   featured = false,
   badge,
+  popularLabel,
 }: {
   title: string;
   price: string;
@@ -218,13 +213,12 @@ function PricingCard({
   href: string;
   featured?: boolean;
   badge?: string;
+  popularLabel: string;
 }) {
   return (
-    <article
-      className={`pricing-card ${featured ? "pricing-card-featured" : ""}`}
-    >
+    <article className={`pricing-card ${featured ? "pricing-card-featured" : ""}`}>
       {badge ? <span className="pricing-card-badge">{badge}</span> : null}
-      {featured ? <span className="pricing-card-tag">Populaire</span> : null}
+      {featured ? <span className="pricing-card-tag">{popularLabel}</span> : null}
       <h4 className="pricing-card-title">{title}</h4>
       <div className="pricing-card-price-block">
         <span className="pricing-card-price">{price}</span>

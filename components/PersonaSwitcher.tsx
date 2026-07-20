@@ -1,7 +1,8 @@
 "use client";
 
-import { PERSONA_LABELS, type Persona } from "@/lib/persona";
+import { useTranslations } from "@/components/LocaleProvider";
 import { usePersona } from "@/components/PersonaProvider";
+import type { Persona } from "@/lib/persona";
 
 const OPTIONS: Persona[] = ["installer", "owner"];
 
@@ -13,25 +14,23 @@ export default function PersonaSwitcher({
   className?: string;
 }) {
   const { persona, ready, setPersona } = usePersona();
+  const t = useTranslations();
 
   if (!ready) {
-    return (
-      <div
-        className="persona-switcher persona-switcher-skeleton"
-        aria-hidden
-      />
-    );
+    return <div className="persona-switcher persona-switcher-skeleton" aria-hidden />;
   }
 
   return (
     <div
       className={`persona-switcher ${className}`.trim()}
       role="group"
-      aria-label="Choisir votre profil"
+      aria-label={t("persona.chooseProfile")}
     >
       {OPTIONS.map((option) => {
         const active = persona === option;
-        const short = option === "installer" ? "Installateur" : "Propriétaire";
+        const label = compact
+          ? t(option === "installer" ? "persona.installerShort" : "persona.ownerShort")
+          : t(option === "installer" ? "persona.installer" : "persona.owner");
         return (
           <button
             key={option}
@@ -40,7 +39,7 @@ export default function PersonaSwitcher({
             aria-pressed={active}
             onClick={() => setPersona(option)}
           >
-            {compact ? short : PERSONA_LABELS[option]}
+            {label}
           </button>
         );
       })}

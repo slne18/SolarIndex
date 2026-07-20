@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "@/components/LocaleProvider";
+
 export type CatalogView = "map" | "list";
 
 export default function CatalogViewToggle({
@@ -9,6 +11,8 @@ export default function CatalogViewToggle({
   view: CatalogView;
   onChange: (v: CatalogView) => void;
 }) {
+  const t = useTranslations();
+
   return (
     <div className="inline-flex catalog-view-toggle rounded-lg border p-1 text-sm">
       <button
@@ -18,7 +22,7 @@ export default function CatalogViewToggle({
           view === "map" ? "bg-solar text-night font-semibold" : "text-slate-300 hover:text-white"
         }`}
       >
-        Vue Carte
+        {t("catalog.viewMap")}
       </button>
       <button
         type="button"
@@ -27,7 +31,7 @@ export default function CatalogViewToggle({
           view === "list" ? "bg-solar text-night font-semibold" : "text-slate-300 hover:text-white"
         }`}
       >
-        Vue Liste
+        {t("catalog.viewList")}
       </button>
     </div>
   );

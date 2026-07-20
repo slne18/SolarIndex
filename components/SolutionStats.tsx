@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLocale, useTranslations } from "@/components/LocaleProvider";
 
 const ELIGIBLE_PARKINGS = 55_000;
 const MARKET_VALUE_KWC_EUR = 1_200;
@@ -37,12 +38,14 @@ function Metric({
   title,
   detail,
   note,
+  locale,
 }: {
   value: number;
   suffix: string;
   title: string;
   detail: string;
   note?: string;
+  locale: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
@@ -67,7 +70,7 @@ function Metric({
     <div ref={ref} className="solution-metric">
       <p className="solution-metric-title">{title}</p>
       <p className="solution-metric-value">
-        <span>{animated.toLocaleString("fr-FR")}</span>
+        <span>{animated.toLocaleString(locale === "en" ? "en-US" : "fr-FR")}</span>
         <span className="solution-metric-suffix">{suffix}</span>
       </p>
       <p className="solution-metric-detail">{detail}</p>
@@ -77,21 +80,26 @@ function Metric({
 }
 
 export default function SolutionStats() {
+  const t = useTranslations();
+  const { locale } = useLocale();
+
   return (
-    <div className="solution-metrics-ribbon mt-8" aria-label="Chiffres clés du catalogue leads">
+    <div className="solution-metrics-ribbon mt-8" aria-label={t("solution.metricsAria")}>
       <Metric
         value={ELIGIBLE_PARKINGS}
         suffix="+"
-        title="Parkings éligibles"
-        detail="OpenStreetMap · France entière"
+        title={t("solution.metric1.title")}
+        detail={t("solution.metric1.detail")}
+        locale={locale}
       />
       <div className="solution-metrics-divider" aria-hidden />
       <Metric
         value={MARKET_VALUE_KWC_EUR}
         suffix=" €"
-        title="Valeur marché / kWc"
-        detail="Estimation marché · 2026"
-        note="Base de calcul de la valeur chantier sur chaque fiche lead."
+        title={t("solution.metric2.title")}
+        detail={t("solution.metric2.detail")}
+        note={t("solution.metric2.note")}
+        locale={locale}
       />
     </div>
   );

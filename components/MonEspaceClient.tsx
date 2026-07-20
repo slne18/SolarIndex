@@ -10,6 +10,8 @@ import type { LeadRow } from "@/lib/types";
 
 import { MON_ESPACE_PATH } from "@/lib/paths";
 import { DeleteAccountPanel, MyRfpSubmissionsPanel } from "@/components/AccountSettingsPanels";
+import { useTranslations } from "@/components/LocaleProvider";
+import { fmt } from "@/lib/i18n/format";
 
 type OwnedLead = LeadRow & { prix_lead: number };
 
@@ -21,6 +23,7 @@ interface SubscriptionQuota {
 }
 
 export default function MonEspaceClient() {
+  const t = useTranslations();
   const [leads, setLeads] = useState<OwnedLead[] | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [sub, setSub] = useState<SubscriptionQuota | null>(null);
@@ -43,7 +46,7 @@ export default function MonEspaceClient() {
       ]);
 
       if (!leadsRes.ok) {
-        setError("Impossible de charger vos leads.");
+        setError(t("account.loadError"));
         setLeads([]);
       } else {
         const data = await leadsRes.json();
@@ -65,15 +68,13 @@ export default function MonEspaceClient() {
     <div className="container-x py-10 sm:py-12">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="pill-accent w-fit">Mon compte</p>
-          <h1 className="section-title mt-4">Mon espace personnel</h1>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-400">
-            Leads achetés, dépôts de projet, crédits pack et paramètres du compte.
-          </p>
+          <p className="pill-accent w-fit">{t("account.pill")}</p>
+          <h1 className="section-title mt-4">{t("account.title")}</h1>
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-400">{t("account.lead")}</p>
           {email ? <p className="mt-2 text-sm text-slate-500">{email}</p> : null}
         </div>
         <button type="button" onClick={logout} className="btn-ghost shrink-0">
-          Se déconnecter
+          {t("account.logout")}
         </button>
       </div>
 
@@ -81,14 +82,16 @@ export default function MonEspaceClient() {
         <div className="card mt-8 border-solar/30 p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <div className="text-sm font-semibold text-solar">Pack Territoire</div>
+              <div className="text-sm font-semibold text-solar">{t("account.packTitle")}</div>
               <p className="mt-1 text-sm text-slate-400">
-                <strong className="text-white">{sub.remaining}</strong> / {sub.quota} crédits leads
-                restants · Standard ou Premium au choix
+                {fmt(t("account.packCredits"), {
+                  remaining: sub.remaining,
+                  quota: sub.quota,
+                })}
               </p>
             </div>
             <Link href="/leads" className="btn-solar !py-2 text-sm">
-              Choisir un lead
+              {t("account.chooseLead")}
             </Link>
           </div>
         </div>
@@ -96,33 +99,31 @@ export default function MonEspaceClient() {
 
       {!sub?.active && (
         <div className="card mt-8 p-5 text-sm text-slate-400">
-          Pas de crédits pack actifs.{" "}
+          {t("account.noPack")}{" "}
           <Link href="/pack-territoire" className="text-solar underline">
-            Pack Territoire — 5 leads
+            {t("account.packLink")}
           </Link>
         </div>
       )}
 
       <div className="mt-10 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-white">Mes leads achetés</h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Coordonnées complètes · SIREN, dirigeants, adresse, parcelle
-          </p>
+          <h2 className="text-lg font-semibold text-white">{t("account.myLeads")}</h2>
+          <p className="mt-1 text-sm text-slate-500">{t("account.myLeadsHint")}</p>
         </div>
         <Link href="/leads" className="btn-ghost !py-2 text-sm">
-          Acheter un lead
+          {t("account.buyLead")}
         </Link>
       </div>
 
-      {leads === null && <p className="mt-4 text-slate-400">Chargement…</p>}
+      {leads === null && <p className="mt-4 text-slate-400">{t("common.loading")}</p>}
       {error && <p className="mt-4 text-red-300">{error}</p>}
 
       {leads && leads.length === 0 && (
         <div className="card mt-4 p-8 text-center text-slate-400">
-          <p>Aucun lead acheté pour l&apos;instant.</p>
+          <p>{t("account.noLeads")}</p>
           <Link href="/leads" className="btn-solar mt-4 inline-flex !py-2 text-sm">
-            Parcourir le catalogue
+            {t("account.browseCatalog")}
           </Link>
         </div>
       )}
@@ -135,21 +136,21 @@ export default function MonEspaceClient() {
                 <div>
                   <div className="font-semibold">{l.raison_sociale || l.nom_osm || "Parking"}</div>
                   {l.nom_osm && l.raison_sociale && l.nom_osm !== l.raison_sociale ? (
-                    <div className="text-xs text-slate-500">Site : {l.nom_osm}</div>
+                    <div className="text-xs text-slate-500">{t("account.siteLabel")} {l.nom_osm}</div>
                   ) : null}
                   <div className="text-sm text-slate-400">
                     {l.ville || "—"} ({l.departement}) · {nf(l.surface_m2)} m² · {nf(l.puissance_kwc)} kWc
                     {" · "}
-                    Recouvrement {displayRecouvrementSummary(l).short}
+                    {t("account.coverage")} {displayRecouvrementSummary(l).short}
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-2 text-sm">
                   <div className="text-right">
                     <div className="font-semibold text-solar">{euros(l.valeur_chantier_eur)}</div>
-                    <div className="text-slate-500">chantier estimé</div>
+                    <div className="text-slate-500">{t("account.estimatedProject")}</div>
                   </div>
                   <Link href={`/leads/${l.id}?from=mon-espace`} className="btn-ghost !px-3 !py-1.5 text-xs">
-                    Voir la fiche complète
+                    {t("account.viewFull")}
                   </Link>
                 </div>
               </div>

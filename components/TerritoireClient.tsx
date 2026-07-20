@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { TERRITOIRE_LEADS_QUOTA, TERRITOIRE_PACK_EUR } from "@/lib/subscription";
 import { eurosCompact, nf } from "@/lib/format";
 import type { TerritoireRadiusKm, TerritoireSummary } from "@/lib/territoire";
+import { useTranslations } from "@/components/LocaleProvider";
+import { fmt } from "@/lib/i18n/format";
 
 type BanFeature = {
   properties: { label: string };
@@ -34,6 +36,7 @@ export default function TerritoireClient({
   onExploreCatalog?: (departement?: string) => void;
 }) {
   const router = useRouter();
+  const t = useTranslations();
   const [mode, setMode] = useState<"address" | "departement">("address");
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<BanFeature[]>([]);
@@ -67,19 +70,19 @@ export default function TerritoireClient({
           ? `/api/territoire?departement=${encodeURIComponent(departement)}`
           : `/api/territoire?lat=${selected!.lat}&lon=${selected!.lon}&radiusKm=${radiusKm}&label=${encodeURIComponent(selected!.label)}`;
       if (mode === "address" && !selected) {
-        setError("Sélectionnez une adresse.");
+        setError(t("territoire.selectAddress"));
         setLoading(false);
         return;
       }
       const res = await fetch(url);
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Erreur.");
+        setError(data.error || t("territoire.genericError"));
         return;
       }
       setSummary(data as TerritoireSummary);
     } catch {
-      setError("Erreur réseau.");
+      setError(t("onboarding.networkError"));
     } finally {
       setLoading(false);
     }
@@ -109,21 +112,21 @@ export default function TerritoireClient({
           className={`btn ${mode === "address" ? "btn-solar" : "btn-ghost"}`}
           onClick={() => setMode("address")}
         >
-          Par adresse
+          {t("territoire.byAddress")}
         </button>
         <button
           type="button"
           className={`btn ${mode === "departement" ? "btn-solar" : "btn-ghost"}`}
           onClick={() => setMode("departement")}
         >
-          Par département
+          {t("territoire.byDept")}
         </button>
       </div>
 
       <div className="card mt-6 space-y-4 p-6">
         {mode === "address" ? (
           <>
-            <label className="block text-sm font-medium">Votre adresse (siège ou entrepôt)</label>
+            <label className="block text-sm font-medium">{t("territoire.addressLabel")}</label>
             <div className="relative">
               <input
                 className="input w-full"
@@ -132,7 +135,7 @@ export default function TerritoireClient({
                   setQuery(e.target.value);
                   setSelected(null);
                 }}
-                placeholder="Adresse en France"
+                placeholder={t("territoire.addressPlaceholder")}
               />
               {suggestions.length > 0 && (
                 <ul className="absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-xl border border-white/10 bg-night-900">
@@ -155,7 +158,7 @@ export default function TerritoireClient({
                 </ul>
               )}
             </div>
-            <label className="block text-sm font-medium">Rayon</label>
+            <label className="block text-sm font-medium">{t("territoire.radius")}</label>
             <div className="flex gap-2">
               {([25, 50, 100] as const).map((r) => (
                 <button
@@ -171,7 +174,7 @@ export default function TerritoireClient({
           </>
         ) : (
           <>
-            <label className="block text-sm font-medium">Département</label>
+            <label className="block text-sm font-medium">{t("territoire.deptLabel")}</label>
             <select
               className="input w-full"
               value={departement}
@@ -187,7 +190,7 @@ export default function TerritoireClient({
         )}
 
         <button type="button" className="btn-solar w-full" onClick={runAnalysis} disabled={loading}>
-          {loading ? "Calcul en cours…" : "Compter les leads dans ma zone"}
+          {loading ? t("territoire.counting") : t("territoire.countCta")}
         </button>
       </div>
 
@@ -197,35 +200,44 @@ export default function TerritoireClient({
         <div className="card mt-6 space-y-4 p-6">
           <h2 className="text-lg font-bold text-white">
             {summary.mode === "radius"
-              ? `Dans un rayon de ${summary.radiusKm} km autour de ${summary.label}`
+              ? fmt(t("territoire.radiusSummary"), {
+                  radius: summary.radiusKm ?? 0,
+                  label: summary.label ?? "",
+                })
               : summary.label}
           </h2>
           <ul className="space-y-2 text-sm text-slate-300">
             <li>
-              <strong className="text-white">{nf(summary.total)}</strong> leads disponibles
+              <strong className="text-white">{nf(summary.total)}</strong> {t("territoire.leadsAvailable")}
             </li>
             <li>
-              <strong className="text-white">{nf(summary.urgences)}</strong> en Urgence Absolue
+              <strong className="text-white">{nf(summary.urgences)}</strong> {t("territoire.urgences")}
             </li>
             <li>
-              {nf(summary.standard)} Standard · {nf(summary.premium)} Premium
+              {fmt(t("territoire.standardPremium"), {
+                standard: nf(summary.standard),
+                premium: nf(summary.premium),
+              })}
             </li>
             <li>
-              Valeur pipeline totale estimée :{" "}
+              {t("territoire.pipelineValue")}{" "}
               <strong className="text-solar">{eurosCompact(summary.pipelineEur)}</strong>
             </li>
           </ul>
           <div className="flex flex-wrap gap-3 pt-2">
             <Link href="/pack-territoire" className="btn-solar">
-              Pack Territoire — {TERRITOIRE_PACK_EUR} €, {TERRITOIRE_LEADS_QUOTA} leads
+              {fmt(t("territoire.packCta"), {
+                price: TERRITOIRE_PACK_EUR,
+                quota: TERRITOIRE_LEADS_QUOTA,
+              })}
             </Link>
             {embedded ? (
               <button type="button" className="btn-ghost" onClick={handleExplore}>
-                Explorer le catalogue filtré →
+                {t("territoire.exploreFiltered")}
               </button>
             ) : (
               <Link href={exploreHref} className="btn-ghost">
-                Explorer tous les leads de cette zone →
+                {t("territoire.exploreZone")}
               </Link>
             )}
           </div>

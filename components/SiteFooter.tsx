@@ -2,20 +2,8 @@
 
 import Link from "next/link";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
-import { PERSONA_LABELS } from "@/lib/persona";
 import { usePersona } from "@/components/PersonaProvider";
-
-const INSTALLER_LINKS = [
-  { href: "/leads", label: "Leads détectés" },
-  { href: "/appels-offres", label: "Appels d'offres" },
-  { href: "/#tarifs", label: "Tarifs" },
-] as const;
-
-const OWNER_LINKS = [
-  { href: "/verifier", label: "Vérifier éligibilité" },
-  { href: "/simulateur", label: "Gains & économies parking" },
-  { href: "/appels-offres/nouveau", label: "Déposer mon projet" },
-] as const;
+import { useTranslations } from "@/components/LocaleProvider";
 
 function FooterLinkList({
   links,
@@ -41,11 +29,24 @@ function FooterLinkList({
 
 export default function SiteFooter({ light = false }: { light?: boolean }) {
   const { persona, ready } = usePersona();
+  const t = useTranslations();
   const showBoth = !ready || persona === null;
   const headingClass = light ? "footer-heading font-semibold" : "font-semibold text-slate-200";
   const subheadingClass = light
     ? "footer-heading text-xs font-semibold uppercase tracking-wider"
     : "text-xs font-semibold uppercase tracking-wider text-slate-400";
+
+  const installerLinks = [
+    { href: "/leads", label: t("footer.leadsDetected") },
+    { href: "/appels-offres", label: t("nav.appelsOffres") },
+    { href: "/#tarifs", label: t("footer.pricing") },
+  ] as const;
+
+  const ownerLinks = [
+    { href: "/verifier", label: t("nav.verifyEligibility") },
+    { href: "/simulateur", label: t("footer.simulator") },
+    { href: "/appels-offres/nouveau", label: t("footer.depositProject") },
+  ] as const;
 
   return (
     <footer className={light ? "footer-light" : "mt-20 border-t border-white/[0.08]"}>
@@ -58,66 +59,64 @@ export default function SiteFooter({ light = false }: { light?: boolean }) {
             Solar<span className="text-solar">Index</span>
           </div>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-500">
-            {persona === "owner"
-              ? "Vérifiez votre obligation APER, estimez vos gains et recevez des propositions d'installateurs."
-              : "Leads APER pour installateurs · éligibilité, gains estimés et propositions d'installateurs pour propriétaires et gérants de parking."}
+            {persona === "owner" ? t("footer.taglineOwner") : t("footer.taglineDefault")}
           </p>
         </div>
 
         <div className="text-sm">
-          <div className={headingClass}>Produits</div>
+          <div className={headingClass}>{t("footer.products")}</div>
           {showBoth ? (
             <div className="mt-4 space-y-6">
               <div>
-                <div className={subheadingClass}>{PERSONA_LABELS.installer}</div>
+                <div className={subheadingClass}>{t("persona.installer")}</div>
                 <div className="mt-3">
-                  <FooterLinkList links={INSTALLER_LINKS} light={light} />
+                  <FooterLinkList links={installerLinks} light={light} />
                 </div>
               </div>
               <div>
-                <div className={subheadingClass}>{PERSONA_LABELS.owner}</div>
+                <div className={subheadingClass}>{t("persona.owner")}</div>
                 <div className="mt-3">
-                  <FooterLinkList links={OWNER_LINKS} light={light} />
+                  <FooterLinkList links={ownerLinks} light={light} />
                 </div>
               </div>
             </div>
           ) : persona === "owner" ? (
             <div className="mt-4">
-              <FooterLinkList links={OWNER_LINKS} light={light} />
+              <FooterLinkList links={ownerLinks} light={light} />
             </div>
           ) : (
             <div className="mt-4">
-              <FooterLinkList links={INSTALLER_LINKS} light={light} />
+              <FooterLinkList links={installerLinks} light={light} />
             </div>
           )}
         </div>
 
         <div className="text-sm">
-          <div className={headingClass}>Légal</div>
+          <div className={headingClass}>{t("footer.legal")}</div>
           <ul className="mt-4 space-y-2.5 text-slate-500">
             <li>
               <Link href="/legal/confidentialite" className={light ? "footer-link" : "transition hover:text-white"}>
-                Politique de confidentialité
+                {t("footer.privacy")}
               </Link>
             </li>
             <li>
               <Link href="/legal/mentions-legales" className={light ? "footer-link" : "transition hover:text-white"}>
-                Mentions légales
+                {t("footer.legalNotice")}
               </Link>
             </li>
             <li>
               <Link href="/legal/cgu" className={light ? "footer-link" : "transition hover:text-white"}>
-                CGU (déposants)
+                {t("footer.cgu")}
               </Link>
             </li>
             <li>
               <Link href="/legal/cgv" className={light ? "footer-link" : "transition hover:text-white"}>
-                CGV (installateurs)
+                {t("footer.cgv")}
               </Link>
             </li>
             <li>
               <Link href="/faq" className={light ? "footer-link" : "transition hover:text-white"}>
-                FAQ
+                {t("footer.faq")}
               </Link>
             </li>
           </ul>

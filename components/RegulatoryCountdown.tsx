@@ -15,6 +15,8 @@ import {
   getAperWaveStatus,
   type AperDeadlineWave,
 } from "@/lib/aper-law";
+import { useTranslations } from "@/components/LocaleProvider";
+import { fmt } from "@/lib/i18n/format";
 
 export interface CountdownProps {
   variant?: "compact" | "full" | "timeline";
@@ -44,6 +46,7 @@ export default function RegulatoryCountdown({
   obligation = "50",
   theme = "light",
 }: CountdownProps) {
+  const t = useTranslations();
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
@@ -100,12 +103,12 @@ export default function RegulatoryCountdown({
               </span>
               {waveStatus === "current" ? (
                 <span className="rounded-full bg-solar/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-solar-700">
-                  Prochaine vague
+                  {t("countdown.nextWave")}
                 </span>
               ) : null}
               {passed ? (
                 <span className="rounded-full bg-slate-200/80 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
-                  Échéance atteinte
+                  {t("countdown.deadlineReached")}
                 </span>
               ) : null}
             </div>
@@ -114,7 +117,7 @@ export default function RegulatoryCountdown({
             <p className="mt-1 text-sm text-slate-500">{waveMeta.date}</p>
 
             <div className="mt-4 inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm">
-              <span className="text-slate-500">Amende max.</span>
+              <span className="text-slate-500">{t("countdown.maxFine")}</span>
               <span className="font-semibold tabular-nums text-slate-800">{waveMeta.fine}</span>
             </div>
 
@@ -125,9 +128,9 @@ export default function RegulatoryCountdown({
               />
             </div>
             <p className="mt-3 text-lg font-bold tabular-nums text-slate-900">
-              {days > 0 ? `${days} jours restants` : "Échéance atteinte"}
+              {days > 0 ? fmt(t("countdown.daysLeft"), { days }) : t("countdown.deadlineReached")}
             </p>
-            <p className="mt-1 text-xs text-slate-500">Loi APER · depuis janv. 2024</p>
+            <p className="mt-1 text-xs text-slate-500">{t("countdown.sinceLaw")}</p>
           </div>
         </div>
       </div>
