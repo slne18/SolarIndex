@@ -1,5 +1,6 @@
 import { enrichPublicRfp, type PublicRfpEnrichment } from "./rfp-official-fields";
 import type { RfpOwnerType } from "./rfp-official";
+import { getRegion } from "./regions";
 
 /** Seuil surface pour la grille tarifaire appels d'offres (aligné APER 10 000 m²). */
 export const RFP_SURFACE_TIER_M2 = 10_000;
@@ -104,7 +105,13 @@ export type PublicRfp = Pick<
   solar: PublicRfpEnrichment["solar"];
 };
 
-export type OwnedRfp = RfpSubmissionRow & { is_owned: true; prix_acces: number };
+export type OwnedRfp = Omit<RfpSubmissionRow, "documents_complementaires"> & {
+  is_owned: true;
+  prix_acces: number;
+  lien_plateforme_connue: boolean;
+  documents_complementaires: string[];
+  solar: PublicRfpEnrichment["solar"];
+};
 
 export function toPublicRfp(row: RfpSubmissionRow): PublicRfp {
   const extra = enrichPublicRfp(row);
@@ -135,7 +142,15 @@ export function toPublicRfp(row: RfpSubmissionRow): PublicRfp {
 }
 
 export function toOwnedRfp(row: RfpSubmissionRow): OwnedRfp {
-  return { ...row, is_owned: true, prix_acces: computeRfpAccessPrice(row.surface_estimee_m2) };
+  const extra = enrichPublicRfp(row);
+  return {
+    ...row,
+    is_owned: true,
+    prix_acces: computeRfpAccessPrice(row.surface_estimee_m2),
+    lien_plateforme_connue: extra.lien_plateforme_connue,
+    documents_complementaires: extra.documents_complementaires,
+    solar: extra.solar,
+  };
 }
 
 export function departementFromPostal(codePostal: string | null | undefined): string | null {
