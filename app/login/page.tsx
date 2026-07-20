@@ -67,7 +67,9 @@ export default function LoginPage() {
         if (error) throw error;
         const { data: sess } = await supabase.auth.getSession();
         if (!sess.session) {
-          setMsg("Compte créé. Vérifiez votre email pour confirmer, puis connectez-vous.");
+          setMsg(
+            "Compte créé. Vérifiez votre email pour confirmer, puis connectez-vous — vous compléterez ensuite votre profil (installateur, propriétaire ou gérant).",
+          );
           setMode("signin");
           return;
         }

@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getAccessToken } from "@/lib/supabaseBrowser";
+import { ensureProfileComplete } from "@/lib/ensure-profile-complete";
 import { catalogAuthHeaders } from "@/lib/preview-catalog";
 import { nf } from "@/lib/format";
 import { LEAD_REPLACEMENT_GUARANTEE } from "@/lib/guarantee";
@@ -31,6 +32,14 @@ function LeadsCatalog() {
   const [view, setView] = useState<CatalogView>(
     params.get("view") === "list" ? "list" : "map",
   );
+
+  useEffect(() => {
+    (async () => {
+      const token = await getAccessToken();
+      if (!token) return;
+      await ensureProfileComplete("/leads", token);
+    })();
+  }, []);
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);

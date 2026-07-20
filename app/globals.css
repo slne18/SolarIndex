@@ -623,10 +623,6 @@ body {
     @apply rounded-xl border border-white/10 bg-night-900/40 px-4 py-3;
   }
 
-  .simulator-summary-card-primary {
-    @apply border-solar/35 bg-solar/10 sm:col-span-2 lg:col-span-1;
-  }
-
   .simulator-summary-label {
     @apply text-xs text-slate-500;
   }

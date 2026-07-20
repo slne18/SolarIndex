@@ -48,7 +48,7 @@ export function SimulatorResultsSummary({ result }: { result: SimulatorResult })
 
   return (
     <div className="simulator-summary-grid">
-      <div className="simulator-summary-card simulator-summary-card-primary">
+      <div className="simulator-summary-card">
         <p className="simulator-summary-label">Gain annuel estimé</p>
         <p className="simulator-summary-value">{euros(totalBenefit)}/an</p>
         <p className="simulator-summary-sub">Économies + revenus{result.aperEligible ? " + amende évitée" : ""}</p>

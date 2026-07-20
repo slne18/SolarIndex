@@ -14,10 +14,12 @@ export async function resolvePostAuthRedirect(
     const res = await fetch("/api/profile", {
       headers: { Authorization: `Bearer ${token}` },
     });
-    if (!res.ok) return safeNext;
-    const data = await res.json();
-    if (data.profile_completed) return safeNext;
-    return onboardingPathForNext(safeNext);
+    if (res.status === 401) return safeNext;
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.profile_completed) {
+      return onboardingPathForNext(safeNext);
+    }
+    return safeNext;
   } catch {
     return onboardingPathForNext(safeNext);
   }
