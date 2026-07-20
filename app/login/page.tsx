@@ -41,6 +41,12 @@ export default function LoginPage() {
     if (code === "weak_password" || /password.*at least/i.test(msg)) {
       return "Mot de passe trop court (6 caractères minimum).";
     }
+    if (
+      code === "over_email_send_rate_limit" ||
+      /rate limit|too many.*email|email.*limit/i.test(msg)
+    ) {
+      return "Limite d'envoi d'emails atteinte. Attendez environ 1 h, ou connectez-vous si le compte existe déjà.";
+    }
     return msg;
   }
 
