@@ -14,11 +14,6 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: "/onboarding",
-        destination: "/leads",
-        permanent: true,
-      },
-      {
         source: "/territoire",
         destination: "/leads#ma-zone",
         permanent: true,
