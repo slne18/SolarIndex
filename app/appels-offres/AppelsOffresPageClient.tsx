@@ -11,8 +11,6 @@ import { PRIX_RFP, type PublicRfp } from "@/lib/rfp";
 import FranceMap from "@/components/FranceMap";
 import CatalogViewToggle, { type CatalogView } from "@/components/CatalogViewToggle";
 import RfpTable from "@/components/RfpTable";
-
-import RfpTable from "@/components/RfpTable";
 import { SIMULATOR_REGIONS } from "@/lib/solar-simulator";
 import { RFP_OWNER_TYPE_LABELS } from "@/lib/rfp-official";
 
