@@ -611,6 +611,10 @@ body {
     @apply text-base font-bold leading-snug text-white sm:text-lg;
   }
 
+  .persona-card-subtitle {
+    @apply mt-0.5 block text-sm font-normal text-slate-300;
+  }
+
   .persona-card-desc {
     @apply text-sm leading-relaxed text-slate-400;
   }
@@ -620,23 +624,19 @@ body {
   }
 
   .home-hero-benefits {
-    @apply grid grid-cols-2 gap-x-4 gap-y-5 border-t border-white/[0.08] pt-8 sm:grid-cols-4 sm:gap-4;
+    @apply grid grid-cols-2 gap-x-5 gap-y-6 border-t border-white/[0.08] pt-9 sm:grid-cols-4 sm:gap-6 sm:pt-10;
   }
 
   .home-hero-benefit {
-    @apply flex flex-col items-center gap-2.5 text-center sm:gap-3;
+    @apply flex flex-col items-center gap-3 text-center sm:gap-3.5;
   }
 
   .home-hero-benefit-icon {
-    @apply grid h-10 w-10 place-items-center rounded-lg border border-solar/25 bg-solar/10 text-solar;
+    @apply grid h-12 w-12 place-items-center rounded-xl border border-solar/35 bg-solar/15 text-solar shadow-[0_0_20px_rgba(251,191,36,0.2)] sm:h-14 sm:w-14;
   }
 
   .home-hero-benefit-label {
-    @apply text-xs leading-snug text-slate-300 sm:text-sm;
-  }
-
-  .home-hero-benefit-label-compact {
-    @apply text-[10px] leading-snug text-slate-400 sm:text-xs;
+    @apply text-sm leading-snug text-slate-200 sm:text-[0.9375rem];
   }
 
   .simulator-summary-grid {

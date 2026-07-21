@@ -113,13 +113,14 @@ const fr = {
   "home.installerCardTitle": "Je suis installateur",
   "home.installerCardDesc":
     "Accédez à des projets qualifiés et développez votre activité grâce à une mise en relation ciblée.",
-  "home.ownerCardTitle": "Je suis propriétaire ou gestionnaire (de parking)",
+  "home.ownerCardTitle": "Je suis propriétaire",
+  "home.ownerCardSubtitle": "ou gestionnaire",
   "home.ownerCardDesc":
-    "Identifiez les solutions d'ombrières photovoltaïques adaptées à votre parking.",
-  "home.benefit1": "Identifiez les parkings concernés par la loi APER",
-  "home.benefit2": "Estimez le potentiel photovoltaïque",
-  "home.benefit3": "Trouvez les bons partenaires",
-  "home.benefit4": "Contribuez à la transition énergétique",
+    "Nos outils vous permettent de vérifier si vous êtes concerné, estimer vos gains et recevoir des propositions d'installateurs.",
+  "home.benefit1": "Identifiez les parkings\nconcernés par la loi APER",
+  "home.benefit2": "Estimez le potentiel\nphotovoltaïque",
+  "home.benefit3": "Trouvez les\nbons partenaires",
+  "home.benefit4": "Contribuez à la\ntransition énergétique",
   "home.discover": "Découvrir",
   "home.installerHeroTitle": "Repérez les parkings non conformes APER",
   "home.installerHeroAccent": "avant l'amende.",
@@ -366,10 +367,10 @@ const fr = {
   "home.aperSummary":
     "Tout parc de stationnement extérieur d'au moins 1 500 m² doit être équipé d'ombrières solaires couvrant au minimum 50 % de sa superficie (panneaux photovoltaïques sur la totalité de la partie supérieure).",
   "home.aperRef":
-    "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40 · complète l'art. L171-3 du Code de l'énergie (loi climat n° 2021-1104)",
+    "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40 · complète l'art. L. 111-19-1 du Code de l'urbanisme (loi climat n° 2021-1104)",
   "home.aperRefLaw": "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40",
   "home.aperRefMid": " · complète l'",
-  "home.aperRefEnergy": "art. L171-3 du Code de l'énergie",
+  "home.aperRefEnergy": "art. L. 111-19-1 du Code de l'urbanisme",
   "home.aperRefClimate": " (loi climat n° 2021-1104)",
   "home.backToChooser": "Retour au choix du profil",
   "home.aperCalendarTitle": "Calendrier de mise en conformité",

@@ -41,6 +41,7 @@ export default function HomeHeroPersona() {
   const personaCards: {
     id: Persona;
     title: string;
+    subtitle?: string;
     description: string;
   }[] = [
     {
@@ -51,6 +52,7 @@ export default function HomeHeroPersona() {
     {
       id: "owner",
       title: t("home.ownerCardTitle"),
+      subtitle: t("home.ownerCardSubtitle"),
       description: t("home.ownerCardDesc"),
     },
   ];
@@ -67,7 +69,7 @@ export default function HomeHeroPersona() {
                   {t("home.chooseTitleAccent")}
                 </span>
               </h1>
-              <p className="mx-auto mt-5 max-w-3xl text-base leading-relaxed text-slate-300 sm:text-lg">
+              <p className="mx-auto mt-8 max-w-3xl text-base leading-relaxed text-slate-300 sm:mt-10 sm:text-lg">
                 {t("home.chooseLeadBefore")}
                 <span className="font-semibold text-solar">{t("home.chooseLeadHighlight")}</span>
                 {t("home.chooseLeadAfter")}
@@ -83,6 +85,9 @@ export default function HomeHeroPersona() {
                     <span className="persona-card-icon shrink-0">{CARD_ICONS[card.id]}</span>
                     <span className="persona-card-content min-w-0 flex-1">
                       <span className="persona-card-title block">{card.title}</span>
+                      {card.subtitle ? (
+                        <span className="persona-card-subtitle block">{card.subtitle}</span>
+                      ) : null}
                       <span className="persona-card-desc mt-1.5 block">{card.description}</span>
                     </span>
                     <svg

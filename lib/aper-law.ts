@@ -1,13 +1,15 @@
 /** Références réglementaires — solarisation des parkings (Loi climat + loi APER). */
 export const APER_LAW_REF =
-  "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40 · complète l'art. L171-3 du Code de l'énergie (loi climat n° 2021-1104)";
+  "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40 · complète l'art. L. 111-19-1 du Code de l'urbanisme (loi climat n° 2021-1104)";
 
-/** Liens Legifrance (textes officiels). */
+/** Liens Legifrance (textes officiels — articles consolidés). */
 export const APER_LAW_LINKS = {
-  /** Loi n° 2023-175 du 10 mars 2023 — accélération de la production d'énergies renouvelables. */
-  loi2023: "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000047362323",
-  /** Code de l'énergie, art. L171-3 (obligation de couverture solaire des parkings). */
-  l171_3: "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006416945",
+  /** Loi n° 2023-175 — art. 40 (obligation ombrières sur grands parkings existants). */
+  loi2023Art40: "https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000048250403",
+  /** Loi n° 2023-175 — texte consolidé. */
+  loi2023: "https://www.legifrance.gouv.fr/loda/id/JORFTEXT000047294244",
+  /** Loi climat — art. L. 111-19-1 du code de l'urbanisme (ombrage des parkings). */
+  l111_19_1: "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000052866754",
 } as const;
 
 export const APER_SURFACE_MIN_M2 = 1_500;

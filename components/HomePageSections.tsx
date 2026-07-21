@@ -44,7 +44,7 @@ function LoiAperSection() {
         <p className="section-lead mt-4">{t("home.aperSummary")}</p>
         <p className="mt-3 text-xs text-slate-500">
           <a
-            href={APER_LAW_LINKS.loi2023}
+            href={APER_LAW_LINKS.loi2023Art40}
             target="_blank"
             rel="noopener noreferrer"
             className="text-slate-600 underline decoration-slate-400 underline-offset-2 hover:text-solar hover:decoration-solar/60"
@@ -53,7 +53,7 @@ function LoiAperSection() {
           </a>
           {t("home.aperRefMid")}
           <a
-            href={APER_LAW_LINKS.l171_3}
+            href={APER_LAW_LINKS.l111_19_1}
             target="_blank"
             rel="noopener noreferrer"
             className="text-slate-600 underline decoration-slate-400 underline-offset-2 hover:text-solar hover:decoration-solar/60"
