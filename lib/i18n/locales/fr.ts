@@ -27,6 +27,8 @@ const fr = {
   "auth.error.weakPassword": "Mot de passe trop court (6 caractères minimum).",
   "auth.error.rateLimit":
     "Limite d'envoi d'emails atteinte. Attendez environ 1 h, ou connectez-vous si le compte existe déjà.",
+  "auth.error.emailSend":
+    "L'email de confirmation n'a pas pu être envoyé. Réessayez dans quelques minutes ou contactez le support.",
 
   "header.createSpace": "Créer mon espace",
   "header.signIn": "Connexion",

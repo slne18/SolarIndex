@@ -51,6 +51,9 @@ export default function LoginPage() {
     ) {
       return t("auth.error.rateLimit");
     }
+    if (/error sending email|email send failed|email_send_failed/i.test(msg)) {
+      return t("auth.error.emailSend");
+    }
     return msg;
   }
 
@@ -67,21 +70,31 @@ export default function LoginPage() {
     const next = defaultNext(mode === "signup");
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: authConfirmRedirectUrl(`/onboarding?next=${encodeURIComponent(next)}`),
-          },
+        const redirectTo = authConfirmRedirectUrl(`/onboarding?next=${encodeURIComponent(next)}`);
+        const res = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, redirectTo }),
         });
-        if (error) throw error;
-        const { data: sess } = await supabase.auth.getSession();
-        if (!sess.session) {
-          setMsg(t("auth.signUpConfirmEmail"));
-          setMode("signin");
+        const payload = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const err = new Error(payload.error || t("auth.error.generic")) as Error & { code?: string };
+          if (payload.code) err.code = payload.code;
+          throw err;
+        }
+
+        if (payload.autoConfirmed) {
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          const token = data.session?.access_token;
+          if (!token) throw new Error("Session introuvable.");
+          await redirectAfterAuth(token, true);
           return;
         }
-        await redirectAfterAuth(sess.session.access_token, true);
+
+        setMsg(t("auth.signUpConfirmEmail"));
+        setMode("signin");
+        return;
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;

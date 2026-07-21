@@ -28,6 +28,8 @@ const en: Record<MessageKey, string> = {
   "auth.error.weakPassword": "Password too short (minimum 6 characters).",
   "auth.error.rateLimit":
     "Email sending limit reached. Wait about 1 hour, or sign in if the account already exists.",
+  "auth.error.emailSend":
+    "Could not send the confirmation email. Try again in a few minutes or contact support.",
 
   "header.createSpace": "Create my space",
   "header.signIn": "Sign in",
