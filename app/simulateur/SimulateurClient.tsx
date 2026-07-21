@@ -26,15 +26,23 @@ type SurfaceMode = "direct" | "dimensions";
 
 const COUT_KWC = 1200;
 
+function parseNonNegativeNumber(raw: string): number {
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 ? n : 0;
+}
+
 export default function SimulateurClient() {
   const t = useTranslations();
   const { locale } = useLocale();
   const { persona, ready } = usePersona();
   const showDepositCta = !ready || showOwnerProjectDeposit(persona);
   const [surfaceMode, setSurfaceMode] = useState<SurfaceMode>("direct");
-  const [surfaceM2, setSurfaceM2] = useState(5000);
-  const [lengthM, setLengthM] = useState(100);
-  const [widthM, setWidthM] = useState(50);
+  const [surfaceM2Input, setSurfaceM2Input] = useState("5000");
+  const [lengthMInput, setLengthMInput] = useState("100");
+  const [widthMInput, setWidthMInput] = useState("50");
+  const surfaceM2 = parseNonNegativeNumber(surfaceM2Input);
+  const lengthM = parseNonNegativeNumber(lengthMInput);
+  const widthM = parseNonNegativeNumber(widthMInput);
   const [region, setRegion] = useState("Occitanie");
   const [consumption, setConsumption] = useState("");
   const [hasConsumption, setHasConsumption] = useState(false);
@@ -92,17 +100,18 @@ export default function SimulateurClient() {
                 type="number"
                 min={100}
                 step={100}
+                inputMode="numeric"
                 className="input w-full"
-                value={surfaceM2}
-                onChange={(e) => setSurfaceM2(Number(e.target.value) || 0)}
+                value={surfaceM2Input}
+                onChange={(e) => setSurfaceM2Input(e.target.value)}
               />
               <input
                 type="range"
                 min={1500}
                 max={50000}
                 step={100}
-                value={Math.min(50000, Math.max(1500, surfaceM2))}
-                onChange={(e) => setSurfaceM2(Number(e.target.value))}
+                value={Math.min(50000, Math.max(1500, surfaceM2 || 1500))}
+                onChange={(e) => setSurfaceM2Input(e.target.value)}
                 className="mt-3 w-full accent-solar"
               />
             </Field>
@@ -112,18 +121,20 @@ export default function SimulateurClient() {
                 <input
                   type="number"
                   min={1}
+                  inputMode="numeric"
                   className="input w-full"
-                  value={lengthM}
-                  onChange={(e) => setLengthM(Number(e.target.value) || 0)}
+                  value={lengthMInput}
+                  onChange={(e) => setLengthMInput(e.target.value)}
                 />
               </Field>
               <Field label={t("simulateur.widthLabel")}>
                 <input
                   type="number"
                   min={1}
+                  inputMode="numeric"
                   className="input w-full"
-                  value={widthM}
-                  onChange={(e) => setWidthM(Number(e.target.value) || 0)}
+                  value={widthMInput}
+                  onChange={(e) => setWidthMInput(e.target.value)}
                 />
               </Field>
               <p className="sm:col-span-2 text-sm text-slate-400">
