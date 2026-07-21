@@ -10,8 +10,10 @@ import {
   SimulatorRoiTimeline,
 } from "@/components/SimulatorResultVisuals";
 import { usePersona } from "@/components/PersonaProvider";
+import { useLocale, useTranslations } from "@/components/LocaleProvider";
 import { showOwnerProjectDeposit } from "@/lib/persona";
 import { euros, eurosCompact, nf, nfSurface } from "@/lib/format";
+import { fmt } from "@/lib/i18n/format";
 import {
   DEFAULT_AUTOCONSUMPTION_RATIO,
   ELECTRICITY_PRICE_EUR,
@@ -22,7 +24,11 @@ import { formatAperAnnualFine } from "@/lib/aper-fine";
 
 type SurfaceMode = "direct" | "dimensions";
 
+const COUT_KWC = 1200;
+
 export default function SimulateurClient() {
+  const t = useTranslations();
+  const { locale } = useLocale();
   const { persona, ready } = usePersona();
   const showDepositCta = !ready || showOwnerProjectDeposit(persona);
   const [surfaceMode, setSurfaceMode] = useState<SurfaceMode>("direct");
@@ -57,26 +63,28 @@ export default function SimulateurClient() {
     return `/appels-offres/nouveau?${p.toString()}`;
   })();
 
+  const priceLabel = ELECTRICITY_PRICE_EUR.toLocaleString(locale === "en" ? "en-US" : "fr-FR");
+
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
       <div className="space-y-6">
         <div className="card space-y-5 p-6">
-          <p className="text-sm font-medium text-slate-200">Votre parking</p>
+          <p className="text-sm font-medium text-slate-200">{t("simulateur.yourParking")}</p>
 
           <div className="flex flex-wrap gap-2">
             <ModeBtn active={surfaceMode === "direct"} onClick={() => setSurfaceMode("direct")}>
-              Surface en m²
+              {t("simulateur.modeDirect")}
             </ModeBtn>
             <ModeBtn
               active={surfaceMode === "dimensions"}
               onClick={() => setSurfaceMode("dimensions")}
             >
-              Longueur × largeur
+              {t("simulateur.modeDimensions")}
             </ModeBtn>
           </div>
 
           {surfaceMode === "direct" ? (
-            <Field label="Surface du parking (m²)">
+            <Field label={t("simulateur.surfaceLabel")}>
               <input
                 type="number"
                 min={100}
@@ -97,7 +105,7 @@ export default function SimulateurClient() {
             </Field>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Longueur (m)">
+              <Field label={t("simulateur.lengthLabel")}>
                 <input
                   type="number"
                   min={1}
@@ -106,7 +114,7 @@ export default function SimulateurClient() {
                   onChange={(e) => setLengthM(Number(e.target.value) || 0)}
                 />
               </Field>
-              <Field label="Largeur (m)">
+              <Field label={t("simulateur.widthLabel")}>
                 <input
                   type="number"
                   min={1}
@@ -116,13 +124,13 @@ export default function SimulateurClient() {
                 />
               </Field>
               <p className="sm:col-span-2 text-sm text-slate-400">
-                Surface calculée :{" "}
+                {t("simulateur.calculatedSurface")}{" "}
                 <strong className="text-white">{nfSurface(lengthM * widthM)} m²</strong>
               </p>
             </div>
           )}
 
-          <Field label="Région (ensoleillement)">
+          <Field label={t("simulateur.regionLabel")}>
             <select
               className="input w-full"
               value={region}
@@ -135,7 +143,7 @@ export default function SimulateurClient() {
               ))}
             </select>
             <p className="mt-1 text-xs text-slate-500">
-              Productivité estimée : {nf(result.yieldKwhPerKwc)} kWh/kWc/an
+              {fmt(t("simulateur.yieldHint"), { yield: nf(result.yieldKwhPerKwc) })}
             </p>
           </Field>
 
@@ -146,34 +154,34 @@ export default function SimulateurClient() {
                 checked={hasConsumption}
                 onChange={(e) => setHasConsumption(e.target.checked)}
               />
-              J&apos;ai une consommation électrique annuelle du site
+              {t("simulateur.hasConsumption")}
             </label>
             {hasConsumption && (
-              <Field label="Consommation annuelle (kWh/an)">
+              <Field label={t("simulateur.consumptionLabel")}>
                 <input
                   type="number"
                   min={0}
                   className="input w-full"
                   value={consumption}
                   onChange={(e) => setConsumption(e.target.value)}
-                  placeholder="Ex. 850000"
+                  placeholder={t("simulateur.consumptionPlaceholder")}
                 />
               </Field>
             )}
             {!hasConsumption && (
               <p className="text-xs text-slate-500">
-                Autoconsommation estimée à {Math.round(DEFAULT_AUTOCONSUMPTION_RATIO * 100)} %
-                (éclairage, bornes, locaux techniques).
+                {fmt(t("simulateur.defaultAutoconsumption"), {
+                  pct: Math.round(DEFAULT_AUTOCONSUMPTION_RATIO * 100),
+                })}
               </p>
             )}
           </div>
         </div>
 
         <div className="card space-y-5 p-6">
-          <h2 className="text-lg font-bold text-white">Résultats de simulation</h2>
+          <h2 className="text-lg font-bold text-white">{t("simulateur.resultsTitle")}</h2>
           <p className="text-xs text-slate-500">
-            Estimations indicatives — ne constituent pas un devis. Tarif électricité retenu :{" "}
-            {ELECTRICITY_PRICE_EUR.toLocaleString("fr-FR")} €/kWh.
+            {fmt(t("simulateur.resultsDisclaimer"), { price: priceLabel })}
           </p>
 
           <SimulatorResultsSummary result={result} />
@@ -187,64 +195,70 @@ export default function SimulateurClient() {
 
           <details className="group rounded-xl border border-white/10 bg-night-900/20">
             <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-slate-300 marker:content-none [&::-webkit-details-marker]:hidden">
-              Voir le détail chiffré
+              {t("simulateur.detailsToggle")}
               <span className="ml-2 text-slate-500 transition group-open:rotate-180">▾</span>
             </summary>
             <div className="border-t border-white/[0.06] px-4 pb-4 pt-3">
               <div className="grid gap-3 sm:grid-cols-2">
                 <Result
-                  label="Surface solaire obligatoire"
+                  label={t("simulateur.detailSolarSurface")}
                   value={`${nfSurface(result.surfaceSolaireM2)} m²`}
-                  sub={`${result.solarRatioLabel} (loi APER)`}
+                  sub={fmt(t("simulateur.detailAperLaw"), { ratio: result.solarRatioLabel })}
                 />
                 <Result
-                  label="Puissance installée estimée"
+                  label={t("simulateur.detailPower")}
                   value={`${nf(result.puissanceKwc)} kWc`}
                 />
                 <Result
-                  label="Production annuelle estimée"
+                  label={t("simulateur.detailProduction")}
                   value={`${nf(result.productionKwhPerYear)} kWh/an`}
-                  sub={`Zone : ${region}`}
+                  sub={fmt(t("simulateur.detailZone"), { region })}
                 />
                 <Result
-                  label="Économies autoconsommation"
-                  value={euros(result.autoconsommationSavingsEur) + "/an"}
-                  sub={`${nf(result.selfConsumedKwh)} kWh autoconsommés`}
+                  label={t("simulateur.detailSavings")}
+                  value={euros(result.autoconsommationSavingsEur) + t("simulateur.perYear")}
+                  sub={fmt(t("simulateur.detailSelfConsumed"), {
+                    kwh: nf(result.selfConsumedKwh),
+                  })}
                 />
                 <Result
-                  label="Revenus revente surplus EDF OA"
-                  value={euros(result.surplusRevenueEur) + "/an"}
-                  sub={`${nf(result.surplusKwh)} kWh × ${(result.edfOaTariff * 100).toFixed(2)} c€`}
+                  label={t("simulateur.detailSurplus")}
+                  value={euros(result.surplusRevenueEur) + t("simulateur.perYear")}
+                  sub={fmt(t("simulateur.detailSurplusSub"), {
+                    kwh: nf(result.surplusKwh),
+                    tariff: (result.edfOaTariff * 100).toFixed(2),
+                  })}
                 />
                 <Result
-                  label="Revenus injection totale EDF OA"
-                  value={euros(result.edfOaFullInjectionEur) + "/an"}
-                  sub="Scénario vente intégrale (indicatif)"
+                  label={t("simulateur.detailFullInjection")}
+                  value={euros(result.edfOaFullInjectionEur) + t("simulateur.perYear")}
+                  sub={t("simulateur.detailFullInjectionSub")}
                 />
                 {result.aperEligible && (
                   <Result
-                    label="Amende évitée"
-                    value={formatAperAnnualFine(result.surfaceM2) + "/an"}
+                    label={t("simulateur.detailFineAvoided")}
+                    value={formatAperAnnualFine(result.surfaceM2) + t("simulateur.perYear")}
                     highlight
                   />
                 )}
                 <Result
-                  label="Coût d'installation estimé"
+                  label={t("simulateur.detailInstallCost")}
                   value={eurosCompact(result.installationCostEur)}
-                  sub={`${nf(COUT_KWC)} €/kWc marché`}
+                  sub={fmt(t("simulateur.detailInstallSub"), { cost: nf(COUT_KWC) })}
                 />
               </div>
 
               <div className="mt-4 rounded-xl border border-solar/30 bg-solar/10 px-4 py-3 text-sm text-slate-200">
                 <p>
-                  <strong className="text-solar">ROI injection totale :</strong>{" "}
+                  <strong className="text-solar">{t("simulateur.roiFullInjection")}</strong>{" "}
                   {result.roiYearsFullInjection != null
-                    ? `${result.roiYearsFullInjection} ans`
+                    ? fmt(t("simulateur.roiYears"), { years: result.roiYearsFullInjection })
                     : "—"}
                 </p>
                 <p className="mt-2 text-xs text-slate-400">
-                  Bénéfice annuel autoconsommation (économies + surplus) :{" "}
-                  {euros(result.autoconsommationTotalEur)}/an
+                  {t("simulateur.annualBenefitMix")}{" "}
+                  {euros(result.autoconsommationTotalEur)}
+                  {t("simulateur.perYear")}
                 </p>
               </div>
             </div>
@@ -252,7 +266,7 @@ export default function SimulateurClient() {
 
           {showDepositCta ? (
             <Link href={ctaHref} className="btn-mint inline-flex w-full justify-center sm:w-auto">
-              Déposer un projet
+              {t("simulateur.depositProject")}
             </Link>
           ) : null}
           <div className="mt-4">
@@ -263,21 +277,14 @@ export default function SimulateurClient() {
 
       <aside className="space-y-4">
         <div className="card p-5 text-sm text-slate-300">
-          <p className="font-semibold text-white">Pour les gestionnaires de parking</p>
-          <p className="mt-2 leading-relaxed">
-            Voyez ce que vous pouvez gagner (économies, revenus solaires, amende évitée) avant de
-            consulter des installateurs qualifiés via notre formulaire (acteurs privés, hors marchés
-            publics).
-          </p>
+          <p className="font-semibold text-white">{t("simulateur.asideTitle")}</p>
+          <p className="mt-2 leading-relaxed">{t("simulateur.asideLead")}</p>
         </div>
         <div className="card p-5 text-xs leading-relaxed text-slate-500">
-          <p>
-            Tarifs EDF OA : valeurs indicatives arrêté S21 (métropole). Les projets &gt; 100 kWc
-            peuvent relever d&apos;appels d&apos;offres CRE depuis sept. 2025.
-          </p>
+          <p>{t("simulateur.asideEdfNote")}</p>
           <p className="mt-2">
             <Link href="/verifier" className="text-solar hover:underline">
-              Vérifier l&apos;éligibilité APER →
+              {t("simulateur.checkEligibility")}
             </Link>
           </p>
         </div>
@@ -285,8 +292,6 @@ export default function SimulateurClient() {
     </div>
   );
 }
-
-const COUT_KWC = 1200;
 
 function ModeBtn({
   active,
@@ -337,9 +342,7 @@ function Result({
       }`}
     >
       <p className="text-xs text-slate-500">{label}</p>
-      <p className={`mt-1 text-lg font-bold ${highlight ? "text-solar" : "text-white"}`}>
-        {value}
-      </p>
+      <p className={`mt-1 text-lg font-bold ${highlight ? "text-solar" : "text-white"}`}>{value}</p>
       {sub && <p className="mt-0.5 text-xs text-slate-500">{sub}</p>}
     </div>
   );

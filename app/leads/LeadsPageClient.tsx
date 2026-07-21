@@ -18,6 +18,7 @@ import FranceMap from "@/components/FranceMap";
 import LeadsRecapTable from "@/components/LeadsRecapTable";
 import CatalogViewToggle, { type CatalogView } from "@/components/CatalogViewToggle";
 import { useTranslations } from "@/components/LocaleProvider";
+import { fmt } from "@/lib/i18n/format";
 
 function LeadsCatalog() {
   const router = useRouter();
@@ -151,8 +152,7 @@ function LeadsCatalog() {
                     {nf(total)} {t("leads.opportunities")}
                     {params.get("flag") === "URGENCE_ABSOLUE" ? (
                       <span className="mt-1 block text-xs text-slate-500">
-                        Parkings ≥ 10 000 m² · photo aérienne analysée · exclus si couverture &gt;{" "}
-                        {VISION_COVERAGE_EQUIPE} %
+                        {fmt(t("leads.urgenceFilterHint"), { pct: VISION_COVERAGE_EQUIPE })}
                       </span>
                     ) : null}
                   </>

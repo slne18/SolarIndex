@@ -31,10 +31,13 @@ export function isLeadPremium(
 }
 
 export type ConfidenceFactor = {
+  id: ConfidenceFactorId;
   ok: boolean;
   label: string;
   detail: string;
 };
+
+export type ConfidenceFactorId = "solar" | "surfacing" | "cadastral" | "regulatory" | "registry";
 
 const PHOTO_RESERVEE_URGENCES =
   " Photo aérienne non analysée (réservée aux urgences).";
@@ -116,11 +119,13 @@ export function confidenceFactors(
 
   return [
     {
+      id: "solar",
       ok: equipementOk,
       label: "Équipement solaire",
       detail: equipementSolaireDetail(lead, isUrgence, overlap, visionPct, visionEquipped),
     },
     {
+      id: "surfacing",
       ok: !!lead.surface_tag_present,
       label: "Revêtement du parking",
       detail: lead.surface_tag_present
@@ -128,6 +133,7 @@ export function confidenceFactors(
         : "La surface parking dont la taille a été calculée peut inclure des zones annexes ou être moins fiable.",
     },
     {
+      id: "cadastral",
       ok: src === "cadastre",
       label: "Surface cadastrale",
       detail:
@@ -140,6 +146,7 @@ export function confidenceFactors(
             : "Pas de surface cadastrale utilisable : seule la mesure sur la carte OpenStreetMap fait foi.",
     },
     {
+      id: "regulatory",
       ok: !lead.derogation_pente && !lead.derogation_abf,
       label: "Réglementaire",
       detail:
@@ -148,6 +155,7 @@ export function confidenceFactors(
           : "Pas d'alerte pente/ABF majeure dans nos sources.",
     },
     {
+      id: "registry",
       ok: registryCount === 0,
       label: "Registre PV communal (ODRÉ)",
       detail:

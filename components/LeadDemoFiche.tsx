@@ -1,5 +1,10 @@
+"use client";
+
 import { eurosCompact, nf } from "@/lib/format";
 import { DEMO_FICHE } from "@/lib/demo-fiche";
+import { fmt } from "@/lib/i18n/format";
+import { scoreLevelKey } from "@/lib/i18n/leads-labels";
+import { useTranslations } from "@/components/LocaleProvider";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import LeadTierBadge from "@/components/LeadTierBadge";
 import LeadCompletenessBadge, { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
@@ -53,31 +58,22 @@ function DemoFactorIcon({ kind }: { kind: "ok" | "info" }) {
   );
 }
 
-const DEMO_CONFIDENCE = [
-  {
-    kind: "ok" as const,
-    label: "Revêtement du parking",
-    detail: "Asphalte ou béton confirmé sur OpenStreetMap.",
-  },
-  {
-    kind: "ok" as const,
-    label: "Surface cadastrale",
-    detail: "Surface officielle IGN retenue pour le calcul APER.",
-  },
-  {
-    kind: "info" as const,
-    label: "Registre PV communal (ODRÉ)",
-    detail: DEMO_FICHE.odre_communal,
-  },
-];
-
 export default function LeadDemoFiche() {
+  const t = useTranslations();
   const dirigeantExploitant = `${DEMO_FICHE.dirigeant_exploitant} · ${DEMO_FICHE.dirigeant_exploitant_qualite}`;
   const dirigeantProprio = `${DEMO_FICHE.dirigeant_proprietaire} · ${DEMO_FICHE.dirigeant_proprietaire_qualite}`;
+  const score = DEMO_FICHE.score_confiance.toFixed(2);
+  const level = t(scoreLevelKey(DEMO_FICHE.score_confiance));
+
+  const demoFactors = [
+    { kind: "ok" as const, label: t("leads.demo.factor1.label"), detail: t("leads.demo.factor1.detail") },
+    { kind: "ok" as const, label: t("leads.demo.factor2.label"), detail: t("leads.demo.factor2.detail") },
+    { kind: "info" as const, label: t("leads.demo.factor3.label"), detail: DEMO_FICHE.odre_communal },
+  ];
 
   return (
     <section id="demo" className="py-12">
-      <SectionEyebrow>Exemple de lead · Fiche démo</SectionEyebrow>
+      <SectionEyebrow>{t("leads.demo.eyebrow")}</SectionEyebrow>
       <div className="mt-8 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <div>
           <div className="card overflow-hidden">
@@ -87,35 +83,38 @@ export default function LeadDemoFiche() {
               <LeadDirigeantBadge />
               <LeadCompletenessBadge pct={DEMO_FICHE.completude_pct} />
               <span className="text-xs text-slate-500">
-                Confiance {DEMO_FICHE.score_confiance.toFixed(2)} · Élevé
+                {fmt(t("leads.demo.confidence"), { score, level })}
               </span>
             </div>
 
             <div className="px-6 py-5">
-              <p className="text-sm text-slate-500">
-                Aperçu d&apos;une fiche réelle après achat — toutes les valeurs ci-dessous sont
-                fictives.
-              </p>
+              <p className="text-sm text-slate-500">{t("leads.demo.previewLead")}</p>
               <h3 className="mt-3 text-2xl font-bold text-white">{DEMO_FICHE.exploitant}</h3>
-              <p className="mt-1 text-sm text-slate-500">Site OSM : {DEMO_FICHE.nom_osm}</p>
+              <p className="mt-1 text-sm text-slate-500">
+                {t("leads.demo.siteOsm")} {DEMO_FICHE.nom_osm}
+              </p>
               <p className="mt-1 text-sm text-slate-500">
                 {DEMO_FICHE.ville} · {DEMO_FICHE.region} ({DEMO_FICHE.departement})
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-px bg-white/[0.04] sm:grid-cols-3 lg:grid-cols-5">
-              <Fact label="Surface parking" value={`${nf(DEMO_FICHE.surface_m2)} m²`} />
-              <Fact label="Surface solaire" value={`${nf(DEMO_FICHE.surface_solaire_m2)} m²`} />
-              <Fact label="Puissance" value={`${nf(DEMO_FICHE.puissance_kwc)} kWc`} />
-              <Fact label="Recouvrement" value={DEMO_FICHE.recouvrement} />
-              <Fact label="Valeur chantier" value={eurosCompact(DEMO_FICHE.valeur_chantier_eur)} highlight />
+              <Fact label={t("leads.demo.factSurface")} value={`${nf(DEMO_FICHE.surface_m2)} m²`} />
+              <Fact label={t("leads.demo.factSolar")} value={`${nf(DEMO_FICHE.surface_solaire_m2)} m²`} />
+              <Fact label={t("leads.demo.factPower")} value={`${nf(DEMO_FICHE.puissance_kwc)} kWc`} />
+              <Fact label={t("leads.demo.factCoverage")} value={DEMO_FICHE.recouvrement} />
+              <Fact
+                label={t("leads.demo.factProjectValue")}
+                value={eurosCompact(DEMO_FICHE.valeur_chantier_eur)}
+                highlight
+              />
             </div>
           </div>
 
           <div className="card mt-6 p-6">
-            <div className="font-semibold text-slate-200">Indice de confiance (extrait)</div>
+            <div className="font-semibold text-slate-200">{t("leads.demo.confidenceTitle")}</div>
             <ul className="mt-4 space-y-3">
-              {DEMO_CONFIDENCE.map((f) => (
+              {demoFactors.map((f) => (
                 <li key={f.label} className="flex gap-3 text-sm">
                   <DemoFactorIcon kind={f.kind} />
                   <div>
@@ -130,29 +129,23 @@ export default function LeadDemoFiche() {
 
         <aside>
           <div className="card p-6">
-            <h3 className="text-lg font-semibold text-white">Ce que vous recevez à l&apos;achat</h3>
-            <p className="mt-2 text-sm text-slate-500">
-              Exemple des champs débloqués sur une vraie fiche — identité entreprise, parcelle et
-              GPS (données fictives).
-            </p>
+            <h3 className="text-lg font-semibold text-white">{t("leads.demo.purchaseTitle")}</h3>
+            <p className="mt-2 text-sm text-slate-500">{t("leads.demo.purchaseLead")}</p>
             <div className="mt-4">
-              <DemoRow label="Exploitant — raison sociale" value={DEMO_FICHE.exploitant} />
-              <DemoRow label="Exploitant — SIREN" value={DEMO_FICHE.exploitant_siren} />
-              <DemoRow label="Dirigeant exploitant" value={dirigeantExploitant} />
-              <DemoRow label="Propriétaire des murs" value={DEMO_FICHE.proprietaire} />
-              <DemoRow label="Dirigeant propriétaire" value={dirigeantProprio} />
-              <DemoRow label="Adresse exacte" value={DEMO_FICHE.adresse} />
-              <DemoRow label="Parcelle cadastrale" value={DEMO_FICHE.id_parcelle} />
-              <DemoRow label="Coordonnées GPS" value={DEMO_FICHE.gps} />
+              <DemoRow label={t("leads.demo.rowOperator")} value={DEMO_FICHE.exploitant} />
+              <DemoRow label={t("leads.demo.rowSiren")} value={DEMO_FICHE.exploitant_siren} />
+              <DemoRow label={t("leads.demo.rowDirectorOp")} value={dirigeantExploitant} />
+              <DemoRow label={t("leads.demo.rowOwner")} value={DEMO_FICHE.proprietaire} />
+              <DemoRow label={t("leads.demo.rowDirectorOwner")} value={dirigeantProprio} />
+              <DemoRow label={t("leads.demo.rowAddress")} value={DEMO_FICHE.adresse} />
+              <DemoRow label={t("leads.demo.rowParcel")} value={DEMO_FICHE.id_parcelle} />
+              <DemoRow label={t("leads.demo.rowGps")} value={DEMO_FICHE.gps} />
             </div>
           </div>
         </aside>
       </div>
 
-      <p className="mt-4 text-sm leading-relaxed text-slate-500">
-        Fiche illustrative — données entièrement fictives. Chaque lead livré cible une entreprise
-        (personne morale), jamais un particulier.
-      </p>
+      <p className="mt-4 text-sm leading-relaxed text-slate-500">{t("leads.demo.footer")}</p>
     </section>
   );
 }

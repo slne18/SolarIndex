@@ -2,9 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { eurosCompact, nf, nfSurface } from "@/lib/format";
+import { fmt } from "@/lib/i18n/format";
+import { useTranslations } from "@/components/LocaleProvider";
 import type { LeadsRecapResponse } from "@/lib/leads-recap-stats";
 
 export default function LeadsRecapTable() {
+  const t = useTranslations();
   const [data, setData] = useState<LeadsRecapResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -27,7 +30,7 @@ export default function LeadsRecapTable() {
   }, []);
 
   if (loading) {
-    return <p className="mt-4 text-sm text-slate-500">Chargement du récapitulatif…</p>;
+    return <p className="mt-4 text-sm text-slate-500">{t("leads.recap.loading")}</p>;
   }
 
   if (error || !data) {
@@ -40,16 +43,14 @@ export default function LeadsRecapTable() {
     <div className="mt-6 space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-slate-800">Récapitulatif par département</h3>
-          <p className="mt-1 max-w-3xl text-xs text-slate-500">
-            Aligné sur le catalogue vendable · « Considéré comme équipé » = recouvrement OSM ≥ 50 %,
-            grand parking avec photo &gt; 45 %, parkings sans SIREN ou parcelle cadastrale identifiable,
-            ou en zone grise (1 500–1 600 m²).
-          </p>
+          <h3 className="text-sm font-semibold text-slate-800">{t("leads.recap.title")}</h3>
+          <p className="mt-1 max-w-3xl text-xs text-slate-500">{t("leads.recap.lead")}</p>
         </div>
         <p className="text-xs text-slate-500">
-          {nf(totals.catalogCount)} catalogue · {nf(totals.considereCommeEquipeCount)} considérés
-          équipés
+          {fmt(t("leads.recap.totals"), {
+            catalog: nf(totals.catalogCount),
+            equipped: nf(totals.considereCommeEquipeCount),
+          })}
         </p>
       </div>
 
@@ -57,11 +58,11 @@ export default function LeadsRecapTable() {
         <table className="min-w-full text-left text-sm">
           <thead className="sticky top-0 z-10 border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500 shadow-[0_1px_0_0_rgb(226_232_240)]">
             <tr>
-              <th className="px-4 py-3">Dép.</th>
-              <th className="px-4 py-3">Catalogue</th>
-              <th className="px-4 py-3">Considéré comme équipé</th>
-              <th className="px-4 py-3">Surface catalogue (m²)</th>
-              <th className="px-4 py-3">Pipeline catalogue</th>
+              <th className="px-4 py-3">{t("leads.recap.colDept")}</th>
+              <th className="px-4 py-3">{t("leads.recap.colCatalog")}</th>
+              <th className="px-4 py-3">{t("leads.recap.colEquipped")}</th>
+              <th className="px-4 py-3">{t("leads.recap.colSurface")}</th>
+              <th className="px-4 py-3">{t("leads.recap.colPipeline")}</th>
             </tr>
           </thead>
           <tbody>
@@ -77,7 +78,7 @@ export default function LeadsRecapTable() {
           </tbody>
           <tfoot className="sticky bottom-0 z-10 border-t border-slate-200 bg-slate-50 text-sm font-semibold shadow-[0_-1px_0_0_rgb(226_232_240)]">
             <tr>
-              <td className="px-4 py-2">Total</td>
+              <td className="px-4 py-2">{t("leads.recap.total")}</td>
               <td className="px-4 py-2">{nf(totals.catalogCount)}</td>
               <td className="px-4 py-2">{nf(totals.considereCommeEquipeCount)}</td>
               <td className="px-4 py-2">{nfSurface(totals.surfaceM2)}</td>

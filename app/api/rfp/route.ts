@@ -1,5 +1,7 @@
 import { randomBytes } from "crypto";
 import { getUserIdFromRequest } from "@/lib/auth";
+import { getUserProfile } from "@/lib/profile";
+import { canDepositProject } from "@/lib/profile-onboarding";
 import { queryRfpSubmissions, RFP_PAGE_SIZE, createRfpSubmission } from "@/lib/rfp-db";
 import { inferGeoFromAddress, toPublicRfp, type RfpStatut } from "@/lib/rfp";
 import {
@@ -131,6 +133,17 @@ export async function POST(req: Request) {
   const userId = await getUserIdFromRequest(req);
   if (!userId) {
     return Response.json({ error: "Compte requis pour soumettre un appel d'offres." }, { status: 401, headers: NO_STORE });
+  }
+
+  const profile = await getUserProfile(userId);
+  if (!profile || !canDepositProject(profile.user_type)) {
+    return Response.json(
+      {
+        error:
+          "Le dépôt de projet est réservé aux propriétaires et gérants de parking. En tant qu'installateur, consultez le catalogue d'appels d'offres.",
+      },
+      { status: 403, headers: NO_STORE },
+    );
   }
 
   let body: SubmitBody;

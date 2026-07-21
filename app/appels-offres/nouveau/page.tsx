@@ -4,6 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import RfpLegalNotice from "@/components/RfpLegalNotice";
+import AddressAutocomplete from "@/components/AddressAutocomplete";
 import { getAccessToken } from "@/lib/supabaseBrowser";
 import {
   RFP_DEPOSANT_CHECKLIST,
@@ -272,14 +273,13 @@ function NouveauRfpForm() {
           </Field>
         </div>
         <Field label="Adresse du parking" required>
-          <input
+          <AddressAutocomplete
             name="adresse"
             required
             disabled={blockedPublic}
-            className="input"
-            placeholder="Adresse complète"
             value={adresse}
-            onChange={(e) => setAdresse(e.target.value)}
+            onChange={setAdresse}
+            placeholder="Adresse complète"
           />
         </Field>
         <Field label="Surface estimée (m²)">
@@ -567,6 +567,7 @@ function Field({
 
 function NouveauRfpPageContent() {
   const [ready, setReady] = useState(false);
+  const [blockedInstaller, setBlockedInstaller] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -575,12 +576,38 @@ function NouveauRfpPageContent() {
         window.location.href = "/login?mode=signup&next=/appels-offres/nouveau";
         return;
       }
+      const res = await fetch("/api/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!data.profile_completed) {
+        window.location.href = `/onboarding?next=${encodeURIComponent("/appels-offres/nouveau")}`;
+        return;
+      }
+      if (data.profile?.user_type === "installateur") {
+        setBlockedInstaller(true);
+      }
       setReady(true);
     })();
   }, []);
 
   if (!ready) {
     return <p className="mt-8 text-slate-400">Vérification du compte…</p>;
+  }
+
+  if (blockedInstaller) {
+    return (
+      <div className="card mt-8 p-8 text-center">
+        <h2 className="text-lg font-semibold text-slate-900">Réservé aux propriétaires et gérants</h2>
+        <p className="mt-3 text-sm text-slate-600">
+          En tant qu&apos;installateur, vous ne pouvez pas déposer de projet. Consultez le catalogue
+          d&apos;appels d&apos;offres pour contacter des gérants.
+        </p>
+        <Link href="/appels-offres" className="btn-solar mt-6 inline-flex !py-2">
+          Voir les appels d&apos;offres
+        </Link>
+      </div>
+    );
   }
 
   return (

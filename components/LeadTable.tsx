@@ -1,12 +1,18 @@
+"use client";
+
 import Link from "next/link";
 import type { PublicLead } from "@/lib/types";
-import { eurosCompact, nf, scoreLabel } from "@/lib/format";
+import { eurosCompact, nf } from "@/lib/format";
+import { fmt } from "@/lib/i18n/format";
+import { scoreLevelKey } from "@/lib/i18n/leads-labels";
+import { useTranslations } from "@/components/LocaleProvider";
 import LeadAvailabilityBadge from "@/components/LeadAvailabilityBadge";
 import LeadTierBadge from "@/components/LeadTierBadge";
 import LeadCompletenessBadge, { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
 import { isLeadSlotOpen } from "@/lib/lead-slots";
 
-function FlagBadge({ flag }: { flag: string }) {
+export function FlagBadge({ flag }: { flag: string }) {
+  const t = useTranslations();
   const urgence = flag === "URGENCE_ABSOLUE";
   return (
     <span
@@ -14,7 +20,7 @@ function FlagBadge({ flag }: { flag: string }) {
         urgence ? "bg-red-500/15 text-red-300" : "bg-amber-500/15 text-amber-300"
       }`}
     >
-      {urgence ? "🔴 Urgence" : "🟡 À équiper"}
+      {urgence ? `🔴 ${t("leads.flag.urgence")}` : `🟡 ${t("leads.flag.toEquip")}`}
     </span>
   );
 }
@@ -28,10 +34,12 @@ function StatutCell({ lead }: { lead: PublicLead }) {
 }
 
 export default function LeadTable({ leads }: { leads: PublicLead[] }) {
+  const t = useTranslations();
+
   if (leads.length === 0) {
     return (
       <div className="card p-10 text-center text-slate-400">
-        Aucun lead ne correspond à ces filtres.
+        {t("leads.table.noResults")}
       </div>
     );
   }
@@ -42,17 +50,17 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
         <table className="w-full min-w-[820px] text-left text-sm">
           <thead className="catalog-thead border-b text-xs uppercase tracking-wide">
             <tr>
-              <th className="px-4 py-3">Flag</th>
-              <th className="px-4 py-3">Ville (Dépt)</th>
-              <th className="px-4 py-3">Tier</th>
-              <th className="px-4 py-3">Signaux</th>
-              <th className="px-4 py-3 text-right">Surface</th>
-              <th className="px-4 py-3 text-right">kWc</th>
-              <th className="px-4 py-3 text-right">Valeur chantier</th>
-              <th className="px-4 py-3">NAF</th>
-              <th className="px-4 py-3">Score</th>
-              <th className="px-4 py-3">Statut</th>
-              <th className="px-4 py-3 text-right">Action</th>
+              <th className="px-4 py-3">{t("leads.table.flag")}</th>
+              <th className="px-4 py-3">{t("leads.table.city")}</th>
+              <th className="px-4 py-3">{t("leads.table.tier")}</th>
+              <th className="px-4 py-3">{t("leads.table.signals")}</th>
+              <th className="px-4 py-3 text-right">{t("leads.table.surface")}</th>
+              <th className="px-4 py-3 text-right">{t("leads.table.kwc")}</th>
+              <th className="px-4 py-3 text-right">{t("leads.table.projectValue")}</th>
+              <th className="px-4 py-3">{t("leads.table.naf")}</th>
+              <th className="px-4 py-3">{t("leads.table.score")}</th>
+              <th className="px-4 py-3">{t("leads.table.status")}</th>
+              <th className="px-4 py-3 text-right">{t("leads.table.action")}</th>
             </tr>
           </thead>
           <tbody className="catalog-tbody divide-y">
@@ -82,8 +90,8 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
                 <td className="px-4 py-3 text-slate-300">{lead.code_naf || "—"}</td>
                 <td className="px-4 py-3">
                   <span className="text-slate-300">{(lead.score_confiance ?? 0).toFixed(2)}</span>
-                  <span className="ml-1 text-xs text-slate-500" title="Qualité des sources Open Data — voir fiche lead">
-                    {scoreLabel(lead.score_confiance)}
+                  <span className="ml-1 text-xs text-slate-500" title={t("leads.table.scoreTitle")}>
+                    {t(scoreLevelKey(lead.score_confiance))}
                   </span>
                 </td>
                 <td className="px-4 py-3"><StatutCell lead={lead} /></td>
@@ -92,7 +100,7 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
                     href={`/leads/${lead.id}`}
                     className="rounded-lg border border-white/15 px-3 py-1.5 text-xs font-semibold text-slate-100 hover:bg-white/5"
                   >
-                    Voir — {lead.prix_lead} €
+                    {fmt(t("leads.table.view"), { price: lead.prix_lead })}
                   </Link>
                 </td>
               </tr>
@@ -103,5 +111,3 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
     </div>
   );
 }
-
-export { FlagBadge };

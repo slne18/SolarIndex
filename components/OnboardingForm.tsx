@@ -12,6 +12,7 @@ import {
 import { writeStoredPersona } from "@/lib/persona";
 import { useTranslations } from "@/components/LocaleProvider";
 import EntrepriseAutocomplete from "@/components/EntrepriseAutocomplete";
+import AddressAutocomplete from "@/components/AddressAutocomplete";
 import type { MessageKey } from "@/lib/i18n";
 
 const USER_TYPES: UserType[] = ["installateur", "proprietaire", "gerant_parking"];
@@ -391,11 +392,10 @@ export default function OnboardingForm() {
                 {needsParkingFields ? (
                   <>
                     <Field label={t("onboarding.parkingAddress")} required>
-                      <input
+                      <AddressAutocomplete
                         required
                         value={adresseParking}
-                        onChange={(e) => setAdresseParking(e.target.value)}
-                        className="input"
+                        onChange={setAdresseParking}
                       />
                     </Field>
 

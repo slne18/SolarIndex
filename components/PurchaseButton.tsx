@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { getAccessToken } from "@/lib/supabaseBrowser";
+import { fmt } from "@/lib/i18n/format";
+import { useTranslations } from "@/components/LocaleProvider";
 import { useSolarAnalytics, trackPurchaseStarted } from "@/lib/analytics";
 import type { LeadTier } from "@/lib/types";
 
@@ -28,6 +30,7 @@ export default function PurchaseButton({
 }: PurchaseButtonProps) {
   const router = useRouter();
   const plausible = useSolarAnalytics();
+  const t = useTranslations();
 
   async function onClick() {
     trackPurchaseStarted(plausible, { tier, departement, prix });
@@ -41,7 +44,7 @@ export default function PurchaseButton({
 
   if (disabled) {
     const label =
-      disabledReason === "owned" ? "Lead déjà acheté" : "Indisponible";
+      disabledReason === "owned" ? t("leads.purchase.owned") : t("leads.purchase.unavailable");
     return (
       <button disabled className={`btn cursor-not-allowed bg-white/10 text-slate-400 ${full ? "w-full" : ""}`}>
         {label}
@@ -51,7 +54,7 @@ export default function PurchaseButton({
 
   return (
     <button onClick={onClick} className={`btn-solar ${full ? "w-full" : ""}`}>
-      {`Acheter ce lead — ${prix} €`}
+      {fmt(t("leads.purchase.buy"), { price: prix })}
     </button>
   );
 }

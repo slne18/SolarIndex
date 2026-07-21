@@ -4,9 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import RegulatoryCountdown from "@/components/RegulatoryCountdown";
 import { usePersona } from "@/components/PersonaProvider";
+import { useTranslations } from "@/components/LocaleProvider";
 import { showOwnerProjectDeposit } from "@/lib/persona";
 import { nf, nfSurface } from "@/lib/format";
+import { fmt } from "@/lib/i18n/format";
 import { PENTE_DEROGATION_PCT } from "@/lib/verifier/derogations";
+import type { AperEligibilityStatus } from "@/lib/aper-deadlines";
 import type { VerifierResult } from "@/lib/verifier/run";
 
 type BanFeature = {
@@ -17,7 +20,23 @@ type BanFeature = {
   geometry: { coordinates: [number, number] };
 };
 
+function useEligibilityLabel() {
+  const t = useTranslations();
+  return (status: AperEligibilityStatus) => {
+    switch (status) {
+      case "concerned":
+        return t("verifier.eligibility.concerned");
+      case "below_threshold":
+        return t("verifier.eligibility.below");
+      case "manual_required":
+        return t("verifier.eligibility.manual");
+    }
+  };
+}
+
 export default function VerifierClient() {
+  const t = useTranslations();
+  const eligibilityLabel = useEligibilityLabel();
   const { persona, ready } = usePersona();
   const showDepositCta = !ready || showOwnerProjectDeposit(persona);
   const [query, setQuery] = useState("");
@@ -64,17 +83,17 @@ export default function VerifierClient() {
         });
         const data = await res.json();
         if (!res.ok) {
-          setError(data.error || "Erreur de vérification.");
+          setError(data.error || t("verifier.verifyError"));
           return;
         }
         setResult(data as VerifierResult);
       } catch {
-        setError("Erreur réseau.");
+        setError(t("onboarding.networkError"));
       } finally {
         setLoading(false);
       }
     },
-    [selected],
+    [selected, t],
   );
 
   function pickSuggestion(f: BanFeature) {
@@ -87,7 +106,7 @@ export default function VerifierClient() {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!selected) {
-      setError("Sélectionnez une adresse dans la liste.");
+      setError(t("verifier.selectAddress"));
       return;
     }
     void runCheck();
@@ -97,7 +116,7 @@ export default function VerifierClient() {
     e.preventDefault();
     const val = Number(manualSurface.replace(/\s/g, ""));
     if (!Number.isFinite(val) || val <= 0) {
-      setError("Indiquez une surface valide en m².");
+      setError(t("verifier.invalidSurface"));
       return;
     }
     void runCheck({ manualSurfaceM2: val });
@@ -113,13 +132,18 @@ export default function VerifierClient() {
     return `/appels-offres/nouveau?${p.toString()}`;
   }
 
+  function surfaceSourceLabel(source: VerifierResult["surfaceSource"]): string {
+    if (source === "osm_parking") return t("verifier.sourceOsm");
+    if (source === "cadastre_parcelle") return t("verifier.sourceCadastre");
+    if (source === "manual") return t("verifier.sourceManual");
+    return "—";
+  }
+
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
       <div>
         <form onSubmit={onSubmit} className="card p-6">
-          <label className="block text-sm font-medium text-slate-200">
-            Adresse du parking
-          </label>
+          <label className="block text-sm font-medium text-slate-200">{t("verifier.addressLabel")}</label>
           <div className="relative mt-2">
             <input
               className="input w-full"
@@ -129,7 +153,7 @@ export default function VerifierClient() {
                 setSelected(null);
                 setResult(null);
               }}
-              placeholder="12 avenue de la République, Toulouse"
+              placeholder={t("verifier.addressPlaceholder")}
               autoComplete="off"
             />
             {suggestions.length > 0 && (
@@ -149,13 +173,13 @@ export default function VerifierClient() {
             )}
           </div>
           <button type="submit" className="btn-solar mt-4 w-full sm:w-auto" disabled={loading}>
-            {loading ? "Recherche de votre parking…" : "Vérifier l'éligibilité"}
+            {loading ? t("verifier.searching") : t("verifier.submit")}
           </button>
         </form>
 
         {loading && (
           <p className="mt-4 text-sm text-slate-400" role="status">
-            Recherche de votre parking… Analyse OpenStreetMap et cadastre (2 à 8 s).
+            {t("verifier.loadingStatus")}
           </p>
         )}
 
@@ -167,10 +191,7 @@ export default function VerifierClient() {
 
         {result?.needsManualSurface && !result.surfaceM2 && (
           <form onSubmit={onManualSubmit} className="card mt-6 space-y-4 p-6">
-            <p className="text-sm text-slate-300">
-              Aucun parking cartographié ni parcelle cadastrale trouvée à cette adresse.
-              Indiquez la surface estimée du parking pour poursuivre l&apos;analyse.
-            </p>
+            <p className="text-sm text-slate-300">{t("verifier.manualLead")}</p>
             <input
               className="input"
               type="number"
@@ -178,11 +199,11 @@ export default function VerifierClient() {
               step={1}
               value={manualSurface}
               onChange={(e) => setManualSurface(e.target.value)}
-              placeholder="Surface en m²"
+              placeholder={t("verifier.surfacePlaceholder")}
               required
             />
             <button type="submit" className="btn-solar" disabled={loading}>
-              Analyser avec cette surface
+              {t("verifier.analyzeManual")}
             </button>
           </form>
         )}
@@ -190,22 +211,16 @@ export default function VerifierClient() {
         {result && result.surfaceM2 != null && (
           <div className="card mt-6 space-y-5 p-6">
             <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500">Adresse</p>
+              <p className="text-xs uppercase tracking-wide text-slate-500">{t("verifier.resultAddress")}</p>
               <p className="mt-1 font-medium text-white">{result.label}</p>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <Stat label="Surface détectée" value={`${nfSurface(result.surfaceM2)} m²`} />
               <Stat
-                label="Source"
-                value={
-                  result.surfaceSource === "osm_parking"
-                    ? "OpenStreetMap (parking)"
-                    : result.surfaceSource === "cadastre_parcelle"
-                      ? "Cadastre (indicatif)"
-                      : "Saisie manuelle"
-                }
+                label={t("verifier.surfaceDetected")}
+                value={`${nfSurface(result.surfaceM2)} m²`}
               />
+              <Stat label={t("verifier.source")} value={surfaceSourceLabel(result.surfaceSource)} />
             </div>
 
             {result.surfaceNote && (
@@ -219,20 +234,23 @@ export default function VerifierClient() {
                   : "border-white/10 bg-white/5 text-slate-200"
               }`}
             >
-              <p className="font-semibold">{result.eligibilityLabel}</p>
+              <p className="font-semibold">{eligibilityLabel(result.eligibility)}</p>
             </div>
 
             {result.deadline && (
               <p className="text-sm text-slate-300">
-                Échéance applicable : obligation {result.deadline.ratio} au{" "}
-                <strong className="text-white">{result.deadline.date}</strong>
+                {fmt(t("verifier.deadlineApplicable"), {
+                  ratio: result.deadline.ratio,
+                  date: result.deadline.date,
+                })}
                 {result.deadline.note ? ` — ${result.deadline.note}` : null}
               </p>
             )}
 
             {result.fineLabel && (
               <p className="text-sm text-slate-300">
-                Amende potentielle : <strong className="text-white">{result.fineLabel}</strong>
+                {t("verifier.potentialFine")}{" "}
+                <strong className="text-white">{result.fineLabel}</strong>
               </p>
             )}
 
@@ -240,7 +258,7 @@ export default function VerifierClient() {
 
             {showDepositCta ? (
               <Link href={rfpHref()} className="btn-mint inline-flex w-full justify-center sm:w-auto">
-                Recevoir des devis gratuits
+                {t("verifier.getQuotes")}
               </Link>
             ) : null}
           </div>
@@ -250,10 +268,7 @@ export default function VerifierClient() {
       <aside className="space-y-4">
         <RegulatoryCountdown variant="full" wave="large" theme="dark" />
         <RegulatoryCountdown variant="full" wave="small" theme="dark" />
-        <p className="text-xs leading-relaxed text-slate-500">
-          Outil indicatif basé sur OpenStreetMap, le cadastre IGN et les données
-          d&apos;altimétrie. Ne remplace pas une étude réglementaire officielle.
-        </p>
+        <p className="text-xs leading-relaxed text-slate-500">{t("verifier.disclaimer")}</p>
       </aside>
     </div>
   );
@@ -269,36 +284,29 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 function DerogationBlock({ result }: { result: VerifierResult }) {
+  const t = useTranslations();
   const { derogations } = result;
+
   return (
     <div className="space-y-3 border-t border-white/10 pt-4">
-      <p className="text-sm font-semibold text-slate-200">Dérogations potentielles</p>
+      <p className="text-sm font-semibold text-slate-200">{t("verifier.derogTitle")}</p>
 
       {derogations.derogationPente && derogations.pentePct != null && (
         <p className="text-sm text-amber-100">
-          ⚠️ Pente du terrain estimée à {nf(derogations.pentePct)} % — une dérogation à
-          l&apos;obligation peut être envisageable (art. R111-19-4). Vérification recommandée
-          auprès de votre mairie.
+          ⚠️ {fmt(t("verifier.derogPente"), { pct: nf(derogations.pentePct) })}
         </p>
       )}
 
       {derogations.zoneAbf && (
-        <p className="text-sm text-amber-100">
-          ⚠️ Ce site se situe dans un périmètre de protection du patrimoine (zone ABF).
-          L&apos;installation peut nécessiter l&apos;accord de l&apos;Architecte des Bâtiments de
-          France.
-        </p>
+        <p className="text-sm text-amber-100">⚠️ {t("verifier.derogAbf")}</p>
       )}
 
       {derogations.summary === "none" && (
-        <p className="text-sm text-emerald-300">
-          ✅ Aucune dérogation identifiée à cette adresse.
-        </p>
+        <p className="text-sm text-emerald-300">✅ {t("verifier.derogNone")}</p>
       )}
 
       <p className="text-xs text-slate-500">
-        Ces éléments sont indicatifs (seuil pente {PENTE_DEROGATION_PCT} %) et ne remplacent pas
-        une vérification officielle auprès des autorités compétentes.
+        {fmt(t("verifier.derogFootnote"), { pct: PENTE_DEROGATION_PCT })}
       </p>
     </div>
   );

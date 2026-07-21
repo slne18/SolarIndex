@@ -192,3 +192,8 @@ export function validateProfileOnboarding(
 export function userTypeToPersona(userType: UserType): "installer" | "owner" {
   return userType === "installateur" ? "installer" : "owner";
 }
+
+/** Dépôt de projet réservé aux propriétaires et gérants de parking. */
+export function canDepositProject(userType: UserType | null | undefined): boolean {
+  return userType === "proprietaire" || userType === "gerant_parking";
+}

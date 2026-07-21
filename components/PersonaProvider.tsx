@@ -14,6 +14,8 @@ import {
   readStoredPersona,
   writeStoredPersona,
 } from "@/lib/persona";
+import { getAccessToken } from "@/lib/supabaseBrowser";
+import { isUserType, userTypeToPersona } from "@/lib/profile-onboarding";
 
 interface PersonaContextValue {
   persona: Persona | null;
@@ -35,6 +37,34 @@ export function PersonaProvider({ children }: { children: ReactNode }) {
     setPersonaState(readStoredPersona());
     setReady(true);
   }, []);
+
+  /** Profil complété = source de vérité (évite un persona « propriétaire » obsolète en localStorage). */
+  useEffect(() => {
+    if (!ready) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const token = await getAccessToken();
+        if (!token || cancelled) return;
+        const res = await fetch("/api/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok || cancelled) return;
+        const data = await res.json().catch(() => ({}));
+        const userType = data.profile?.user_type;
+        if (data.profile_completed && isUserType(userType)) {
+          const synced = userTypeToPersona(userType);
+          writeStoredPersona(synced);
+          setPersonaState(synced);
+        }
+      } catch {
+        /* ignore — visiteur ou session expirée */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [ready]);
 
   const setPersona = useCallback((next: Persona) => {
     writeStoredPersona(next);

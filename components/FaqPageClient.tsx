@@ -2,12 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { FAQ_ITEMS } from "@/lib/faq";
+import { FAQ_IDS } from "@/lib/i18n/faq-ids";
 import { CONTACT_EMAIL, faqQuestionMailto } from "@/lib/site";
+import { useTranslations } from "@/components/LocaleProvider";
+import type { MessageKey } from "@/lib/i18n";
 
 export default function FaqPageClient() {
-  const [openId, setOpenId] = useState<string | null>(FAQ_ITEMS[0]?.id ?? null);
+  const t = useTranslations();
+  const [openId, setOpenId] = useState<string | null>(FAQ_IDS[0] ?? null);
   const [customQuestion, setCustomQuestion] = useState("");
+
+  const items = FAQ_IDS.map((id) => ({
+    id,
+    question: t(`faq.${id}.q` as MessageKey),
+    answer: t(`faq.${id}.a` as MessageKey),
+  }));
 
   const canSend = customQuestion.trim().length >= 10;
 
@@ -15,18 +24,15 @@ export default function FaqPageClient() {
     <div className="surface-light min-h-[60vh] py-14 sm:py-20">
       <div className="container-x mx-auto max-w-3xl">
         <Link href="/" className="text-sm text-slate-500 transition hover:text-slate-800">
-          ← Accueil
+          {t("common.backHome")}
         </Link>
         <h1 className="mt-6 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-          Foire aux questions
+          {t("faq.title")}
         </h1>
-        <p className="mt-3 text-slate-600">
-          Réponses aux questions les plus fréquentes sur SolarIndex — leads APER et appels
-          d&apos;offres solaires.
-        </p>
+        <p className="mt-3 text-slate-600">{t("faq.lead")}</p>
 
         <div className="mt-10 space-y-3">
-          {FAQ_ITEMS.map((item) => {
+          {items.map((item) => {
             const open = openId === item.id;
             return (
               <div key={item.id} className="rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -52,19 +58,16 @@ export default function FaqPageClient() {
         </div>
 
         <div className="mt-12 rounded-2xl border border-solar/25 bg-solar/5 p-6">
-          <h2 className="text-lg font-semibold text-slate-900">Posez votre question</h2>
-          <p className="mt-2 text-sm text-slate-600">
-            Vous ne trouvez pas la réponse ? Décrivez votre question ci-dessous — nous l&apos;ajouterons
-            à la FAQ si elle est utile à tous.
-          </p>
+          <h2 className="text-lg font-semibold text-slate-900">{t("faq.askTitle")}</h2>
+          <p className="mt-2 text-sm text-slate-600">{t("faq.askLead")}</p>
           <label className="mt-4 block">
-            <span className="sr-only">Votre question</span>
+            <span className="sr-only">{t("faq.questionLabel")}</span>
             <textarea
               value={customQuestion}
               onChange={(e) => setCustomQuestion(e.target.value)}
               rows={4}
               className="input w-full !border-slate-200 !bg-white !text-slate-900 placeholder:!text-slate-400"
-              placeholder="Ex. : Puis-je filtrer les leads par département avant achat ?"
+              placeholder={t("faq.questionPlaceholder")}
             />
           </label>
           <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -73,11 +76,11 @@ export default function FaqPageClient() {
               className={`btn-solar ${canSend ? "" : "pointer-events-none opacity-50"}`}
               aria-disabled={!canSend}
             >
-              Envoyer ma question
+              {t("faq.send")}
             </a>
             <span className="text-xs text-slate-500">
               → {CONTACT_EMAIL}
-              {!canSend ? " · 10 caractères minimum" : ""}
+              {!canSend ? ` · ${t("faq.minChars")}` : ""}
             </span>
           </div>
         </div>

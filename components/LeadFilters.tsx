@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslations } from "@/components/LocaleProvider";
 
 const REGIONS = [
   "Auvergne-Rhône-Alpes", "Bourgogne-Franche-Comté", "Bretagne",
@@ -10,20 +11,24 @@ const REGIONS = [
   "Pays de la Loire", "Provence-Alpes-Côte d'Azur",
 ];
 
-const SURFACES = [
-  { v: "", l: "Toutes surfaces" },
-  { v: "1500", l: "≥ 1 500 m²" },
-  { v: "5000", l: "≥ 5 000 m²" },
-  { v: "10000", l: "≥ 10 000 m²" },
-  { v: "20000", l: "≥ 20 000 m²" },
-];
-
 const selectCls =
   "rounded-lg border border-white/15 bg-night-700/60 px-3 py-2 text-sm text-slate-100 focus:border-solar/60 focus:outline-none";
 
 export default function LeadFilters({ lockedDepartement }: { lockedDepartement?: string | null }) {
   const router = useRouter();
   const params = useSearchParams();
+  const t = useTranslations();
+
+  const surfaces = useMemo(
+    () => [
+      { v: "", l: t("leads.filter.allSurfaces") },
+      { v: "1500", l: t("leads.filter.surface1500") },
+      { v: "5000", l: t("leads.filter.surface5000") },
+      { v: "10000", l: t("leads.filter.surface10000") },
+      { v: "20000", l: t("leads.filter.surface20000") },
+    ],
+    [t],
+  );
 
   const update = useCallback(
     (key: string, value: string) => {
@@ -74,7 +79,7 @@ export default function LeadFilters({ lockedDepartement }: { lockedDepartement?:
         value={params.get("region") ?? ""}
         onChange={(e) => update("region", e.target.value)}
       >
-        <option value="">Toutes régions</option>
+        <option value="">{t("leads.filter.allRegions")}</option>
         {REGIONS.map((r) => (
           <option key={r} value={r}>{r}</option>
         ))}
@@ -84,7 +89,7 @@ export default function LeadFilters({ lockedDepartement }: { lockedDepartement?:
         className={`${selectCls} w-28 ${
           activeDept ? "border-red-500/70 bg-red-950/25 text-red-100 focus:border-red-500/80" : ""
         } ${lockedDepartement ? "cursor-not-allowed opacity-60" : ""}`}
-        placeholder="Dépt (33)"
+        placeholder={t("leads.filter.deptPlaceholder")}
         value={deptDraft}
         readOnly={!!lockedDepartement}
         disabled={!!lockedDepartement}
@@ -104,7 +109,7 @@ export default function LeadFilters({ lockedDepartement }: { lockedDepartement?:
         value={params.get("surface_min") ?? ""}
         onChange={(e) => update("surface_min", e.target.value)}
       >
-        {SURFACES.map((s) => (
+        {surfaces.map((s) => (
           <option key={s.v} value={s.v}>{s.l}</option>
         ))}
       </select>
@@ -114,44 +119,44 @@ export default function LeadFilters({ lockedDepartement }: { lockedDepartement?:
         value={params.get("flag") ?? ""}
         onChange={(e) => update("flag", e.target.value)}
       >
-        <option value="">Tous les flags</option>
-        <option value="URGENCE_ABSOLUE">Urgence absolue</option>
-        <option value="CONFORME_REQUIS">À équiper</option>
+        <option value="">{t("leads.filter.allFlags")}</option>
+        <option value="URGENCE_ABSOLUE">{t("leads.filter.urgence")}</option>
+        <option value="CONFORME_REQUIS">{t("leads.filter.toEquip")}</option>
       </select>
 
       <select
         className={selectCls}
         value={params.get("tier") ?? ""}
         onChange={(e) => update("tier", e.target.value)}
-        title="Premium = signaux OSM + cadastre alignés, score ≥ 0,80"
+        title={t("leads.filter.premiumTitle")}
       >
-        <option value="">Tous les tiers</option>
-        <option value="premium">Premium uniquement</option>
+        <option value="">{t("leads.filter.allTiers")}</option>
+        <option value="premium">{t("leads.filter.premiumOnly")}</option>
       </select>
 
       <select
         className={selectCls}
         value={params.get("dirigeant") ?? ""}
         onChange={(e) => update("dirigeant", e.target.value === "1" ? "1" : "")}
-        title="Dirigeant exploitant identifié via open data SIREN"
+        title={t("leads.filter.directorTitle")}
       >
-        <option value="">Dirigeant : tous</option>
-        <option value="1">Dirigeant identifié</option>
+        <option value="">{t("leads.filter.directorAll")}</option>
+        <option value="1">{t("leads.filter.directorIdentified")}</option>
       </select>
 
       <select
         className={selectCls}
         value={params.get("fiabilite") ?? ""}
         onChange={(e) => update("fiabilite", e.target.value)}
-        title="Détection de panneaux solaires existants"
+        title={t("leads.filter.reliabilityTitle")}
       >
-        <option value="">Fiabilité : tous</option>
-        <option value="verifies">Sans doute PV (vérifiés)</option>
+        <option value="">{t("leads.filter.reliabilityAll")}</option>
+        <option value="verifies">{t("leads.filter.reliabilityVerified")}</option>
       </select>
 
       <input
         className={`${selectCls} w-32`}
-        placeholder="Code NAF"
+        placeholder={t("leads.filter.nafPlaceholder")}
         defaultValue={params.get("naf") ?? ""}
         onBlur={(e) => update("naf", e.target.value.trim())}
         onKeyDown={(e) => {
@@ -161,20 +166,20 @@ export default function LeadFilters({ lockedDepartement }: { lockedDepartement?:
 
       {hasActiveFilters ? (
         <button type="button" onClick={clearAll} className="btn-ghost !py-2 text-xs">
-          Effacer filtres
+          {t("leads.filter.clear")}
         </button>
       ) : null}
 
       <div className="ml-auto flex items-center gap-2">
-        <span className="text-xs text-slate-400">Trier :</span>
+        <span className="text-xs text-slate-400">{t("leads.filter.sort")}</span>
         <select
           className={selectCls}
           value={params.get("sort") ?? "valeur"}
           onChange={(e) => update("sort", e.target.value)}
         >
-          <option value="valeur">Valeur chantier ↓</option>
-          <option value="surface">Surface ↓</option>
-          <option value="date">Date d&apos;ajout ↓</option>
+          <option value="valeur">{t("leads.filter.sortValue")}</option>
+          <option value="surface">{t("leads.filter.sortSurface")}</option>
+          <option value="date">{t("leads.filter.sortDate")}</option>
         </select>
       </div>
     </div>
