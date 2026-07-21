@@ -1,4 +1,5 @@
 import { SURFACE_URGENCE_M2 } from "./surface-thresholds";
+import { nf } from "./format";
 
 /** Amende annuelle max. pour parkings ≥ 1 500 m² et < 10 000 m² (loi APER). */
 export const APER_FINE_BELOW_URGENCE_EUR = 20_000;
@@ -13,7 +14,7 @@ export function maxAperAnnualFineEur(surfaceM2: number): number {
 }
 
 export function formatAperAnnualFine(surfaceM2: number): string {
-  return `${maxAperAnnualFineEur(surfaceM2).toLocaleString("fr-FR")} €/an`;
+  return `${nf(maxAperAnnualFineEur(surfaceM2))} €/an`;
 }
 
 export const APER_FINE_TIER_LINES = [

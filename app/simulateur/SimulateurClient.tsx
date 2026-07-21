@@ -63,7 +63,10 @@ export default function SimulateurClient() {
     return `/appels-offres/nouveau?${p.toString()}`;
   })();
 
-  const priceLabel = ELECTRICITY_PRICE_EUR.toLocaleString(locale === "en" ? "en-US" : "fr-FR");
+  const priceLabel = ELECTRICITY_PRICE_EUR.toLocaleString(locale === "en" ? "en-US" : "fr-FR").replace(
+    /\u202f/g,
+    " ",
+  );
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
