@@ -8,7 +8,7 @@ import {
   TERRITOIRE_PACK_EUR,
 } from "@/lib/subscription";
 import { PRIX_RFP, RFP_SURFACE_TIER_M2 } from "@/lib/rfp";
-import { APER_DEADLINES } from "@/lib/aper-law";
+import { APER_DEADLINES, APER_LAW_LINKS } from "@/lib/aper-law";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import RegulatoryCountdown from "@/components/RegulatoryCountdown";
 import HomeFeaturedNewsBanner from "@/components/HomeFeaturedNewsBanner";
@@ -24,7 +24,7 @@ export default function HomePageSections() {
   return (
     <>
       <div className="surface-light">
-        <LoiAperSection />
+        {showChooser ? <LoiAperSection /> : null}
         {showChooser ? <HomeFeaturedNewsBanner /> : null}
         {showChooser ? <HomeSignupCta /> : null}
       </div>
@@ -42,7 +42,26 @@ function LoiAperSection() {
         <SectionEyebrow>{t("home.aperEyebrow")}</SectionEyebrow>
         <h2 className="section-title mt-3">{t("home.aperTitle")}</h2>
         <p className="section-lead mt-4">{t("home.aperSummary")}</p>
-        <p className="mt-3 text-xs text-slate-500">{t("home.aperRef")}</p>
+        <p className="mt-3 text-xs text-slate-500">
+          <a
+            href={APER_LAW_LINKS.loi2023}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-slate-600 underline decoration-slate-400 underline-offset-2 hover:text-solar hover:decoration-solar/60"
+          >
+            {t("home.aperRefLaw")}
+          </a>
+          {t("home.aperRefMid")}
+          <a
+            href={APER_LAW_LINKS.l171_3}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-slate-600 underline decoration-slate-400 underline-offset-2 hover:text-solar hover:decoration-solar/60"
+          >
+            {t("home.aperRefEnergy")}
+          </a>
+          {t("home.aperRefClimate")}
+        </p>
 
         <div className="card mt-10 overflow-hidden">
           <div className="card-header border-b px-6 py-4 sm:px-8">

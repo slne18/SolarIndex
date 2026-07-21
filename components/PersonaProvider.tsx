@@ -11,7 +11,9 @@ import {
 } from "react";
 import {
   type Persona,
+  readSessionPersonaPick,
   readStoredPersona,
+  writeSessionPersonaPick,
   writeStoredPersona,
 } from "@/lib/persona";
 import { getAccessToken } from "@/lib/supabaseBrowser";
@@ -35,6 +37,7 @@ export function PersonaProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setPersonaState(readStoredPersona());
+    setSessionPick(readSessionPersonaPick());
     setReady(true);
   }, []);
 
@@ -68,6 +71,7 @@ export function PersonaProvider({ children }: { children: ReactNode }) {
 
   const setPersona = useCallback((next: Persona) => {
     writeStoredPersona(next);
+    writeSessionPersonaPick(true);
     setPersonaState(next);
     setSessionPick(true);
     if (typeof window !== "undefined") {
@@ -77,6 +81,7 @@ export function PersonaProvider({ children }: { children: ReactNode }) {
 
   const clearPersona = useCallback(() => {
     writeStoredPersona(null);
+    writeSessionPersonaPick(false);
     setPersonaState(null);
     setSessionPick(false);
   }, []);

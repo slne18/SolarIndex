@@ -104,16 +104,22 @@ const fr = {
   "footer.depositProject": "Déposer mon projet",
   "footer.simulator": "Gains & économies parking",
 
-  "home.chooseTitlePrefix": "La loi APER concerne ",
-  "home.chooseTitleAccent": "installateurs et propriétaires.",
-  "home.chooseLead": "Choisissez votre profil pour accéder aux bons outils et parcours.",
+  "home.chooseTitlePrefix": "La plateforme qui simplifie la mise en conformité des parkings avec la ",
+  "home.chooseTitleAccent": "loi APER.",
+  "home.chooseLeadBefore":
+    "Solar Index met en relation gestionnaires de parking et installateurs pour développer des projets d'",
+  "home.chooseLeadHighlight": "ombrières photovoltaïques",
+  "home.chooseLeadAfter": " conformes à la loi APER.",
   "home.installerCardTitle": "Je suis installateur",
   "home.installerCardDesc":
-    "Prospectez des parkings non conformes APER : leads enrichis et appels d'offres.",
-  "home.ownerCardTitle": "Je suis propriétaire",
-  "home.ownerCardSubtitle": "ou un gestionnaire de parking",
+    "Accédez à des projets qualifiés et développez votre activité grâce à une mise en relation ciblée.",
+  "home.ownerCardTitle": "Je suis propriétaire ou gestionnaire (de parking)",
   "home.ownerCardDesc":
-    "Vérifiez si vous êtes concerné, estimez vos gains et recevez des propositions d'installateurs.",
+    "Identifiez les solutions d'ombrières photovoltaïques adaptées à votre parking.",
+  "home.benefit1": "Identifiez les parkings concernés par la loi APER",
+  "home.benefit2": "Estimez le potentiel photovoltaïque",
+  "home.benefit3": "Trouvez les bons partenaires",
+  "home.benefit4": "Contribuez à la transition énergétique",
   "home.discover": "Découvrir",
   "home.installerHeroTitle": "Repérez les parkings non conformes APER",
   "home.installerHeroAccent": "avant l'amende.",
@@ -361,6 +367,11 @@ const fr = {
     "Tout parc de stationnement extérieur d'au moins 1 500 m² doit être équipé d'ombrières solaires couvrant au minimum 50 % de sa superficie (panneaux photovoltaïques sur la totalité de la partie supérieure).",
   "home.aperRef":
     "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40 · complète l'art. L171-3 du Code de l'énergie (loi climat n° 2021-1104)",
+  "home.aperRefLaw": "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40",
+  "home.aperRefMid": " · complète l'",
+  "home.aperRefEnergy": "art. L171-3 du Code de l'énergie",
+  "home.aperRefClimate": " (loi climat n° 2021-1104)",
+  "home.backToChooser": "Retour au choix du profil",
   "home.aperCalendarTitle": "Calendrier de mise en conformité",
   "home.aperCalendarLead": "Parcs privés · seuil selon la superficie du parking",
   "home.aperPublicNote":

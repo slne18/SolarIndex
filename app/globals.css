@@ -596,23 +596,47 @@ body {
   }
 
   .persona-card {
-    @apply flex flex-col items-start rounded-2xl border border-white/[0.12] bg-night-900/80 p-6 text-left backdrop-blur-sm transition duration-200 hover:-translate-y-0.5 hover:border-solar/40 hover:bg-night-900/90 hover:shadow-glow;
+    @apply rounded-2xl border border-white/[0.12] bg-night-900/75 p-5 text-left backdrop-blur-md transition duration-200 hover:-translate-y-0.5 hover:border-solar/40 hover:bg-night-900/90 hover:shadow-glow sm:p-6;
+  }
+
+  .persona-card-row {
+    @apply flex items-center gap-4;
   }
 
   .persona-card-icon {
-    @apply grid h-12 w-12 place-items-center rounded-xl bg-solar/15 text-solar;
+    @apply grid h-12 w-12 place-items-center rounded-xl bg-solar/20 text-solar;
   }
 
   .persona-card-title {
-    @apply mt-4 text-lg font-bold text-white;
-  }
-
-  .persona-card-subtitle {
-    @apply mt-0.5 text-xs font-normal text-slate-500;
+    @apply text-base font-bold leading-snug text-white sm:text-lg;
   }
 
   .persona-card-desc {
-    @apply mt-2 text-sm leading-relaxed text-slate-400;
+    @apply text-sm leading-relaxed text-slate-400;
+  }
+
+  .persona-card-arrow {
+    @apply text-solar opacity-80 transition group-hover:translate-x-0.5 group-hover:opacity-100;
+  }
+
+  .home-hero-benefits {
+    @apply grid grid-cols-2 gap-x-4 gap-y-5 border-t border-white/[0.08] pt-8 sm:grid-cols-4 sm:gap-4;
+  }
+
+  .home-hero-benefit {
+    @apply flex flex-col items-center gap-2.5 text-center sm:gap-3;
+  }
+
+  .home-hero-benefit-icon {
+    @apply grid h-10 w-10 place-items-center rounded-lg border border-solar/25 bg-solar/10 text-solar;
+  }
+
+  .home-hero-benefit-label {
+    @apply text-xs leading-snug text-slate-300 sm:text-sm;
+  }
+
+  .home-hero-benefit-label-compact {
+    @apply text-[10px] leading-snug text-slate-400 sm:text-xs;
   }
 
   .simulator-summary-grid {

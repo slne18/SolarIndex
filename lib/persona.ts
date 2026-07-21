@@ -1,6 +1,8 @@
 export type Persona = "installer" | "owner";
 
 export const PERSONA_STORAGE_KEY = "solarindex-persona";
+/** Choix explicite installateur / propriétaire sur l'accueil (session navigateur). */
+export const PERSONA_SESSION_PICK_KEY = "solarindex-session-pick";
 
 export function isPersona(value: unknown): value is Persona {
   return value === "installer" || value === "owner";
@@ -26,6 +28,28 @@ export function writeStoredPersona(persona: Persona | null): void {
     }
   } catch {
     /* ignore quota / private mode */
+  }
+}
+
+export function readSessionPersonaPick(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return window.sessionStorage.getItem(PERSONA_SESSION_PICK_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function writeSessionPersonaPick(active: boolean): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (active) {
+      window.sessionStorage.setItem(PERSONA_SESSION_PICK_KEY, "1");
+    } else {
+      window.sessionStorage.removeItem(PERSONA_SESSION_PICK_KEY);
+    }
+  } catch {
+    /* ignore */
   }
 }
 

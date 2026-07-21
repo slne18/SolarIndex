@@ -2,6 +2,14 @@
 export const APER_LAW_REF =
   "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40 · complète l'art. L171-3 du Code de l'énergie (loi climat n° 2021-1104)";
 
+/** Liens Legifrance (textes officiels). */
+export const APER_LAW_LINKS = {
+  /** Loi n° 2023-175 du 10 mars 2023 — accélération de la production d'énergies renouvelables. */
+  loi2023: "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000047362323",
+  /** Code de l'énergie, art. L171-3 (obligation de couverture solaire des parkings). */
+  l171_3: "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006416945",
+} as const;
+
 export const APER_SURFACE_MIN_M2 = 1_500;
 
 export const APER_SOLAR_RATIO_LABEL = "50 %";

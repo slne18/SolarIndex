@@ -105,15 +105,22 @@ const en: Record<MessageKey, string> = {
   "footer.depositProject": "Submit my project",
   "footer.simulator": "Parking savings & revenue",
 
-  "home.chooseTitlePrefix": "The APER law affects ",
-  "home.chooseTitleAccent": "installers and owners.",
-  "home.chooseLead": "Choose your profile to access the right tools and journeys.",
+  "home.chooseTitlePrefix": "The platform that simplifies parking compliance with the ",
+  "home.chooseTitleAccent": "APER law.",
+  "home.chooseLeadBefore":
+    "Solar Index connects parking operators and installers to develop ",
+  "home.chooseLeadHighlight": "photovoltaic canopy",
+  "home.chooseLeadAfter": " projects compliant with the APER law.",
   "home.installerCardTitle": "I'm an installer",
-  "home.installerCardDesc": "Prospect non-compliant APER parking lots: enriched leads and tenders.",
-  "home.ownerCardTitle": "I'm an owner",
-  "home.ownerCardSubtitle": "or a parking operator",
+  "home.installerCardDesc":
+    "Access qualified projects and grow your business through targeted matchmaking.",
+  "home.ownerCardTitle": "I'm an owner or parking operator",
   "home.ownerCardDesc":
-    "Check if you're affected, estimate your gains and receive proposals from installers.",
+    "Find photovoltaic canopy solutions suited to your parking lot.",
+  "home.benefit1": "Identify parking lots subject to the APER law",
+  "home.benefit2": "Estimate solar potential",
+  "home.benefit3": "Find the right partners",
+  "home.benefit4": "Contribute to the energy transition",
   "home.discover": "Discover",
   "home.installerHeroTitle": "Find non-compliant APER parking lots",
   "home.installerHeroAccent": "before the fine.",
@@ -361,6 +368,11 @@ const en: Record<MessageKey, string> = {
     "Every outdoor parking lot of at least 1,500 m² must be equipped with solar canopies covering at least 50% of its area (PV panels on the entire upper surface).",
   "home.aperRef":
     "Law no. 2023-175 of 10 March 2023 (APER), art. 40 · complements art. L171-3 of the Energy Code (climate law no. 2021-1104)",
+  "home.aperRefLaw": "Law no. 2023-175 of 10 March 2023 (APER), art. 40",
+  "home.aperRefMid": " · complements ",
+  "home.aperRefEnergy": "art. L171-3 of the Energy Code",
+  "home.aperRefClimate": " (climate law no. 2021-1104)",
+  "home.backToChooser": "Back to profile choice",
   "home.aperCalendarTitle": "Compliance timeline",
   "home.aperCalendarLead": "Private lots · threshold based on parking area",
   "home.aperPublicNote":
