@@ -34,7 +34,7 @@ const CARD_ICONS: Record<Persona, ReactNode> = {
 };
 
 export default function HomeHeroPersona() {
-  const { persona, sessionPick, ready, setPersona, clearPersona } = usePersona();
+  const { persona, sessionPick, ready, setPersona } = usePersona();
   const t = useTranslations();
 
   const showChooser = !ready || persona === null || !sessionPick;
@@ -111,9 +111,9 @@ export default function HomeHeroPersona() {
               <HomeHeroBenefits />
             </>
           ) : persona === "installer" ? (
-            <InstallerHero t={t} onBack={clearPersona} backLabel={t("home.backToChooser")} />
+            <InstallerHero t={t} />
           ) : (
-            <OwnerHero t={t} onBack={clearPersona} backLabel={t("home.backToChooser")} />
+            <OwnerHero t={t} />
           )}
         </div>
       </div>
@@ -142,33 +142,9 @@ export default function HomeHeroPersona() {
   );
 }
 
-function PersonaHeroBack({ onBack, label }: { onBack: () => void; label: string }) {
-  return (
-    <button
-      type="button"
-      onClick={onBack}
-      className="mb-6 inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white"
-    >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-        <path d="M19 12H5M12 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-      {label}
-    </button>
-  );
-}
-
-function InstallerHero({
-  t,
-  onBack,
-  backLabel,
-}: {
-  t: (key: import("@/lib/i18n").MessageKey) => string;
-  onBack: () => void;
-  backLabel: string;
-}) {
+function InstallerHero({ t }: { t: (key: import("@/lib/i18n").MessageKey) => string }) {
   return (
     <>
-      <PersonaHeroBack onBack={onBack} label={backLabel} />
       <p className="mt-6 text-xs font-semibold uppercase tracking-widest text-solar">
         {t("persona.installer")}
       </p>
@@ -199,18 +175,9 @@ function InstallerHero({
   );
 }
 
-function OwnerHero({
-  t,
-  onBack,
-  backLabel,
-}: {
-  t: (key: import("@/lib/i18n").MessageKey) => string;
-  onBack: () => void;
-  backLabel: string;
-}) {
+function OwnerHero({ t }: { t: (key: import("@/lib/i18n").MessageKey) => string }) {
   return (
     <>
-      <PersonaHeroBack onBack={onBack} label={backLabel} />
       <div className="mt-6">
         <OwnerPersonaLabel
           variant="hero"

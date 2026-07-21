@@ -380,7 +380,6 @@ const en: Record<MessageKey, string> = {
   "home.aperRefMid": " · complements ",
   "home.aperRefEnergy": "art. L. 111-19-1 of the Urban Planning Code",
   "home.aperRefClimate": " (climate law no. 2021-1104)",
-  "home.backToChooser": "Back to profile choice",
   "home.aperCalendarTitle": "Compliance timeline",
   "home.aperCalendarLead": "Private lots · threshold based on parking area",
   "home.aperPublicNote":

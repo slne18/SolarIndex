@@ -126,6 +126,10 @@ body {
     @apply text-xl leading-none sm:text-[1.65rem];
   }
 
+  .brand-wordmark {
+    @apply inline-block font-extrabold tracking-tight;
+  }
+
   .header-nav {
     @apply flex shrink-0 items-center justify-end gap-0.5 sm:gap-1;
   }

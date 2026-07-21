@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
+import SolarIndexWordmark from "@/components/SolarIndexWordmark";
 import OwnerPersonaLabel from "@/components/OwnerPersonaLabel";
 import { usePersona } from "@/components/PersonaProvider";
 import { useTranslations } from "@/components/LocaleProvider";
@@ -55,7 +56,7 @@ export default function SiteFooter({ light = false }: { light?: boolean }) {
         <div>
           <div className={`flex items-center gap-2 font-bold ${light ? "footer-brand" : "text-white"}`}>
             <SolarIndexIcon size={32} className="h-8 w-8 shrink-0" />
-            Solar<span className="text-solar">Index</span>
+            <SolarIndexWordmark className="shrink-0 text-lg leading-none" />
           </div>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-500">
             {persona === "owner" ? t("footer.taglineOwner") : t("footer.taglineDefault")}

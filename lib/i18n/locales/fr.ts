@@ -379,7 +379,6 @@ const fr = {
   "home.aperRefMid": " · complète l'",
   "home.aperRefEnergy": "art. L. 111-19-1 du Code de l'urbanisme",
   "home.aperRefClimate": " (loi climat n° 2021-1104)",
-  "home.backToChooser": "Retour au choix du profil",
   "home.aperCalendarTitle": "Calendrier de mise en conformité",
   "home.aperCalendarLead": "Parcs privés · seuil selon la superficie du parking",
   "home.aperPublicNote":

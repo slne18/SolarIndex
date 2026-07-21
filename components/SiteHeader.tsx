@@ -9,6 +9,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import MobileNavMenu from "@/components/MobileNavMenu";
 import PersonaSwitcher from "@/components/PersonaSwitcher";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
+import SolarIndexWordmark from "@/components/SolarIndexWordmark";
 import { usePersona } from "@/components/PersonaProvider";
 
 export default function SiteHeader() {
@@ -34,9 +35,7 @@ export default function SiteHeader() {
               size={44}
               className="h-10 w-10 shrink-0 shadow-glow transition group-hover:scale-[1.02] sm:h-11 sm:w-11"
             />
-            <span className="header-brand-text whitespace-nowrap">
-              Solar<span className="text-solar">Index</span>
-            </span>
+            <SolarIndexWordmark className="header-brand-text" />
           </Link>
           <div className="header-start-nav hidden lg:flex">
             {isHome ? <PersonaSwitcher compact className="persona-switcher-left" /> : <HeaderNavLinks variant="desktop" />}
