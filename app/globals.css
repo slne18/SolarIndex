@@ -44,23 +44,14 @@ body {
   }
 
   .mobile-nav-panel {
-    @apply absolute left-0 right-0 top-full z-50 max-h-[min(32rem,calc(100dvh-4.75rem))] overflow-y-auto border-b border-white/10 bg-night-950/98 px-5 py-5 shadow-2xl backdrop-blur-xl;
+    @apply absolute left-0 right-0 top-full z-50 overflow-y-auto border-b border-white/10 bg-night-950/98 px-5 py-5 shadow-2xl backdrop-blur-xl;
+    max-height: min(32rem, calc(100dvh - 4.75rem));
     padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
   }
 
   .mobile-nav-backdrop {
-    @apply fixed inset-x-0 bottom-0 z-40 bg-night-950/70 backdrop-blur-[2px];
+    @apply fixed inset-x-0 bottom-0 z-40 bg-night-950/70 backdrop-blur-sm;
     top: 4.75rem;
-  }
-
-  .site-chrome:has(.news-ticker) .mobile-nav-backdrop {
-    top: calc(3rem + 4.75rem);
-  }
-
-  @media (min-width: 640px) {
-    .site-chrome:has(.news-ticker) .mobile-nav-backdrop {
-      top: calc(3.25rem + 4.75rem);
-    }
   }
 
   .mobile-nav-section + .mobile-nav-section {
@@ -169,6 +160,46 @@ body {
 
   .pill-accent {
     @apply pill border-solar/25 bg-solar/[0.08] text-solar-300;
+  }
+
+  .pill-accent-solar {
+    @apply inline-flex items-center gap-2 rounded-full border border-solar/45 bg-solar/15 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-solar shadow-[0_0_20px_rgba(251,191,36,0.15)];
+  }
+
+  .persona-owner-label-hero .persona-owner-label-title {
+    @apply text-xs font-semibold uppercase tracking-widest text-solar;
+  }
+
+  .persona-owner-label-hero .persona-owner-label-sub {
+    @apply mt-0.5 text-[10px] font-medium uppercase tracking-widest text-solar/75;
+  }
+
+  .persona-owner-label-switcher .persona-owner-label-title {
+    @apply text-[11px] font-semibold leading-tight sm:text-xs;
+  }
+
+  .persona-owner-label-switcher .persona-owner-label-sub {
+    @apply text-[9px] font-normal leading-tight text-slate-400 sm:text-[10px];
+  }
+
+  .persona-switcher-btn-active .persona-owner-label-switcher .persona-owner-label-sub {
+    @apply text-night/70;
+  }
+
+  .persona-owner-label-footer .persona-owner-label-title {
+    @apply text-xs font-semibold uppercase tracking-wider text-slate-400;
+  }
+
+  .persona-owner-label-footer .persona-owner-label-sub {
+    @apply mt-0.5 text-[10px] font-medium normal-case tracking-normal text-slate-500;
+  }
+
+  .persona-owner-label-nav .persona-owner-label-title {
+    @apply text-[11px] font-bold uppercase tracking-widest text-slate-500;
+  }
+
+  .persona-owner-label-nav .persona-owner-label-sub {
+    @apply mt-0.5 text-[10px] font-medium normal-case tracking-normal text-slate-500;
   }
 
   .input {
@@ -964,7 +995,7 @@ body {
   }
 
   .hero-actions-badge {
-    @apply mx-auto mt-8 w-fit rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1 text-xs font-medium tracking-wide text-slate-400;
+    @apply mx-auto mt-8 w-fit rounded-full border border-solar/45 bg-solar/15 px-4 py-1.5 text-xs font-semibold tracking-wide text-solar shadow-[0_0_24px_rgba(251,191,36,0.18)];
   }
 
   .hero-actions {
@@ -1038,5 +1069,15 @@ body {
 
   .entreprise-autocomplete-item {
     @apply block w-full px-3 py-2.5 text-left text-sm transition hover:bg-white/5;
+  }
+}
+
+.site-chrome:has(.news-ticker) .mobile-nav-backdrop {
+  top: calc(3rem + 4.75rem);
+}
+
+@media (min-width: 640px) {
+  .site-chrome:has(.news-ticker) .mobile-nav-backdrop {
+    top: calc(3.25rem + 4.75rem);
   }
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usePersona } from "@/components/PersonaProvider";
 import { useTranslations } from "@/components/LocaleProvider";
+import OwnerPersonaLabel from "@/components/OwnerPersonaLabel";
 import { isInstallerAppelsOffresPath } from "@/lib/installer-nav";
 
 type HeaderNavLinksProps = {
@@ -41,7 +42,7 @@ export default function HeaderNavLinks({ variant, onNavigate }: HeaderNavLinksPr
 
       return (
         <div className="mobile-nav-section">
-          <p className="mobile-nav-section-label">{t("persona.owner")}</p>
+          <OwnerPersonaLabel variant="nav" className="mobile-nav-section-label mb-3 block" />
           <div className="mobile-nav-links">
             {ownerTools.map((tool) => (
               <Link

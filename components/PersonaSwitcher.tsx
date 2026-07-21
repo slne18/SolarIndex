@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "@/components/LocaleProvider";
+import OwnerPersonaLabel from "@/components/OwnerPersonaLabel";
 import { usePersona } from "@/components/PersonaProvider";
 import type { Persona } from "@/lib/persona";
 
@@ -39,7 +40,11 @@ export default function PersonaSwitcher({
             aria-pressed={active}
             onClick={() => setPersona(option)}
           >
-            {label}
+            {option === "owner" ? (
+              <OwnerPersonaLabel variant="switcher" />
+            ) : (
+              label
+            )}
           </button>
         );
       })}

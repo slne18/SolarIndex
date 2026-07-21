@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
+import OwnerPersonaLabel from "@/components/OwnerPersonaLabel";
 import { usePersona } from "@/components/PersonaProvider";
 import { useTranslations } from "@/components/LocaleProvider";
 
@@ -74,7 +75,7 @@ export default function SiteFooter({ light = false }: { light?: boolean }) {
                 </div>
               </div>
               <div>
-                <div className={subheadingClass}>{t("persona.owner")}</div>
+                <OwnerPersonaLabel variant="footer" className={subheadingClass} />
                 <div className="mt-3">
                   <FooterLinkList links={ownerLinks} light={light} />
                 </div>

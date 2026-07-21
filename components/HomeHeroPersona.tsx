@@ -11,6 +11,7 @@ import HeroActionList, {
   HeroActionUploadIcon,
 } from "@/components/HeroActionList";
 import HomeHeroBenefits from "@/components/HomeHeroBenefits";
+import OwnerPersonaLabel from "@/components/OwnerPersonaLabel";
 import { INSTALLER_CHANTIERS_LINKS } from "@/lib/installer-nav";
 import type { Persona } from "@/lib/persona";
 
@@ -208,9 +209,9 @@ function OwnerHero({
   return (
     <>
       <PersonaHeroBack onBack={onBack} label={backLabel} />
-      <p className="mt-6 text-xs font-semibold uppercase tracking-widest text-solar">
-        {t("persona.owner")}
-      </p>
+      <div className="mt-6">
+        <OwnerPersonaLabel variant="hero" subtitleKey="home.ownerCardSubtitle" />
+      </div>
       <h1 className="mt-3 text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
         {t("home.ownerHeroTitle")}{" "}
         <span className="text-gradient">{t("home.ownerHeroAccent")}</span>

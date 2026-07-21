@@ -78,6 +78,7 @@ const fr = {
   "persona.chooseProfile": "Choisir votre profil",
   "persona.installer": "Installateur",
   "persona.owner": "Propriétaire",
+  "persona.ownerSubtitle": "ou gestionnaire",
   "persona.installerShort": "Installateur",
   "persona.ownerShort": "Propriétaire",
 
@@ -120,7 +121,7 @@ const fr = {
   "home.installerCardDesc":
     "Accédez à des projets qualifiés et développez votre activité grâce à une mise en relation ciblée.",
   "home.ownerCardTitle": "Je suis propriétaire",
-  "home.ownerCardSubtitle": "ou gestionnaire",
+  "home.ownerCardSubtitle": "ou gestionnaire de parking",
   "home.ownerCardDesc":
     "Nos outils vous permettent de vérifier si vous êtes concerné, estimer vos gains et recevoir des propositions d'installateurs.",
   "home.benefit1": "Identifiez les parkings\nconcernés par la loi APER",

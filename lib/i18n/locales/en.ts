@@ -79,6 +79,7 @@ const en: Record<MessageKey, string> = {
   "persona.chooseProfile": "Choose your profile",
   "persona.installer": "Installer",
   "persona.owner": "Owner",
+  "persona.ownerSubtitle": "or operator",
   "persona.installerShort": "Installer",
   "persona.ownerShort": "Owner",
 
@@ -121,7 +122,7 @@ const en: Record<MessageKey, string> = {
   "home.installerCardDesc":
     "Access qualified projects and grow your business through targeted matchmaking.",
   "home.ownerCardTitle": "I'm an owner",
-  "home.ownerCardSubtitle": "or operator",
+  "home.ownerCardSubtitle": "or parking operator",
   "home.ownerCardDesc":
     "Our tools let you check if you're affected, estimate your gains and receive proposals from installers.",
   "home.benefit1": "Identify parking lots\nsubject to the APER law",

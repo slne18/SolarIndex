@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, type ReactNode } from "react";
+import OwnerPersonaLabel from "@/components/OwnerPersonaLabel";
 import { useTranslations } from "@/components/LocaleProvider";
 
 export default function VerifierPageShell({ children }: { children: ReactNode }) {
@@ -8,7 +9,8 @@ export default function VerifierPageShell({ children }: { children: ReactNode })
 
   return (
     <div className="container-x py-10 sm:py-14">
-      <p className="pill-accent w-fit">{t("verifier.pill")}</p>
+      <OwnerPersonaLabel variant="hero" />
+      <p className="pill-accent-solar mt-3 w-fit">{t("verifier.pill")}</p>
       <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
         {t("verifier.title")}
       </h1>

@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import OwnerPersonaLabel from "@/components/OwnerPersonaLabel";
 import { useTranslations } from "@/components/LocaleProvider";
 
 export default function SimulateurPageShell({ children }: { children: ReactNode }) {
@@ -8,7 +9,7 @@ export default function SimulateurPageShell({ children }: { children: ReactNode 
 
   return (
     <div className="container-x py-10 sm:py-14">
-      <p className="pill-accent w-fit">{t("simulateur.pill")}</p>
+      <OwnerPersonaLabel variant="hero" />
       <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
         {t("simulateur.title")}
       </h1>
