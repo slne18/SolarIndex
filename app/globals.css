@@ -54,6 +54,10 @@ body {
     top: 4.75rem;
   }
 
+  .mobile-nav-section:first-child {
+    @apply mt-0 border-t-0 pt-0;
+  }
+
   .mobile-nav-section + .mobile-nav-section {
     @apply mt-6 border-t border-white/[0.08] pt-6;
   }

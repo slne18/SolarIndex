@@ -94,8 +94,6 @@ const en: Record<MessageKey, string> = {
   "nav.closeMenu": "Close menu",
   "nav.account": "Account",
   "nav.language": "Language",
-  "nav.explore": "Explore",
-
   "footer.products": "Products",
   "footer.legal": "Legal",
   "footer.taglineOwner":

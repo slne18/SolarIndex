@@ -6,6 +6,7 @@ import { usePersona } from "@/components/PersonaProvider";
 import { useTranslations } from "@/components/LocaleProvider";
 import OwnerPersonaLabel from "@/components/OwnerPersonaLabel";
 import { isInstallerAppelsOffresPath } from "@/lib/installer-nav";
+import type { Persona } from "@/lib/persona";
 
 type HeaderNavLinksProps = {
   variant: "desktop" | "drawer";
@@ -18,7 +19,7 @@ function desktopLinkClass(active: boolean) {
 
 export default function HeaderNavLinks({ variant, onNavigate }: HeaderNavLinksProps) {
   const pathname = usePathname();
-  const { persona, ready } = usePersona();
+  const { persona, ready, setPersona } = usePersona();
   const t = useTranslations();
 
   if (!ready) return null;
@@ -26,105 +27,80 @@ export default function HeaderNavLinks({ variant, onNavigate }: HeaderNavLinksPr
   const drawerLink = (active: boolean) =>
     `mobile-nav-link ${active ? "mobile-nav-link-active" : ""}`;
 
-  const linkProps = (href: string, active: boolean, className: string) => ({
+  const drawerLinkProps = (
+    href: string,
+    active: boolean,
+    className: string,
+    personaPick: Persona,
+  ) => ({
     href,
     className,
-    onClick: onNavigate,
+    onClick: () => {
+      setPersona(personaPick);
+      onNavigate?.();
+    },
     "aria-current": active ? ("page" as const) : undefined,
   });
 
   if (variant === "drawer") {
-    if (persona === "owner") {
-      const ownerTools = [
-        { href: "/verifier", label: t("nav.verifyEligibility") },
-        { href: "/simulateur", label: t("nav.simulatorGains") },
-      ] as const;
+    const installerLinks = [
+      { href: "/leads", label: t("nav.leadsAuto"), active: pathname.startsWith("/leads") },
+      {
+        href: "/appels-offres",
+        label: t("nav.appelsOffres"),
+        active: isInstallerAppelsOffresPath(pathname),
+      },
+    ] as const;
 
-      return (
+    const ownerLinks = [
+      { href: "/verifier", label: t("nav.verifyEligibility"), active: pathname.startsWith("/verifier") },
+      { href: "/simulateur", label: t("nav.simulatorGains"), active: pathname.startsWith("/simulateur") },
+    ] as const;
+
+    return (
+      <>
         <div className="mobile-nav-section">
-          <OwnerPersonaLabel variant="nav" className="mobile-nav-section-label mb-3 block" />
+          <p className="mobile-nav-section-label">{t("persona.installer")}</p>
           <div className="mobile-nav-links">
-            {ownerTools.map((tool) => (
+            {installerLinks.map((item) => (
               <Link
-                key={tool.href}
-                {...linkProps(tool.href, pathname.startsWith(tool.href), drawerLink(pathname.startsWith(tool.href)))}
+                key={item.href}
+                {...drawerLinkProps(item.href, item.active, drawerLink(item.active), "installer")}
               >
-                {tool.label}
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div className="mobile-nav-section">
+          <OwnerPersonaLabel
+            variant="nav"
+            subtitleKey="home.ownerCardSubtitle"
+            className="mobile-nav-section-label mb-3 block"
+          />
+          <div className="mobile-nav-links">
+            {ownerLinks.map((item) => (
+              <Link
+                key={item.href}
+                {...drawerLinkProps(item.href, item.active, drawerLink(item.active), "owner")}
+              >
+                {item.label}
               </Link>
             ))}
             <Link
-              {...linkProps(
+              {...drawerLinkProps(
                 "/appels-offres/nouveau",
                 pathname.startsWith("/appels-offres/nouveau"),
                 "btn-mint mobile-nav-cta",
+                "owner",
               )}
             >
               {t("nav.deposerProjet")}
             </Link>
           </div>
         </div>
-      );
-    }
-
-    if (persona === "installer") {
-      return (
-        <div className="mobile-nav-section">
-          <p className="mobile-nav-section-label">{t("persona.installer")}</p>
-          <div className="mobile-nav-links">
-            <Link
-              {...linkProps("/leads", pathname.startsWith("/leads"), drawerLink(pathname.startsWith("/leads")))}
-            >
-              {t("nav.leadsAuto")}
-            </Link>
-            <Link
-              {...linkProps(
-                "/appels-offres",
-                isInstallerAppelsOffresPath(pathname),
-                drawerLink(isInstallerAppelsOffresPath(pathname)),
-              )}
-            >
-              {t("nav.appelsOffres")}
-            </Link>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="mobile-nav-section">
-        <p className="mobile-nav-section-label">{t("nav.explore")}</p>
-        <div className="mobile-nav-links">
-          <Link {...linkProps("/leads", pathname.startsWith("/leads"), drawerLink(pathname.startsWith("/leads")))}>
-            {t("nav.leadsAuto")}
-          </Link>
-          <Link
-            {...linkProps(
-              "/appels-offres",
-              isInstallerAppelsOffresPath(pathname),
-              drawerLink(isInstallerAppelsOffresPath(pathname)),
-            )}
-          >
-            {t("nav.appelsOffres")}
-          </Link>
-          <Link {...linkProps("/verifier", pathname.startsWith("/verifier"), drawerLink(pathname.startsWith("/verifier")))}>
-            {t("nav.verifyEligibility")}
-          </Link>
-          <Link
-            {...linkProps("/simulateur", pathname.startsWith("/simulateur"), drawerLink(pathname.startsWith("/simulateur")))}
-          >
-            {t("nav.simulatorGains")}
-          </Link>
-          <Link
-            {...linkProps(
-              "/appels-offres/nouveau",
-              pathname.startsWith("/appels-offres/nouveau"),
-              "btn-mint mobile-nav-cta",
-            )}
-          >
-            {t("nav.deposerProjet")}
-          </Link>
-        </div>
-      </div>
+      </>
     );
   }
 

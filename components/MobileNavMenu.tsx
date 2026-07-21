@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import HeaderNavLinks from "@/components/HeaderNavLinks";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import PersonaSwitcher from "@/components/PersonaSwitcher";
 import { useTranslations } from "@/components/LocaleProvider";
 import { getBrowserClient, getAccessToken } from "@/lib/supabaseBrowser";
 import { MON_ESPACE_PATH } from "@/lib/paths";
@@ -73,11 +72,6 @@ export default function MobileNavMenu() {
         <>
           <button type="button" className="mobile-nav-backdrop" aria-label={t("nav.closeMenu")} onClick={close} />
           <div id={panelId} className="mobile-nav-panel" role="dialog" aria-modal="true" aria-label={t("nav.menu")}>
-            <div className="mobile-nav-section">
-              <p className="mobile-nav-section-label">{t("persona.chooseProfile")}</p>
-              <PersonaSwitcher className="persona-switcher-drawer" />
-            </div>
-
             <HeaderNavLinks variant="drawer" onNavigate={close} />
 
             <div className="mobile-nav-section">

@@ -93,8 +93,6 @@ const fr = {
   "nav.closeMenu": "Fermer le menu",
   "nav.account": "Compte",
   "nav.language": "Langue",
-  "nav.explore": "Navigation",
-
   "footer.products": "Produits",
   "footer.legal": "Légal",
   "footer.taglineOwner":
