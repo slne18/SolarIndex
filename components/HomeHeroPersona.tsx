@@ -63,13 +63,13 @@ export default function HomeHeroPersona() {
         <div className="mx-auto w-full max-w-5xl text-center animate-fade-up">
           {showChooser ? (
             <>
-              <h1 className="text-3xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-4xl lg:text-[2.75rem]">
+              <h1 className="text-2xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-4xl lg:text-[2.75rem]">
                 {t("home.chooseTitlePrefix")}
                 <span className="text-gradient underline decoration-solar/50 decoration-2 underline-offset-4">
                   {t("home.chooseTitleAccent")}
                 </span>
               </h1>
-              <p className="mx-auto mt-8 max-w-3xl text-base leading-relaxed text-slate-300 sm:mt-10 sm:text-lg">
+              <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-slate-300 sm:mt-10 sm:text-lg">
                 {t("home.chooseLeadBefore")}
                 <span className="font-semibold text-solar">{t("home.chooseLeadHighlight")}</span>
                 {t("home.chooseLeadAfter")}

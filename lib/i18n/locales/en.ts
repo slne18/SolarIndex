@@ -88,6 +88,12 @@ const en: Record<MessageKey, string> = {
   "nav.tools": "Tools",
   "nav.verifyEligibility": "Check eligibility",
   "nav.simulatorGains": "Savings & revenue",
+  "nav.menu": "Menu",
+  "nav.openMenu": "Open menu",
+  "nav.closeMenu": "Close menu",
+  "nav.account": "Account",
+  "nav.language": "Language",
+  "nav.explore": "Explore",
 
   "footer.products": "Products",
   "footer.legal": "Legal",

@@ -87,6 +87,12 @@ const fr = {
   "nav.tools": "Outils",
   "nav.verifyEligibility": "Vérifier éligibilité",
   "nav.simulatorGains": "Gains & économies",
+  "nav.menu": "Menu",
+  "nav.openMenu": "Ouvrir le menu",
+  "nav.closeMenu": "Fermer le menu",
+  "nav.account": "Compte",
+  "nav.language": "Langue",
+  "nav.explore": "Navigation",
 
   "footer.products": "Produits",
   "footer.legal": "Légal",

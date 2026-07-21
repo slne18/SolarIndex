@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import HeaderAuthNav from "@/components/HeaderAuthNav";
 import HeaderSignupCta from "@/components/HeaderSignupCta";
-import HeaderProductNav from "@/components/HeaderProductNav";
+import HeaderNavLinks from "@/components/HeaderNavLinks";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import MobileNavMenu from "@/components/MobileNavMenu";
 import PersonaSwitcher from "@/components/PersonaSwitcher";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
 import { usePersona } from "@/components/PersonaProvider";
@@ -36,18 +37,19 @@ export default function SiteHeader() {
               Solar<span className="text-solar">Index</span>
             </span>
           </Link>
-          {isHome ? (
-            <PersonaSwitcher compact className="persona-switcher-left" />
-          ) : (
-            <HeaderProductNav />
-          )}
+          <div className="header-start-nav hidden lg:flex">
+            {isHome ? <PersonaSwitcher compact className="persona-switcher-left" /> : <HeaderNavLinks variant="desktop" />}
+          </div>
         </div>
-        <nav className="header-nav" aria-label="Compte utilisateur">
+
+        <nav className="header-nav hidden lg:flex" aria-label="Compte utilisateur">
           <LanguageSwitcher />
           {!isHome ? <PersonaSwitcher compact /> : null}
           <HeaderAuthNav />
           <HeaderSignupCta />
         </nav>
+
+        <MobileNavMenu />
       </div>
     </header>
   );
