@@ -114,7 +114,7 @@ const fr = {
   "home.chooseTitlePrefix": "La plateforme qui simplifie la mise en conformité des parkings avec la ",
   "home.chooseTitleAccent": "loi APER.",
   "home.chooseLeadBefore":
-    "Solar Index met en relation gestionnaires de parking et installateurs pour développer des projets d'",
+    "SolarIndex met en relation gestionnaires de parking et installateurs pour développer des projets d'",
   "home.chooseLeadHighlight": "ombrières photovoltaïques",
   "home.chooseLeadAfter": " conformes à la loi APER.",
   "home.installerCardTitle": "Je suis installateur",

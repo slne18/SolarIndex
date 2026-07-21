@@ -41,7 +41,7 @@ export default function PersonaSwitcher({
             onClick={() => setPersona(option)}
           >
             {option === "owner" ? (
-              <OwnerPersonaLabel variant="switcher" />
+              <OwnerPersonaLabel variant="switcher" subtitleKey="home.ownerCardSubtitle" />
             ) : (
               label
             )}

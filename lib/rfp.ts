@@ -6,7 +6,7 @@ import { getRegion } from "./regions";
 export const RFP_SURFACE_TIER_M2 = 10_000;
 
 export const PRIX_RFP = {
-  sous_10000: 350,
+  sous_10000: 400,
   a_partir_10000: 550,
 } as const;
 

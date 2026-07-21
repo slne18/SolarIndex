@@ -115,7 +115,7 @@ const en: Record<MessageKey, string> = {
   "home.chooseTitlePrefix": "The platform that simplifies parking compliance with the ",
   "home.chooseTitleAccent": "APER law.",
   "home.chooseLeadBefore":
-    "Solar Index connects parking operators and installers to develop ",
+    "SolarIndex connects parking operators and installers to develop ",
   "home.chooseLeadHighlight": "photovoltaic canopy",
   "home.chooseLeadAfter": " projects compliant with the APER law.",
   "home.installerCardTitle": "I'm an installer",

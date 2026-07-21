@@ -41,7 +41,7 @@ function makeRfp(overrides: Partial<RfpSubmissionRow> = {}): RfpSubmissionRow {
 }
 
 describe("computeRfpAccessPrice", () => {
-  it("350 € sous 10 000 m²", () => {
+  it("400 € sous 10 000 m²", () => {
     expect(computeRfpAccessPrice(1500)).toBe(PRIX_RFP.sous_10000);
     expect(computeRfpAccessPrice(9999)).toBe(PRIX_RFP.sous_10000);
     expect(computeRfpAccessPrice(null)).toBe(PRIX_RFP.sous_10000);
@@ -53,7 +53,7 @@ describe("computeRfpAccessPrice", () => {
   });
 
   it("toPublicRfp expose le prix calculé", () => {
-    expect(toPublicRfp(makeRfp({ surface_estimee_m2: 8000 })).prix_acces).toBe(350);
+    expect(toPublicRfp(makeRfp({ surface_estimee_m2: 8000 })).prix_acces).toBe(400);
     expect(toPublicRfp(makeRfp({ surface_estimee_m2: 12000 })).prix_acces).toBe(550);
   });
 });

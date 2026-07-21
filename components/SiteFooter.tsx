@@ -54,9 +54,7 @@ export default function SiteFooter({ light = false }: { light?: boolean }) {
       <div className="container-x grid gap-10 py-14 sm:grid-cols-3">
         <div>
           <div className={`flex items-center gap-2 font-bold ${light ? "footer-brand" : "text-white"}`}>
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-solar/90 text-night">
-              <SolarIndexIcon size={14} />
-            </span>
+            <SolarIndexIcon size={32} className="h-8 w-8 shrink-0" />
             Solar<span className="text-solar">Index</span>
           </div>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-500">

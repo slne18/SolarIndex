@@ -70,7 +70,7 @@ export default function HomeHeroPersona() {
                   {t("home.chooseTitleAccent")}
                 </span>
               </h1>
-              <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-slate-300 sm:mt-10 sm:text-lg">
+              <p className="mx-auto my-8 max-w-3xl text-sm leading-relaxed text-slate-300 sm:my-12 sm:text-lg">
                 {t("home.chooseLeadBefore")}
                 <span className="font-semibold text-solar">{t("home.chooseLeadHighlight")}</span>
                 {t("home.chooseLeadAfter")}
@@ -87,7 +87,9 @@ export default function HomeHeroPersona() {
                     <span className="persona-card-content min-w-0 flex-1">
                       <span className="persona-card-title block">{card.title}</span>
                       {card.subtitle ? (
-                        <span className="persona-card-subtitle block">{card.subtitle}</span>
+                        <span className="persona-card-subtitle persona-card-subtitle-emphasis block">
+                          {card.subtitle}
+                        </span>
                       ) : null}
                       <span className="persona-card-desc mt-1.5 block">{card.description}</span>
                     </span>
@@ -210,7 +212,11 @@ function OwnerHero({
     <>
       <PersonaHeroBack onBack={onBack} label={backLabel} />
       <div className="mt-6">
-        <OwnerPersonaLabel variant="hero" subtitleKey="home.ownerCardSubtitle" />
+        <OwnerPersonaLabel
+          variant="hero"
+          subtitleKey="home.ownerCardSubtitle"
+          className="persona-owner-label-home"
+        />
       </div>
       <h1 className="mt-3 text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
         {t("home.ownerHeroTitle")}{" "}

@@ -87,7 +87,7 @@ body {
   }
 
   .persona-switcher-drawer {
-    @apply flex w-full;
+    @apply flex w-full gap-2 rounded-xl border border-white/15 bg-night-900/50 p-1;
   }
 
   .persona-switcher-drawer .persona-switcher-btn {
@@ -174,12 +174,16 @@ body {
     @apply mt-0.5 text-[10px] font-medium uppercase tracking-widest text-solar/75;
   }
 
+  .persona-owner-label-home .persona-owner-label-sub {
+    @apply font-bold normal-case tracking-normal text-solar;
+  }
+
   .persona-owner-label-switcher .persona-owner-label-title {
     @apply text-[11px] font-semibold leading-tight sm:text-xs;
   }
 
   .persona-owner-label-switcher .persona-owner-label-sub {
-    @apply text-[9px] font-normal leading-tight text-slate-400 sm:text-[10px];
+    @apply text-[9px] font-medium leading-tight text-slate-400 sm:text-[10px];
   }
 
   .persona-switcher-btn-active .persona-owner-label-switcher .persona-owner-label-sub {
@@ -691,7 +695,7 @@ body {
   }
 
   .persona-cards {
-    @apply grid gap-4 text-left sm:grid-cols-2;
+    @apply grid gap-5 text-left sm:grid-cols-2 sm:gap-6;
   }
 
   .persona-card {
@@ -720,6 +724,10 @@ body {
 
   .persona-card-subtitle {
     @apply mt-0.5 block text-sm font-normal text-slate-300;
+  }
+
+  .persona-card-subtitle-emphasis {
+    @apply font-semibold text-slate-100;
   }
 
   .persona-card-desc {
@@ -889,7 +897,7 @@ body {
   }
 
   .persona-switcher {
-    @apply hidden items-center rounded-lg border border-white/10 bg-white/[0.04] p-0.5 lg:inline-flex;
+    @apply hidden items-stretch gap-1.5 rounded-xl border border-white/15 bg-night-900/50 p-1 lg:inline-flex;
   }
 
   .persona-switcher-left {
@@ -901,7 +909,7 @@ body {
   }
 
   .persona-switcher-btn {
-    @apply rounded-md px-2.5 py-1 text-[11px] font-semibold text-slate-400 transition hover:text-slate-200 sm:px-3 sm:text-xs;
+    @apply min-w-[4.5rem] rounded-lg px-2.5 py-1.5 text-center text-[11px] font-semibold text-slate-400 transition hover:bg-white/[0.04] hover:text-slate-200 sm:min-w-[5.25rem] sm:px-3 sm:text-xs;
   }
 
   .persona-switcher-btn-active {
