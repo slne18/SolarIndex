@@ -52,6 +52,10 @@ export function leadTier(
     | "adresse"
     | "siren"
     | "id_parcelle"
+    | "pv_overlap_pct"
+    | "vision_surface_couverte_pct"
+    | "vision_checked_at"
+    | "flag_urgence"
   >,
 ): LeadTier {
   return isLeadPremium(lead) ? "premium" : "standard";
@@ -78,6 +82,10 @@ export function computePrixLeadFromRow(
     | "adresse"
     | "siren"
     | "id_parcelle"
+    | "pv_overlap_pct"
+    | "vision_surface_couverte_pct"
+    | "vision_checked_at"
+    | "flag_urgence"
   >,
 ): number {
   return computePrixLead(Number(lead.surface_m2), leadTier(lead));
@@ -94,6 +102,10 @@ export function prixLeadCentimesFromRow(
     | "adresse"
     | "siren"
     | "id_parcelle"
+    | "pv_overlap_pct"
+    | "vision_surface_couverte_pct"
+    | "vision_checked_at"
+    | "flag_urgence"
   >,
 ): number {
   return computePrixLeadFromRow(lead) * 100;

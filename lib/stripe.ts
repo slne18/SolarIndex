@@ -31,6 +31,10 @@ export function prixLeadCentimes(lead: Pick<
   | "adresse"
   | "siren"
   | "id_parcelle"
+  | "pv_overlap_pct"
+  | "vision_surface_couverte_pct"
+  | "vision_checked_at"
+  | "flag_urgence"
 >): number {
   return prixLeadCentimesFromRow(lead);
 }
