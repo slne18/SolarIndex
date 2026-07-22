@@ -1,6 +1,6 @@
 "use client";
 
-import { euros, nf, nfSurface } from "@/lib/format";
+import { euros, eurosCompact, nf, nfSurface } from "@/lib/format";
 import { fmt } from "@/lib/i18n/format";
 import { useTranslations } from "@/components/LocaleProvider";
 import type { SimulatorResult } from "@/lib/solar-simulator";
