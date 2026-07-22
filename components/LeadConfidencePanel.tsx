@@ -10,12 +10,13 @@ import {
 import { useTranslations } from "@/components/LocaleProvider";
 import { getDetectionStatus } from "@/lib/detection-status";
 import { confidenceFactors } from "@/lib/lead-confidence";
+import { effectiveLeadScore } from "@/lib/huwart-law";
 import LeadTierBadge from "./LeadTierBadge";
 
 export default function LeadConfidencePanel({ lead }: { lead: PublicLead }) {
   const t = useTranslations();
   const factors = confidenceFactors(lead);
-  const score = lead.score_confiance ?? 0;
+  const score = effectiveLeadScore(lead);
   const detection = getDetectionStatus(lead);
   const tierDescKey = lead.tier === "premium" ? "leads.tier.premiumDesc" : "leads.tier.standardDesc";
 

@@ -42,6 +42,73 @@ function totalAnnualBenefit(result: SimulatorResult): number {
   return result.autoconsommationTotalEur + (result.aperEligible ? result.fineAvoidedEur : 0);
 }
 
+function surfaceSharePct(partM2: number, totalM2: number): number {
+  if (totalM2 <= 0) return 0;
+  return (partM2 / totalM2) * 100;
+}
+
+export function SimulatorModeComparison({
+  fullPv,
+  mix,
+}: {
+  fullPv: SimulatorResult;
+  mix: SimulatorResult;
+}) {
+  const t = useTranslations();
+  const fullGain = totalAnnualBenefit(fullPv);
+  const mixGain = totalAnnualBenefit(mix);
+
+  return (
+    <div className="simulator-mode-compare">
+      <p className="text-sm font-medium text-slate-200">{t("simulateur.modeCompareTitle")}</p>
+      <div className="simulator-mode-compare-grid">
+        <div className="simulator-mode-compare-col">
+          <p className="simulator-mode-compare-head">{t("simulateur.solutionPvPur")}</p>
+          <dl className="simulator-mode-compare-rows">
+            <div>
+              <dt>{t("simulateur.summaryAnnualGain")}</dt>
+              <dd>{euros(fullGain)}{t("simulateur.perYear")}</dd>
+            </div>
+            <div>
+              <dt>{t("simulateur.detailInstallCost")}</dt>
+              <dd>{eurosCompact(fullPv.installationCostEur)}</dd>
+            </div>
+            <div>
+              <dt>{t("simulateur.summaryRoi")}</dt>
+              <dd>
+                {fullPv.roiYearsAutoconsommation != null
+                  ? fmt(t("simulateur.roiYears"), { years: fullPv.roiYearsAutoconsommation })
+                  : "—"}
+              </dd>
+            </div>
+          </dl>
+        </div>
+        <div className="simulator-mode-compare-col simulator-mode-compare-col-mix">
+          <p className="simulator-mode-compare-head">{t("simulateur.modeCompareMixCol")}</p>
+          <dl className="simulator-mode-compare-rows">
+            <div>
+              <dt>{t("simulateur.summaryAnnualGain")}</dt>
+              <dd>{euros(mixGain)}{t("simulateur.perYear")}</dd>
+            </div>
+            <div>
+              <dt>{t("simulateur.detailInstallCost")}</dt>
+              <dd>{eurosCompact(mix.installationCostEur)}</dd>
+            </div>
+            <div>
+              <dt>{t("simulateur.summaryRoi")}</dt>
+              <dd>
+                {mix.roiYearsAutoconsommation != null
+                  ? fmt(t("simulateur.roiYears"), { years: mix.roiYearsAutoconsommation })
+                  : "—"}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function SimulatorResultsSummary({ result }: { result: SimulatorResult }) {
   const t = useTranslations();
   const totalBenefit = totalAnnualBenefit(result);
@@ -84,8 +151,10 @@ export function SimulatorResultsSummary({ result }: { result: SimulatorResult })
 
 export function SimulatorParkingVisual({ result }: { result: SimulatorResult }) {
   const t = useTranslations();
-  const solarPct = result.surfaceM2 > 0 ? (result.surfaceSolaireM2 / result.surfaceM2) * 100 : 0;
-  const restPct = Math.max(0, 100 - solarPct);
+  const isMix = result.solutionMode === "mixte_pv_vegetal";
+  const solarPct = surfaceSharePct(result.surfaceSolaireM2, result.surfaceM2);
+  const vegPct = surfaceSharePct(result.surfaceVegetaliseeM2, result.surfaceM2);
+  const restPct = surfaceSharePct(result.restSurfaceM2, result.surfaceM2);
   const prodTotal = result.productionKwhPerYear || 1;
   const selfPct = (result.selfConsumedKwh / prodTotal) * 100;
   const surplusPct = (result.surplusKwh / prodTotal) * 100;
@@ -94,13 +163,39 @@ export function SimulatorParkingVisual({ result }: { result: SimulatorResult }) 
     <figure className="simulator-visual-card">
       <figcaption className="simulator-visual-title">{t("simulateur.visualParkingTitle")}</figcaption>
 
+      {isMix ? (
+        <p className="simulator-surface-split-caption">
+          {fmt(t("simulateur.visualMixSplit"), {
+            pv: `${solarPct.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} %`,
+            veg: `${vegPct.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} %`,
+            rest: `${restPct.toLocaleString("fr-FR", { maximumFractionDigits: 0 })} %`,
+          })}
+        </p>
+      ) : null}
+
       <div className="simulator-parking-plan" aria-hidden>
-        <div className="simulator-parking-solar" style={{ width: `${solarPct}%` }}>
-          <span>{fmt(t("simulateur.visualCanopies"), { ratio: result.solarRatioLabel })}</span>
-        </div>
-        <div className="simulator-parking-rest" style={{ width: `${restPct}%` }}>
-          <span>{t("simulateur.visualRest")}</span>
-        </div>
+        {isMix ? (
+          <>
+            <div className="simulator-parking-solar" style={{ width: `${solarPct}%` }}>
+              <span>{t("simulateur.visualCanopiesPv")}</span>
+            </div>
+            <div className="simulator-parking-veg" style={{ width: `${vegPct}%` }}>
+              <span>{t("simulateur.visualVegetation")}</span>
+            </div>
+            <div className="simulator-parking-rest" style={{ width: `${restPct}%` }}>
+              <span>{t("simulateur.visualRest")}</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="simulator-parking-solar" style={{ width: `${solarPct}%` }}>
+              <span>{fmt(t("simulateur.visualCanopies"), { ratio: result.solarRatioLabel })}</span>
+            </div>
+            <div className="simulator-parking-rest" style={{ width: `${restPct}%` }}>
+              <span>{t("simulateur.visualRest")}</span>
+            </div>
+          </>
+        )}
       </div>
 
       <dl className="simulator-parking-stats">
@@ -112,6 +207,12 @@ export function SimulatorParkingVisual({ result }: { result: SimulatorResult }) 
           <dt>{t("simulateur.visualSolarSurface")}</dt>
           <dd>{nfSurface(result.surfaceSolaireM2)} m²</dd>
         </div>
+        {isMix ? (
+          <div>
+            <dt>{t("simulateur.visualVegetationSurface")}</dt>
+            <dd>{nfSurface(result.surfaceVegetaliseeM2)} m²</dd>
+          </div>
+        ) : null}
         <div>
           <dt>{t("simulateur.visualPower")}</dt>
           <dd>{nf(result.puissanceKwc)} kWc</dd>

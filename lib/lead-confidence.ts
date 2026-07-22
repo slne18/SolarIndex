@@ -1,5 +1,11 @@
 import type { LeadRow, PublicLead, SourceSurface, LeadTier } from "./types";
 import {
+  effectiveLeadScore,
+  HUWART_LAW_REF,
+  isHuwartPartialComplianceLead,
+  isHuwartScorePenaltyLead,
+} from "./huwart-law";
+import {
   formatVisionCoveragePct,
   isUrgenceAbsolueLead,
   isVisionEquippedPct,
@@ -19,12 +25,16 @@ export function isLeadPremium(
     | "adresse"
     | "siren"
     | "id_parcelle"
+    | "pv_overlap_pct"
+    | "vision_surface_couverte_pct"
+    | "vision_checked_at"
+    | "flag_urgence"
   >,
 ): boolean {
   if (lead.detection !== "libre") return false;
   if (!lead.surface_tag_present) return false;
   if (lead.source_surface !== "cadastre") return false;
-  if ((lead.score_confiance ?? 0) < 0.8) return false;
+  if (effectiveLeadScore(lead) < 0.8) return false;
   if (!(lead.adresse ?? "").trim()) return false;
   if (!(lead.siren ?? "").trim() || !(lead.id_parcelle ?? "").trim()) return false;
   return true;
@@ -147,12 +157,9 @@ export function confidenceFactors(
     },
     {
       id: "regulatory",
-      ok: !lead.derogation_pente && !lead.derogation_abf,
+      ok: !lead.derogation_pente && !lead.derogation_abf && !isHuwartScorePenaltyLead(lead),
       label: "Réglementaire",
-      detail:
-        lead.derogation_pente || lead.derogation_abf
-          ? "Pente forte et/ou zone ABF : démarches supplémentaires possibles."
-          : "Pas d'alerte pente/ABF majeure dans nos sources.",
+      detail: regulatoryDetail(lead),
     },
     {
       id: "registry",
@@ -164,6 +171,40 @@ export function confidenceFactors(
           : "Aucune installation comparable recensée dans la commune (registre ODRÉ).",
     },
   ];
+}
+
+function regulatoryDetail(
+  lead: Pick<
+    LeadRow,
+    | "derogation_pente"
+    | "derogation_abf"
+    | "pv_overlap_pct"
+    | "vision_surface_couverte_pct"
+    | "vision_checked_at"
+    | "flag_urgence"
+    | "detection"
+  >,
+): string {
+  const parts: string[] = [];
+
+  if (lead.derogation_pente || lead.derogation_abf) {
+    parts.push("Pente forte et/ou zone ABF : démarches supplémentaires possibles.");
+  }
+
+  if (isHuwartPartialComplianceLead(lead)) {
+    parts.push(
+      `${HUWART_LAW_REF} : l'obligation de 50 % peut être remplie par un mix panneaux (min. 17,5 % de la surface) + végétalisation équivalente. Ce parking peut donc déjà être partiellement ou totalement conforme via une solution non détectable automatiquement.`,
+    );
+    if (isHuwartScorePenaltyLead(lead)) {
+      parts.push("Score de confiance réduit en conséquence.");
+    }
+  }
+
+  if (parts.length === 0) {
+    return "Pas d'alerte pente/ABF majeure dans nos sources.";
+  }
+
+  return parts.join(" ");
 }
 
 export function tierLabel(tier: LeadTier): string {

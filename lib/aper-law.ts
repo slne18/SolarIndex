@@ -1,6 +1,6 @@
-/** Références réglementaires — solarisation des parkings (Loi climat + loi APER). */
+/** Références réglementaires — solarisation des parkings (Loi climat + loi APER + loi Huwart). */
 export const APER_LAW_REF =
-  "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40 · complète l'art. L. 111-19-1 du Code de l'urbanisme (loi climat n° 2021-1104)";
+  "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40 · complète l'art. L. 111-19-1 du Code de l'urbanisme (loi climat n° 2021-1104) · mix panneaux + végétalisation : loi n° 2025-1129 du 26 novembre 2025 (dite loi Huwart)";
 
 /** Liens Legifrance (textes officiels — articles consolidés). */
 export const APER_LAW_LINKS = {
@@ -69,7 +69,7 @@ export function getAperDeadlineWave(id: AperDeadlineWave) {
 }
 
 export const APER_OBLIGATION_SUMMARY =
-  "Tout parc de stationnement extérieur d'au moins 1 500 m² doit être équipé d'ombrières solaires couvrant au minimum 50 % de sa superficie (panneaux photovoltaïques sur la totalité de la partie supérieure).";
+  "Tout parc de stationnement extérieur d'au moins 1 500 m² doit être équipé d'ombrières solaires ou végétalisées couvrant au minimum 50 % de sa superficie (panneaux photovoltaïques sur la totalité de la partie supérieure, ou mix panneaux + végétalisation depuis la loi n° 2025-1129 du 26 novembre 2025).";
 
 /** Parcs publics en concession : dates liées au renouvellement du contrat (voir Service Public). */
 export const APER_PUBLIC_PARKS_NOTE =

@@ -1,4 +1,6 @@
 // Représentation d'un lead telle que stockée dans Supabase (table `leads`).
+import type { TypeSolutionRecherchee } from "./solution-type";
+
 export interface LeadRow {
   id: string;
   created_at: string;
@@ -73,6 +75,8 @@ export interface LeadRow {
 
   // Confiance & statut commercial
   score_confiance: number;
+  /** Solution recherchée : PV pur, mix Huwart, ou végétalisation (toiture). */
+  type_solution_recherchee: TypeSolutionRecherchee;
   statut: LeadStatut;
   buyers_count: number;
   acheteur_id: string | null;
@@ -176,4 +180,5 @@ export interface PipelineLead {
   derogation_pente?: boolean;
   derogation_abf?: boolean;
   pente_pct?: number;
+  type_solution_recherchee?: string;
 }

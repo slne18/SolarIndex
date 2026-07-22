@@ -114,7 +114,7 @@ const en: Record<MessageKey, string> = {
   "home.chooseTitleAccent": "APER law.",
   "home.chooseLeadBefore":
     "SolarIndex connects parking operators and installers to develop ",
-  "home.chooseLeadHighlight": "photovoltaic canopy",
+  "home.chooseLeadHighlight": "photovoltaic or vegetated canopies",
   "home.chooseLeadAfter": " projects compliant with the APER law.",
   "home.installerCardTitle": "I'm an installer",
   "home.installerCardDesc":
@@ -294,6 +294,9 @@ const en: Record<MessageKey, string> = {
     "Estimated ground slope{pct}. Slope > 5% may allow an exemption (art. R111-19-4). Verify before commercial engagement.",
   "leads.detail.derogAbf":
     "ABF / heritage zone detected. Canopy installation may require approval from the Architecte des Bâtiments de France.",
+  "leads.detail.huwartTitle": "Huwart law — panels + vegetation mix",
+  "leads.detail.huwartBody":
+    "Since Law no. 2025-1129 of 26 November 2025 (Huwart law), the 50% obligation can be met with a mix of panels (min. 17.5% of the area) plus equivalent vegetation. This parking may therefore already be partially or fully compliant via a solution that cannot be detected automatically.",
   "leads.detail.contactsUnlocked": "Contacts unlocked",
   "leads.detail.whatYouBuy": "What you're buying",
   "leads.detail.contactsUnlockedDesc": "Company identity, cadastral parcel and GPS coordinates.",
@@ -368,16 +371,29 @@ const en: Record<MessageKey, string> = {
   "solution.metric2.detail": "Market estimate · 2026",
   "solution.metric2.note": "Basis for project value on each lead record.",
 
+  "solutionType.pvPur": "Photovoltaic canopies (100% PV)",
+  "solutionType.pvPurShort": "Pure PV",
+  "solutionType.mixtePvVegetal": "Panels + vegetation mix (Law no. 2025-1129)",
+  "solutionType.mixtePvVegetalShort": "PV + vegetation",
+  "solutionType.vegetalisationUniquement": "Vegetation only (roof)",
+  "solutionType.vegetalisationUniquementShort": "Vegetation",
+  "solutionType.audienceSolar": "Solar installers",
+  "solutionType.audienceLandscaper": "Landscapers",
+
   "home.aperEyebrow": "The APER law",
   "home.aperTitle": "A legal obligation that creates projects",
   "home.aperSummary":
-    "Every outdoor parking lot of at least 1,500 m² must be equipped with solar canopies covering at least 50% of its area (PV panels on the entire upper surface).",
+    "Every outdoor parking lot of at least 1,500 m² must be equipped with solar or vegetated canopies covering at least 50% of its area (PV panels on the entire upper surface, or a panel + vegetation mix under Law no. 2025-1129 of 26 November 2025).",
+  "home.huwartMarket":
+    "The Huwart law opens a new market: up to 32.5% of each APER-covered parking lot can be vegetated.",
   "home.aperRef":
-    "Law no. 2023-175 of 10 March 2023 (APER), art. 40 · complements art. L. 111-19-1 of the Urban Planning Code (climate law no. 2021-1104)",
+    "Law no. 2023-175 of 10 March 2023 (APER), art. 40 · complements art. L. 111-19-1 of the Urban Planning Code (climate law no. 2021-1104) · panel + vegetation mix: Law no. 2025-1129 of 26 November 2025 (Huwart law)",
   "home.aperRefLaw": "Law no. 2023-175 of 10 March 2023 (APER), art. 40",
   "home.aperRefMid": " · complements ",
   "home.aperRefEnergy": "art. L. 111-19-1 of the Urban Planning Code",
   "home.aperRefClimate": " (climate law no. 2021-1104)",
+  "home.aperRefHuwartMid": " · panel + vegetation mix: ",
+  "home.aperRefHuwart": "Law no. 2025-1129 of 26 November 2025 (Huwart law)",
   "home.aperCalendarTitle": "Compliance timeline",
   "home.aperCalendarLead": "Private lots · threshold based on parking area",
   "home.aperPublicNote":
@@ -479,6 +495,8 @@ const en: Record<MessageKey, string> = {
   "rfp.filter.aperEligible": "APER eligible",
   "rfp.filter.aperBelow": "Below APER threshold",
   "rfp.filter.ownerType": "Owner type",
+  "rfp.filter.solutionAll": "Solution: all",
+  "rfp.filter.solutionLandscaper": "Mix + vegetation (landscapers)",
 
   "account.pill": "My account",
   "account.title": "My personal space",
@@ -547,6 +565,14 @@ const en: Record<MessageKey, string> = {
   "simulateur.modeDirect": "Area in m²",
   "simulateur.modeDimensions": "Length × width",
   "simulateur.surfaceLabel": "Parking area (m²)",
+  "simulateur.solutionTypeLabel": "Planned solution type",
+  "simulateur.solutionPvPur": "100% photovoltaic",
+  "simulateur.solutionPvPurHint": "Maximum production",
+  "simulateur.solutionMix": "Panels + vegetation mix",
+  "simulateur.solutionMixHint": "Reduced investment (Law no. 2025-1129)",
+  "simulateur.pvShareLabel": "Photovoltaic share of shaded area",
+  "simulateur.pvShareMin": "17.5% (legal minimum)",
+  "simulateur.pvShareMax": "50% (maximum = all PV)",
   "simulateur.lengthLabel": "Length (m)",
   "simulateur.widthLabel": "Width (m)",
   "simulateur.calculatedSurface": "Calculated area:",
@@ -560,6 +586,8 @@ const en: Record<MessageKey, string> = {
   "simulateur.resultsTitle": "Simulation results",
   "simulateur.resultsDisclaimer":
     "Indicative estimates — not a quote. Electricity price used: €{price}/kWh.",
+  "simulateur.resultsDisclaimerVegetation":
+    "Vegetation cost: indicative estimate ({vegCost} €/m²) — refine with a landscaping professional.",
   "simulateur.detailsToggle": "Show detailed figures",
   "simulateur.depositProject": "Submit a project",
   "simulateur.asideTitle": "For parking operators",
@@ -582,6 +610,13 @@ const en: Record<MessageKey, string> = {
   "simulateur.detailSurplusSub": "{kwh} kWh × {tariff} c€",
   "simulateur.detailFullInjectionSub": "Full sale scenario (indicative)",
   "simulateur.detailInstallSub": "€{cost}/kWp market rate",
+  "simulateur.detailInstallMixSub": "PV {pv} + vegetation {veg} ({vegCost} €/m² indicative)",
+  "simulateur.detailSolarSurfaceMix": "PV share of total parking area",
+  "simulateur.detailVegetationCost": "Vegetation cost (estimate)",
+  "simulateur.detailVegetationCostHint":
+    "Indicative estimate — refine with a landscape architect or landscaper.",
+  "simulateur.modeCompareTitle": "Quick comparison of both modes",
+  "simulateur.modeCompareMixCol": "Mix (legal minimum)",
   "simulateur.roiFullInjection": "Full injection ROI:",
   "simulateur.roiYears": "{years} years",
   "simulateur.annualBenefitMix": "Annual self-consumption benefit (savings + surplus):",
@@ -595,6 +630,10 @@ const en: Record<MessageKey, string> = {
   "simulateur.summaryFineSub": "Regulatory penalty",
   "simulateur.years": "years",
   "simulateur.visualParkingTitle": "Your parking & production",
+  "simulateur.visualMixSplit": "PV canopies · {pv} · Vegetation · {veg} · Remaining · {rest}",
+  "simulateur.visualCanopiesPv": "PV canopies",
+  "simulateur.visualVegetation": "Vegetation",
+  "simulateur.visualVegetationSurface": "Vegetated area",
   "simulateur.visualCanopies": "Canopies · {ratio}",
   "simulateur.visualRest": "Remainder",
   "simulateur.visualParkingSurface": "Parking area",

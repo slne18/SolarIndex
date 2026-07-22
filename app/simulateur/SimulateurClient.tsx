@@ -5,6 +5,7 @@ import Link from "next/link";
 import RfpLegalNotice from "@/components/RfpLegalNotice";
 import {
   SimulatorBenefitDonut,
+  SimulatorModeComparison,
   SimulatorParkingVisual,
   SimulatorResultsSummary,
   SimulatorRoiTimeline,
@@ -15,16 +16,19 @@ import { showOwnerProjectDeposit } from "@/lib/persona";
 import { euros, eurosCompact, nf, nfSurface } from "@/lib/format";
 import { fmt } from "@/lib/i18n/format";
 import {
+  COUT_KWC_EUR,
+  COUT_VEGETALISATION_M2,
   DEFAULT_AUTOCONSUMPTION_RATIO,
   ELECTRICITY_PRICE_EUR,
+  MIX_PV_MAX_SHARE,
   runParkingSolarSimulator,
   SIMULATOR_REGIONS,
+  type SimulatorSolutionMode,
 } from "@/lib/solar-simulator";
 import { formatAperAnnualFine } from "@/lib/aper-fine";
+import { HUWART_MIN_PANEL_PCT } from "@/lib/huwart-law";
 
 type SurfaceMode = "direct" | "dimensions";
-
-const COUT_KWC = 1200;
 
 function parseNonNegativeNumber(raw: string): number {
   const n = Number(raw);
@@ -46,18 +50,39 @@ export default function SimulateurClient() {
   const [region, setRegion] = useState("Occitanie");
   const [consumption, setConsumption] = useState("");
   const [hasConsumption, setHasConsumption] = useState(false);
+  const [solutionMode, setSolutionMode] = useState<SimulatorSolutionMode>("pv_pur");
+  const [pvSharePct, setPvSharePct] = useState(HUWART_MIN_PANEL_PCT);
+
+  const simulatorInputBase = useMemo(
+    () => ({
+      surface:
+        surfaceMode === "direct"
+          ? { mode: "direct" as const, surfaceM2 }
+          : { mode: "dimensions" as const, lengthM, widthM },
+      region,
+      consumptionKwhPerYear: hasConsumption ? Number(consumption) || 0 : null,
+    }),
+    [surfaceMode, surfaceM2, lengthM, widthM, region, consumption, hasConsumption],
+  );
 
   const result = useMemo(
     () =>
       runParkingSolarSimulator({
-        surface:
-          surfaceMode === "direct"
-            ? { mode: "direct", surfaceM2 }
-            : { mode: "dimensions", lengthM, widthM },
-        region,
-        consumptionKwhPerYear: hasConsumption ? Number(consumption) || 0 : null,
+        ...simulatorInputBase,
+        solutionMode,
+        pvShareOfTotalSurface:
+          solutionMode === "mixte_pv_vegetal" ? pvSharePct / 100 : undefined,
       }),
-    [surfaceMode, surfaceM2, lengthM, widthM, region, consumption, hasConsumption],
+    [simulatorInputBase, solutionMode, pvSharePct],
+  );
+
+  const resultFullPv = useMemo(
+    () =>
+      runParkingSolarSimulator({
+        ...simulatorInputBase,
+        solutionMode: "pv_pur",
+      }),
+    [simulatorInputBase],
   );
 
   const ctaHref = (() => {
@@ -66,8 +91,13 @@ export default function SimulateurClient() {
     p.set("region", region);
     p.set(
       "notes_particulieres",
-      `Simulation SolarIndex — région ${region}, ${nf(result.puissanceKwc)} kWc estimés, production ~${nf(result.productionKwhPerYear)} kWh/an.`,
+      `Simulation SolarIndex — région ${region}, ${nf(result.puissanceKwc)} kWc estimés, production ~${nf(result.productionKwhPerYear)} kWh/an${
+        solutionMode === "mixte_pv_vegetal" ? `, mix PV ${pvSharePct} % + végétalisation` : ""
+      }.`,
     );
+    if (solutionMode === "mixte_pv_vegetal") {
+      p.set("type_solution_recherchee", "mixte_pv_vegetal");
+    }
     return `/appels-offres/nouveau?${p.toString()}`;
   })();
 
@@ -144,6 +174,50 @@ export default function SimulateurClient() {
             </div>
           )}
 
+          <Field label={t("simulateur.solutionTypeLabel")}>
+            <div className="simulator-solution-options">
+              <SolutionOption
+                active={solutionMode === "pv_pur"}
+                onClick={() => setSolutionMode("pv_pur")}
+                title={t("simulateur.solutionPvPur")}
+                hint={t("simulateur.solutionPvPurHint")}
+              />
+              <SolutionOption
+                active={solutionMode === "mixte_pv_vegetal"}
+                onClick={() => {
+                  setSolutionMode("mixte_pv_vegetal");
+                  setPvSharePct(HUWART_MIN_PANEL_PCT);
+                }}
+                title={t("simulateur.solutionMix")}
+                hint={t("simulateur.solutionMixHint")}
+              />
+            </div>
+          </Field>
+
+          {solutionMode === "mixte_pv_vegetal" ? (
+            <Field label={t("simulateur.pvShareLabel")}>
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span>{t("simulateur.pvShareMin")}</span>
+                <span className="font-semibold text-solar tabular-nums">
+                  {pvSharePct.toLocaleString(locale === "en" ? "en-US" : "fr-FR", {
+                    maximumFractionDigits: 1,
+                  })}
+                  %
+                </span>
+                <span>{t("simulateur.pvShareMax")}</span>
+              </div>
+              <input
+                type="range"
+                min={HUWART_MIN_PANEL_PCT}
+                max={MIX_PV_MAX_SHARE * 100}
+                step={0.5}
+                value={pvSharePct}
+                onChange={(e) => setPvSharePct(Number(e.target.value))}
+                className="mt-2 w-full accent-solar"
+              />
+            </Field>
+          ) : null}
+
           <Field label={t("simulateur.regionLabel")}>
             <select
               className="input w-full"
@@ -196,9 +270,16 @@ export default function SimulateurClient() {
           <h2 className="text-lg font-bold text-white">{t("simulateur.resultsTitle")}</h2>
           <p className="text-xs text-slate-500">
             {fmt(t("simulateur.resultsDisclaimer"), { price: priceLabel })}
+            {solutionMode === "mixte_pv_vegetal"
+              ? ` ${fmt(t("simulateur.resultsDisclaimerVegetation"), { vegCost: nf(COUT_VEGETALISATION_M2) })}`
+              : ""}
           </p>
 
           <SimulatorResultsSummary result={result} />
+
+          {solutionMode === "mixte_pv_vegetal" ? (
+            <SimulatorModeComparison fullPv={resultFullPv} mix={result} />
+          ) : null}
 
           <div className="simulator-visuals-grid">
             <SimulatorParkingVisual result={result} />
@@ -217,7 +298,11 @@ export default function SimulateurClient() {
                 <Result
                   label={t("simulateur.detailSolarSurface")}
                   value={`${nfSurface(result.surfaceSolaireM2)} m²`}
-                  sub={fmt(t("simulateur.detailAperLaw"), { ratio: result.solarRatioLabel })}
+                  sub={
+                    result.solutionMode === "mixte_pv_vegetal"
+                      ? t("simulateur.detailSolarSurfaceMix")
+                      : fmt(t("simulateur.detailAperLaw"), { ratio: result.solarRatioLabel })
+                  }
                 />
                 <Result
                   label={t("simulateur.detailPower")}
@@ -258,8 +343,23 @@ export default function SimulateurClient() {
                 <Result
                   label={t("simulateur.detailInstallCost")}
                   value={eurosCompact(result.installationCostEur)}
-                  sub={fmt(t("simulateur.detailInstallSub"), { cost: nf(COUT_KWC) })}
+                  sub={
+                    result.solutionMode === "mixte_pv_vegetal"
+                      ? fmt(t("simulateur.detailInstallMixSub"), {
+                          pv: eurosCompact(result.installationCostPvEur),
+                          veg: eurosCompact(result.installationCostVegetationEur),
+                          vegCost: nf(COUT_VEGETALISATION_M2),
+                        })
+                      : fmt(t("simulateur.detailInstallSub"), { cost: nf(COUT_KWC_EUR) })
+                  }
                 />
+                {result.solutionMode === "mixte_pv_vegetal" ? (
+                  <Result
+                    label={t("simulateur.detailVegetationCost")}
+                    value={eurosCompact(result.installationCostVegetationEur)}
+                    sub={t("simulateur.detailVegetationCostHint")}
+                  />
+                ) : null}
               </div>
 
               <div className="mt-4 rounded-xl border border-solar/30 bg-solar/10 px-4 py-3 text-sm text-slate-200">
@@ -304,6 +404,34 @@ export default function SimulateurClient() {
         </div>
       </aside>
     </div>
+  );
+}
+
+function SolutionOption({
+  active,
+  onClick,
+  title,
+  hint,
+}: {
+  active: boolean;
+  onClick: () => void;
+  title: string;
+  hint: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`simulator-solution-option ${active ? "simulator-solution-option-active" : ""}`}
+    >
+      <span className="simulator-solution-option-radio" aria-hidden>
+        {active ? "●" : "○"}
+      </span>
+      <span className="min-w-0 text-left">
+        <span className="block text-sm font-medium text-slate-100">{title}</span>
+        <span className="mt-0.5 block text-xs text-slate-500">{hint}</span>
+      </span>
+    </button>
   );
 }
 

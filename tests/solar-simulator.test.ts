@@ -43,4 +43,30 @@ describe("solar-simulator", () => {
     expect(edfOaTariffEurPerKwh(50)).toBe(0.0912);
     expect(edfOaTariffEurPerKwh(200)).toBe(0.0886);
   });
+
+  it("mix mode at 17.5% PV on 5000 m²", () => {
+    const r = runParkingSolarSimulator({
+      surface: { mode: "direct", surfaceM2: 5000 },
+      region: "Occitanie",
+      solutionMode: "mixte_pv_vegetal",
+      pvShareOfTotalSurface: 0.175,
+    });
+    expect(r.surfaceSolaireM2).toBe(875);
+    expect(r.surfaceVegetaliseeM2).toBe(1625);
+    expect(r.puissanceKwc).toBe(175);
+    expect(r.installationCostPvEur).toBe(175 * 1200);
+    expect(r.installationCostVegetationEur).toBe(1625 * 150);
+    expect(r.installationCostEur).toBe(175 * 1200 + 1625 * 150);
+  });
+
+  it("pv_pur mode unchanged vs 50% solar surface", () => {
+    const r = runParkingSolarSimulator({
+      surface: { mode: "direct", surfaceM2: 4000 },
+      region: "Occitanie",
+      solutionMode: "pv_pur",
+    });
+    expect(r.surfaceSolaireM2).toBe(2000);
+    expect(r.surfaceVegetaliseeM2).toBe(0);
+    expect(r.installationCostVegetationEur).toBe(0);
+  });
 });

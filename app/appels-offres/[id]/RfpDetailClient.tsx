@@ -14,6 +14,8 @@ import {
   RfpSolarMetricsCard,
   formatRfpDeadline,
 } from "@/components/RfpCatalogExtras";
+import SolutionTypeBadge from "@/components/SolutionTypeBadge";
+import { resolveRfpSolutionType } from "@/lib/solution-type";
 
 function Masked({ label }: { label: string }) {
   return (
@@ -109,6 +111,18 @@ export default function RfpDetailClient({ id }: { id: string }) {
               </div>
             </div>
           ) : null}
+
+          <div className="mt-6">
+            <SolutionTypeBadge
+              type={resolveRfpSolutionType(rfp.type_solution_recherchee)}
+              showAudience
+              light
+            />
+            <p className="mt-2 text-xs leading-relaxed text-slate-500">
+              Installateurs solaires et paysagistes peuvent répondre au même appel d&apos;offres,
+              éventuellement en consortium.
+            </p>
+          </div>
 
           <div className="mt-6">
             <RfpSolarMetricsCard rfp={rfp} />

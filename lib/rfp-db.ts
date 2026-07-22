@@ -14,6 +14,8 @@ export interface RfpQueryOptions {
   deadlineBefore?: string;
   deadlineAfter?: string;
   typeProprietaire?: string;
+  /** Mix panneaux + végétal ou végétalisation seule (filtre paysagistes). */
+  solutionPaysagiste?: boolean;
   page?: number;
 }
 
@@ -45,6 +47,9 @@ export async function queryRfpSubmissions(opts: RfpQueryOptions = {}): Promise<{
   if (opts.parkingEtudie === true) q = q.eq("parking_deja_etudie", true);
   if (opts.parkingEtudie === false) q = q.eq("parking_deja_etudie", false);
   if (opts.typeProprietaire) q = q.eq("type_proprietaire", opts.typeProprietaire);
+  if (opts.solutionPaysagiste === true) {
+    q = q.in("type_solution_recherchee", ["mixte_pv_vegetal", "vegetalisation_uniquement"]);
+  }
   if (opts.deadlineBefore) q = q.lte("date_limite_offres", opts.deadlineBefore);
   if (opts.deadlineAfter) q = q.gte("date_limite_offres", opts.deadlineAfter);
 

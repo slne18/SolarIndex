@@ -113,7 +113,7 @@ const fr = {
   "home.chooseTitleAccent": "loi APER.",
   "home.chooseLeadBefore":
     "SolarIndex met en relation gestionnaires de parking et installateurs pour développer des projets d'",
-  "home.chooseLeadHighlight": "ombrières photovoltaïques",
+  "home.chooseLeadHighlight": "ombrières photovoltaïques ou végétalisées",
   "home.chooseLeadAfter": " conformes à la loi APER.",
   "home.installerCardTitle": "Je suis installateur",
   "home.installerCardDesc":
@@ -293,6 +293,9 @@ const fr = {
     "Pente terrain estimée{pct}. Une pente > 5 % peut ouvrir droit à dérogation (art. R111-19-4). Vérification recommandée avant engagement commercial.",
   "leads.detail.derogAbf":
     "Zone ABF / patrimoine historique détectée. L'installation d'ombrières peut nécessiter l'accord de l'Architecte des Bâtiments de France.",
+  "leads.detail.huwartTitle": "Loi Huwart — mix panneaux + végétalisation",
+  "leads.detail.huwartBody":
+    "Depuis la loi n° 2025-1129 du 26 novembre 2025 (dite loi Huwart), l'obligation de 50 % peut être remplie par un mix panneaux (min. 17,5 % de la surface) + végétalisation équivalente. Ce parking peut donc déjà être partiellement ou totalement conforme via une solution non détectable automatiquement.",
   "leads.detail.contactsUnlocked": "Contacts débloqués",
   "leads.detail.whatYouBuy": "Ce que vous achetez",
   "leads.detail.contactsUnlockedDesc": "Identité entreprise, parcelle cadastrale et coordonnées GPS.",
@@ -367,16 +370,29 @@ const fr = {
   "solution.metric2.detail": "Estimation marché · 2026",
   "solution.metric2.note": "Base de calcul de la valeur chantier sur chaque fiche lead.",
 
+  "solutionType.pvPur": "Ombrières photovoltaïques (100 % PV)",
+  "solutionType.pvPurShort": "PV pur",
+  "solutionType.mixtePvVegetal": "Mix panneaux + végétalisation (loi n° 2025-1129)",
+  "solutionType.mixtePvVegetalShort": "Mix PV + végétal",
+  "solutionType.vegetalisationUniquement": "Végétalisation uniquement (toiture)",
+  "solutionType.vegetalisationUniquementShort": "Végétalisation",
+  "solutionType.audienceSolar": "Installateurs solaires",
+  "solutionType.audienceLandscaper": "Paysagistes",
+
   "home.aperEyebrow": "La loi APER",
   "home.aperTitle": "Une obligation légale qui crée des chantiers",
   "home.aperSummary":
-    "Tout parc de stationnement extérieur d'au moins 1 500 m² doit être équipé d'ombrières solaires couvrant au minimum 50 % de sa superficie (panneaux photovoltaïques sur la totalité de la partie supérieure).",
+    "Tout parc de stationnement extérieur d'au moins 1 500 m² doit être équipé d'ombrières solaires ou végétalisées couvrant au minimum 50 % de sa superficie (panneaux photovoltaïques sur la totalité de la partie supérieure, ou mix panneaux + végétalisation depuis la loi n° 2025-1129 du 26 novembre 2025).",
+  "home.huwartMarket":
+    "La loi Huwart ouvre un nouveau marché : jusqu'à 32,5 % de chaque parking soumis à l'APER peut être végétalisé.",
   "home.aperRef":
-    "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40 · complète l'art. L. 111-19-1 du Code de l'urbanisme (loi climat n° 2021-1104)",
+    "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40 · complète l'art. L. 111-19-1 du Code de l'urbanisme (loi climat n° 2021-1104) · mix panneaux + végétalisation : loi n° 2025-1129 du 26 novembre 2025 (dite loi Huwart)",
   "home.aperRefLaw": "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40",
   "home.aperRefMid": " · complète l'",
   "home.aperRefEnergy": "art. L. 111-19-1 du Code de l'urbanisme",
   "home.aperRefClimate": " (loi climat n° 2021-1104)",
+  "home.aperRefHuwartMid": " · mix panneaux + végétalisation : ",
+  "home.aperRefHuwart": "Loi n° 2025-1129 du 26 novembre 2025 (dite loi Huwart)",
   "home.aperCalendarTitle": "Calendrier de mise en conformité",
   "home.aperCalendarLead": "Parcs privés · seuil selon la superficie du parking",
   "home.aperPublicNote":
@@ -478,6 +494,8 @@ const fr = {
   "rfp.filter.aperEligible": "Éligible APER",
   "rfp.filter.aperBelow": "Sous seuil APER",
   "rfp.filter.ownerType": "Type propriétaire",
+  "rfp.filter.solutionAll": "Solution : toutes",
+  "rfp.filter.solutionLandscaper": "Mix + végétal (paysagistes)",
 
   "account.pill": "Mon compte",
   "account.title": "Mon espace personnel",
@@ -546,6 +564,14 @@ const fr = {
   "simulateur.modeDirect": "Surface en m²",
   "simulateur.modeDimensions": "Longueur × largeur",
   "simulateur.surfaceLabel": "Surface du parking (m²)",
+  "simulateur.solutionTypeLabel": "Type de solution envisagée",
+  "simulateur.solutionPvPur": "100 % photovoltaïque",
+  "simulateur.solutionPvPurHint": "Production maximale",
+  "simulateur.solutionMix": "Mix panneaux + végétalisation",
+  "simulateur.solutionMixHint": "Investissement réduit (loi n° 2025-1129)",
+  "simulateur.pvShareLabel": "Part photovoltaïque de la surface à ombrager",
+  "simulateur.pvShareMin": "17,5 % (minimum légal)",
+  "simulateur.pvShareMax": "50 % (maximum = tout PV)",
   "simulateur.lengthLabel": "Longueur (m)",
   "simulateur.widthLabel": "Largeur (m)",
   "simulateur.calculatedSurface": "Surface calculée :",
@@ -559,6 +585,8 @@ const fr = {
   "simulateur.resultsTitle": "Résultats de simulation",
   "simulateur.resultsDisclaimer":
     "Estimations indicatives — ne constituent pas un devis. Tarif électricité retenu : {price} €/kWh.",
+  "simulateur.resultsDisclaimerVegetation":
+    "Coût végétalisation : estimation indicative ({vegCost} €/m²) — à affiner avec un professionnel du paysage.",
   "simulateur.detailsToggle": "Voir le détail chiffré",
   "simulateur.depositProject": "Déposer un projet",
   "simulateur.asideTitle": "Pour les gestionnaires de parking",
@@ -581,6 +609,13 @@ const fr = {
   "simulateur.detailSurplusSub": "{kwh} kWh × {tariff} c€",
   "simulateur.detailFullInjectionSub": "Scénario vente intégrale (indicatif)",
   "simulateur.detailInstallSub": "{cost} €/kWc marché",
+  "simulateur.detailInstallMixSub": "PV {pv} + végétalisation {veg} ({vegCost} €/m² indicatif)",
+  "simulateur.detailSolarSurfaceMix": "Part PV de la surface totale du parking",
+  "simulateur.detailVegetationCost": "Coût végétalisation (estimation)",
+  "simulateur.detailVegetationCostHint":
+    "Estimation indicative — à affiner avec un bureau d'études paysagers ou un paysagiste.",
+  "simulateur.modeCompareTitle": "Comparaison rapide des deux modes",
+  "simulateur.modeCompareMixCol": "Mix (minimum légal)",
   "simulateur.roiFullInjection": "ROI injection totale :",
   "simulateur.roiYears": "{years} ans",
   "simulateur.annualBenefitMix": "Bénéfice annuel autoconsommation (économies + surplus) :",
@@ -594,6 +629,10 @@ const fr = {
   "simulateur.summaryFineSub": "Sanction réglementaire",
   "simulateur.years": "ans",
   "simulateur.visualParkingTitle": "Votre parking & production",
+  "simulateur.visualMixSplit": "Ombrières PV · {pv} · Végétalisation · {veg} · Reste · {rest}",
+  "simulateur.visualCanopiesPv": "Ombrières PV",
+  "simulateur.visualVegetation": "Végétalisation",
+  "simulateur.visualVegetationSurface": "Surface végétalisée",
   "simulateur.visualCanopies": "Ombrières · {ratio}",
   "simulateur.visualRest": "Reste",
   "simulateur.visualParkingSurface": "Surface parking",

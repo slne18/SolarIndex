@@ -106,6 +106,8 @@ PV_REGISTRY_BAND_LOW = 0.5   # Une install du registre "matche" le parking si sa
 PV_REGISTRY_BAND_HIGH = 1.5  # est dans [0.5×, 1.5×] la puissance estimée de l'ombrière
 PV_OVERLAP_EQUIPE = 0.50     # Recouvrement OSM ≥ 50 % → déjà conforme (équipé)
 PV_OVERLAP_MIN = 0.05        # Recouvrement OSM partiel → doute (à vérifier)
+HUWART_MIN_PANEL_PCT = 17.5  # Loi n° 2025-1129 du 26 novembre 2025 (dite loi Huwart)
+HUWART_SCORE_PENALTY = 0.05
 VISION_COVERAGE_EQUIPE = 45.0  # Recouvrement photo > 45 % → déjà équipé (hors vente)
 ODRE_PAUSE_S = 0.05          # Pause entre requêtes registre (politesse API)
 
@@ -946,6 +948,42 @@ def classify_detection(overlap: float, reg_match: int) -> str:
     return "libre"
 
 
+def huwart_coverage_pct(record: dict) -> float | None:
+    """Recouvrement ombrière % (OSM, ou photo IGN pour urgences analysées)."""
+    flag = str(record.get("flag_urgence", ""))
+    if "URGENCE_ABSOLUE" in flag and record.get("vision_checked_at"):
+        raw = record.get("vision_surface_couverte_pct")
+        return float(raw) if raw is not None else None
+    overlap = record.get("pv_overlap_pct")
+    if overlap is not None:
+        return float(overlap) * 100.0
+    return None
+
+
+def apply_huwart_adjustment(record: dict) -> dict:
+    """
+    Loi n° 2025-1129 du 26 novembre 2025 (dite loi Huwart) : recouvrement ≥ 17,5 % →
+    conformité partielle possible (mix panneaux + végétalisation), non détectable
+    automatiquement → baisse du score.
+    """
+    coverage_pct = huwart_coverage_pct(record)
+    if coverage_pct is None or coverage_pct < HUWART_MIN_PANEL_PCT:
+        return record
+    record["type_solution_recherchee"] = "mixte_pv_vegetal"
+    if record.get("detection") == "equipe":
+        return record
+    vision_pct = record.get("vision_surface_couverte_pct")
+    if vision_pct is not None and vision_pct > VISION_COVERAGE_EQUIPE:
+        return record
+    overlap = record.get("pv_overlap_pct")
+    if overlap is not None and overlap >= PV_OVERLAP_EQUIPE:
+        return record
+    record["score_confiance"] = max(
+        0.3, (record.get("score_confiance") or 0.5) - HUWART_SCORE_PENALTY,
+    )
+    return record
+
+
 # ─── Bypass 3 : propriétaire foncier (MAJIC DGFiP, jointure parcelle open data) ─
 _majic_lookup_cache: dict[str, dict] = {}
 
@@ -1238,7 +1276,7 @@ def apply_vision_result(record: dict, vision: dict,
         record["detection"] = "a_verifier"
     elif not vision["ombriere_detectee"] and vision.get("confidence", 0) >= 0.70:
         record["score_confiance"] = min(0.95, (record.get("score_confiance") or 0.5) + 0.10)
-    return record
+    return apply_huwart_adjustment(record)
 
 
 def run_vision_on(records: list[dict]) -> None:
@@ -1427,6 +1465,7 @@ def supabase_enrich_payload(result: dict) -> dict:
         "telephone", "telephone_exploitant", "telephone_proprietaire",
         "proprietaire_foncier", "siren_proprietaire_foncier",
         "pente_pct", "derogation_pente", "derogation_abf", "score_confiance",
+        "type_solution_recherchee",
     }
     payload = {k: v for k, v in result.items() if k not in skip and k in allowed}
     payload["adresse"] = result.get("adresse_cadastre") or ""
@@ -1580,6 +1619,7 @@ def run_pipeline(dept_id: str, output_path: str,
             "source_surface": "osm",
             "surface_tag_present": surface_tag_present,
             "score_confiance": score_confiance,
+            "type_solution_recherchee": "pv_pur",
             # Flags réglementaires
             "flag_urgence": (
                 "🔴 URGENCE ABSOLUE"
@@ -1645,6 +1685,7 @@ def run_pipeline(dept_id: str, output_path: str,
                 )
             rec["pv_registry_count"] = reg_match
             rec["detection"] = classify_detection(overlap, reg_match)
+            apply_huwart_adjustment(rec)
 
     print("[3/4] 📊 Construction du DataFrame & tri par valeur commerciale...")
     df = pd.DataFrame(records)

@@ -4,6 +4,7 @@ import { getUserProfile } from "@/lib/profile";
 import { canDepositProject } from "@/lib/profile-onboarding";
 import { queryRfpSubmissions, RFP_PAGE_SIZE, createRfpSubmission } from "@/lib/rfp-db";
 import { inferGeoFromAddress, toPublicRfp, type RfpStatut } from "@/lib/rfp";
+import { parseTypeSolutionRecherchee } from "@/lib/solution-type";
 import {
   type RfpDeposantChecklistId,
   validateRfpDeposantDeclarations,
@@ -43,6 +44,7 @@ interface SubmitBody {
   acceptation_sans_garantie?: boolean;
   acceptation_cgu_deposant?: boolean;
   consentement_rgpd?: boolean;
+  type_solution_recherchee?: string;
   checklist?: Partial<Record<RfpDeposantChecklistId, boolean>>;
   ao_publie_officiellement?: boolean;
   lien_consultation_officielle?: string;
@@ -74,6 +76,7 @@ export async function GET(req: Request) {
   const aoPublie = parseOptionalBool(searchParams.get("ao_publie"));
   const parkingEtudie = parseOptionalBool(searchParams.get("parking_etudie"));
   const aperEligible = parseOptionalBool(searchParams.get("aper_eligible"));
+  const solutionPaysagiste = parseOptionalBool(searchParams.get("solution_paysagiste"));
   const typeProprietaire = searchParams.get("type_proprietaire") || undefined;
   const deadlineBefore = searchParams.get("deadline_before") || undefined;
   const deadlineAfter = searchParams.get("deadline_after") || undefined;
@@ -88,6 +91,7 @@ export async function GET(req: Request) {
       placesMin,
       aoPublie,
       parkingEtudie,
+      solutionPaysagiste,
       typeProprietaire,
       deadlineBefore,
       deadlineAfter,
@@ -159,6 +163,10 @@ export async function POST(req: Request) {
   }
   if (!body.adresse?.trim()) {
     return Response.json({ error: "Adresse requise." }, { status: 400, headers: NO_STORE });
+  }
+  const typeSolution = parseTypeSolutionRecherchee(body.type_solution_recherchee);
+  if (!typeSolution) {
+    return Response.json({ error: "Type de solution recherchée invalide." }, { status: 400, headers: NO_STORE });
   }
   const legalCheck = validateRfpDeposantDeclarations({
     est_personne_publique: !!body.est_personne_publique,
@@ -251,6 +259,7 @@ export async function POST(req: Request) {
       type_proprietaire: official.type_proprietaire,
       parking_deja_etudie: official.parking_deja_etudie,
       documents_complementaires: official.documents_complementaires,
+      type_solution_recherchee: typeSolution,
     });
 
     const emailSent = await sendRfpVerificationEmail(

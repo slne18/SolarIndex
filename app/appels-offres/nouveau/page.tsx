@@ -29,6 +29,9 @@ function NouveauRfpForm() {
   const [siret, setSiret] = useState("");
   const [adresse, setAdresse] = useState("");
   const [surfaceEstimee, setSurfaceEstimee] = useState("");
+  const [typeSolutionRecherchee, setTypeSolutionRecherchee] = useState<
+    "pv_pur" | "mixte_pv_vegetal" | "vegetalisation_uniquement"
+  >("pv_pur");
   const [derogPente, setDerogPente] = useState(false);
   const [derogAbf, setDerogAbf] = useState(false);
   const [notesParticulieres, setNotesParticulieres] = useState("");
@@ -117,6 +120,7 @@ function NouveauRfpForm() {
       contact_telephone: fd.get("contact_telephone"),
       adresse: fd.get("adresse"),
       surface_estimee_m2: Number(fd.get("surface_estimee_m2")) || undefined,
+      type_solution_recherchee: typeSolutionRecherchee,
       deja_equipe_partiel: fd.get("deja_equipe_partiel") === "on",
       derogation_pente: fd.get("derogation_pente") === "on",
       derogation_abf: fd.get("derogation_abf") === "on",
@@ -161,6 +165,8 @@ function NouveauRfpForm() {
       e.currentTarget.reset();
       setEntreprise("");
       setSiret("");
+      setSurfaceEstimee("");
+      setTypeSolutionRecherchee("pv_pur");
       setNotesParticulieres("");
       setAoPublie("");
       setLienOfficiel("");
@@ -292,6 +298,32 @@ function NouveauRfpForm() {
             value={surfaceEstimee}
             onChange={(e) => setSurfaceEstimee(e.target.value)}
           />
+        </Field>
+        <Field label="Type de solution recherchée *">
+          <select
+            name="type_solution_recherchee"
+            required
+            disabled={blockedPublic}
+            className="input"
+            value={typeSolutionRecherchee}
+            onChange={(e) =>
+              setTypeSolutionRecherchee(
+                e.target.value as "pv_pur" | "mixte_pv_vegetal" | "vegetalisation_uniquement",
+              )
+            }
+          >
+            <option value="pv_pur">Ombrières photovoltaïques (100 % PV)</option>
+            <option value="mixte_pv_vegetal">
+              Mix panneaux + végétalisation (loi n° 2025-1129 du 26 novembre 2025 — min. 17,5 % PV)
+            </option>
+            <option value="vegetalisation_uniquement">
+              Végétalisation uniquement (toiture / cas spécifique)
+            </option>
+          </select>
+          <p className="mt-2 text-xs leading-relaxed text-slate-400">
+            Un même appel d&apos;offres peut attirer installateurs solaires et paysagistes — les deux
+            peuvent répondre au même projet, éventuellement en équipe.
+          </p>
         </Field>
         <label className="flex items-center gap-2">
           <input type="checkbox" name="deja_equipe_partiel" disabled={blockedPublic} /> Parking déjà équipé

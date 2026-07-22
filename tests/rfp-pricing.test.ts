@@ -36,6 +36,17 @@ function makeRfp(overrides: Partial<RfpSubmissionRow> = {}): RfpSubmissionRow {
     consentement_rgpd: true,
     acheteurs_count: 0,
     acheteurs_max: 5,
+    est_personne_publique: false,
+    acceptation_conditions_deposant: true,
+    deposant_user_id: null,
+    ao_publie_officiellement: false,
+    lien_consultation_officielle: null,
+    date_limite_offres: null,
+    nombre_places: null,
+    type_proprietaire: null,
+    parking_deja_etudie: false,
+    documents_complementaires: null,
+    type_solution_recherchee: "pv_pur",
     ...overrides,
   };
 }

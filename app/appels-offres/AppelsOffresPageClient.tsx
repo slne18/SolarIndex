@@ -123,6 +123,14 @@ function RfpFilters() {
             </option>
           ))}
         </select>
+        <select
+          className={selectCls}
+          value={params.get("solution_paysagiste") ?? ""}
+          onChange={(e) => update("solution_paysagiste", e.target.value)}
+        >
+          <option value="">{t("rfp.filter.solutionAll")}</option>
+          <option value="1">{t("rfp.filter.solutionLandscaper")}</option>
+        </select>
       </div>
     </div>
   );

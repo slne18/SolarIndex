@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { usePersona } from "@/components/PersonaProvider";
 import { RfpOfficialBadge, formatRfpDeadline } from "@/components/RfpCatalogExtras";
+import SolutionTypeBadge from "@/components/SolutionTypeBadge";
 import { nf } from "@/lib/format";
 import { showOwnerProjectDeposit } from "@/lib/persona";
 import type { PublicRfp } from "@/lib/rfp";
+import { resolveRfpSolutionType } from "@/lib/solution-type";
 
 export default function RfpTable({ rfps }: { rfps: PublicRfp[] }) {
   const { persona, ready } = usePersona();
@@ -36,6 +38,7 @@ export default function RfpTable({ rfps }: { rfps: PublicRfp[] }) {
             <th className="px-4 py-3">Projet</th>
             <th className="px-4 py-3">Localisation</th>
             <th className="px-4 py-3">Surface</th>
+            <th className="px-4 py-3">Solution</th>
             <th className="px-4 py-3">Puissance</th>
             <th className="px-4 py-3">Date limite</th>
             {!isOwnerView ? <th className="px-4 py-3">Accès</th> : null}
@@ -63,6 +66,9 @@ export default function RfpTable({ rfps }: { rfps: PublicRfp[] }) {
                 {r.region ? ` · ${r.region}` : ""}
               </td>
               <td className="px-4 py-3">{r.surface_estimee_m2 ? `${nf(r.surface_estimee_m2)} m²` : "—"}</td>
+              <td className="px-4 py-3">
+                <SolutionTypeBadge type={resolveRfpSolutionType(r.type_solution_recherchee)} compact light />
+              </td>
               <td className="px-4 py-3 text-slate-300">
                 {r.solar ? `${nf(r.solar.puissance_kwc)} kWc` : "—"}
               </td>

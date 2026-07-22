@@ -66,7 +66,7 @@ export default function HomeHeroPersona() {
             <>
               <h1 className="text-2xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-4xl lg:text-[2.75rem]">
                 {t("home.chooseTitlePrefix")}
-                <span className="text-gradient underline decoration-solar/50 decoration-2 underline-offset-4">
+                <span className="text-gradient">
                   {t("home.chooseTitleAccent")}
                 </span>
               </h1>

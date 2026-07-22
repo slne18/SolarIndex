@@ -1,4 +1,5 @@
 import { APER_SOLAR_RATIO_LABEL } from "./aper-law";
+import { HUWART_MIN_PANEL_PCT } from "./huwart-law";
 import { formatAperAnnualFine, maxAperAnnualFineEur } from "./aper-fine";
 import { ALL_REGIONS } from "./seo-zones";
 import { SURFACE_APER_MIN_M2 } from "./surface-thresholds";
@@ -7,6 +8,14 @@ import { SURFACE_APER_MIN_M2 } from "./surface-thresholds";
 export const SOLAR_RATIO = 0.5;
 export const M2_PAR_KWC = 5;
 export const COUT_KWC_EUR = 1_200;
+
+/** Estimation indicative aménagement végétal / pergola — à valider avant chiffre ferme. */
+export const COUT_VEGETALISATION_M2 = 150;
+
+export const MIX_PV_MIN_SHARE = HUWART_MIN_PANEL_PCT / 100;
+export const MIX_PV_MAX_SHARE = SOLAR_RATIO;
+
+export type SimulatorSolutionMode = "pv_pur" | "mixte_pv_vegetal";
 
 /** Tarif électricité professionnelle indicatif (€/kWh TTC). */
 export const ELECTRICITY_PRICE_EUR = 0.18;
@@ -65,11 +74,19 @@ export type SimulatorInput = {
   surface: SurfaceInput;
   region: string;
   consumptionKwhPerYear?: number | null;
+  solutionMode?: SimulatorSolutionMode;
+  /** Part PV de la surface totale parking (0,175–0,50) — mode mix uniquement. */
+  pvShareOfTotalSurface?: number;
 };
 
 export type SimulatorResult = {
   surfaceM2: number;
+  solutionMode: SimulatorSolutionMode;
+  pvShareOfTotalSurface: number | null;
+  surfaceObligatoireTotaleM2: number;
   surfaceSolaireM2: number;
+  surfaceVegetaliseeM2: number;
+  restSurfaceM2: number;
   puissanceKwc: number;
   yieldKwhPerKwc: number;
   productionKwhPerYear: number;
@@ -81,12 +98,61 @@ export type SimulatorResult = {
   edfOaFullInjectionEur: number;
   edfOaTariff: number;
   fineAvoidedEur: number;
+  installationCostPvEur: number;
+  installationCostVegetationEur: number;
   installationCostEur: number;
   roiYearsAutoconsommation: number | null;
   roiYearsFullInjection: number | null;
   aperEligible: boolean;
   solarRatioLabel: string;
 };
+
+export function clampMixPvShare(share: number | undefined): number {
+  const raw = share ?? MIX_PV_MIN_SHARE;
+  return Math.min(MIX_PV_MAX_SHARE, Math.max(MIX_PV_MIN_SHARE, raw));
+}
+
+export function resolveSimulatorSurfaces(
+  surfaceM2: number,
+  solutionMode: SimulatorSolutionMode,
+  pvShareOfTotalSurface?: number,
+): {
+  pvShareOfTotalSurface: number | null;
+  surfaceObligatoireTotaleM2: number;
+  surfaceSolaireM2: number;
+  surfaceVegetaliseeM2: number;
+  restSurfaceM2: number;
+  solarRatioLabel: string;
+} {
+  const surfaceObligatoireTotaleM2 = Math.round(surfaceM2 * SOLAR_RATIO);
+  const restSurfaceM2 = Math.max(0, surfaceM2 - surfaceObligatoireTotaleM2);
+
+  if (solutionMode === "mixte_pv_vegetal") {
+    const pvShare = clampMixPvShare(pvShareOfTotalSurface);
+    const surfaceSolaireM2 = Math.round(surfaceM2 * pvShare);
+    const surfaceVegetaliseeM2 = Math.max(0, surfaceObligatoireTotaleM2 - surfaceSolaireM2);
+    const pctLabel = (pvShare * 100).toLocaleString("fr-FR", {
+      maximumFractionDigits: pvShare * 100 < 10 ? 1 : 0,
+    });
+    return {
+      pvShareOfTotalSurface: pvShare,
+      surfaceObligatoireTotaleM2,
+      surfaceSolaireM2,
+      surfaceVegetaliseeM2,
+      restSurfaceM2,
+      solarRatioLabel: `${pctLabel} %`,
+    };
+  }
+
+  return {
+    pvShareOfTotalSurface: null,
+    surfaceObligatoireTotaleM2,
+    surfaceSolaireM2: surfaceObligatoireTotaleM2,
+    surfaceVegetaliseeM2: 0,
+    restSurfaceM2,
+    solarRatioLabel: APER_SOLAR_RATIO_LABEL,
+  };
+}
 
 function edfOaRevenue(productionKwh: number, puissanceKwc: number): number {
   const tariff = edfOaTariffEurPerKwh(puissanceKwc);
@@ -104,8 +170,9 @@ function edfOaRevenue(productionKwh: number, puissanceKwc: number): number {
 
 export function runParkingSolarSimulator(input: SimulatorInput): SimulatorResult {
   const surfaceM2 = Math.round(resolveSurfaceM2(input.surface));
-  const surfaceSolaireM2 = Math.round(surfaceM2 * SOLAR_RATIO);
-  const puissanceKwc = Math.max(1, Math.round(surfaceSolaireM2 / M2_PAR_KWC));
+  const solutionMode = input.solutionMode ?? "pv_pur";
+  const surfaces = resolveSimulatorSurfaces(surfaceM2, solutionMode, input.pvShareOfTotalSurface);
+  const puissanceKwc = Math.max(1, Math.round(surfaces.surfaceSolaireM2 / M2_PAR_KWC));
   const yieldKwhPerKwc =
     REGION_YIELD_KWH_PER_KWC[input.region] ?? REGION_YIELD_KWH_PER_KWC["Île-de-France"]!;
   const productionKwhPerYear = Math.round(puissanceKwc * yieldKwhPerKwc);
@@ -123,7 +190,12 @@ export function runParkingSolarSimulator(input: SimulatorInput): SimulatorResult
   const autoconsommationTotalEur = autoconsommationSavingsEur + surplusRevenueEur;
 
   const edfOaFullInjectionEur = Math.round(edfOaRevenue(productionKwhPerYear, puissanceKwc));
-  const installationCostEur = puissanceKwc * COUT_KWC_EUR;
+  const installationCostPvEur = puissanceKwc * COUT_KWC_EUR;
+  const installationCostVegetationEur =
+    solutionMode === "mixte_pv_vegetal"
+      ? Math.round(surfaces.surfaceVegetaliseeM2 * COUT_VEGETALISATION_M2)
+      : 0;
+  const installationCostEur = installationCostPvEur + installationCostVegetationEur;
   const fineAvoidedEur = surfaceM2 >= SURFACE_APER_MIN_M2 ? maxAperAnnualFineEur(surfaceM2) : 0;
 
   const roiYearsAutoconsommation =
@@ -137,7 +209,12 @@ export function runParkingSolarSimulator(input: SimulatorInput): SimulatorResult
 
   return {
     surfaceM2,
-    surfaceSolaireM2,
+    solutionMode,
+    pvShareOfTotalSurface: surfaces.pvShareOfTotalSurface,
+    surfaceObligatoireTotaleM2: surfaces.surfaceObligatoireTotaleM2,
+    surfaceSolaireM2: surfaces.surfaceSolaireM2,
+    surfaceVegetaliseeM2: surfaces.surfaceVegetaliseeM2,
+    restSurfaceM2: surfaces.restSurfaceM2,
     puissanceKwc,
     yieldKwhPerKwc,
     productionKwhPerYear,
@@ -149,11 +226,13 @@ export function runParkingSolarSimulator(input: SimulatorInput): SimulatorResult
     edfOaFullInjectionEur,
     edfOaTariff: surplusTariff,
     fineAvoidedEur,
+    installationCostPvEur,
+    installationCostVegetationEur,
     installationCostEur,
     roiYearsAutoconsommation,
     roiYearsFullInjection,
     aperEligible: surfaceM2 >= SURFACE_APER_MIN_M2,
-    solarRatioLabel: APER_SOLAR_RATIO_LABEL,
+    solarRatioLabel: surfaces.solarRatioLabel,
   };
 }
 

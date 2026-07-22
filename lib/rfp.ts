@@ -1,5 +1,7 @@
 import { enrichPublicRfp, type PublicRfpEnrichment } from "./rfp-official-fields";
+import { resolveRfpSolutionType } from "./solution-type";
 import type { RfpOwnerType } from "./rfp-official";
+import type { TypeSolutionRecherchee } from "./solution-type";
 import { getRegion } from "./regions";
 
 /** Seuil surface pour la grille tarifaire appels d'offres (aligné APER 10 000 m²). */
@@ -60,6 +62,7 @@ export interface RfpSubmissionRow {
   type_proprietaire: RfpOwnerType | null;
   parking_deja_etudie: boolean;
   documents_complementaires: string | null;
+  type_solution_recherchee: TypeSolutionRecherchee;
   acheteurs_count: number;
   acheteurs_max: number;
 }
@@ -96,6 +99,7 @@ export type PublicRfp = Pick<
   | "nombre_places"
   | "type_proprietaire"
   | "parking_deja_etudie"
+  | "type_solution_recherchee"
 > & {
   prix_acces: number;
   is_owned?: boolean;
@@ -134,6 +138,7 @@ export function toPublicRfp(row: RfpSubmissionRow): PublicRfp {
     nombre_places: extra.nombre_places,
     type_proprietaire: extra.type_proprietaire,
     parking_deja_etudie: extra.parking_deja_etudie,
+    type_solution_recherchee: resolveRfpSolutionType(row.type_solution_recherchee),
     lien_plateforme_connue: extra.lien_plateforme_connue,
     documents_complementaires: extra.documents_complementaires,
     solar: extra.solar,

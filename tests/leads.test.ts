@@ -58,6 +58,7 @@ function makeLead(overrides: Partial<LeadRow> = {}): LeadRow {
     derogation_abf: false,
     pente_pct: null,
     score_confiance: 0.87,
+    type_solution_recherchee: "pv_pur",
     statut: "disponible",
     buyers_count: 0,
     acheteur_id: null,

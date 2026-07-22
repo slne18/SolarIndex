@@ -9,6 +9,7 @@ import {
 } from "@/lib/subscription";
 import { PRIX_RFP, RFP_SURFACE_TIER_M2 } from "@/lib/rfp";
 import { APER_DEADLINES, APER_LAW_LINKS } from "@/lib/aper-law";
+import { HUWART_LAW_LINKS } from "@/lib/huwart-law";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import RegulatoryCountdown from "@/components/RegulatoryCountdown";
 import HomeFeaturedNewsBanner from "@/components/HomeFeaturedNewsBanner";
@@ -42,6 +43,9 @@ function LoiAperSection() {
         <SectionEyebrow>{t("home.aperEyebrow")}</SectionEyebrow>
         <h2 className="section-title mt-3">{t("home.aperTitle")}</h2>
         <p className="section-lead mt-4">{t("home.aperSummary")}</p>
+        <p className="mt-4 max-w-3xl text-base font-medium leading-relaxed text-emerald-800">
+          {t("home.huwartMarket")}
+        </p>
         <p className="mt-3 text-xs text-slate-500">
           <a
             href={APER_LAW_LINKS.loi2023Art40}
@@ -61,6 +65,15 @@ function LoiAperSection() {
             {t("home.aperRefEnergy")}
           </a>
           {t("home.aperRefClimate")}
+          {t("home.aperRefHuwartMid")}
+          <a
+            href={HUWART_LAW_LINKS.loi2025}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-slate-600 underline decoration-slate-400 underline-offset-2 hover:text-solar hover:decoration-solar/60"
+          >
+            {t("home.aperRefHuwart")}
+          </a>
         </p>
 
         <div className="card mt-10 overflow-hidden">

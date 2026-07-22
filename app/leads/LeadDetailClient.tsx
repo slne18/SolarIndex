@@ -14,6 +14,9 @@ import {
   formatVisionOrthoDate,
   isUrgenceAbsolueLead,
 } from "@/lib/pv-overlap";
+import { effectiveLeadScore, isHuwartPartialComplianceLead } from "@/lib/huwart-law";
+import { resolveLeadSolutionType } from "@/lib/solution-type";
+import SolutionTypeBadge from "@/components/SolutionTypeBadge";
 import type { LeadRow, PublicLead } from "@/lib/types";
 import SolarSimulator from "@/components/SolarSimulator";
 import PurchaseButton from "@/components/PurchaseButton";
@@ -106,9 +109,11 @@ function LeadDetailContent({ id }: { id: string }) {
   const backHref = isOwned || fromMonEspace ? MON_ESPACE_PATH : "/leads";
   const backLabel = isOwned || fromMonEspace ? t("leads.detail.backSpace") : t("leads.detail.allLeads");
   const scoreText = fmt(t("leads.detail.confidence"), {
-    score: (lead.score_confiance ?? 0).toFixed(2),
-    level: t(scoreLevelKey(lead.score_confiance)),
+    score: effectiveLeadScore(lead).toFixed(2),
+    level: t(scoreLevelKey(effectiveLeadScore(lead))),
   });
+  const showHuwartNotice = isHuwartPartialComplianceLead(lead);
+  const solutionType = resolveLeadSolutionType(lead);
 
   return (
     <div className="container-x py-10">
@@ -126,6 +131,7 @@ function LeadDetailContent({ id }: { id: string }) {
               <LeadCompletenessBadge pct={lead.completude_pct} />
             ) : null}
             <LeadAvailabilityBadge available={slotOpen} />
+            <SolutionTypeBadge type={solutionType} compact showAudience />
             <span className="text-xs text-slate-400" title={t("leads.detail.confidenceHint")}>
               {scoreText}
             </span>
@@ -168,6 +174,13 @@ function LeadDetailContent({ id }: { id: string }) {
             {recouvrement.detail}
             {recouvrementSource ? ` ${recouvrementSource}` : ""}
           </p>
+
+          {showHuwartNotice ? (
+            <div className="card mt-4 border-sky-500/30 bg-sky-500/5 p-5 text-sm leading-relaxed text-slate-300">
+              <div className="font-semibold text-sky-200">{t("leads.detail.huwartTitle")}</div>
+              <p className="mt-2">{t("leads.detail.huwartBody")}</p>
+            </div>
+          ) : null}
 
           <h2 className="mt-10 text-lg font-semibold">{t("leads.detail.simulatorTitle")}</h2>
           <p className="mb-3 text-sm text-slate-400">{t("leads.detail.simulatorLead")}</p>

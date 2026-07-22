@@ -9,6 +9,8 @@ import { useTranslations } from "@/components/LocaleProvider";
 import LeadAvailabilityBadge from "@/components/LeadAvailabilityBadge";
 import LeadTierBadge from "@/components/LeadTierBadge";
 import LeadCompletenessBadge, { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
+import SolutionTypeBadge from "@/components/SolutionTypeBadge";
+import { resolveLeadSolutionType } from "@/lib/solution-type";
 import { isLeadSlotOpen } from "@/lib/lead-slots";
 
 export function FlagBadge({ flag }: { flag: string }) {
@@ -80,6 +82,9 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
                   <div className="flex flex-wrap gap-1.5">
                     {lead.has_dirigeant ? <LeadDirigeantBadge compact /> : null}
                     <LeadCompletenessBadge pct={lead.completude_pct} compact />
+                    {resolveLeadSolutionType(lead) !== "pv_pur" ? (
+                      <SolutionTypeBadge type={resolveLeadSolutionType(lead)} compact />
+                    ) : null}
                   </div>
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums">{nf(lead.surface_m2)} m²</td>
