@@ -383,9 +383,7 @@ const en: Record<MessageKey, string> = {
   "home.aperEyebrow": "The APER law",
   "home.aperTitle": "A legal obligation that creates projects",
   "home.aperSummary":
-    "Every outdoor parking lot of at least 1,500 m² must be equipped with solar or vegetated canopies covering at least 50% of its area (PV panels on the entire upper surface, or a panel + vegetation mix under Law no. 2025-1129 of 26 November 2025).",
-  "home.huwartMarket":
-    "The Huwart law opens a new market: up to 32.5% of each APER-covered parking lot can be vegetated.",
+    "Every outdoor parking lot of at least 1,500 m² must be equipped with solar or vegetated canopies covering at least 50% of its area: PV panels on the entire upper surface, or — under Law no. 2025-1129 of 26 November 2025 (Huwart law) — a mix with at least 17.5% panel coverage and up to 32.5% vegetation.",
   "home.aperRef":
     "Law no. 2023-175 of 10 March 2023 (APER), art. 40 · complements art. L. 111-19-1 of the Urban Planning Code (climate law no. 2021-1104) · panel + vegetation mix: Law no. 2025-1129 of 26 November 2025 (Huwart law)",
   "home.aperRefLaw": "Law no. 2023-175 of 10 March 2023 (APER), art. 40",

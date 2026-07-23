@@ -14,7 +14,9 @@ describe("lead-confidence", () => {
       derogation_pente: false,
       derogation_abf: false,
       pv_overlap_pct: 0,
+      pv_registry_count: null,
       vision_surface_couverte_pct: null,
+      flag_urgence: "CONFORME_REQUIS",
     });
     const equipement = factors.find((f) => f.label === "Équipement solaire");
     expect(equipement?.ok).toBe(true);
@@ -34,6 +36,7 @@ describe("lead-confidence", () => {
       derogation_pente: false,
       derogation_abf: false,
       pv_overlap_pct: 0,
+      pv_registry_count: null,
       vision_surface_couverte_pct: null,
       flag_urgence: "CONFORME_REQUIS",
     });

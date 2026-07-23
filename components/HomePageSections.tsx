@@ -43,9 +43,6 @@ function LoiAperSection() {
         <SectionEyebrow>{t("home.aperEyebrow")}</SectionEyebrow>
         <h2 className="section-title mt-3">{t("home.aperTitle")}</h2>
         <p className="section-lead mt-4">{t("home.aperSummary")}</p>
-        <p className="mt-4 max-w-3xl text-base font-medium leading-relaxed text-emerald-800">
-          {t("home.huwartMarket")}
-        </p>
         <p className="mt-3 text-xs text-slate-500">
           <a
             href={APER_LAW_LINKS.loi2023Art40}

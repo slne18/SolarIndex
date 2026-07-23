@@ -382,9 +382,7 @@ const fr = {
   "home.aperEyebrow": "La loi APER",
   "home.aperTitle": "Une obligation légale qui crée des chantiers",
   "home.aperSummary":
-    "Tout parc de stationnement extérieur d'au moins 1 500 m² doit être équipé d'ombrières solaires ou végétalisées couvrant au minimum 50 % de sa superficie (panneaux photovoltaïques sur la totalité de la partie supérieure, ou mix panneaux + végétalisation depuis la loi n° 2025-1129 du 26 novembre 2025).",
-  "home.huwartMarket":
-    "La loi Huwart ouvre un nouveau marché : jusqu'à 32,5 % de chaque parking soumis à l'APER peut être végétalisé.",
+    "Tout parc de stationnement extérieur d'au moins 1 500 m² doit être équipé d'ombrières solaires ou végétalisées couvrant au minimum 50 % de sa superficie : panneaux photovoltaïques sur la totalité de la partie supérieure, ou — depuis la loi n° 2025-1129 du 26 novembre 2025 (loi Huwart) — un mix avec au minimum 17,5 % de recouvrement panneaux et jusqu'à 32,5 % de végétalisation.",
   "home.aperRef":
     "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40 · complète l'art. L. 111-19-1 du Code de l'urbanisme (loi climat n° 2021-1104) · mix panneaux + végétalisation : loi n° 2025-1129 du 26 novembre 2025 (dite loi Huwart)",
   "home.aperRefLaw": "Loi n° 2023-175 du 10 mars 2023 (APER), art. 40",
