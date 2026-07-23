@@ -20,6 +20,8 @@ const fr = {
   "auth.emailPlaceholder": "vous@entreprise.fr",
   "auth.signUpConfirmEmail":
     "Compte créé. Vérifiez votre email pour confirmer, puis connectez-vous — vous compléterez ensuite votre profil (installateur, propriétaire ou gérant).",
+  "auth.signUpAutoConfirmed":
+    "Compte activé. Connexion en cours — la messagerie de confirmation est temporairement indisponible.",
   "auth.error.generic": "Échec de l'authentification.",
   "auth.error.emailInvalid":
     "Adresse email refusée. Utilisez une adresse réaliste, par ex. prenom.nom@gmail.com.",
@@ -36,7 +38,7 @@ const fr = {
 
   "onboarding.title": "Complétez votre profil",
   "onboarding.lead":
-    "Quelques informations pour adapter SolarIndex à votre situation. Les champs marqués * sont obligatoires.",
+    "Quelques informations pour adapter SolarIndex à votre situation. L'adresse et la surface du parking seront demandées lors du dépôt d'appel d'offres.",
   "onboarding.userType": "Vous êtes *",
   "onboarding.entrepriseRequired": "Raison sociale",
   "onboarding.entrepriseOptional": "Raison sociale ou nom",
@@ -61,6 +63,8 @@ const fr = {
   "onboarding.surface": "Surface à couvrir (m²)",
   "onboarding.surfaceHint": "Estimation approximative acceptée.",
   "onboarding.projectHorizon": "Horizon projet *",
+  "onboarding.projectHorizonHint":
+    "Où en êtes-vous dans votre réflexion ? Les détails du parking (adresse, surface…) seront saisis lors du dépôt de projet.",
   "onboarding.comment": "Commentaire",
   "onboarding.commentHint": "Facultatif — précisions utiles pour votre dossier.",
   "onboarding.submit": "Enregistrer et continuer",
@@ -498,6 +502,8 @@ const fr = {
   "account.pill": "Mon compte",
   "account.title": "Mon espace personnel",
   "account.lead": "Leads achetés, dépôts de projet, crédits pack et paramètres du compte.",
+  "account.leadOwner":
+    "Suivez vos projets déposés, les installateurs intéressés et les paramètres de votre compte.",
   "account.logout": "Se déconnecter",
   "account.packTitle": "Pack Territoire",
   "account.packCredits": "{remaining} / {quota} crédits leads restants · Standard ou Premium au choix",
@@ -514,6 +520,30 @@ const fr = {
   "account.coverage": "Recouvrement",
   "account.estimatedProject": "chantier estimé",
   "account.viewFull": "Voir la fiche complète",
+  "account.myProjects": "Mes projets déposés",
+  "account.myProjectsHint":
+    "Consultations installateurs publiées ou en cours de modération — nombre d'installateurs ayant demandé vos coordonnées.",
+  "account.myProjectDeposits": "Mes dépôts de projet",
+  "account.myProjectDepositsHint": "Retirez une annonce à tout moment.",
+  "account.noProjects": "Aucun projet déposé pour l'instant.",
+  "account.depositProject": "Déposer un projet",
+  "account.projectResponses": "{count} / {max} installateur(s) ont demandé vos coordonnées",
+  "account.projectResponsesNone": "Aucune réponse pour l'instant — votre projet est visible dans le catalogue.",
+  "account.rfpLegalLink": "Modalités (CGU §5)",
+  "account.rfpWithdraw": "Retirer l'annonce",
+  "account.rfpWithdrawing": "Retrait…",
+  "account.rfpWithdrawConfirm":
+    "Retirer cette annonce du catalogue ? Les installateurs ayant déjà payé l'accès conserveront vos coordonnées.",
+  "account.rfpWithdrawError": "Impossible de retirer l'annonce.",
+  "account.rfpNetworkError": "Erreur réseau.",
+  "account.deleteTitle": "Supprimer mon compte",
+  "account.deleteLead":
+    "Action définitive : vos annonces actives seront retirées, vos coordonnées sur les dépôts passés anonymisées, et votre compte supprimé. Les achats déjà effectués restent archivés côté comptabilité sans lien avec votre identité. Voir",
+  "account.deletePrivacyLink": "Politique de confidentialité",
+  "account.deleteConfirmLabel": "Saisissez « {phrase} » pour confirmer",
+  "account.deleteSubmit": "Supprimer définitivement mon compte",
+  "account.deleting": "Suppression…",
+  "account.deleteError": "Échec de la suppression.",
 
   "verifier.pill": "Outil gratuit",
   "verifier.title": "Vérificateur d'éligibilité APER",

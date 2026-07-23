@@ -102,44 +102,48 @@ function NouveauRfpForm() {
       return;
     }
 
+    const form = e.currentTarget;
     setLoading(true);
     setMsg(null);
-    const token = await getAccessToken();
-    if (!token) {
-      window.location.href = "/login?mode=signup&next=/appels-offres/nouveau";
-      return;
-    }
-
-    const fd = new FormData(e.currentTarget);
-    const body = {
-      entreprise,
-      siret: fd.get("siret"),
-      contact_nom: fd.get("contact_nom"),
-      contact_fonction: fd.get("contact_fonction"),
-      contact_email: fd.get("contact_email"),
-      contact_telephone: fd.get("contact_telephone"),
-      adresse: fd.get("adresse"),
-      surface_estimee_m2: Number(fd.get("surface_estimee_m2")) || undefined,
-      type_solution_recherchee: typeSolutionRecherchee,
-      deja_equipe_partiel: fd.get("deja_equipe_partiel") === "on",
-      derogation_pente: fd.get("derogation_pente") === "on",
-      derogation_abf: fd.get("derogation_abf") === "on",
-      budget_indicatif: fd.get("budget_indicatif"),
-      delai_souhaite: fd.get("delai_souhaite"),
-      notes_particulieres: fd.get("notes_particulieres"),
-      ao_publie_officiellement: aoPublie === "oui",
-      lien_consultation_officielle: aoPublie === "oui" ? lienOfficiel : undefined,
-      date_limite_offres: aoPublie === "oui" ? dateLimiteOffres : undefined,
-      nombre_places: nombrePlaces || undefined,
-      type_proprietaire: typeProprietaire || undefined,
-      parking_deja_etudie: parkingDejaEtudie,
-      documents_complementaires: documentsComplementaires || undefined,
-      est_personne_publique: false,
-      ...declarations,
-      checklist,
-    };
 
     try {
+      const token = await getAccessToken();
+      if (!token) {
+        window.location.href = "/login?mode=signup&next=/appels-offres/nouveau";
+        return;
+      }
+
+      const fd = new FormData(form);
+      const body = {
+        entreprise,
+        siret: fd.get("siret"),
+        contact_nom: fd.get("contact_nom"),
+        contact_fonction: fd.get("contact_fonction"),
+        contact_email: fd.get("contact_email"),
+        contact_telephone: fd.get("contact_telephone"),
+        adresse: fd.get("adresse"),
+        surface_estimee_m2: Number(fd.get("surface_estimee_m2")) || undefined,
+        type_solution_recherchee: typeSolutionRecherchee,
+        deja_equipe_partiel: fd.get("deja_equipe_partiel") === "on",
+        derogation_pente: fd.get("derogation_pente") === "on",
+        derogation_abf: fd.get("derogation_abf") === "on",
+        budget_indicatif: fd.get("budget_indicatif"),
+        delai_souhaite: fd.get("delai_souhaite"),
+        notes_particulieres: fd.get("notes_particulieres"),
+        ao_publie_officiellement: aoPublie === "oui",
+        lien_consultation_officielle: aoPublie === "oui" ? lienOfficiel : undefined,
+        date_limite_offres: aoPublie === "oui" ? dateLimiteOffres : undefined,
+        nombre_places: nombrePlaces || undefined,
+        type_proprietaire: typeProprietaire || undefined,
+        parking_deja_etudie: parkingDejaEtudie,
+        documents_complementaires: documentsComplementaires || undefined,
+        est_personne_publique: false,
+        ...declarations,
+        checklist,
+      };
+
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 60_000);
       const res = await fetch("/api/rfp", {
         method: "POST",
         headers: {
@@ -147,24 +151,34 @@ function NouveauRfpForm() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(body),
+        signal: controller.signal,
       });
-      const data = await res.json();
+      window.clearTimeout(timeoutId);
+
+      const data = await res.json().catch(() => ({}));
       if (res.status === 401) {
         window.location.href = "/login?mode=signup&next=/appels-offres/nouveau";
         return;
       }
       if (!res.ok) {
-        setMsg(data.error || "Échec envoi.");
+        setMsg(data.error || data.details || "Échec envoi.");
         return;
       }
-      setMsg(
-        data.verify_url_dev
-          ? `${data.message} (dev: ${data.verify_url_dev})`
-          : data.message,
-      );
-      e.currentTarget.reset();
+
+      let successMsg = data.message as string;
+      if (data.email_sent === false) {
+        successMsg +=
+          " Si vous ne recevez rien sous 5 minutes, écrivez à contact@solarindex.fr avec l'adresse indiquée dans le formulaire.";
+      }
+      if (data.verify_url_dev) {
+        successMsg += ` (dev : ${data.verify_url_dev})`;
+      }
+      setMsg(successMsg);
+
+      form.reset();
       setEntreprise("");
       setSiret("");
+      setAdresse("");
       setSurfaceEstimee("");
       setTypeSolutionRecherchee("pv_pur");
       setNotesParticulieres("");
@@ -193,8 +207,13 @@ function NouveauRfpForm() {
         acceptation_reference_officielle: false,
         consentement_rgpd: false,
       });
-    } catch {
-      setMsg("Erreur réseau.");
+    } catch (err) {
+      const timedOut = err instanceof Error && err.name === "AbortError";
+      setMsg(
+        timedOut
+          ? "La requête a pris trop de temps (vérification SIRET ou réseau). Réessayez dans un instant."
+          : "Erreur réseau.",
+      );
     } finally {
       setLoading(false);
     }

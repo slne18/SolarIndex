@@ -22,6 +22,8 @@ const en: Record<MessageKey, string> = {
   "auth.emailPlaceholder": "you@company.com",
   "auth.signUpConfirmEmail":
     "Account created. Check your email to confirm, then sign in — you'll complete your profile next (installer, owner or operator).",
+  "auth.signUpAutoConfirmed":
+    "Account activated. Signing you in — confirmation email is temporarily unavailable.",
   "auth.error.generic": "Authentication failed.",
   "auth.error.emailInvalid": "Email rejected. Use a realistic address, e.g. firstname.lastname@gmail.com.",
   "auth.error.emailExists": "An account already exists with this email. Sign in.",
@@ -37,7 +39,7 @@ const en: Record<MessageKey, string> = {
 
   "onboarding.title": "Complete your profile",
   "onboarding.lead":
-    "A few details to tailor SolarIndex to your situation. Fields marked * are required.",
+    "A few details to tailor SolarIndex to your situation. Parking address and area will be collected when you submit a tender.",
   "onboarding.userType": "You are *",
   "onboarding.entrepriseRequired": "Company name",
   "onboarding.entrepriseOptional": "Company or personal name",
@@ -62,6 +64,8 @@ const en: Record<MessageKey, string> = {
   "onboarding.surface": "Area to cover (m²)",
   "onboarding.surfaceHint": "Approximate estimate is fine.",
   "onboarding.projectHorizon": "Project timeline *",
+  "onboarding.projectHorizonHint":
+    "Where are you in your planning? Parking details (address, area…) will be entered when you submit a project.",
   "onboarding.comment": "Comments",
   "onboarding.commentHint": "Optional — any useful details.",
   "onboarding.submit": "Save and continue",
@@ -499,6 +503,8 @@ const en: Record<MessageKey, string> = {
   "account.pill": "My account",
   "account.title": "My personal space",
   "account.lead": "Purchased leads, project submissions, pack credits and account settings.",
+  "account.leadOwner":
+    "Track your submitted projects, interested installers and account settings.",
   "account.logout": "Sign out",
   "account.packTitle": "Territory pack",
   "account.packCredits": "{remaining} / {quota} lead credits remaining · Standard or Premium",
@@ -515,6 +521,30 @@ const en: Record<MessageKey, string> = {
   "account.coverage": "Coverage",
   "account.estimatedProject": "estimated project",
   "account.viewFull": "View full record",
+  "account.myProjects": "My submitted projects",
+  "account.myProjectsHint":
+    "Installer consultations published or awaiting moderation — how many installers requested your contact details.",
+  "account.myProjectDeposits": "My project submissions",
+  "account.myProjectDepositsHint": "Withdraw a listing at any time.",
+  "account.noProjects": "No projects submitted yet.",
+  "account.depositProject": "Submit a project",
+  "account.projectResponses": "{count} / {max} installer(s) requested your contact details",
+  "account.projectResponsesNone": "No responses yet — your project is visible in the catalog.",
+  "account.rfpLegalLink": "Terms (ToS §5)",
+  "account.rfpWithdraw": "Withdraw listing",
+  "account.rfpWithdrawing": "Withdrawing…",
+  "account.rfpWithdrawConfirm":
+    "Remove this listing from the catalog? Installers who already paid for access will keep your contact details.",
+  "account.rfpWithdrawError": "Could not withdraw the listing.",
+  "account.rfpNetworkError": "Network error.",
+  "account.deleteTitle": "Delete my account",
+  "account.deleteLead":
+    "Permanent action: active listings will be removed, contact details on past submissions anonymized, and your account deleted. Past purchases remain archived for accounting without link to your identity. See",
+  "account.deletePrivacyLink": "Privacy policy",
+  "account.deleteConfirmLabel": "Type « {phrase} » to confirm",
+  "account.deleteSubmit": "Permanently delete my account",
+  "account.deleting": "Deleting…",
+  "account.deleteError": "Deletion failed.",
 
   "verifier.pill": "Free tool",
   "verifier.title": "APER eligibility checker",

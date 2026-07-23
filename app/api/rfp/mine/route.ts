@@ -43,6 +43,7 @@ export async function GET(req: Request) {
           ao_publie_officiellement: row.ao_publie_officiellement ?? false,
           date_limite_offres: row.date_limite_offres ?? null,
           acheteurs_count: row.acheteurs_count,
+          acheteurs_max: row.acheteurs_max,
           can_withdraw: ["en_attente_verification", "en_attente_moderation", "publie"].includes(
             row.statut,
           ),

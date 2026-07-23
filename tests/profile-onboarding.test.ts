@@ -56,27 +56,48 @@ describe("validateProfileOnboarding", () => {
       entreprise: "Parking Services",
       siren: "732829320",
       ...baseContact,
-      adresse_parking: "1 rue Test",
-      surface_m2_estimee: 2000,
       projet_delai: "six_mois",
     });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error).toMatch(/propriétaire/i);
   });
 
-  it("accepte un propriétaire avec parking et horizon projet", () => {
+  it("accepte un gérant avec horizon projet sans adresse parking", () => {
+    const result = validateProfileOnboarding({
+      user_type: "gerant_parking",
+      entreprise: "Parking Services",
+      siren: "732829320",
+      proprietaire_nom: "Dupont",
+      ...baseContact,
+      projet_delai: "six_mois",
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.data.adresse_parking).toBeNull();
+      expect(result.data.surface_m2_estimee).toBeNull();
+    }
+  });
+
+  it("accepte un propriétaire avec horizon projet uniquement", () => {
     const result = validateProfileOnboarding({
       user_type: "proprietaire",
       ...baseContact,
-      adresse_parking: "12 av. de la Gare, Bordeaux",
-      surface_m2_estimee: "3 500",
       projet_delai: "reflexion",
       commentaire: "Parking couvert",
     });
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.data.surface_m2_estimee).toBe(3500);
+      expect(result.data.surface_m2_estimee).toBeNull();
       expect(result.data.commentaire).toBe("Parking couvert");
     }
+  });
+
+  it("exige l'horizon projet pour un propriétaire", () => {
+    const result = validateProfileOnboarding({
+      user_type: "proprietaire",
+      ...baseContact,
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toMatch(/horizon|projet/i);
   });
 });

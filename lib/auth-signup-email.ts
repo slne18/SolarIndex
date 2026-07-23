@@ -38,12 +38,16 @@ export async function sendAuthConfirmEmail(to: string, confirmUrl: string): Prom
   );
 
   try {
-    await client.emails.send({
+    const { error } = await client.emails.send({
       from: FROM,
       to,
       subject: "SolarIndex — Confirmez votre compte",
       html,
     });
+    if (error) {
+      console.error("[auth-signup-email] échec envoi:", to, error);
+      return false;
+    }
     return true;
   } catch (e) {
     console.error("[auth-signup-email] échec envoi:", to, e);

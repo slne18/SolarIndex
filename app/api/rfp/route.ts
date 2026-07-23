@@ -11,7 +11,7 @@ import {
 } from "@/lib/rfp-legal";
 import { validateRfpOfficialFields } from "@/lib/rfp-official-fields";
 import { verifySiret } from "@/lib/sirene";
-import { sendRfpVerificationEmail } from "@/lib/email-rfp";
+import { sendRfpVerificationEmail, sendRfpNewSubmissionAdminEmail } from "@/lib/email-rfp";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -268,11 +268,21 @@ export async function POST(req: Request) {
       row.entreprise,
     );
 
+    void sendRfpNewSubmissionAdminEmail(row).catch((err) => {
+      console.error("[POST /api/rfp] admin alert:", err);
+    });
+
+    let message =
+      "Demande enregistrée. Confirmez votre email pour passer en modération (publication sous 48 h).";
+    if (!emailSent) {
+      message +=
+        " L'email de confirmation n'a pas pu être envoyé — vérifiez vos spams ou contactez contact@solarindex.fr.";
+    }
+
     return Response.json(
       {
         id: row.id,
-        message:
-          "Demande enregistrée. Confirmez votre email pour passer en modération (publication sous 48 h).",
+        message,
         email_sent: emailSent,
         verify_url_dev:
           process.env.NODE_ENV === "development" && !emailSent ? verifyUrl : undefined,

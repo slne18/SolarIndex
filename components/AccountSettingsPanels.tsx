@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getAccessToken, getBrowserClient } from "@/lib/supabaseBrowser";
 import { ACCOUNT_DELETE_CONFIRMATION } from "@/lib/account-constants";
+import { nf } from "@/lib/format";
+import { useTranslations } from "@/components/LocaleProvider";
+import { fmt } from "@/lib/i18n/format";
 
 type RfpMine = {
   id: string;
@@ -15,13 +18,16 @@ type RfpMine = {
   departement: string | null;
   surface_estimee_m2: number | null;
   acheteurs_count: number;
+  acheteurs_max: number;
   can_withdraw: boolean;
 };
 
-export function MyRfpSubmissionsPanel() {
+export function MyRfpSubmissionsPanel({ variant = "installer" }: { variant?: "owner" | "installer" }) {
+  const t = useTranslations();
   const [items, setItems] = useState<RfpMine[] | null>(null);
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+  const isOwner = variant === "owner";
 
   async function load() {
     const token = await getAccessToken();
@@ -40,11 +46,7 @@ export function MyRfpSubmissionsPanel() {
   }, []);
 
   async function withdraw(id: string) {
-    if (
-      !window.confirm(
-        "Retirer cette annonce du catalogue ? Les installateurs ayant déjà payé l'accès conserveront vos coordonnées.",
-      )
-    ) {
+    if (!window.confirm(t("account.rfpWithdrawConfirm"))) {
       return;
     }
     setWithdrawingId(id);
@@ -58,70 +60,107 @@ export function MyRfpSubmissionsPanel() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setMsg(data.error || "Impossible de retirer l'annonce.");
+        setMsg(data.error || t("account.rfpWithdrawError"));
         return;
       }
       setMsg(data.message);
       await load();
     } catch {
-      setMsg("Erreur réseau.");
+      setMsg(t("account.rfpNetworkError"));
     } finally {
       setWithdrawingId(null);
     }
   }
 
-  if (items === null) return null;
-  if (items.length === 0) return null;
+  if (items === null) {
+    return isOwner ? <p className="mt-8 text-slate-400">{t("common.loading")}</p> : null;
+  }
+
+  if (!isOwner && items.length === 0) {
+    return null;
+  }
 
   return (
-    <section className="card mt-8 p-5">
-      <h2 className="text-lg font-semibold text-white">Mes dépôts de projet</h2>
-      <p className="mt-1 text-sm text-slate-400">
-        Retirez une annonce à tout moment.{" "}
-        <Link href="/legal/cgu#retrait-annonce" className="text-solar underline">
-          Modalités (CGU §5)
-        </Link>
-      </p>
-      <ul className="mt-4 space-y-3">
-        {items.map((item) => (
-          <li
-            key={item.id}
-            className="rounded-lg border border-white/10 bg-night-800/40 p-4 text-sm"
-          >
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <div className="font-medium text-white">{item.entreprise}</div>
-                <div className="mt-1 text-slate-400">
-                  {item.adresse}
-                  {item.departement ? ` · ${item.departement}` : ""}
+    <section className={`card ${isOwner ? "mt-8" : "mt-8"} p-5`}>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold text-white">
+            {isOwner ? t("account.myProjects") : t("account.myProjectDeposits")}
+          </h2>
+          <p className="mt-1 text-sm text-slate-400">
+            {isOwner ? t("account.myProjectsHint") : t("account.myProjectDepositsHint")}{" "}
+            <Link href="/legal/cgu#retrait-annonce" className="text-solar underline">
+              {t("account.rfpLegalLink")}
+            </Link>
+          </p>
+        </div>
+        {isOwner ? (
+          <Link href="/appels-offres/nouveau" className="btn-solar !py-2 text-sm">
+            {t("account.depositProject")}
+          </Link>
+        ) : null}
+      </div>
+
+      {items.length === 0 ? (
+        <div className="mt-6 rounded-lg border border-dashed border-white/15 p-8 text-center text-slate-400">
+          <p>{t("account.noProjects")}</p>
+          <Link href="/appels-offres/nouveau" className="btn-solar mt-4 inline-flex !py-2 text-sm">
+            {t("account.depositProject")}
+          </Link>
+        </div>
+      ) : (
+        <ul className="mt-4 space-y-3">
+          {items.map((item) => (
+            <li
+              key={item.id}
+              className="rounded-lg border border-white/10 bg-night-800/40 p-4 text-sm"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="font-medium text-white">{item.entreprise}</div>
+                  <div className="mt-1 text-slate-400">
+                    {item.adresse}
+                    {item.departement ? ` · ${item.departement}` : ""}
+                    {item.surface_estimee_m2
+                      ? ` · ${nf(item.surface_estimee_m2)} m²`
+                      : ""}
+                  </div>
+                  <div className="mt-2 text-xs text-slate-500">{item.statut_label}</div>
+                  {item.statut === "publie" ? (
+                    <p className="mt-2 text-sm font-medium text-emerald-300">
+                      {item.acheteurs_count > 0
+                        ? fmt(t("account.projectResponses"), {
+                            count: item.acheteurs_count,
+                            max: item.acheteurs_max,
+                          })
+                        : t("account.projectResponsesNone")}
+                    </p>
+                  ) : null}
                 </div>
-                <div className="mt-2 text-xs text-slate-500">
-                  {item.statut_label}
-                  {item.statut === "publie" && item.acheteurs_count > 0
-                    ? ` · ${item.acheteurs_count} accès installateur(s)`
-                    : ""}
-                </div>
+                {item.can_withdraw ? (
+                  <button
+                    type="button"
+                    disabled={withdrawingId === item.id}
+                    onClick={() => withdraw(item.id)}
+                    className="btn-ghost shrink-0 text-xs text-red-300 hover:text-red-200"
+                  >
+                    {withdrawingId === item.id
+                      ? t("account.rfpWithdrawing")
+                      : t("account.rfpWithdraw")}
+                  </button>
+                ) : null}
               </div>
-              {item.can_withdraw ? (
-                <button
-                  type="button"
-                  disabled={withdrawingId === item.id}
-                  onClick={() => withdraw(item.id)}
-                  className="btn-ghost shrink-0 text-xs text-red-300 hover:text-red-200"
-                >
-                  {withdrawingId === item.id ? "Retrait…" : "Retirer l'annonce"}
-                </button>
-              ) : null}
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      )}
       {msg ? <p className="mt-3 text-sm text-solar-400">{msg}</p> : null}
     </section>
   );
 }
 
 export function DeleteAccountPanel() {
+  const t = useTranslations();
   const [confirmation, setConfirmation] = useState("");
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -142,13 +181,13 @@ export function DeleteAccountPanel() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setMsg(data.error || "Échec de la suppression.");
+        setMsg(data.error || t("account.deleteError"));
         return;
       }
       await getBrowserClient().auth.signOut();
       window.location.href = "/?compte=supprime";
     } catch {
-      setMsg("Erreur réseau.");
+      setMsg(t("account.rfpNetworkError"));
     } finally {
       setLoading(false);
     }
@@ -156,23 +195,21 @@ export function DeleteAccountPanel() {
 
   return (
     <section className="card mt-8 border-red-500/20 p-5">
-      <h2 className="text-lg font-semibold text-white">Supprimer mon compte</h2>
+      <h2 className="text-lg font-semibold text-white">{t("account.deleteTitle")}</h2>
       <p className="mt-2 text-sm leading-relaxed text-slate-400">
-        Action définitive : vos annonces actives seront retirées, vos coordonnées sur les dépôts passés
-        anonymisées, et votre compte supprimé. Les achats déjà effectués (leads, accès appels
-        d&apos;offres) restent archivés côté comptabilité sans lien avec votre identité. Voir{" "}
+        {t("account.deleteLead")}{" "}
         <Link href="/legal/cgu#retrait-annonce" className="text-solar underline">
           CGU §5.3
         </Link>{" "}
-        et la{" "}
+        ·{" "}
         <Link href="/legal/confidentialite" className="text-solar underline">
-          Politique de confidentialité
+          {t("account.deletePrivacyLink")}
         </Link>
         .
       </p>
       <label className="mt-4 block text-sm">
         <span className="mb-1 block text-xs uppercase tracking-wide text-slate-500">
-          Saisissez « {ACCOUNT_DELETE_CONFIRMATION} » pour confirmer
+          {fmt(t("account.deleteConfirmLabel"), { phrase: ACCOUNT_DELETE_CONFIRMATION })}
         </span>
         <input
           value={confirmation}
@@ -187,7 +224,7 @@ export function DeleteAccountPanel() {
         onClick={onDelete}
         className="btn-ghost mt-4 border border-red-500/30 text-red-300 hover:bg-red-500/10 disabled:opacity-40"
       >
-        {loading ? "Suppression…" : "Supprimer définitivement mon compte"}
+        {loading ? t("account.deleting") : t("account.deleteSubmit")}
       </button>
       {msg ? <p className="mt-3 text-sm text-red-300">{msg}</p> : null}
     </section>

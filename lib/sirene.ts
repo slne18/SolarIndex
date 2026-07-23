@@ -15,7 +15,12 @@ export async function verifySiret(siretRaw: string): Promise<SiretLookupResult> 
   }
 
   try {
-    const res = await fetch(`${API_RECHERCHE}?q=${encodeURIComponent(siret)}&page=1&per_page=5`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12_000);
+    const res = await fetch(`${API_RECHERCHE}?q=${encodeURIComponent(siret)}&page=1&per_page=5`, {
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
     if (!res.ok) {
       return { ok: false, siret, siren: "", entreprise: "", error: "API SIREN indisponible." };
     }
@@ -33,7 +38,14 @@ export async function verifySiret(siretRaw: string): Promise<SiretLookupResult> 
     const entreprise =
       match.nom_complet || match.nom_raison_sociale || match.denomination || "";
     return { ok: true, siret, siren, entreprise };
-  } catch {
-    return { ok: false, siret, siren: "", entreprise: "", error: "Erreur réseau SIREN." };
+  } catch (e) {
+    const timedOut = e instanceof Error && e.name === "AbortError";
+    return {
+      ok: false,
+      siret,
+      siren: "",
+      entreprise: "",
+      error: timedOut ? "Vérification SIRET trop lente — réessayez." : "Erreur réseau SIREN.",
+    };
   }
 }

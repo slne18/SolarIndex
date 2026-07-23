@@ -16,6 +16,7 @@ describe("lead-confidence", () => {
       pv_overlap_pct: 0,
       pv_registry_count: null,
       vision_surface_couverte_pct: null,
+      vision_ortho_date: null,
       flag_urgence: "CONFORME_REQUIS",
     });
     const equipement = factors.find((f) => f.label === "Équipement solaire");
@@ -38,6 +39,7 @@ describe("lead-confidence", () => {
       pv_overlap_pct: 0,
       pv_registry_count: null,
       vision_surface_couverte_pct: null,
+      vision_ortho_date: null,
       flag_urgence: "CONFORME_REQUIS",
     });
     const equipement = factors.find((f) => f.label === "Équipement solaire");

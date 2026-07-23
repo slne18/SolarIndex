@@ -84,6 +84,7 @@ export default function LoginPage() {
         }
 
         if (payload.autoConfirmed) {
+          setMsg(t("auth.signUpAutoConfirmed"));
           const { data, error } = await supabase.auth.signInWithPassword({ email, password });
           if (error) throw error;
           const token = data.session?.access_token;

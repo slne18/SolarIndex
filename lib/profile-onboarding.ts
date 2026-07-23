@@ -151,12 +151,6 @@ export function validateProfileOnboarding(
   }
 
   if (userTypeRaw === "proprietaire" || userTypeRaw === "gerant_parking") {
-    if (!adresseParking) {
-      return { ok: false, error: "L'adresse du parking est requise." };
-    }
-    if (surfaceM2 === null) {
-      return { ok: false, error: "Indiquez une surface à couvrir (m²), même approximative." };
-    }
     if (!projetDelai) {
       return { ok: false, error: "Indiquez où en est votre projet (en cours, à 6 mois ou en réflexion)." };
     }

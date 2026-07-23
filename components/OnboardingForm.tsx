@@ -12,7 +12,6 @@ import {
 import { writeStoredPersona } from "@/lib/persona";
 import { useTranslations } from "@/components/LocaleProvider";
 import EntrepriseAutocomplete from "@/components/EntrepriseAutocomplete";
-import AddressAutocomplete from "@/components/AddressAutocomplete";
 import type { MessageKey } from "@/lib/i18n";
 
 const USER_TYPES: UserType[] = ["installateur", "proprietaire", "gerant_parking"];
@@ -64,12 +63,10 @@ export default function OnboardingForm() {
   const [responsableNom, setResponsableNom] = useState("");
   const [telephoneMobile, setTelephoneMobile] = useState("");
   const [telephoneBureau, setTelephoneBureau] = useState("");
-  const [adresseParking, setAdresseParking] = useState("");
-  const [surfaceM2, setSurfaceM2] = useState("");
   const [projetDelai, setProjetDelai] = useState<ProjetDelai | "">("");
   const [commentaire, setCommentaire] = useState("");
 
-  const needsParkingFields = userType === "proprietaire" || userType === "gerant_parking";
+  const needsOwnerHorizon = userType === "proprietaire" || userType === "gerant_parking";
   const needsEntreprise = userType === "installateur" || userType === "gerant_parking";
   const needsOwnerInfo = userType === "gerant_parking";
   const entrepriseRequired = needsEntreprise;
@@ -119,8 +116,6 @@ export default function OnboardingForm() {
           if (p.responsable_nom) setResponsableNom(p.responsable_nom);
           if (p.telephone_mobile) setTelephoneMobile(p.telephone_mobile);
           if (p.telephone_bureau) setTelephoneBureau(p.telephone_bureau);
-          if (p.adresse_parking) setAdresseParking(p.adresse_parking);
-          if (p.surface_m2_estimee) setSurfaceM2(String(p.surface_m2_estimee));
           if (p.projet_delai) setProjetDelai(p.projet_delai);
           if (p.commentaire) setCommentaire(p.commentaire);
         }
@@ -164,8 +159,6 @@ export default function OnboardingForm() {
           responsable_nom: responsableNom,
           telephone_mobile: telephoneMobile,
           telephone_bureau: telephoneBureau,
-          adresse_parking: adresseParking,
-          surface_m2_estimee: surfaceM2,
           projet_delai: projetDelai || null,
           commentaire,
         }),
@@ -389,54 +382,35 @@ export default function OnboardingForm() {
                   </Field>
                 </div>
 
-                {needsParkingFields ? (
-                  <>
-                    <Field label={t("onboarding.parkingAddress")} required>
-                      <AddressAutocomplete
-                        required
-                        value={adresseParking}
-                        onChange={setAdresseParking}
-                      />
-                    </Field>
-
-                    <Field label={t("onboarding.surface")} required hint={t("onboarding.surfaceHint")}>
-                      <input
-                        required
-                        inputMode="numeric"
-                        value={surfaceM2}
-                        onChange={(e) => setSurfaceM2(e.target.value.replace(/[^\d\s]/g, ""))}
-                        className="input"
-                      />
-                    </Field>
-
-                    <fieldset className="space-y-3">
-                      <legend className="text-xs font-semibold uppercase tracking-wide text-slate-300">
-                        {t("onboarding.projectHorizon")}
-                      </legend>
-                      <div className="grid gap-3 sm:grid-cols-3">
-                        {PROJET_DELAIS.map((value) => (
-                          <label
-                            key={value}
-                            className={`flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-3 text-sm ${
-                              projetDelai === value
-                                ? "border-solar/60 bg-solar/10 text-white"
-                                : "border-white/10 text-slate-300"
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name="projet_delai"
-                              required={needsParkingFields}
-                              className="accent-solar"
-                              checked={projetDelai === value}
-                              onChange={() => setProjetDelai(value)}
-                            />
-                            {t(`projet.${value}` as MessageKey)}
-                          </label>
-                        ))}
-                      </div>
-                    </fieldset>
-                  </>
+                {needsOwnerHorizon ? (
+                  <fieldset className="space-y-3">
+                    <legend className="text-xs font-semibold uppercase tracking-wide text-slate-300">
+                      {t("onboarding.projectHorizon")}
+                    </legend>
+                    <p className="text-xs text-slate-500">{t("onboarding.projectHorizonHint")}</p>
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      {PROJET_DELAIS.map((value) => (
+                        <label
+                          key={value}
+                          className={`flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-3 text-sm ${
+                            projetDelai === value
+                              ? "border-solar/60 bg-solar/10 text-white"
+                              : "border-white/10 text-slate-300"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="projet_delai"
+                            required={needsOwnerHorizon}
+                            className="accent-solar"
+                            checked={projetDelai === value}
+                            onChange={() => setProjetDelai(value)}
+                          />
+                          {t(`projet.${value}` as MessageKey)}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
                 ) : null}
 
                 <Field label={t("onboarding.comment")} hint={t("onboarding.commentHint")}>

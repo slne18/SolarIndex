@@ -33,7 +33,11 @@ async function sendOne(to: string, subject: string, html: string): Promise<boole
     return false;
   }
   try {
-    await client.emails.send({ from: FROM, to, subject, html });
+    const { error } = await client.emails.send({ from: FROM, to, subject, html });
+    if (error) {
+      console.error("[email-rfp] échec envoi:", to, error);
+      return false;
+    }
     return true;
   } catch (e) {
     console.error("[email-rfp] échec envoi:", to, e);
@@ -68,6 +72,36 @@ export async function sendRfpVerificationEmail(
     <p style="color:#94a3b8;font-size:12px;">Si le bouton ne fonctionne pas :<br/><a href="${verifyUrl}" style="color:#64748b;word-break:break-all;">${verifyUrl}</a></p>`,
   );
   return sendOne(to, "SolarIndex — Confirmez votre email (consultation installateurs)", html);
+}
+
+/** Alerte admin : nouveau dépôt (email déposant pas encore confirmé). */
+export async function sendRfpNewSubmissionAdminEmail(rfp: RfpSubmissionRow): Promise<number> {
+  const admins = adminEmailRecipients();
+  if (!admins.length) return 0;
+  const adminUrl = `${APP_URL}/admin`;
+  const html = shell(
+    "Nouveau dépôt de projet",
+    `<p style="color:#475569;">Un gérant ou propriétaire vient de soumettre une consultation installateurs. Le déposant doit encore confirmer son email.</p>
+    ${rfpSummary(rfp)}
+    <p style="color:#475569;">Contact : ${rfp.contact_nom} · ${rfp.contact_email} · ${rfp.contact_telephone}</p>
+    <p style="margin:24px 0;">
+      <a href="${adminUrl}" style="background:#0f172a;color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600;display:inline-block;">Ouvrir l'admin</a>
+    </p>
+    <p style="color:#94a3b8;font-size:12px;">Vous recevrez une seconde alerte lorsque l'email sera confirmé (file de modération). ID : ${rfp.id}</p>`,
+  );
+  let sent = 0;
+  for (const email of admins) {
+    if (
+      await sendOne(
+        email,
+        `[SolarIndex] Nouveau dépôt RFP — ${rfp.entreprise || "projet"} (email à confirmer)`,
+        html,
+      )
+    ) {
+      sent += 1;
+    }
+  }
+  return sent;
 }
 
 /** Alerte admin : nouveau projet en file de modération. */
