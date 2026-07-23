@@ -32,6 +32,22 @@ const en: Record<MessageKey, string> = {
     "Email sending limit reached. Wait about 1 hour, or sign in if the account already exists.",
   "auth.error.emailSend":
     "Could not send the confirmation email. Try again in a few minutes or contact support.",
+  "auth.forgotLink": "Forgot password?",
+  "auth.forgotTitle": "Forgot password",
+  "auth.forgotLead": "Enter your email — we'll send you a link to choose a new password.",
+  "auth.forgotSubmit": "Send reset link",
+  "auth.forgotSuccess":
+    "If an account exists with this email, you'll receive a link to choose a new password.",
+  "auth.backToSignIn": "← Back to sign in",
+  "auth.resetTitle": "New password",
+  "auth.resetLead": "Choose a password with at least 6 characters.",
+  "auth.resetNewPassword": "New password",
+  "auth.resetConfirmPassword": "Confirm password",
+  "auth.resetSubmit": "Save",
+  "auth.resetSubmitting": "Saving…",
+  "auth.resetSuccess": "Password updated. Redirecting to sign in…",
+  "auth.resetInvalidLink": "Invalid or expired link.",
+  "auth.resetMismatch": "Passwords do not match.",
 
   "header.createSpace": "Create my space",
   "header.signIn": "Sign in",

@@ -54,3 +54,38 @@ export async function sendAuthConfirmEmail(to: string, confirmUrl: string): Prom
     return false;
   }
 }
+
+/** Email de réinitialisation de mot de passe (Resend — pas le SMTP Supabase). */
+export async function sendAuthPasswordResetEmail(to: string, resetUrl: string): Promise<boolean> {
+  const client = getResend();
+  if (!client) {
+    console.warn("[auth-signup-email] RESEND_API_KEY absent — email de réinitialisation non envoyé.");
+    return false;
+  }
+
+  const html = shell(
+    "Réinitialisez votre mot de passe",
+    `<p style="color:#475569;">Vous avez demandé à réinitialiser votre mot de passe SolarIndex. Cliquez ci-dessous pour en choisir un nouveau.</p>
+    <p style="margin:24px 0;">
+      <a href="${resetUrl}" style="background:#f59e0b;color:#0f172a;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600;display:inline-block;">Choisir un nouveau mot de passe</a>
+    </p>
+    <p style="color:#94a3b8;font-size:12px;">Si vous n'êtes pas à l'origine de cette demande, ignorez cet email. Lien direct :<br/><a href="${resetUrl}" style="color:#64748b;word-break:break-all;">${resetUrl}</a></p>`,
+  );
+
+  try {
+    const { error } = await client.emails.send({
+      from: FROM,
+      to,
+      subject: "SolarIndex — Réinitialisation de mot de passe",
+      html,
+    });
+    if (error) {
+      console.error("[auth-signup-email] échec reset:", to, error);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error("[auth-signup-email] échec reset:", to, e);
+    return false;
+  }
+}

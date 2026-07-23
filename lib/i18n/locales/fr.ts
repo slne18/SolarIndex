@@ -31,6 +31,22 @@ const fr = {
     "Limite d'envoi d'emails atteinte. Attendez environ 1 h, ou connectez-vous si le compte existe déjà.",
   "auth.error.emailSend":
     "L'email de confirmation n'a pas pu être envoyé. Réessayez dans quelques minutes ou contactez le support.",
+  "auth.forgotLink": "Mot de passe oublié ?",
+  "auth.forgotTitle": "Mot de passe oublié",
+  "auth.forgotLead": "Indiquez votre email — nous vous enverrons un lien pour choisir un nouveau mot de passe.",
+  "auth.forgotSubmit": "Envoyer le lien",
+  "auth.forgotSuccess":
+    "Si un compte existe avec cet email, vous recevrez un lien pour choisir un nouveau mot de passe.",
+  "auth.backToSignIn": "← Retour à la connexion",
+  "auth.resetTitle": "Nouveau mot de passe",
+  "auth.resetLead": "Choisissez un mot de passe d'au moins 6 caractères.",
+  "auth.resetNewPassword": "Nouveau mot de passe",
+  "auth.resetConfirmPassword": "Confirmer le mot de passe",
+  "auth.resetSubmit": "Enregistrer",
+  "auth.resetSubmitting": "Enregistrement…",
+  "auth.resetSuccess": "Mot de passe mis à jour. Redirection vers la connexion…",
+  "auth.resetInvalidLink": "Lien invalide ou expiré.",
+  "auth.resetMismatch": "Les deux mots de passe ne correspondent pas.",
 
   "header.createSpace": "Créer mon espace",
   "header.signIn": "Connexion",

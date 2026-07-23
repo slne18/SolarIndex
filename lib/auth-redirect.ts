@@ -31,3 +31,8 @@ export function authConfirmRedirectUrl(next: string): string {
   const safeNext = next.startsWith("/") ? next : "/onboarding";
   return `${origin}/auth/confirm?next=${encodeURIComponent(safeNext)}`;
 }
+
+export function authPasswordResetRedirectUrl(): string {
+  if (typeof window === "undefined") return "/auth/update-password";
+  return `${window.location.origin}/auth/update-password`;
+}

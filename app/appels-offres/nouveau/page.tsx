@@ -166,10 +166,6 @@ function NouveauRfpForm() {
       }
 
       let successMsg = data.message as string;
-      if (data.email_sent === false) {
-        successMsg +=
-          " Si vous ne recevez rien sous 5 minutes, écrivez à contact@solarindex.fr avec l'adresse indiquée dans le formulaire.";
-      }
       if (data.verify_url_dev) {
         successMsg += ` (dev : ${data.verify_url_dev})`;
       }

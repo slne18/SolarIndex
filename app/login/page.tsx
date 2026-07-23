@@ -3,14 +3,20 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBrowserClient } from "@/lib/supabaseBrowser";
-import { authConfirmRedirectUrl, resolvePostAuthRedirect } from "@/lib/auth-redirect";
+import {
+  authConfirmRedirectUrl,
+  authPasswordResetRedirectUrl,
+  resolvePostAuthRedirect,
+} from "@/lib/auth-redirect";
 import { useTranslations } from "@/components/LocaleProvider";
 import PasswordInput from "@/components/PasswordInput";
 import type { MessageKey } from "@/lib/i18n";
 
+type AuthMode = "signin" | "signup" | "forgot";
+
 export default function LoginPage() {
   const t = useTranslations();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<AuthMode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,7 +25,9 @@ export default function LoginPage() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const sp = new URLSearchParams(window.location.search);
-    if (sp.get("mode") === "signup") setMode("signup");
+    const urlMode = sp.get("mode");
+    if (urlMode === "signup") setMode("signup");
+    if (urlMode === "forgot") setMode("forgot");
   }, []);
 
   function defaultNext(isSignup: boolean): string {
@@ -69,6 +77,27 @@ export default function LoginPage() {
     const supabase = getBrowserClient();
     const next = defaultNext(mode === "signup");
     try {
+      if (mode === "forgot") {
+        const res = await fetch("/api/auth/forgot-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            redirectTo: authPasswordResetRedirectUrl(),
+          }),
+        });
+        const payload = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(payload.error || t("auth.error.generic"));
+        }
+        let text = payload.message || t("auth.forgotSuccess");
+        if (payload.reset_url_dev) {
+          text += ` (dev : ${payload.reset_url_dev})`;
+        }
+        setMsg(text);
+        return;
+      }
+
       if (mode === "signup") {
         const redirectTo = authConfirmRedirectUrl(`/onboarding?next=${encodeURIComponent(next)}`);
         const res = await fetch("/api/auth/signup", {
@@ -96,19 +125,38 @@ export default function LoginPage() {
         setMsg(t("auth.signUpConfirmEmail"));
         setMode("signin");
         return;
-      } else {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        const token = data.session?.access_token;
-        if (!token) throw new Error("Session introuvable.");
-        await redirectAfterAuth(token, false);
       }
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      const token = data.session?.access_token;
+      if (!token) throw new Error("Session introuvable.");
+      await redirectAfterAuth(token, false);
     } catch (err) {
       setMsg(authErrorMessage(err));
     } finally {
       setLoading(false);
     }
   }
+
+  const title =
+    mode === "signin"
+      ? t("auth.signInTitle")
+      : mode === "signup"
+        ? t("auth.signUpTitle")
+        : t("auth.forgotTitle");
+  const lead =
+    mode === "signin"
+      ? t("auth.signInLead")
+      : mode === "signup"
+        ? t("auth.signUpLead")
+        : t("auth.forgotLead");
+  const submitLabel =
+    mode === "signin"
+      ? t("auth.signInSubmit")
+      : mode === "signup"
+        ? t("auth.signUpSubmit")
+        : t("auth.forgotSubmit");
 
   return (
     <div className="container-x py-16">
@@ -117,12 +165,8 @@ export default function LoginPage() {
           {t("common.backHome")}
         </Link>
         <div className="card mt-4 p-7">
-          <h1 className="text-2xl font-bold tracking-tight">
-            {mode === "signin" ? t("auth.signInTitle") : t("auth.signUpTitle")}
-          </h1>
-          <p className="mt-1 text-sm text-slate-400">
-            {mode === "signin" ? t("auth.signInLead") : t("auth.signUpLead")}
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+          <p className="mt-1 text-sm text-slate-400">{lead}</p>
 
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
             <Field label={t("auth.email")}>
@@ -133,38 +177,67 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="input"
                 placeholder={t("auth.emailPlaceholder")}
-              />
-            </Field>
-            <Field label={t("auth.password")}>
-              <PasswordInput
-                value={password}
-                onChange={setPassword}
-                showLabel={t("auth.showPassword")}
-                hideLabel={t("auth.hidePassword")}
-                required
+                autoComplete="email"
               />
             </Field>
 
+            {mode !== "forgot" ? (
+              <Field label={t("auth.password")}>
+                <PasswordInput
+                  value={password}
+                  onChange={setPassword}
+                  showLabel={t("auth.showPassword")}
+                  hideLabel={t("auth.hidePassword")}
+                  required
+                />
+              </Field>
+            ) : null}
+
+            {mode === "signin" ? (
+              <p className="text-right">
+                <button
+                  type="button"
+                  className="text-sm text-slate-400 hover:text-solar"
+                  onClick={() => {
+                    setMode("forgot");
+                    setMsg(null);
+                  }}
+                >
+                  {t("auth.forgotLink")}
+                </button>
+              </p>
+            ) : null}
+
             <button type="submit" disabled={loading} className="btn-solar w-full">
-              {loading
-                ? "…"
-                : mode === "signin"
-                  ? t("auth.signInSubmit")
-                  : t("auth.signUpSubmit")}
+              {loading ? "…" : submitLabel}
             </button>
           </form>
 
           {msg && <p className="mt-4 text-sm text-solar-400">{msg}</p>}
 
-          <button
-            onClick={() => {
-              setMode(mode === "signin" ? "signup" : "signin");
-              setMsg(null);
-            }}
-            className="mt-5 text-sm text-slate-400 hover:text-white"
-          >
-            {mode === "signin" ? t("auth.switchToSignUp") : t("auth.switchToSignIn")}
-          </button>
+          {mode === "forgot" ? (
+            <button
+              type="button"
+              onClick={() => {
+                setMode("signin");
+                setMsg(null);
+              }}
+              className="mt-5 text-sm text-slate-400 hover:text-white"
+            >
+              {t("auth.backToSignIn")}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setMode(mode === "signin" ? "signup" : "signin");
+                setMsg(null);
+              }}
+              className="mt-5 text-sm text-slate-400 hover:text-white"
+            >
+              {mode === "signin" ? t("auth.switchToSignUp") : t("auth.switchToSignIn")}
+            </button>
+          )}
         </div>
       </div>
     </div>
