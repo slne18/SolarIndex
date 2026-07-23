@@ -35,7 +35,9 @@ type TerritoireLeadRow = {
   id_parcelle: string | null;
   adresse: string | null;
   detection: DetectionEtat;
+  pv_overlap_pct: number | null;
   vision_surface_couverte_pct: number | null;
+  vision_checked_at: string | null;
   surface_tag_present: boolean | null;
   source_surface: SourceSurface | null;
 };
@@ -65,7 +67,7 @@ async function fetchSellableLeads(): Promise<TerritoireLeadRow[]> {
     const { data, error } = await supabase
       .from("leads")
       .select(
-        "latitude, longitude, departement, flag_urgence, valeur_chantier_eur, surface_m2, score_confiance, statut, buyers_count, siren, id_parcelle, adresse, detection, vision_surface_couverte_pct, surface_tag_present, source_surface",
+        "latitude, longitude, departement, flag_urgence, valeur_chantier_eur, surface_m2, score_confiance, statut, buyers_count, siren, id_parcelle, adresse, detection, pv_overlap_pct, vision_surface_couverte_pct, vision_checked_at, surface_tag_present, source_surface",
       )
       .eq("statut", "disponible")
       .lt("buyers_count", MAX_BUYERS_PER_LEAD)
