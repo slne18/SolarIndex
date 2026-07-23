@@ -335,6 +335,9 @@ const en: Record<MessageKey, string> = {
     "Price for a single purchase. With an active Territory pack, checkout may use an included credit instead of Stripe payment. Guarantee: {guarantee}",
   "leads.detail.purchased": "Lead purchased — also find it in",
   "leads.detail.mySpace": "My account",
+  "leads.detail.purchaseInstallerOnly":
+    "Automated lead purchases are for installers only. Owners and parking operators can submit a parking project instead.",
+  "leads.detail.depositProjectLink": "Submit a project",
   "leads.detail.whyLead": "Why this lead?",
   "leads.detail.whyLeadBody":
     "Subject to canopy obligation (APER law). Non-compliance exposes the owner to a fine up to {fine}. Estimated project value: {value}.",
@@ -546,6 +549,7 @@ const en: Record<MessageKey, string> = {
   "account.depositProject": "Submit a project",
   "account.projectResponses": "{count} / {max} installer(s) requested your contact details",
   "account.projectResponsesNone": "No responses yet — your project is visible in the catalog.",
+  "account.viewPublishedProject": "View published listing",
   "account.rfpLegalLink": "Terms (ToS §5)",
   "account.rfpWithdraw": "Withdraw listing",
   "account.rfpWithdrawing": "Withdrawing…",

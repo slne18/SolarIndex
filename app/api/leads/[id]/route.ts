@@ -3,6 +3,8 @@ import { getCatalogAccess } from "@/lib/catalog-access";
 import { getLeadById, userOwnsLead } from "@/lib/db";
 import { isLeadSellable, toOwnedLead, toPublicLead } from "@/lib/leads";
 import { isLeadSlotOpen, MAX_BUYERS_PER_LEAD } from "@/lib/lead-slots";
+import { canPurchaseLeads } from "@/lib/profile-onboarding";
+import { getUserProfile } from "@/lib/profile";
 import { ANONYMOUS_CATALOG_ACCESS } from "@/lib/preview-catalog";
 
 export const dynamic = "force-dynamic";
@@ -37,6 +39,8 @@ export async function GET(
   }
 
   const isOwned = userId ? await userOwnsLead(params.id, userId) : false;
+  const profile = userId ? await getUserProfile(userId) : null;
+  const canPurchase = profile ? canPurchaseLeads(profile.user_type) : false;
 
   if (!isOwned && !isLeadSlotOpen(lead)) {
     return Response.json(
@@ -58,6 +62,7 @@ export async function GET(
         ? { ...toOwnedLead(lead), max_buyers: MAX_BUYERS_PER_LEAD, isOwned: true }
         : { ...toPublicLead(lead), isOwned: false },
       is_owned: isOwned,
+      can_purchase: canPurchase,
       catalog: {
         departementLock: access.departementLock,
         sampleRemaining: access.sampleRemaining,

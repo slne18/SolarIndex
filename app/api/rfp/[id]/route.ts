@@ -1,8 +1,10 @@
 import { getBearerToken } from "@/lib/auth";
+import { getUserProfile } from "@/lib/profile";
+import { canPurchaseRfpAccess } from "@/lib/profile-onboarding";
 import { getAnonClient } from "@/lib/supabase";
 import { getRfpById, userOwnsRfp } from "@/lib/rfp-db";
 import { toOwnedRfp, toPublicRfp } from "@/lib/rfp";
-import { withdrawRfpSubmission } from "@/lib/rfp-withdrawal";
+import { isRfpDeposant, withdrawRfpSubmission } from "@/lib/rfp-withdrawal";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -30,17 +32,26 @@ export async function GET(
 
   const token = getBearerToken(req);
   let userId: string | null = null;
+  let userEmail = "";
   if (token) {
     const { data } = await getAnonClient().auth.getUser(token);
     userId = data.user?.id ?? null;
+    userEmail = data.user?.email ?? "";
   }
 
+  const profile = userId ? await getUserProfile(userId) : null;
+  const isDeposant = userId ? isRfpDeposant(row, userId, userEmail) : false;
   const isOwned = userId ? await userOwnsRfp(params.id, userId) : false;
+  const showContacts = isOwned || isDeposant;
+  const canPurchase =
+    !!profile && canPurchaseRfpAccess(profile.user_type) && !isDeposant;
 
   return Response.json(
     {
-      rfp: isOwned ? toOwnedRfp(row) : toPublicRfp(row),
+      rfp: showContacts ? toOwnedRfp(row) : toPublicRfp(row),
       is_owned: isOwned,
+      is_deposant: isDeposant,
+      can_purchase: canPurchase,
     },
     { headers: NO_STORE },
   );

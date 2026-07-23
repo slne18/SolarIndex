@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { validateProfileOnboarding } from "@/lib/profile-onboarding";
+import {
+  canDepositProject,
+  canPurchaseLeads,
+  canPurchaseRfpAccess,
+  validateProfileOnboarding,
+} from "@/lib/profile-onboarding";
 
 const baseContact = {
   responsable_prenom: "Marie",
@@ -99,5 +104,22 @@ describe("validateProfileOnboarding", () => {
     });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error).toMatch(/horizon|projet/i);
+  });
+});
+
+describe("catalog purchase access", () => {
+  it("autorise l'achat leads et RFP aux installateurs", () => {
+    expect(canPurchaseLeads("installateur")).toBe(true);
+    expect(canPurchaseRfpAccess("installateur")).toBe(true);
+  });
+
+  it("refuse l'achat aux propriétaires et gérants", () => {
+    expect(canPurchaseLeads("proprietaire")).toBe(false);
+    expect(canPurchaseLeads("gerant_parking")).toBe(false);
+    expect(canPurchaseRfpAccess("proprietaire")).toBe(false);
+    expect(canPurchaseRfpAccess("gerant_parking")).toBe(false);
+    expect(canDepositProject("proprietaire")).toBe(true);
+    expect(canDepositProject("gerant_parking")).toBe(true);
+    expect(canDepositProject("installateur")).toBe(false);
   });
 });

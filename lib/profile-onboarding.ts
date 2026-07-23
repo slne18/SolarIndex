@@ -191,3 +191,13 @@ export function userTypeToPersona(userType: UserType): "installer" | "owner" {
 export function canDepositProject(userType: UserType | null | undefined): boolean {
   return userType === "proprietaire" || userType === "gerant_parking";
 }
+
+/** Achat de leads automatisés et Pack Territoire — installateurs uniquement. */
+export function canPurchaseLeads(userType: UserType | null | undefined): boolean {
+  return userType === "installateur";
+}
+
+/** Achat d'accès aux coordonnées d'un appel d'offres — installateurs uniquement. */
+export function canPurchaseRfpAccess(userType: UserType | null | undefined): boolean {
+  return userType === "installateur";
+}

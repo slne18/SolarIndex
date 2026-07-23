@@ -334,6 +334,9 @@ const fr = {
     "Prix pour un achat unitaire. Avec un Pack Territoire actif, le checkout peut utiliser un crédit inclus à la place du paiement Stripe. Garantie : {guarantee}",
   "leads.detail.purchased": "Lead acheté — retrouvez-le aussi dans",
   "leads.detail.mySpace": "Mon espace",
+  "leads.detail.purchaseInstallerOnly":
+    "L'achat de leads automatisés est réservé aux installateurs. Propriétaires et gérants peuvent déposer un projet parking.",
+  "leads.detail.depositProjectLink": "Déposer un projet",
   "leads.detail.whyLead": "Pourquoi ce lead ?",
   "leads.detail.whyLeadBody":
     "Soumis à l'obligation d'ombrières (loi APER). Le non-équipement expose le propriétaire à une amende pouvant atteindre {fine}. Valeur de chantier estimée : {value}.",
@@ -545,6 +548,7 @@ const fr = {
   "account.depositProject": "Déposer un projet",
   "account.projectResponses": "{count} / {max} installateur(s) ont demandé vos coordonnées",
   "account.projectResponsesNone": "Aucune réponse pour l'instant — votre projet est visible dans le catalogue.",
+  "account.viewPublishedProject": "Voir la fiche publiée",
   "account.rfpLegalLink": "Modalités (CGU §5)",
   "account.rfpWithdraw": "Retirer l'annonce",
   "account.rfpWithdrawing": "Retrait…",

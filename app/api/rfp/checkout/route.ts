@@ -1,7 +1,10 @@
 import { getBearerToken } from "@/lib/auth";
+import { getUserProfile } from "@/lib/profile";
+import { canPurchaseRfpAccess } from "@/lib/profile-onboarding";
 import { getAnonClient } from "@/lib/supabase";
 import { getRfpById, userOwnsRfp } from "@/lib/rfp-db";
 import { computeRfpAccessPrice } from "@/lib/rfp";
+import { isRfpDeposant } from "@/lib/rfp-withdrawal";
 import { getStripe, isStripeConfigured } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
@@ -32,9 +35,26 @@ export async function POST(req: Request) {
   }
   const user = userData.user;
 
+  const profile = await getUserProfile(user.id);
+  if (!profile || !canPurchaseRfpAccess(profile.user_type)) {
+    return Response.json(
+      {
+        error:
+          "L'achat d'accès aux appels d'offres est réservé aux installateurs. Déposez votre projet depuis Mon espace si vous êtes propriétaire ou gérant.",
+      },
+      { status: 403, headers: NO_STORE },
+    );
+  }
+
   const row = await getRfpById(rfpId);
   if (!row || row.statut !== "publie") {
     return Response.json({ error: "Appel d'offres indisponible." }, { status: 404, headers: NO_STORE });
+  }
+  if (isRfpDeposant(row, user.id, user.email ?? "")) {
+    return Response.json(
+      { error: "Vous ne pouvez pas acheter l'accès à votre propre dépôt." },
+      { status: 403, headers: NO_STORE },
+    );
   }
   if (await userOwnsRfp(rfpId, user.id)) {
     return Response.json({ error: "Accès déjà acheté." }, { status: 409, headers: NO_STORE });

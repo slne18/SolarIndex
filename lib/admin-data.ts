@@ -115,6 +115,7 @@ export async function getAdminDashboard(): Promise<AdminDashboardData> {
     pendingOldRes,
     averifierBoughtRes,
     majicBacklogRes,
+    majicJoinableRes,
     majicTableRes,
     catalogStats,
     rfpModerationRes,
@@ -155,6 +156,7 @@ export async function getAdminDashboard(): Promise<AdminDashboardData> {
       .select("id", { count: "exact", head: true })
       .not("id_parcelle", "is", null)
       .is("proprietaire_foncier", null),
+    supabase.rpc("count_leads_majic_joinable"),
     supabase
       .from("majic_proprietaires")
       .select("id_parcelle", { count: "exact", head: true }),
@@ -221,6 +223,8 @@ export async function getAdminDashboard(): Promise<AdminDashboardData> {
   }
 
   const majicBacklog = majicBacklogRes.count ?? 0;
+  const majicJoinable =
+    majicJoinableRes.error == null ? Number(majicJoinableRes.data ?? 0) : null;
   const majicRows = majicTableRes.count ?? 0;
   const majicLoaded = majicTableRes.error == null;
 
@@ -230,18 +234,34 @@ export async function getAdminDashboard(): Promise<AdminDashboardData> {
     title: "Référentiel MAJIC (DGFiP)",
     detail: majicLoaded
       ? majicRows > 0
-        ? `${majicRows.toLocaleString("fr-FR")} parcelle(s) PM en base — jointure open data.`
+        ? `${majicRows.toLocaleString("fr-FR")} parcelle(s) PM en base — personnes morales uniquement (open data DGFiP).`
         : "Table majic_proprietaires vide — lancer scripts/load_majic_parquet.py --from-leads."
       : "Table majic_proprietaires absente — appliquer migration 0013.",
     count: majicRows > 0 ? majicRows : undefined,
   });
 
-  if (majicBacklog > 0) {
+  if (majicJoinable != null && majicJoinable > 0) {
+    alerts.push({
+      id: "majic-backlog",
+      severity: "warning",
+      title: "Propriétaire foncier — jointure MAJIC en attente",
+      detail: `${majicJoinable.toLocaleString("fr-FR")} lead(s) enrichissable(s) via MAJIC — lancer backfill_bypasses.py --mode proprietaire (ou RPC backfill_proprietaire_from_majic).`,
+      count: majicJoinable,
+    });
+  } else if (majicBacklog > 0 && majicLoaded && majicRows > 0) {
+    alerts.push({
+      id: "majic-no-pm",
+      severity: "info",
+      title: "Leads sans propriétaire PM au cadastre",
+      detail: `${majicBacklog.toLocaleString("fr-FR")} lead(s) avec parcelle mais sans PM MAJIC — normal (propriétaire privé ou parcelle absente du fichier DGFiP). Jointure MAJIC déjà à jour.`,
+      count: majicBacklog,
+    });
+  } else if (majicBacklog > 0) {
     alerts.push({
       id: "majic-backlog",
       severity: "info",
       title: "Propriétaire foncier en attente",
-      detail: `${majicBacklog} lead(s) avec parcelle sans propriétaire PM — load_majic_parquet.py puis backfill --mode proprietaire.`,
+      detail: `${majicBacklog.toLocaleString("fr-FR")} lead(s) avec parcelle sans propriétaire PM — charger MAJIC (load_majic_parquet.py) puis backfill --mode proprietaire.`,
       count: majicBacklog,
     });
   }
@@ -254,7 +274,7 @@ export async function getAdminDashboard(): Promise<AdminDashboardData> {
       id: "vision-backlog",
       severity: "warning",
       title: "Vision ortho urgences incomplète",
-      detail: `${visionBacklog} urgence(s) sans % photo — relancer backfill_bypasses.py --mode vision.`,
+      detail: `${visionBacklog.toLocaleString("fr-FR")} urgence(s) absolue(s) disponible(s) sans analyse photo (% couverture) — relancer backfill_bypasses.py --mode vision (ANTHROPIC_API_KEY).`,
       count: visionBacklog,
     });
   } else {

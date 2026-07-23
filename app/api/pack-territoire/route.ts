@@ -1,4 +1,6 @@
 import { getBearerToken } from "@/lib/auth";
+import { getUserProfile } from "@/lib/profile";
+import { canPurchaseLeads } from "@/lib/profile-onboarding";
 import { getAnonClient } from "@/lib/supabase";
 import { getStripe, isStripeConfigured, territoirePackLineItem } from "@/lib/stripe";
 
@@ -18,6 +20,14 @@ export async function POST(req: Request) {
     return Response.json({ error: "Session invalide." }, { status: 401, headers: NO_STORE });
   }
   const user = userData.user;
+
+  const profile = await getUserProfile(user.id);
+  if (!profile || !canPurchaseLeads(profile.user_type)) {
+    return Response.json(
+      { error: "Le Pack Territoire est réservé aux installateurs." },
+      { status: 403, headers: NO_STORE },
+    );
+  }
 
   if (!isStripeConfigured()) {
     return Response.json(

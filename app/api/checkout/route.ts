@@ -1,4 +1,6 @@
 import { getBearerToken } from "@/lib/auth";
+import { getUserProfile } from "@/lib/profile";
+import { canPurchaseLeads } from "@/lib/profile-onboarding";
 import { getAnonClient } from "@/lib/supabase";
 import { getLeadById, userOwnsLead } from "@/lib/db";
 import { afterSubscriptionRedemption } from "@/lib/fulfillment";
@@ -42,6 +44,17 @@ export async function POST(req: Request) {
     );
   }
   const user = userData.user;
+
+  const profile = await getUserProfile(user.id);
+  if (!profile || !canPurchaseLeads(profile.user_type)) {
+    return Response.json(
+      {
+        error:
+          "L'achat de leads automatisés est réservé aux installateurs. Déposez un projet parking si vous êtes propriétaire ou gérant.",
+      },
+      { status: 403, headers: NO_STORE },
+    );
+  }
 
   let lead;
   try {

@@ -49,6 +49,7 @@ function LeadDetailContent({ id }: { id: string }) {
   const plausible = useSolarAnalytics();
   const [lead, setLead] = useState<DetailLead | null>(null);
   const [isOwned, setIsOwned] = useState(false);
+  const [canPurchase, setCanPurchase] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,6 +67,7 @@ function LeadDetailContent({ id }: { id: string }) {
         }
         setLead(data.lead);
         setIsOwned(!!data.is_owned);
+        setCanPurchase(!!data.can_purchase);
       } catch {
         setError(t("onboarding.networkError"));
       } finally {
@@ -267,7 +269,7 @@ function LeadDetailContent({ id }: { id: string }) {
               )}
             </div>
 
-            {!isOwned ? (
+            {!isOwned && canPurchase ? (
               <div className="mt-6">
                 <div className="mb-4 flex items-baseline justify-between">
                   <span className="text-sm text-slate-400">
@@ -290,6 +292,14 @@ function LeadDetailContent({ id }: { id: string }) {
                 <p className="mt-3 text-center text-xs text-slate-500">
                   {fmt(t("leads.detail.checkoutHint"), { guarantee: t("leads.guaranteeBody") })}
                 </p>
+              </div>
+            ) : !isOwned ? (
+              <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-600">
+                {t("leads.detail.purchaseInstallerOnly")}{" "}
+                <Link href="/appels-offres/nouveau" className="text-solar-700 underline">
+                  {t("leads.detail.depositProjectLink")}
+                </Link>
+                .
               </div>
             ) : (
               <div className="mt-6 rounded-xl border border-solar/30 bg-solar/5 p-4 text-center text-sm text-slate-300">

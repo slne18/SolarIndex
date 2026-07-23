@@ -136,6 +136,14 @@ export function MyRfpSubmissionsPanel({ variant = "installer" }: { variant?: "ow
                         : t("account.projectResponsesNone")}
                     </p>
                   ) : null}
+                  {item.statut === "publie" ? (
+                    <Link
+                      href={`/appels-offres/${item.id}`}
+                      className="mt-3 inline-block text-sm text-solar underline"
+                    >
+                      {t("account.viewPublishedProject")}
+                    </Link>
+                  ) : null}
                 </div>
                 {item.can_withdraw ? (
                   <button

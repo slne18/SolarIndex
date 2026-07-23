@@ -6,6 +6,7 @@ import { getAccessToken } from "@/lib/supabaseBrowser";
 import { catalogAuthHeaders } from "@/lib/preview-catalog";
 import { nf } from "@/lib/format";
 import type { OwnedRfp, PublicRfp } from "@/lib/rfp";
+import { MON_ESPACE_PATH } from "@/lib/paths";
 import RfpLegalNotice from "@/components/RfpLegalNotice";
 import RfpPurchaseButton from "@/components/RfpPurchaseButton";
 import {
@@ -29,6 +30,8 @@ function Masked({ label }: { label: string }) {
 export default function RfpDetailClient({ id }: { id: string }) {
   const [rfp, setRfp] = useState<(PublicRfp | OwnedRfp) | null>(null);
   const [isOwned, setIsOwned] = useState(false);
+  const [isDeposant, setIsDeposant] = useState(false);
+  const [canPurchase, setCanPurchase] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,6 +47,8 @@ export default function RfpDetailClient({ id }: { id: string }) {
         }
         setRfp(data.rfp);
         setIsOwned(!!data.is_owned);
+        setIsDeposant(!!data.is_deposant);
+        setCanPurchase(!!data.can_purchase);
       } catch {
         setError("Erreur réseau.");
       } finally {
@@ -70,21 +75,29 @@ export default function RfpDetailClient({ id }: { id: string }) {
     );
   }
 
-  const owned = isOwned && "entreprise" in rfp;
+  const showContacts = (isOwned || isDeposant) && "entreprise" in rfp;
   const officialUrl = rfp.ao_publie_officiellement ? rfp.lien_consultation_officielle : null;
+  const backHref = isDeposant ? MON_ESPACE_PATH : "/appels-offres";
+  const backLabel = isDeposant ? "← Mon espace" : "← Appels d'offres";
 
   return (
     <div className="surface-light min-h-[50vh]">
     <div className="container-x py-10">
-      <Link href="/appels-offres" className="back-link text-sm">← Appels d&apos;offres</Link>
+      <Link href={backHref} className="back-link text-sm">{backLabel}</Link>
 
       <div className="mt-4 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-700">
-              Projet actif
-            </span>
-            <RfpOfficialBadge rfp={rfp} />
+            {isDeposant ? (
+              <span className="rounded-full bg-solar/15 px-3 py-1 text-xs font-semibold text-solar-700">
+                Votre projet
+              </span>
+            ) : (
+              <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-700">
+                Projet actif
+              </span>
+            )}
+            <RfpOfficialBadge rfp={rfp} light />
           </div>
           <h1 className="mt-4 text-2xl font-bold">Projet parking — consultation installateurs</h1>
           <p className="mt-2 text-slate-600">
@@ -153,9 +166,16 @@ export default function RfpDetailClient({ id }: { id: string }) {
             </div>
           ) : null}
 
-          {owned ? (
+          {showContacts ? (
             <div className="card mt-6 p-5 text-sm">
-              <div className="font-semibold text-white">Coordonnées débloquées</div>
+              <div className="font-semibold text-white">
+                {isDeposant ? "Vos coordonnées de contact" : "Coordonnées débloquées"}
+              </div>
+              {isDeposant ? (
+                <p className="mt-1 text-xs text-slate-400">
+                  Visibles pour vous sans achat — transmises aux installateurs qui débloquent l&apos;accès.
+                </p>
+              ) : null}
               <dl className="mt-3 space-y-2">
                 <Row k="Entreprise" v={(rfp as OwnedRfp).entreprise} />
                 <Row k="Contact" v={(rfp as OwnedRfp).contact_nom} />
@@ -192,26 +212,49 @@ export default function RfpDetailClient({ id }: { id: string }) {
               </>
             ) : null}
 
-            <div className={officialUrl ? "mt-6 border-t border-white/10 pt-6" : ""}>
-              <div className="text-sm text-slate-400">Accès installateur — contact direct</div>
-              <div className="mt-1 text-3xl font-bold text-solar">{rfp.prix_acces} €</div>
-              <p className="mt-2 text-sm text-slate-400">
-                Coordonnées fournies volontairement par le déposant (mise en relation commerciale privée).
-                {rfp.acheteurs_count > 0
-                  ? ` ${rfp.acheteurs_count} installateur${rfp.acheteurs_count > 1 ? "s ont" : " a"} déjà débloqué l'accès.`
-                  : null}
-              </p>
-              <div className="mt-4">
-                <RfpLegalNotice variant="installer" />
+            {isDeposant ? (
+              <div className={officialUrl ? "mt-6 border-t border-white/10 pt-6" : ""}>
+                <div className="text-sm font-semibold text-white">Suivi de votre dépôt</div>
+                <p className="mt-2 text-sm text-slate-400">
+                  {rfp.acheteurs_count > 0
+                    ? `${rfp.acheteurs_count} installateur${rfp.acheteurs_count > 1 ? "s ont" : " a"} déjà demandé vos coordonnées (max. ${rfp.acheteurs_max}).`
+                    : "Aucun installateur n'a encore débloqué l'accès."}
+                </p>
+                <Link href={MON_ESPACE_PATH} className="btn-ghost mt-4 inline-flex w-full justify-center !py-2 text-sm">
+                  Gérer depuis Mon espace
+                </Link>
               </div>
-              {owned ? (
-                <p className="mt-4 text-sm text-emerald-300">Vous avez débloqué ce projet.</p>
-              ) : (
+            ) : (
+              <div className={officialUrl ? "mt-6 border-t border-white/10 pt-6" : ""}>
+                <div className="text-sm text-slate-400">Accès installateur — contact direct</div>
+                <div className="mt-1 text-3xl font-bold text-solar">{rfp.prix_acces} €</div>
+                <p className="mt-2 text-sm text-slate-400">
+                  Coordonnées fournies volontairement par le déposant (mise en relation commerciale privée).
+                  {rfp.acheteurs_count > 0
+                    ? ` ${rfp.acheteurs_count} installateur${rfp.acheteurs_count > 1 ? "s ont" : " a"} déjà débloqué l'accès.`
+                    : null}
+                </p>
                 <div className="mt-4">
-                  <RfpPurchaseButton rfpId={rfp.id} prixAcces={rfp.prix_acces} />
+                  <RfpLegalNotice variant="installer" />
                 </div>
-              )}
-            </div>
+                {isOwned ? (
+                  <p className="mt-4 text-sm text-emerald-300">Vous avez débloqué ce projet.</p>
+                ) : canPurchase ? (
+                  <div className="mt-4">
+                    <RfpPurchaseButton rfpId={rfp.id} prixAcces={rfp.prix_acces} />
+                  </div>
+                ) : (
+                  <p className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+                    L&apos;achat d&apos;accès est réservé aux installateurs. En tant que propriétaire ou gérant,
+                    déposez votre projet depuis{" "}
+                    <Link href={MON_ESPACE_PATH} className="text-solar-700 underline">
+                      Mon espace
+                    </Link>
+                    .
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </aside>
       </div>

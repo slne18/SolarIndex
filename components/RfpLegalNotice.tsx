@@ -11,8 +11,8 @@ type Variant = "compact" | "catalog" | "installer" | "deposant";
 export default function RfpLegalNotice({ variant = "compact" }: { variant?: Variant }) {
   if (variant === "installer") {
     return (
-      <div className="rounded-lg border border-amber-500/25 bg-amber-500/10 p-4 text-xs leading-relaxed text-amber-100/90">
-        <p className="font-semibold text-amber-50">Information installateur</p>
+      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-xs leading-relaxed text-amber-950/85">
+        <p className="font-semibold text-amber-950">Information installateur</p>
         <p className="mt-2">{RFP_INSTALLER_NOTICE}</p>
       </div>
     );

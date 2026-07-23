@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { FAQ_IDS } from "@/lib/i18n/faq-ids";
-import { CONTACT_EMAIL, faqQuestionMailto } from "@/lib/site";
+import { faqQuestionMailto } from "@/lib/site";
 import { useTranslations } from "@/components/LocaleProvider";
 import type { MessageKey } from "@/lib/i18n";
 
@@ -78,10 +78,9 @@ export default function FaqPageClient() {
             >
               {t("faq.send")}
             </a>
-            <span className="text-xs text-slate-500">
-              → {CONTACT_EMAIL}
-              {!canSend ? ` · ${t("faq.minChars")}` : ""}
-            </span>
+            {!canSend ? (
+              <span className="text-xs text-slate-500">{t("faq.minChars")}</span>
+            ) : null}
           </div>
         </div>
       </div>
