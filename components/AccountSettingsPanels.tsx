@@ -136,6 +136,14 @@ export function MyRfpSubmissionsPanel({ variant = "installer" }: { variant?: "ow
                         : t("account.projectResponsesNone")}
                     </p>
                   ) : null}
+                  {["en_attente_verification", "en_attente_moderation", "publie"].includes(item.statut) ? (
+                    <Link
+                      href={`/appels-offres/${item.id}/modifier`}
+                      className="mt-2 mr-4 inline-block text-sm text-solar underline"
+                    >
+                      {t("account.editPublishedProject")}
+                    </Link>
+                  ) : null}
                   {item.statut === "publie" ? (
                     <Link
                       href={`/appels-offres/${item.id}`}

@@ -1,6 +1,8 @@
 import { getAdminClient } from "./supabase";
 import { getLeadById } from "./db";
+import { getRfpById } from "./rfp-db";
 import { sendLeadDeliveryEmail } from "./email";
+import { sendRfpAccessDeliveryEmail } from "./email-rfp";
 
 export type PurchaseType = "unit" | "subscription" | "sample";
 
@@ -119,6 +121,17 @@ export async function fulfillRfpPurchase(params: {
     .from("rfp_submissions")
     .update({ acheteurs_count: rfp.acheteurs_count + 1 })
     .eq("id", params.rfpId);
+
+  const { data: prof } = await supabase
+    .from("profiles")
+    .select("email")
+    .eq("id", params.userId)
+    .maybeSingle();
+  const delivered = await getRfpById(params.rfpId);
+  const to = prof?.email ?? undefined;
+  if (delivered && to) {
+    await sendRfpAccessDeliveryEmail(to, delivered);
+  }
 
   return true;
 }

@@ -16,7 +16,7 @@ export default function SuccessFulfillment({ sessionId }: { sessionId?: string }
       const token = await getAccessToken();
       if (!token) {
         setStatus("error");
-        setMessage("Connectez-vous pour finaliser la livraison de votre lead.");
+        setMessage("Connectez-vous pour finaliser la livraison de votre achat.");
         return;
       }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { usePersona } from "@/components/PersonaProvider";
 import { RfpOfficialBadge, formatRfpDeadline } from "@/components/RfpCatalogExtras";
 import SolutionTypeBadge from "@/components/SolutionTypeBadge";
@@ -10,9 +11,14 @@ import type { PublicRfp } from "@/lib/rfp";
 import { resolveRfpSolutionType } from "@/lib/solution-type";
 
 export default function RfpTable({ rfps }: { rfps: PublicRfp[] }) {
+  const router = useRouter();
   const { persona, ready } = usePersona();
   const isOwnerView = ready && persona === "owner";
   const showDepositCta = !ready || showOwnerProjectDeposit(persona);
+
+  function openRfp(id: string) {
+    router.push(`/appels-offres/${id}`);
+  }
 
   if (rfps.length === 0) {
     return (
@@ -46,33 +52,48 @@ export default function RfpTable({ rfps }: { rfps: PublicRfp[] }) {
         </thead>
         <tbody>
           {rfps.map((r) => (
-            <tr key={r.id} className="catalog-row border-b">
+            <tr
+              key={r.id}
+              className="catalog-row cursor-pointer border-b transition hover:bg-slate-50/80"
+              onClick={() => openRfp(r.id)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openRfp(r.id);
+                }
+              }}
+              tabIndex={0}
+              role="link"
+              aria-label={`Ouvrir le projet publié le ${new Date(r.created_at).toLocaleDateString("fr-FR")}`}
+            >
               <td className="px-4 py-3">
-                <Link href={`/appels-offres/${r.id}`} className="table-cell-title font-medium hover:text-solar">
+                <span className="table-cell-title font-medium">
                   <span className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-semibold text-emerald-300">
+                    <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-semibold text-emerald-700">
                       Actif
                     </span>
                     <RfpOfficialBadge rfp={r} light />
                   </span>
-                  <span className="mt-1 block text-slate-400">
+                  <span className="mt-1 block text-slate-500">
                     {new Date(r.created_at).toLocaleDateString("fr-FR")}
                     {r.parking_deja_etudie ? " · Déjà étudié" : ""}
                   </span>
-                </Link>
+                </span>
               </td>
-              <td className="px-4 py-3 text-slate-300">
+              <td className="px-4 py-3 text-slate-600">
                 {r.departement ? `Dép. ${r.departement}` : "—"}
                 {r.region ? ` · ${r.region}` : ""}
               </td>
-              <td className="px-4 py-3">{r.surface_estimee_m2 ? `${nf(r.surface_estimee_m2)} m²` : "—"}</td>
+              <td className="px-4 py-3 text-slate-800">
+                {r.surface_estimee_m2 ? `${nf(r.surface_estimee_m2)} m²` : "—"}
+              </td>
               <td className="px-4 py-3">
                 <SolutionTypeBadge type={resolveRfpSolutionType(r.type_solution_recherchee)} compact light />
               </td>
-              <td className="px-4 py-3 text-slate-300">
+              <td className="px-4 py-3 text-slate-600">
                 {r.solar ? `${nf(r.solar.puissance_kwc)} kWc` : "—"}
               </td>
-              <td className="px-4 py-3 text-slate-400">
+              <td className="px-4 py-3 text-slate-500">
                 {r.ao_publie_officiellement ? formatRfpDeadline(r.date_limite_offres) : r.delai_souhaite || "—"}
               </td>
               {!isOwnerView ? (
@@ -82,7 +103,7 @@ export default function RfpTable({ rfps }: { rfps: PublicRfp[] }) {
                       href={r.lien_consultation_officielle}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs font-semibold text-blue-300 underline"
+                      className="text-xs font-semibold text-blue-700 underline"
                       onClick={(e) => e.stopPropagation()}
                     >
                       DCE officiel ↗

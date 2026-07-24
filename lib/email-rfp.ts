@@ -155,3 +155,45 @@ export async function sendRfpRejectedEmail(rfp: RfpSubmissionRow): Promise<boole
   );
   return sendOne(rfp.contact_email, "SolarIndex — Mise à jour de votre projet", html);
 }
+
+function rfpContactRows(
+  rfp: Pick<
+    RfpSubmissionRow,
+    "contact_nom" | "contact_fonction" | "contact_email" | "contact_telephone" | "entreprise" | "siret"
+  >,
+): string {
+  return `<table style="width:100%;border-collapse:collapse;font-size:14px;margin:16px 0;">
+    <tr><td style="padding:6px 0;color:#64748b;">Entreprise</td><td style="padding:6px 0;font-weight:600;">${rfp.entreprise || "—"}</td></tr>
+    <tr><td style="padding:6px 0;color:#64748b;">SIRET</td><td style="padding:6px 0;">${rfp.siret || "—"}</td></tr>
+    <tr><td style="padding:6px 0;color:#64748b;">Contact</td><td style="padding:6px 0;">${rfp.contact_nom || "—"}</td></tr>
+    <tr><td style="padding:6px 0;color:#64748b;">Fonction</td><td style="padding:6px 0;">${rfp.contact_fonction || "—"}</td></tr>
+    <tr><td style="padding:6px 0;color:#64748b;">Email</td><td style="padding:6px 0;">${rfp.contact_email || "—"}</td></tr>
+    <tr><td style="padding:6px 0;color:#64748b;">Téléphone</td><td style="padding:6px 0;">${rfp.contact_telephone || "—"}</td></tr>
+  </table>`;
+}
+
+/** Installateur : accès débloqué après paiement (coordonnées du déposant). */
+export async function sendRfpAccessDeliveryEmail(
+  to: string,
+  rfp: RfpSubmissionRow,
+): Promise<boolean> {
+  const dept = rfp.departement || "?";
+  const detailUrl = `${APP_URL}/appels-offres/${rfp.id}?from=mon-espace`;
+  const html = shell(
+    "Accès débloqué — consultation installateurs",
+    `<p style="color:#475569;">Merci pour votre achat. Voici les coordonnées du déposant pour vous proposer un devis.</p>
+    ${rfpSummary(rfp)}
+    <p style="color:#475569;font-weight:600;margin:16px 0 8px;">Coordonnées directes</p>
+    ${rfpContactRows(rfp)}
+    <p style="margin:24px 0;">
+      <a href="${detailUrl}" style="background:#f59e0b;color:#0f172a;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600;display:inline-block;margin-right:8px;">Voir la fiche</a>
+      <a href="${APP_URL}/mon-espace" style="color:#0f172a;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600;border:1px solid #cbd5e1;display:inline-block;">Mon espace</a>
+    </p>
+    <p style="color:#94a3b8;font-size:12px;">Conservez cet email : vous retrouvez aussi cette fiche dans Mon espace → Mes appels d'offres achetés.</p>`,
+  );
+  return sendOne(
+    to,
+    `SolarIndex — Accès appel d'offres · ${rfp.entreprise || "projet"} (dép. ${dept})`,
+    html,
+  );
+}

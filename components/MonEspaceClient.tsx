@@ -8,6 +8,9 @@ import { euros, formatCoords, nf } from "@/lib/format";
 import { displayRecouvrementSummary } from "@/lib/pv-overlap";
 import { canDepositProject, type UserType } from "@/lib/profile-onboarding";
 import type { LeadRow } from "@/lib/types";
+import type { OwnedRfp } from "@/lib/rfp";
+import SolutionTypeBadge from "@/components/SolutionTypeBadge";
+import { resolveRfpSolutionType } from "@/lib/solution-type";
 
 import { MON_ESPACE_PATH } from "@/lib/paths";
 import { DeleteAccountPanel, MyRfpSubmissionsPanel } from "@/components/AccountSettingsPanels";
@@ -15,6 +18,12 @@ import { useTranslations } from "@/components/LocaleProvider";
 import { fmt } from "@/lib/i18n/format";
 
 type OwnedLead = LeadRow & { prix_lead: number };
+
+type PurchasedRfp = OwnedRfp & {
+  purchased_at: string;
+  montant_eur: number;
+  listing_statut: string;
+};
 
 interface SubscriptionQuota {
   active: boolean;
@@ -27,6 +36,7 @@ export default function MonEspaceClient() {
   const t = useTranslations();
   const [userType, setUserType] = useState<UserType | null>(null);
   const [leads, setLeads] = useState<OwnedLead[] | null>(null);
+  const [rfps, setRfps] = useState<PurchasedRfp[] | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [sub, setSub] = useState<SubscriptionQuota | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -56,8 +66,9 @@ export default function MonEspaceClient() {
       }
 
       if (type === "installateur") {
-        const [leadsRes, subRes] = await Promise.all([
+        const [leadsRes, rfpsRes, subRes] = await Promise.all([
           fetch("/api/my-leads", { headers: { Authorization: `Bearer ${token}` } }),
+          fetch("/api/my-rfps", { headers: { Authorization: `Bearer ${token}` } }),
           fetch("/api/subscription", { headers: { Authorization: `Bearer ${token}` } }),
         ]);
 
@@ -67,6 +78,13 @@ export default function MonEspaceClient() {
         } else {
           const data = await leadsRes.json();
           setLeads(data.leads ?? []);
+        }
+
+        if (rfpsRes.ok) {
+          const rfpData = await rfpsRes.json();
+          setRfps(rfpData.rfps ?? []);
+        } else {
+          setRfps([]);
         }
 
         if (subRes.ok) {
@@ -202,6 +220,73 @@ export default function MonEspaceClient() {
                     <Info k="Adresse" v={l.adresse} wide />
                     <Info k="Parcelle" v={l.id_parcelle} />
                     <Info k="Coordonnées GPS" v={formatCoords(l.latitude, l.longitude)} wide />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-10 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold text-white">{t("account.myRfps")}</h2>
+              <p className="mt-1 text-sm text-slate-500">{t("account.myRfpsHint")}</p>
+            </div>
+            <Link href="/appels-offres" className="btn-ghost !py-2 text-sm">
+              {t("account.buyRfp")}
+            </Link>
+          </div>
+
+          {rfps === null && <p className="mt-4 text-slate-400">{t("common.loading")}</p>}
+
+          {rfps && rfps.length === 0 && (
+            <div className="card mt-4 p-8 text-center text-slate-400">
+              <p>{t("account.noRfps")}</p>
+              <Link href="/appels-offres" className="btn-solar mt-4 inline-flex !py-2 text-sm">
+                {t("account.browseRfps")}
+              </Link>
+            </div>
+          )}
+
+          {rfps && rfps.length > 0 && (
+            <div className="mt-4 space-y-3">
+              {rfps.map((r) => (
+                <div key={r.id} className="card p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-semibold">{r.entreprise}</span>
+                        <SolutionTypeBadge type={resolveRfpSolutionType(r.type_solution_recherchee)} compact />
+                      </div>
+                      <div className="mt-1 text-sm text-slate-400">
+                        {r.adresse}
+                        {r.departement ? ` · Dép. ${r.departement}` : ""}
+                        {r.surface_estimee_m2 ? ` · ${nf(r.surface_estimee_m2)} m²` : ""}
+                        {r.solar ? ` · ${nf(r.solar.puissance_kwc)} kWc` : ""}
+                      </div>
+                      <p className="mt-2 text-xs text-slate-500">
+                        {fmt(t("account.rfpPurchasedOn"), {
+                          date: new Date(r.purchased_at).toLocaleDateString("fr-FR"),
+                        })}
+                        {" · "}
+                        {r.montant_eur} €
+                      </p>
+                      {r.listing_statut === "ferme" ? (
+                        <p className="mt-2 text-xs text-amber-300/90">{t("account.rfpListingClosed")}</p>
+                      ) : null}
+                    </div>
+                    <Link
+                      href={`/appels-offres/${r.id}?from=mon-espace`}
+                      className="btn-ghost shrink-0 !px-3 !py-1.5 text-xs"
+                    >
+                      {t("account.viewRfpFull")}
+                    </Link>
+                  </div>
+                  <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+                    <Info k="Contact" v={r.contact_nom} />
+                    <Info k="Fonction" v={r.contact_fonction} />
+                    <Info k="Email" v={r.contact_email} />
+                    <Info k="Téléphone" v={r.contact_telephone} />
+                    <Info k="Adresse parking" v={r.adresse} wide />
                   </div>
                 </div>
               ))}

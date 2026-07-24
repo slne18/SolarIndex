@@ -160,3 +160,20 @@ export async function moderateRfpSubmission(
   if (!data) throw new Error("Soumission introuvable ou déjà modérée.");
   return data as RfpSubmissionRow;
 }
+
+export async function updateRfpSubmission(
+  id: string,
+  updates: Partial<RfpSubmissionRow>,
+  allowedStatuts: RfpStatut[],
+): Promise<RfpSubmissionRow> {
+  const { data, error } = await getAdminClient()
+    .from("rfp_submissions")
+    .update(updates)
+    .eq("id", id)
+    .in("statut", allowedStatuts)
+    .select("*")
+    .single();
+  if (error) throw error;
+  if (!data) throw new Error("Appel d'offres introuvable ou non modifiable.");
+  return data as RfpSubmissionRow;
+}

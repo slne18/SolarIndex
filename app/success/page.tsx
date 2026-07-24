@@ -7,12 +7,13 @@ export const dynamic = "force-dynamic";
 export default function SuccessPage({
   searchParams,
 }: {
-  searchParams: { subscription?: string; pack?: string; session_id?: string };
+  searchParams: { subscription?: string; pack?: string; session_id?: string; rfp?: string };
 }) {
   const packWelcome =
     searchParams.pack === "welcome" || searchParams.subscription === "welcome";
   const redeemed =
     searchParams.subscription === "1" || searchParams.pack === "1";
+  const rfpPurchase = searchParams.rfp === "1";
 
   const analyticsSource = packWelcome
     ? "pack_welcome"
@@ -41,6 +42,12 @@ export default function SuccessPage({
               Votre lead a été débloqué via votre Pack Territoire. Retrouvez la fiche complète
               dans votre espace client.
             </>
+          ) : rfpPurchase ? (
+            <>
+              L&apos;accès à l&apos;appel d&apos;offres est débloqué. Les coordonnées du déposant sont
+              dans <strong className="text-white">Mon espace</strong> et vous seront envoyées par email
+              si la messagerie est configurée.
+            </>
           ) : (
             <>
               Votre lead a été débloqué. Retrouvez-le dans votre espace et par email.
@@ -49,7 +56,11 @@ export default function SuccessPage({
         </p>
         <div className="mt-8 flex justify-center gap-3">
           <Link href="/mon-espace" className="btn-solar">Voir mon espace</Link>
-          <Link href="/leads" className="btn-ghost">Parcourir les leads</Link>
+          {rfpPurchase ? (
+            <Link href="/appels-offres" className="btn-ghost">Appels d&apos;offres</Link>
+          ) : (
+            <Link href="/leads" className="btn-ghost">Parcourir les leads</Link>
+          )}
         </div>
         {!redeemed && !packWelcome && (
           <>

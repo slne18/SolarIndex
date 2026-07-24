@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { getAccessToken } from "@/lib/supabaseBrowser";
 import { catalogAuthHeaders } from "@/lib/preview-catalog";
 import { nf } from "@/lib/format";
@@ -28,10 +29,13 @@ function Masked({ label }: { label: string }) {
 }
 
 export default function RfpDetailClient({ id }: { id: string }) {
+  const searchParams = useSearchParams();
+  const fromMonEspace = searchParams.get("from") === "mon-espace";
   const [rfp, setRfp] = useState<(PublicRfp | OwnedRfp) | null>(null);
   const [isOwned, setIsOwned] = useState(false);
   const [isDeposant, setIsDeposant] = useState(false);
   const [canPurchase, setCanPurchase] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,6 +53,7 @@ export default function RfpDetailClient({ id }: { id: string }) {
         setIsOwned(!!data.is_owned);
         setIsDeposant(!!data.is_deposant);
         setCanPurchase(!!data.can_purchase);
+        setCanEdit(!!data.can_edit);
       } catch {
         setError("Erreur réseau.");
       } finally {
@@ -77,8 +82,8 @@ export default function RfpDetailClient({ id }: { id: string }) {
 
   const showContacts = (isOwned || isDeposant) && "entreprise" in rfp;
   const officialUrl = rfp.ao_publie_officiellement ? rfp.lien_consultation_officielle : null;
-  const backHref = isDeposant ? MON_ESPACE_PATH : "/appels-offres";
-  const backLabel = isDeposant ? "← Mon espace" : "← Appels d'offres";
+  const backHref = isDeposant || fromMonEspace ? MON_ESPACE_PATH : "/appels-offres";
+  const backLabel = isDeposant || fromMonEspace ? "← Mon espace" : "← Appels d'offres";
 
   return (
     <div className="surface-light min-h-[50vh]">
@@ -223,6 +228,14 @@ export default function RfpDetailClient({ id }: { id: string }) {
                 <Link href={MON_ESPACE_PATH} className="btn-ghost mt-4 inline-flex w-full justify-center !py-2 text-sm">
                   Gérer depuis Mon espace
                 </Link>
+                {canEdit ? (
+                  <Link
+                    href={`/appels-offres/${rfp.id}/modifier`}
+                    className="btn-solar mt-3 inline-flex w-full justify-center !py-2 text-sm"
+                  >
+                    Corriger les informations
+                  </Link>
+                ) : null}
               </div>
             ) : (
               <div className={officialUrl ? "mt-6 border-t border-white/10 pt-6" : ""}>
