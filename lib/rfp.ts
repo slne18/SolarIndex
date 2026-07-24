@@ -93,6 +93,7 @@ export type PublicRfp = Pick<
   | "budget_indicatif"
   | "delai_souhaite"
   | "acheteurs_count"
+  | "acheteurs_max"
   | "ao_publie_officiellement"
   | "lien_consultation_officielle"
   | "date_limite_offres"
@@ -132,6 +133,7 @@ export function toPublicRfp(row: RfpSubmissionRow): PublicRfp {
     budget_indicatif: row.budget_indicatif,
     delai_souhaite: row.delai_souhaite,
     acheteurs_count: row.acheteurs_count,
+    acheteurs_max: row.acheteurs_max,
     ao_publie_officiellement: extra.ao_publie_officiellement,
     lien_consultation_officielle: extra.lien_consultation_officielle,
     date_limite_offres: extra.date_limite_offres,
