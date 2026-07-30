@@ -116,7 +116,7 @@ export default function HomeHeroPersona() {
         <div className="mt-auto flex justify-center pb-8 pt-4 sm:pb-10">
           <a
             href="#loi-aper"
-            className="group flex flex-col items-center gap-1 text-xs font-medium uppercase tracking-widest text-white/85 transition hover:text-white"
+            className="group flex flex-col items-center gap-1 text-xs font-medium uppercase tracking-widest text-white/[0.85] transition hover:text-white"
           >
             {t("home.discover")}
             <svg

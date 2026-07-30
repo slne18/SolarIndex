@@ -477,7 +477,7 @@ h3,
   }
 
   .hero-on-photo-lead {
-    @apply mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/92 sm:text-lg;
+    @apply mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/[0.92] sm:text-lg;
     text-shadow: 0 1px 12px rgb(15 23 42 / 0.45);
   }
 
@@ -796,7 +796,7 @@ h3,
   }
 
   .news-ticker-link {
-    @apply whitespace-nowrap font-semibold text-night/85 underline decoration-night/35 underline-offset-4 transition hover:text-night hover:decoration-night/70;
+    @apply whitespace-nowrap font-semibold text-night/[0.85] underline decoration-night/[0.35] underline-offset-4 transition hover:text-night hover:decoration-night/70;
   }
 
   .news-ticker-sep {
@@ -1248,7 +1248,7 @@ h3,
   }
 
   .hero-actions-badge {
-    @apply mx-auto mt-8 w-fit rounded-full border border-white/60 bg-white/92 px-4 py-1.5 text-xs font-semibold tracking-wide text-slate-800 shadow-[0_8px_24px_-8px_rgb(15_23_42_/_0.3)];
+    @apply mx-auto mt-8 w-fit rounded-full border border-white/60 bg-white/[0.92] px-4 py-1.5 text-xs font-semibold tracking-wide text-slate-800 shadow-[0_8px_24px_-8px_rgb(15_23_42_/_0.3)];
   }
 
   .hero-actions {
