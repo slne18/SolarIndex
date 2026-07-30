@@ -668,7 +668,8 @@ const en: Record<MessageKey, string> = {
     "See potential gains (savings, solar revenue, fine avoided) before contacting qualified installers via our form (private actors, not public procurement).",
   "simulateur.asideEdfNote":
     "EDF OA tariffs: indicative S21 values (mainland France). Projects > 100 kWp may fall under CRE tenders from Sept. 2025.",
-  "simulateur.checkEligibility": "Check APER eligibility →",
+  "simulateur.checkEligibilityLabel": "Check APER eligibility",
+  "simulateur.checkEligibilityHint": "Deadlines and area thresholds",
   "simulateur.detailSolarSurface": "Required solar area",
   "simulateur.detailPower": "Estimated installed capacity",
   "simulateur.detailProduction": "Estimated annual production",

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import HeroActionList, { HeroActionCheckIcon } from "@/components/HeroActionList";
 import RfpLegalNotice from "@/components/RfpLegalNotice";
 import {
   SimulatorBenefitDonut,
@@ -107,8 +108,31 @@ export default function SimulateurClient() {
   );
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-      <div className="space-y-6">
+    <div className="grid gap-8 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">
+      <aside className="page-aside-sticky order-2 space-y-4 lg:order-1">
+        <div className="card p-5 text-sm text-slate-300">
+          <p className="font-semibold text-white">{t("simulateur.asideTitle")}</p>
+          <p className="mt-2 leading-relaxed">{t("simulateur.asideLead")}</p>
+        </div>
+        <div className="card p-5 text-xs leading-relaxed text-slate-400">
+          <p>{t("simulateur.asideEdfNote")}</p>
+          <div className="mt-4">
+            <HeroActionList
+              className="hero-actions-compact !mt-0"
+              items={[
+                {
+                  href: "/verifier",
+                  label: t("simulateur.checkEligibilityLabel"),
+                  hint: t("simulateur.checkEligibilityHint"),
+                  icon: <HeroActionCheckIcon />,
+                },
+              ]}
+            />
+          </div>
+        </div>
+      </aside>
+
+      <div className="order-1 space-y-6 lg:order-2">
         <div className="card space-y-5 p-6">
           <p className="text-sm font-medium text-slate-200">{t("simulateur.yourParking")}</p>
 
@@ -388,21 +412,6 @@ export default function SimulateurClient() {
           </div>
         </div>
       </div>
-
-      <aside className="space-y-4">
-        <div className="card p-5 text-sm text-slate-300">
-          <p className="font-semibold text-white">{t("simulateur.asideTitle")}</p>
-          <p className="mt-2 leading-relaxed">{t("simulateur.asideLead")}</p>
-        </div>
-        <div className="card p-5 text-xs leading-relaxed text-slate-500">
-          <p>{t("simulateur.asideEdfNote")}</p>
-          <p className="mt-2">
-            <Link href="/verifier" className="text-solar hover:underline">
-              {t("simulateur.checkEligibility")}
-            </Link>
-          </p>
-        </div>
-      </aside>
     </div>
   );
 }

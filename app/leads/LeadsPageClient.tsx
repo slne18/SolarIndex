@@ -125,7 +125,7 @@ function LeadsCatalog() {
 
   return (
     <>
-      <div className="hero-surface">
+      <div className="hero-surface hero-surface-scrim">
         <div className="container-x py-10 sm:py-12">
           <div className="mb-10">
             <p className="pill-accent w-fit">{t("leads.pill")}</p>

@@ -161,7 +161,7 @@ const fr = {
   "home.installerRfpLabel": "Consulter les appels d'offres",
   "home.installerRfpHint": "Projets déposés par les gérants prêts à équiper",
   "home.ownerHeroTitle": "Votre parking est-il concerné",
-  "home.ownerHeroAccent": "par la loi APER ?",
+  "home.ownerHeroAccent": "par la loi\u00a0APER\u202f?",
   "home.ownerHeroLead":
     "Vérifiez votre obligation, estimez vos gains, puis déposez votre projet pour recevoir des propositions d'installateurs solaires.",
   "home.ownerVerifyLabel": "Vérifier mon parking",
@@ -667,7 +667,8 @@ const fr = {
     "Voyez ce que vous pouvez gagner (économies, revenus solaires, amende évitée) avant de consulter des installateurs qualifiés via notre formulaire (acteurs privés, hors marchés publics).",
   "simulateur.asideEdfNote":
     "Tarifs EDF OA : valeurs indicatives arrêté S21 (métropole). Les projets > 100 kWc peuvent relever d'appels d'offres CRE depuis sept. 2025.",
-  "simulateur.checkEligibility": "Vérifier l'éligibilité APER →",
+  "simulateur.checkEligibilityLabel": "Vérifier l'éligibilité APER",
+  "simulateur.checkEligibilityHint": "Échéances et seuils de surface",
   "simulateur.detailSolarSurface": "Surface solaire obligatoire",
   "simulateur.detailPower": "Puissance installée estimée",
   "simulateur.detailProduction": "Production annuelle estimée",

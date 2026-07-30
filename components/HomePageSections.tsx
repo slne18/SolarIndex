@@ -26,7 +26,9 @@ export default function HomePageSections() {
     <>
       <div className="surface-light">
         {showChooser ? <LoiAperSection /> : null}
-        {showChooser ? <HomeFeaturedNewsBanner /> : null}
+      </div>
+      {showChooser ? <HomeFeaturedNewsBanner /> : null}
+      <div className="surface-light">
         {showChooser ? <HomeSignupCta /> : null}
       </div>
       {showInstaller ? <InstallerTarifsSections /> : null}
