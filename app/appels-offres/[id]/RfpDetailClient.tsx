@@ -17,18 +17,28 @@ import {
   formatRfpDeadline,
 } from "@/components/RfpCatalogExtras";
 import SolutionTypeBadge from "@/components/SolutionTypeBadge";
-import { resolveRfpSolutionType } from "@/lib/solution-type";
+import { resolveRfpSolutionType, solutionTypeLabelKey } from "@/lib/solution-type";
+import { useTranslations } from "@/components/LocaleProvider";
 
-function Masked({ label }: { label: string }) {
+function Masked({ label, light }: { label: string; light?: boolean }) {
   return (
-    <div className="flex items-center justify-between border-b border-white/5 py-2.5 text-sm">
-      <span className="text-slate-400">{label}</span>
-      <span className="select-none rounded bg-white/10 px-8 py-0.5 text-transparent blur-[3px]">MASQUÉ</span>
+    <div className="flex items-center justify-between border-b border-slate-200 py-2.5 text-sm last:border-0">
+      <span className={light ? "text-slate-600" : "text-slate-400"}>{label}</span>
+      <span
+        className={
+          light
+            ? "select-none rounded bg-slate-200 px-8 py-0.5 text-xs font-medium text-slate-400"
+            : "select-none rounded bg-white/10 px-8 py-0.5 text-transparent blur-[3px]"
+        }
+      >
+        {light ? "••••••" : "MASQUÉ"}
+      </span>
     </div>
   );
 }
 
 export default function RfpDetailClient({ id }: { id: string }) {
+  const t = useTranslations();
   const searchParams = useSearchParams();
   const fromMonEspace = searchParams.get("from") === "mon-espace";
   const [rfp, setRfp] = useState<(PublicRfp | OwnedRfp) | null>(null);
@@ -36,12 +46,14 @@ export default function RfpDetailClient({ id }: { id: string }) {
   const [isDeposant, setIsDeposant] = useState(false);
   const [canPurchase, setCanPurchase] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
+  const [authed, setAuthed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       const token = await getAccessToken();
+      setAuthed(!!token);
       try {
         const res = await fetch(`/api/rfp/${id}`, { headers: catalogAuthHeaders(token) });
         const data = await res.json();
@@ -84,6 +96,7 @@ export default function RfpDetailClient({ id }: { id: string }) {
   const officialUrl = rfp.ao_publie_officiellement ? rfp.lien_consultation_officielle : null;
   const backHref = isDeposant || fromMonEspace ? MON_ESPACE_PATH : "/appels-offres";
   const backLabel = isDeposant || fromMonEspace ? "← Mon espace" : "← Appels d'offres";
+  const solutionType = resolveRfpSolutionType(rfp.type_solution_recherchee);
 
   return (
     <div className="surface-light min-h-[50vh]">
@@ -105,6 +118,12 @@ export default function RfpDetailClient({ id }: { id: string }) {
             <RfpOfficialBadge rfp={rfp} light />
           </div>
           <h1 className="mt-4 text-2xl font-bold">Projet parking — consultation installateurs</h1>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <SolutionTypeBadge type={solutionType} showAudience light />
+          </div>
+          <p className="mt-2 text-sm font-medium text-slate-700">
+            {t("rfp.detail.solutionSought")} : {t(solutionTypeLabelKey(solutionType))}
+          </p>
           <p className="mt-2 text-slate-600">
             Publié le {new Date(rfp.created_at).toLocaleDateString("fr-FR")}
             {rfp.departement ? ` · Dép. ${rfp.departement}` : ""}
@@ -131,22 +150,11 @@ export default function RfpDetailClient({ id }: { id: string }) {
           ) : null}
 
           <div className="mt-6">
-            <SolutionTypeBadge
-              type={resolveRfpSolutionType(rfp.type_solution_recherchee)}
-              showAudience
-              light
-            />
-            <p className="mt-2 text-xs leading-relaxed text-slate-500">
-              Installateurs solaires et paysagistes peuvent répondre au même appel d&apos;offres,
-              éventuellement en consortium.
-            </p>
-          </div>
-
-          <div className="mt-6">
             <RfpSolarMetricsCard rfp={rfp} />
           </div>
 
           <dl className="mt-6 space-y-2 text-sm">
+            <Row k={t("rfp.detail.solutionSought")} v={t(solutionTypeLabelKey(solutionType))} />
             <Row k="Surface estimée" v={rfp.surface_estimee_m2 ? `${nf(rfp.surface_estimee_m2)} m²` : "—"} />
             <Row k="Parking déjà étudié" v={rfp.parking_deja_etudie ? "Oui" : "Non"} />
             <Row k="Déjà équipé partiellement" v={rfp.deja_equipe_partiel ? "Oui" : "Non"} />
@@ -172,8 +180,8 @@ export default function RfpDetailClient({ id }: { id: string }) {
           ) : null}
 
           {showContacts ? (
-            <div className="card mt-6 p-5 text-sm">
-              <div className="font-semibold text-white">
+            <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5 text-sm shadow-sm">
+              <div className="font-semibold text-slate-900">
                 {isDeposant ? "Vos coordonnées de contact" : "Coordonnées débloquées"}
               </div>
               {isDeposant ? (
@@ -191,13 +199,16 @@ export default function RfpDetailClient({ id }: { id: string }) {
               </dl>
             </div>
           ) : (
-            <div className="card mt-6 p-5 text-sm">
-              <div className="font-semibold text-white">Coordonnées masquées</div>
+            <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm">
+              <div className="font-semibold text-slate-800">{t("rfp.detail.contactsMasked")}</div>
+              <p className="mt-1 text-xs text-slate-500">
+                Débloquées après achat de l&apos;accès installateur.
+              </p>
               <div className="mt-3 space-y-1">
-                <Masked label="Entreprise" />
-                <Masked label="Contact" />
-                <Masked label="Email / téléphone" />
-                <Masked label="Adresse exacte" />
+                <Masked label="Entreprise" light />
+                <Masked label="Contact" light />
+                <Masked label="Email / téléphone" light />
+                <Masked label="Adresse exacte" light />
               </div>
             </div>
           )}
@@ -258,12 +269,26 @@ export default function RfpDetailClient({ id }: { id: string }) {
                   </div>
                 ) : (
                   <p className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
-                    L&apos;achat d&apos;accès est réservé aux installateurs. En tant que propriétaire ou gérant,
-                    déposez votre projet depuis{" "}
-                    <Link href={MON_ESPACE_PATH} className="text-solar-700 underline">
-                      Mon espace
-                    </Link>
-                    .
+                    {!authed ? (
+                      <>
+                        {t("rfp.detail.signInToPurchase")}{" "}
+                        <Link
+                          href={`/login?mode=signup&next=${encodeURIComponent(`/appels-offres/${rfp.id}`)}`}
+                          className="text-solar-700 underline"
+                        >
+                          {t("rfp.detail.createSpaceLink")}
+                        </Link>
+                        .
+                      </>
+                    ) : (
+                      <>
+                        {t("rfp.detail.purchaseOwnerOnly")}{" "}
+                        <Link href={MON_ESPACE_PATH} className="text-solar-700 underline">
+                          Mon espace
+                        </Link>
+                        .
+                      </>
+                    )}
                   </p>
                 )}
               </div>
@@ -278,9 +303,9 @@ export default function RfpDetailClient({ id }: { id: string }) {
 
 function Row({ k, v, solar = false }: { k: string; v: string; solar?: boolean }) {
   return (
-    <div className="flex justify-between gap-4">
+    <div className="flex justify-between gap-4 border-b border-slate-100 py-2 last:border-0">
       <dt className="text-slate-500">{k}</dt>
-      <dd className={solar ? "font-medium text-solar" : "detail-value text-right font-medium"}>{v}</dd>
+      <dd className={solar ? "font-medium text-solar-700" : "text-right font-medium text-slate-800"}>{v}</dd>
     </div>
   );
 }

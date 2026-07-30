@@ -42,7 +42,6 @@ export default function HomeHeroPersona() {
   const personaCards: {
     id: Persona;
     title: string;
-    subtitle?: string;
     description: string;
   }[] = [
     {
@@ -53,7 +52,6 @@ export default function HomeHeroPersona() {
     {
       id: "owner",
       title: t("home.ownerCardTitle"),
-      subtitle: t("home.ownerCardSubtitle"),
       description: t("home.ownerCardDesc"),
     },
   ];
@@ -61,21 +59,11 @@ export default function HomeHeroPersona() {
   return (
     <section className="hero-surface relative overflow-hidden">
       <div className="container-x relative flex flex-1 flex-col justify-center py-10 sm:py-14">
-        <div className="mx-auto w-full max-w-5xl text-center animate-fade-up">
+        <div className="mx-auto w-full max-w-5xl animate-fade-up">
           {showChooser ? (
-            <>
-              <h1 className="text-2xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-4xl lg:text-[2.75rem]">
-                {t("home.chooseTitlePrefix")}
-                <span className="text-gradient">
-                  {t("home.chooseTitleAccent")}
-                </span>
-              </h1>
-              <p className="mx-auto my-8 max-w-3xl text-sm leading-relaxed text-slate-300 sm:my-12 sm:text-lg">
-                {t("home.chooseLeadBefore")}
-                <span className="font-semibold text-solar">{t("home.chooseLeadHighlight")}</span>
-                {t("home.chooseLeadAfter")}
-              </p>
-              <div className="persona-cards mt-10">
+            <div className="hero-home-panel">
+              <h1 className="hero-home-panel-title">{t("home.heroTagline")}</h1>
+              <div className="persona-cards mt-8 sm:mt-10">
                 {personaCards.map((card) => (
                   <button
                     key={card.id}
@@ -86,11 +74,6 @@ export default function HomeHeroPersona() {
                     <span className="persona-card-icon shrink-0">{CARD_ICONS[card.id]}</span>
                     <span className="persona-card-content min-w-0 flex-1">
                       <span className="persona-card-title block">{card.title}</span>
-                      {card.subtitle ? (
-                        <span className="persona-card-subtitle persona-card-subtitle-emphasis block">
-                          {card.subtitle}
-                        </span>
-                      ) : null}
                       <span className="persona-card-desc mt-1.5 block">{card.description}</span>
                     </span>
                     <svg
@@ -109,11 +92,11 @@ export default function HomeHeroPersona() {
                 ))}
               </div>
               <HomeHeroBenefits />
-            </>
-          ) : persona === "installer" ? (
-            <InstallerHero t={t} />
+            </div>
           ) : (
-            <OwnerHero t={t} />
+            <div className="text-center">
+              {persona === "installer" ? <InstallerHero t={t} /> : <OwnerHero t={t} />}
+            </div>
           )}
         </div>
       </div>

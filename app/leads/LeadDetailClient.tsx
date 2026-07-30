@@ -50,12 +50,14 @@ function LeadDetailContent({ id }: { id: string }) {
   const [lead, setLead] = useState<DetailLead | null>(null);
   const [isOwned, setIsOwned] = useState(false);
   const [canPurchase, setCanPurchase] = useState(false);
+  const [authed, setAuthed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       const token = await getAccessToken();
+      setAuthed(!!token);
       try {
         const res = await fetch(`/api/leads/${id}`, {
           headers: catalogAuthHeaders(token),
@@ -295,11 +297,26 @@ function LeadDetailContent({ id }: { id: string }) {
               </div>
             ) : !isOwned ? (
               <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-600">
-                {t("leads.detail.purchaseInstallerOnly")}{" "}
-                <Link href="/appels-offres/nouveau" className="text-solar-700 underline">
-                  {t("leads.detail.depositProjectLink")}
-                </Link>
-                .
+                {!authed ? (
+                  <>
+                    {t("leads.detail.signInToPurchase")}{" "}
+                    <Link
+                      href={`/login?mode=signup&next=${encodeURIComponent(`/leads/${id}`)}`}
+                      className="text-solar-700 underline"
+                    >
+                      {t("leads.detail.createSpaceLink")}
+                    </Link>
+                    .
+                  </>
+                ) : (
+                  <>
+                    {t("leads.detail.purchaseInstallerOnly")}{" "}
+                    <Link href="/appels-offres/nouveau" className="text-solar-700 underline">
+                      {t("leads.detail.depositProjectLink")}
+                    </Link>
+                    .
+                  </>
+                )}
               </div>
             ) : (
               <div className="mt-6 rounded-xl border border-solar/30 bg-solar/5 p-4 text-center text-sm text-slate-300">

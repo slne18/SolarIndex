@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { PublicLead } from "@/lib/types";
 import { eurosCompact, nf } from "@/lib/format";
 import { fmt } from "@/lib/i18n/format";
@@ -37,6 +38,11 @@ function StatutCell({ lead }: { lead: PublicLead }) {
 
 export default function LeadTable({ leads }: { leads: PublicLead[] }) {
   const t = useTranslations();
+  const router = useRouter();
+
+  function openLead(id: string) {
+    router.push(`/leads/${id}`);
+  }
 
   if (leads.length === 0) {
     return (
@@ -67,7 +73,20 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
           </thead>
           <tbody className="catalog-tbody divide-y">
             {leads.map((lead) => (
-              <tr key={lead.id} className="catalog-row transition">
+              <tr
+                key={lead.id}
+                className="catalog-row cursor-pointer transition hover:bg-white/[0.03]"
+                onClick={() => openLead(lead.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    openLead(lead.id);
+                  }
+                }}
+                tabIndex={0}
+                role="link"
+                aria-label={`${lead.ville || "Lead"} · ${lead.departement}`}
+              >
                 <td className="px-4 py-3">
                   <FlagBadge flag={lead.flag_urgence} />
                 </td>
@@ -104,6 +123,7 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
                   <Link
                     href={`/leads/${lead.id}`}
                     className="rounded-lg border border-white/15 px-3 py-1.5 text-xs font-semibold text-slate-100 hover:bg-white/5"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     {fmt(t("leads.table.view"), { price: lead.prix_lead })}
                   </Link>

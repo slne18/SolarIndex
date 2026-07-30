@@ -327,7 +327,7 @@ body {
     @apply pointer-events-none absolute inset-0 -z-20;
     background-image: url("/images/hero-home.png");
     background-size: cover;
-    background-position: center 35%;
+    background-position: center center;
   }
 
   .hero-surface::after {
@@ -335,10 +335,46 @@ body {
     @apply pointer-events-none absolute inset-0 -z-10;
     background: linear-gradient(
       180deg,
-      rgb(10 15 28 / 0.78) 0%,
-      rgb(10 15 28 / 0.68) 45%,
-      rgb(10 15 28 / 0.84) 100%
+      rgb(15 23 42 / 0.18) 0%,
+      rgb(15 23 42 / 0.08) 42%,
+      rgb(15 23 42 / 0.28) 100%
     );
+  }
+
+  .hero-home-panel {
+    @apply mx-auto w-full max-w-4xl rounded-2xl border border-white/40 bg-white/88 px-6 py-8 text-left shadow-[0_24px_64px_-12px_rgb(15_23_42_/_0.35)] backdrop-blur-md sm:px-10 sm:py-10;
+  }
+
+  .hero-home-panel-title {
+    @apply text-center text-xl font-extrabold leading-snug tracking-tight text-slate-900 sm:text-2xl lg:text-[1.75rem];
+  }
+
+  .hero-home-panel .persona-card {
+    @apply border-slate-200/90 bg-white/95 hover:border-solar/50 hover:bg-white hover:shadow-lg;
+  }
+
+  .hero-home-panel .persona-card-title {
+    @apply text-slate-900;
+  }
+
+  .hero-home-panel .persona-card-desc {
+    @apply text-slate-600;
+  }
+
+  .hero-home-panel .persona-card-icon {
+    @apply bg-solar/15 text-amber-700;
+  }
+
+  .hero-home-panel .home-hero-benefits {
+    @apply border-slate-200/80;
+  }
+
+  .hero-home-panel .home-hero-benefit-icon {
+    @apply text-amber-700;
+  }
+
+  .hero-home-panel .home-hero-benefit-label {
+    @apply text-slate-700;
   }
 
   /* Homepage — sections claires */

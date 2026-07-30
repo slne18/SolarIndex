@@ -130,19 +130,21 @@ const en: Record<MessageKey, string> = {
   "footer.depositProject": "Submit my project",
   "footer.simulator": "Parking savings & revenue",
 
+  "home.heroTagline":
+    "Turn a regulatory obligation into an energy opportunity with qualified partners.",
   "home.chooseTitlePrefix": "The platform that simplifies parking compliance with the ",
   "home.chooseTitleAccent": "APER law.",
   "home.chooseLeadBefore":
     "SolarIndex connects parking operators and installers to develop ",
   "home.chooseLeadHighlight": "photovoltaic or vegetated canopies",
   "home.chooseLeadAfter": " projects compliant with the APER law.",
-  "home.installerCardTitle": "I'm an installer",
+  "home.installerCardTitle": "I'm a solar professional",
   "home.installerCardDesc":
     "Access qualified projects and grow your business through targeted matchmaking.",
-  "home.ownerCardTitle": "I'm an owner",
-  "home.ownerCardSubtitle": "or parking operator",
+  "home.ownerCardTitle": "I'm an owner / parking operator",
+  "home.ownerCardSubtitle": "",
   "home.ownerCardDesc":
-    "Our tools let you check if you're affected, estimate your gains and receive proposals from installers.",
+    "Check if you're affected, estimate your gains and receive proposals from qualified installers.",
   "home.benefit1": "Identify parking lots\nsubject to the APER law",
   "home.benefit2": "Estimate solar\npotential",
   "home.benefit3": "Find the right\npartners",
@@ -335,6 +337,9 @@ const en: Record<MessageKey, string> = {
     "Price for a single purchase. With an active Territory pack, checkout may use an included credit instead of Stripe payment. Guarantee: {guarantee}",
   "leads.detail.purchased": "Lead purchased — also find it in",
   "leads.detail.mySpace": "My account",
+  "leads.detail.signInToPurchase":
+    "Sign in or create your SolarIndex space to buy this lead and unlock contact details.",
+  "leads.detail.createSpaceLink": "Create my space",
   "leads.detail.purchaseInstallerOnly":
     "Automated lead purchases are for installers only. Owners and parking operators can submit a parking project instead.",
   "leads.detail.depositProjectLink": "Submit a project",
@@ -362,6 +367,13 @@ const en: Record<MessageKey, string> = {
   "rfp.hintInstaller":
     "Single entry point: private consultations and links to official dossiers (PLACE, AWS, Megalis…)",
   "rfp.depositProject": "Submit a project",
+  "rfp.detail.signInToPurchase":
+    "Sign in or create your SolarIndex space to purchase access and unlock the depositor's contact details.",
+  "rfp.detail.createSpaceLink": "Create my space",
+  "rfp.detail.contactsMasked": "Contact details hidden",
+  "rfp.detail.solutionSought": "Solution sought",
+  "rfp.detail.purchaseOwnerOnly":
+    "Access purchases require an installer account. You can submit your own project from My account.",
 
   "common.prev": "← Previous",
   "common.next": "Next →",
@@ -404,7 +416,7 @@ const en: Record<MessageKey, string> = {
   "solutionType.audienceLandscaper": "Landscapers",
 
   "home.aperEyebrow": "The APER law",
-  "home.aperTitle": "A legal obligation that creates projects",
+  "home.aperTitle": "A legal obligation that creates opportunities",
   "home.aperSummary":
     "Every outdoor parking lot of at least 1,500 m² must be equipped with solar or vegetated canopies covering at least 50% of its area: PV panels on the entire upper surface, or — under Law no. 2025-1129 of 26 November 2025 (Huwart law) — a mix with at least 17.5% panel coverage and up to 32.5% vegetation.",
   "home.aperRef":

@@ -129,19 +129,21 @@ const fr = {
   "footer.depositProject": "Déposer mon projet",
   "footer.simulator": "Gains & économies parking",
 
+  "home.heroTagline":
+    "Transformez une obligation réglementaire en opportunité énergétique grâce à des partenaires qualifiés.",
   "home.chooseTitlePrefix": "La plateforme qui simplifie la mise en conformité des parkings avec la ",
   "home.chooseTitleAccent": "loi APER.",
   "home.chooseLeadBefore":
     "SolarIndex met en relation gestionnaires de parking et installateurs pour développer des projets d'",
   "home.chooseLeadHighlight": "ombrières photovoltaïques ou végétalisées",
   "home.chooseLeadAfter": " conformes à la loi APER.",
-  "home.installerCardTitle": "Je suis installateur",
+  "home.installerCardTitle": "Je suis un professionnel du photovoltaïque",
   "home.installerCardDesc":
     "Accédez à des projets qualifiés et développez votre activité grâce à une mise en relation ciblée.",
-  "home.ownerCardTitle": "Je suis propriétaire",
-  "home.ownerCardSubtitle": "ou gestionnaire de parking",
+  "home.ownerCardTitle": "Je suis propriétaire / gestionnaire de parking",
+  "home.ownerCardSubtitle": "",
   "home.ownerCardDesc":
-    "Nos outils vous permettent de vérifier si vous êtes concerné, estimer vos gains et recevoir des propositions d'installateurs.",
+    "Vérifiez si vous êtes concerné, estimez vos gains et recevez des propositions d'installateurs qualifiés.",
   "home.benefit1": "Identifiez les parkings\nconcernés par la loi APER",
   "home.benefit2": "Estimez le potentiel\nphotovoltaïque",
   "home.benefit3": "Trouvez les\nbons partenaires",
@@ -334,6 +336,9 @@ const fr = {
     "Prix pour un achat unitaire. Avec un Pack Territoire actif, le checkout peut utiliser un crédit inclus à la place du paiement Stripe. Garantie : {guarantee}",
   "leads.detail.purchased": "Lead acheté — retrouvez-le aussi dans",
   "leads.detail.mySpace": "Mon espace",
+  "leads.detail.signInToPurchase":
+    "Connectez-vous ou créez votre espace SolarIndex pour acheter ce lead et débloquer les coordonnées.",
+  "leads.detail.createSpaceLink": "Créer mon espace",
   "leads.detail.purchaseInstallerOnly":
     "L'achat de leads automatisés est réservé aux installateurs. Propriétaires et gérants peuvent déposer un projet parking.",
   "leads.detail.depositProjectLink": "Déposer un projet",
@@ -361,6 +366,13 @@ const fr = {
   "rfp.hintInstaller":
     "Point d'entrée unique : consultations privées et liens vers dossiers officiels (PLACE, AWS, Megalis…)",
   "rfp.depositProject": "Déposer un projet",
+  "rfp.detail.signInToPurchase":
+    "Connectez-vous ou créez votre espace SolarIndex pour acheter l'accès et débloquer les coordonnées du déposant.",
+  "rfp.detail.createSpaceLink": "Créer mon espace",
+  "rfp.detail.contactsMasked": "Coordonnées masquées",
+  "rfp.detail.solutionSought": "Solution recherchée",
+  "rfp.detail.purchaseOwnerOnly":
+    "L'achat d'accès est réservé aux comptes installateur. Vous pouvez déposer votre propre projet depuis Mon espace.",
 
   "common.prev": "← Précédent",
   "common.next": "Suivant →",
@@ -403,7 +415,7 @@ const fr = {
   "solutionType.audienceLandscaper": "Paysagistes",
 
   "home.aperEyebrow": "La loi APER",
-  "home.aperTitle": "Une obligation légale qui crée des chantiers",
+  "home.aperTitle": "Une obligation légale qui crée des opportunités",
   "home.aperSummary":
     "Tout parc de stationnement extérieur d'au moins 1 500 m² doit être équipé d'ombrières solaires ou végétalisées couvrant au minimum 50 % de sa superficie : panneaux photovoltaïques sur la totalité de la partie supérieure, ou — depuis la loi n° 2025-1129 du 26 novembre 2025 (loi Huwart) — un mix avec au minimum 17,5 % de recouvrement panneaux et jusqu'à 32,5 % de végétalisation.",
   "home.aperRef":
