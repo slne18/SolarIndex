@@ -95,7 +95,15 @@ h3,
   }
 
   .mobile-nav-section-lang .language-switcher {
-    @apply w-full justify-center;
+    @apply w-full;
+  }
+
+  .mobile-nav-section-lang .language-switcher-trigger {
+    @apply w-full justify-between;
+  }
+
+  .mobile-nav-section-lang .language-switcher-menu {
+    @apply static mt-2 w-full;
   }
 
   .persona-switcher-drawer {
@@ -350,7 +358,7 @@ h3,
   }
 
   .hero-home-panel {
-    @apply mx-auto w-full max-w-4xl rounded-2xl border border-white/40 bg-white/88 px-6 py-8 text-left shadow-[0_24px_64px_-12px_rgb(15_23_42_/_0.35)] backdrop-blur-md sm:px-10 sm:py-10;
+    @apply mx-auto w-full max-w-4xl rounded-2xl border border-white/40 bg-white/[0.88] px-6 py-8 text-left shadow-[0_24px_64px_-12px_rgb(15_23_42_/_0.35)] backdrop-blur-md sm:px-10 sm:py-10;
   }
 
   .hero-home-platform-title {
@@ -1172,7 +1180,39 @@ h3,
   }
 
   .language-switcher {
-    @apply inline-flex items-center gap-0.5 rounded-lg border border-white/10 bg-night-900/60 p-0.5;
+    @apply relative inline-block;
+  }
+
+  .language-switcher-trigger {
+    @apply inline-flex min-w-[9.5rem] items-center gap-2 rounded-lg border border-white/10 bg-night-900/60 px-2.5 py-1.5 text-sm text-slate-200 transition hover:border-white/20 hover:bg-night-800/80 hover:text-white;
+  }
+
+  .language-switcher-flag {
+    @apply text-base leading-none;
+  }
+
+  .language-switcher-label {
+    @apply flex-1 truncate text-left text-xs font-medium sm:text-sm;
+  }
+
+  .language-switcher-chevron {
+    @apply shrink-0 text-slate-400 transition;
+  }
+
+  .language-switcher-chevron-open {
+    @apply rotate-180;
+  }
+
+  .language-switcher-menu {
+    @apply absolute right-0 top-[calc(100%+0.35rem)] z-50 min-w-full overflow-hidden rounded-lg border border-white/10 bg-night-900 py-1 shadow-xl;
+  }
+
+  .language-switcher-option {
+    @apply flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-300 transition hover:bg-white/[0.06] hover:text-white;
+  }
+
+  .language-switcher-option-active {
+    @apply bg-white/[0.08] font-medium text-white;
   }
 
   .language-switcher-btn {

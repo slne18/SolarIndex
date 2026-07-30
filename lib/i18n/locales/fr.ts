@@ -1,6 +1,8 @@
 const fr = {
   "lang.fr": "FR",
   "lang.en": "EN",
+  "lang.frFull": "Français",
+  "lang.enFull": "English",
   "common.backHome": "← Accueil",
   "common.loading": "Chargement…",
 

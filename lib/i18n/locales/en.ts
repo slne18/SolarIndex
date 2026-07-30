@@ -3,6 +3,8 @@ import type { MessageKey } from "./fr";
 const en: Record<MessageKey, string> = {
   "lang.fr": "FR",
   "lang.en": "EN",
+  "lang.frFull": "Français",
+  "lang.enFull": "English",
   "common.backHome": "← Home",
   "common.loading": "Loading…",
 
