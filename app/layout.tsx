@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { DM_Sans, Syne } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import { PersonaProvider } from "@/components/PersonaProvider";
@@ -12,10 +12,18 @@ import "./globals.css";
 import { SITE_URL } from "@/lib/site";
 import { SEO_DEFAULT_DESCRIPTION, SEO_KEYWORDS } from "@/lib/seo-config";
 
-const jakarta = Plus_Jakarta_Sans({
+const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
+  weight: ["400", "500", "600", "700"],
+});
+
+const syne = Syne({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+  weight: ["600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -58,8 +66,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     pathname.startsWith("/faq");
 
   return (
-    <html lang="fr" className={jakarta.variable}>
-      <body className={`${jakarta.className} min-h-screen`}>
+    <html lang="fr" className={`${dmSans.variable} ${syne.variable}`}>
+      <body className={`${dmSans.className} min-h-screen`}>
         <AnalyticsProvider>
           <LocaleProvider>
             <PersonaProvider>

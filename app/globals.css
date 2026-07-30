@@ -15,9 +15,17 @@ html {
 }
 
 body {
-  @apply min-h-screen bg-night-950 text-slate-200 antialiased;
+  @apply min-h-screen bg-night-950 font-sans text-slate-200 antialiased;
   width: 100%;
   overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+.section-title,
+.header-brand-text {
+  @apply font-display;
 }
 
 @layer components {
@@ -345,8 +353,24 @@ body {
     @apply mx-auto w-full max-w-4xl rounded-2xl border border-white/40 bg-white/88 px-6 py-8 text-left shadow-[0_24px_64px_-12px_rgb(15_23_42_/_0.35)] backdrop-blur-md sm:px-10 sm:py-10;
   }
 
+  .hero-home-platform-title {
+    @apply text-center font-display text-[1.65rem] font-extrabold leading-[1.15] tracking-tight text-slate-900 sm:text-[2rem] lg:text-[2.35rem];
+  }
+
+  .hero-home-platform-line + .hero-home-platform-line {
+    @apply mt-4 sm:mt-5;
+  }
+
+  .hero-home-platform-accent {
+    @apply text-solar-600;
+  }
+
+  .hero-home-panel-lead {
+    @apply mt-7 text-center font-display text-lg font-semibold leading-snug text-slate-800 sm:mt-9 sm:text-xl lg:text-[1.35rem];
+  }
+
   .hero-home-panel-title {
-    @apply text-center text-xl font-extrabold leading-snug tracking-tight text-slate-900 sm:text-2xl lg:text-[1.75rem];
+    @apply text-center font-display text-xl font-extrabold leading-snug tracking-tight text-slate-900 sm:text-2xl lg:text-[1.75rem];
   }
 
   .hero-home-panel .persona-card {

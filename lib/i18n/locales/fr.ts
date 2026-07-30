@@ -131,6 +131,8 @@ const fr = {
 
   "home.heroTagline":
     "Transformez une obligation réglementaire en opportunité énergétique grâce à des partenaires qualifiés.",
+  "home.chooseTitleLine1": "La plateforme qui simplifie la mise en conformité",
+  "home.chooseTitleLine2": "des parkings avec la loi APER.",
   "home.chooseTitlePrefix": "La plateforme qui simplifie la mise en conformité des parkings avec la ",
   "home.chooseTitleAccent": "loi APER.",
   "home.chooseLeadBefore":

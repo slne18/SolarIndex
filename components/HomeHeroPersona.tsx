@@ -62,7 +62,13 @@ export default function HomeHeroPersona() {
         <div className="mx-auto w-full max-w-5xl animate-fade-up">
           {showChooser ? (
             <div className="hero-home-panel">
-              <h1 className="hero-home-panel-title">{t("home.heroTagline")}</h1>
+              <h1 className="hero-home-platform-title">
+                <span className="hero-home-platform-line block">{t("home.chooseTitleLine1")}</span>
+                <span className="hero-home-platform-line hero-home-platform-accent block">
+                  {t("home.chooseTitleLine2")}
+                </span>
+              </h1>
+              <p className="hero-home-panel-lead">{t("home.heroTagline")}</p>
               <div className="persona-cards mt-8 sm:mt-10">
                 {personaCards.map((card) => (
                   <button

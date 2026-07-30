@@ -132,6 +132,8 @@ const en: Record<MessageKey, string> = {
 
   "home.heroTagline":
     "Turn a regulatory obligation into an energy opportunity with qualified partners.",
+  "home.chooseTitleLine1": "The platform that simplifies compliance",
+  "home.chooseTitleLine2": "for parking lots under the APER law.",
   "home.chooseTitlePrefix": "The platform that simplifies parking compliance with the ",
   "home.chooseTitleAccent": "APER law.",
   "home.chooseLeadBefore":
