@@ -3,7 +3,6 @@
 import Link from "next/link";
 import SolarIndexIcon from "@/components/SolarIndexIcon";
 import SolarIndexWordmark from "@/components/SolarIndexWordmark";
-import OwnerPersonaLabel from "@/components/OwnerPersonaLabel";
 import { usePersona } from "@/components/PersonaProvider";
 import { useTranslations } from "@/components/LocaleProvider";
 
@@ -68,13 +67,13 @@ export default function SiteFooter({ light = false }: { light?: boolean }) {
           {showBoth ? (
             <div className="mt-4 space-y-6">
               <div>
-                <div className={subheadingClass}>{t("persona.installer")}</div>
+                <div className={subheadingClass}>{t("persona.installerFooter")}</div>
                 <div className="mt-3">
                   <FooterLinkList links={installerLinks} light={light} />
                 </div>
               </div>
               <div>
-                <OwnerPersonaLabel variant="footer" className={subheadingClass} />
+                <div className={subheadingClass}>{t("persona.ownerFooter")}</div>
                 <div className="mt-3">
                   <FooterLinkList links={ownerLinks} light={light} />
                 </div>

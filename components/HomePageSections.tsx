@@ -100,14 +100,14 @@ function InstallerTarifsSections() {
   const surfaceLabel = RFP_SURFACE_TIER_M2.toLocaleString(locale === "en" ? "en-US" : "fr-FR");
 
   return (
-    <div className="surface-pricing">
+    <div className="surface-light">
       <div className="container-x pt-14 sm:pt-16">
         <SectionEyebrow>{t("home.pricingEyebrow")}</SectionEyebrow>
         <h2 className="pricing-headline mt-3">{t("home.pricingTitle")}</h2>
         <p className="pricing-lead mt-3 max-w-2xl">{t("home.pricingLead")}</p>
       </div>
 
-      <section id="tarifs" className="container-x py-10 sm:py-12">
+      <section id="tarifs" className="container-x scroll-mt-24 py-10 sm:py-12">
         <h3 className="pricing-subhead">{t("home.pricingLeadsHead")}</h3>
         <p className="pricing-sublead mt-2 max-w-xl">{t("home.pricingLeadsLead")}</p>
         <div className="pricing-grid mt-8 md:grid-cols-3">

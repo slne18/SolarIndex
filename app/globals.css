@@ -423,6 +423,14 @@ h3,
     );
   }
 
+  .hero-surface-compact {
+    min-height: auto;
+  }
+
+  .site-chrome:has(.news-ticker) + main .hero-surface-compact {
+    min-height: auto;
+  }
+
   .hero-home-head {
     @apply mx-auto w-full max-w-6xl px-2 text-center;
   }
@@ -437,18 +445,10 @@ h3,
   }
 
   .hero-home-platform-title {
-    @apply font-display font-extrabold leading-[1.15] tracking-tight text-white;
+    @apply mx-auto max-w-4xl font-display font-extrabold leading-[1.2] tracking-tight text-white;
     font-size: clamp(1.375rem, 3.2vw, 2.25rem);
     text-shadow: 0 2px 28px rgb(15 23 42 / 0.55);
     text-wrap: balance;
-  }
-
-  .hero-home-platform-line {
-    @apply block;
-  }
-
-  .hero-home-platform-line + .hero-home-platform-line {
-    @apply mt-3 sm:mt-4;
   }
 
   .hero-home-platform-accent {
@@ -715,6 +715,169 @@ h3,
 
   .surface-light .catalog-row {
     @apply border-slate-100 hover:bg-slate-50;
+  }
+
+  .surface-light .pricing-headline {
+    @apply text-slate-900;
+  }
+
+  .surface-light .pricing-lead {
+    @apply text-slate-600;
+  }
+
+  .surface-light .pricing-subhead {
+    @apply text-slate-900;
+  }
+
+  .surface-light .pricing-sublead {
+    @apply text-slate-600;
+  }
+
+  .surface-light .pricing-split {
+    @apply via-slate-200;
+  }
+
+  .surface-light .pricing-card {
+    @apply border-slate-200 bg-white shadow-[0_8px_30px_-10px_rgba(15,23,42,0.1)];
+  }
+
+  .surface-light .pricing-card:hover {
+    @apply border-slate-300 bg-white;
+  }
+
+  .surface-light .pricing-card-featured {
+    @apply border-solar/40 bg-gradient-to-b from-solar/[0.08] to-white shadow-[0_8px_32px_-12px_rgba(232,168,32,0.18)];
+  }
+
+  .surface-light .pricing-card-title {
+    @apply text-slate-600;
+  }
+
+  .surface-light .pricing-card-price-note {
+    @apply text-slate-500;
+  }
+
+  .surface-light .pricing-card-features {
+    @apply border-slate-100 text-slate-600;
+  }
+
+  .surface-light .solution-metrics-ribbon {
+    @apply border-solar/25;
+    background: linear-gradient(
+      90deg,
+      rgb(232 168 32 / 0.08) 0%,
+      transparent 35%,
+      transparent 65%,
+      rgb(232 168 32 / 0.06) 100%
+    );
+  }
+
+  .surface-light .solution-metrics-divider {
+    @apply via-slate-200;
+  }
+
+  .surface-light .solution-metric-title {
+    @apply text-solar-600;
+  }
+
+  .surface-light .solution-metric-value {
+    @apply text-slate-900;
+  }
+
+  .surface-light .solution-metric-detail {
+    @apply text-slate-600;
+  }
+
+  .surface-light .solution-metric-note {
+    @apply text-slate-500;
+  }
+
+  .surface-light .solution-process-list {
+    @apply border-slate-200;
+  }
+
+  .surface-light .solution-process-item:not(:last-child) {
+    @apply border-slate-200;
+  }
+
+  .surface-light .solution-process-title {
+    @apply text-slate-900;
+  }
+
+  .surface-light .solution-process-text {
+    @apply text-slate-600;
+  }
+
+  .surface-light .solution-process-tag {
+    @apply text-solar-600;
+  }
+
+  .surface-light .solution-process-num {
+    @apply text-solar/30;
+  }
+
+  .surface-light .lead-demo-fiche .lead-demo-title {
+    @apply text-slate-900;
+  }
+
+  .surface-light .lead-demo-fiche .lead-demo-confidence {
+    @apply text-slate-800;
+  }
+
+  .surface-light .lead-demo-fiche .demo-row {
+    @apply border-slate-100;
+  }
+
+  .surface-light .lead-demo-fiche .demo-row-value {
+    @apply text-slate-800;
+  }
+
+  .surface-light .lead-demo-fiche .lead-demo-fact {
+    @apply bg-slate-50;
+  }
+
+  .surface-light .lead-demo-fiche .lead-demo-fact-highlight {
+    @apply bg-solar/[0.08];
+  }
+
+  .surface-light .lead-demo-fiche .lead-demo-fact-value:not(.text-solar) {
+    @apply text-slate-900;
+  }
+
+  .surface-light .lead-demo-fiche .font-medium.text-slate-200 {
+    @apply text-slate-800;
+  }
+
+  .surface-light .owner-tool-page .card .text-white {
+    @apply text-slate-900;
+  }
+
+  .surface-light .owner-tool-page .card .text-slate-200 {
+    @apply text-slate-800;
+  }
+
+  .surface-light .owner-tool-page .card .text-slate-300 {
+    @apply text-slate-700;
+  }
+
+  .surface-light .owner-tool-page .card .font-medium.text-slate-200 {
+    @apply text-slate-800;
+  }
+
+  .surface-light .owner-tool-page .tool-stat {
+    @apply border-slate-200 bg-slate-50;
+  }
+
+  .surface-light .owner-tool-page .tool-stat-value {
+    @apply text-slate-900;
+  }
+
+  .surface-light .owner-tool-page .verifier-suggestions {
+    @apply border-slate-200 bg-white;
+  }
+
+  .surface-light .owner-tool-page .border-white\/10 {
+    @apply border-slate-200;
   }
 
   /* Footer clair */

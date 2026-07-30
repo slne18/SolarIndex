@@ -125,19 +125,21 @@ function LeadsCatalog() {
 
   return (
     <>
-      <div className="hero-surface hero-surface-scrim">
+      <div className="hero-surface hero-surface-compact">
         <div className="container-x py-10 sm:py-12">
-          <div className="mb-10">
-            <p className="pill-accent w-fit">{t("leads.pill")}</p>
-            <h1 className="section-title mt-4">{t("leads.title")}</h1>
-          </div>
+          <p className="pill-accent w-fit">{t("leads.pill")}</p>
+          <h1 className="section-title mt-4">{t("leads.title")}</h1>
+        </div>
+      </div>
 
+      <div className="surface-light border-t border-slate-100">
+        <div className="container-x py-10 sm:py-12">
           <LeadsSolutionSection />
           <LeadDemoFiche />
         </div>
       </div>
 
-      <div id="catalog" className="surface-light scroll-mt-24">
+      <div id="catalog" className="surface-light scroll-mt-24 border-t border-slate-100">
         <div className="container-x py-10 sm:py-12">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>

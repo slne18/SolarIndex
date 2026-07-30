@@ -4,7 +4,7 @@ import { Suspense, type ReactNode } from "react";
 import OwnerPersonaLabel from "@/components/OwnerPersonaLabel";
 import { useTranslations } from "@/components/LocaleProvider";
 
-export default function VerifierPageShell({ children }: { children: ReactNode }) {
+export default function VerifierPageShell() {
   const t = useTranslations();
 
   return (
@@ -14,10 +14,17 @@ export default function VerifierPageShell({ children }: { children: ReactNode })
       <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
         {t("verifier.title")}
       </h1>
-      <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-400">{t("verifier.lead")}</p>
-      <Suspense fallback={<p className="mt-8 text-sm text-slate-500">{t("common.loading")}</p>}>
-        <div className="mt-8">{children}</div>
-      </Suspense>
+      <p className="mt-3 max-w-2xl text-base leading-relaxed text-white/[0.88]">{t("verifier.lead")}</p>
     </div>
+  );
+}
+
+export function VerifierPageContent({ children }: { children: ReactNode }) {
+  const t = useTranslations();
+
+  return (
+    <Suspense fallback={<p className="text-sm text-slate-500">{t("common.loading")}</p>}>
+      {children}
+    </Suspense>
   );
 }

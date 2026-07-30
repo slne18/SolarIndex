@@ -63,7 +63,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     pathname.startsWith("/leads") ||
     pathname.startsWith("/appels-offres") ||
     pathname.startsWith("/legal") ||
-    pathname.startsWith("/faq");
+    pathname.startsWith("/faq") ||
+    pathname.startsWith("/simulateur") ||
+    pathname.startsWith("/verifier");
 
   return (
     <html lang="fr" className={`${dmSans.variable} ${syne.variable}`}>

@@ -12,9 +12,9 @@ import { FlagBadge } from "@/components/LeadTable";
 
 function DemoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-white/[0.06] py-2.5 text-sm">
+    <div className="demo-row flex items-center justify-between gap-4 border-b border-white/[0.06] py-2.5 text-sm">
       <span className="text-slate-500">{label}</span>
-      <span className="text-right font-medium text-slate-200">{value}</span>
+      <span className="demo-row-value text-right font-medium text-slate-200">{value}</span>
     </div>
   );
 }
@@ -29,9 +29,9 @@ function Fact({
   highlight?: boolean;
 }) {
   return (
-    <div className={`bg-night-800/80 p-4 ${highlight ? "bg-solar/10" : ""}`}>
+    <div className={`lead-demo-fact p-4 ${highlight ? "lead-demo-fact-highlight" : ""}`}>
       <div className="text-xs uppercase tracking-wide text-slate-500">{label}</div>
-      <div className={`mt-1 text-lg font-bold ${highlight ? "text-solar" : "text-white"}`}>{value}</div>
+      <div className={`lead-demo-fact-value mt-1 text-lg font-bold ${highlight ? "text-solar" : ""}`}>{value}</div>
     </div>
   );
 }
@@ -72,7 +72,7 @@ export default function LeadDemoFiche() {
   ];
 
   return (
-    <section id="demo" className="py-12">
+    <section id="demo" className="lead-demo-fiche py-12">
       <SectionEyebrow>{t("leads.demo.eyebrow")}</SectionEyebrow>
       <div className="mt-8 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <div>
@@ -89,7 +89,7 @@ export default function LeadDemoFiche() {
 
             <div className="px-6 py-5">
               <p className="text-sm text-slate-500">{t("leads.demo.previewLead")}</p>
-              <h3 className="mt-3 text-2xl font-bold text-white">{DEMO_FICHE.exploitant}</h3>
+              <h3 className="lead-demo-title mt-3 text-2xl font-bold text-white">{DEMO_FICHE.exploitant}</h3>
               <p className="mt-1 text-sm text-slate-500">
                 {t("leads.demo.siteOsm")} {DEMO_FICHE.nom_osm}
               </p>
@@ -112,7 +112,7 @@ export default function LeadDemoFiche() {
           </div>
 
           <div className="card mt-6 p-6">
-            <div className="font-semibold text-slate-200">{t("leads.demo.confidenceTitle")}</div>
+            <div className="lead-demo-confidence font-semibold text-slate-200">{t("leads.demo.confidenceTitle")}</div>
             <ul className="mt-4 space-y-3">
               {demoFactors.map((f) => (
                 <li key={f.label} className="flex gap-3 text-sm">
@@ -129,7 +129,7 @@ export default function LeadDemoFiche() {
 
         <aside>
           <div className="card p-6">
-            <h3 className="text-lg font-semibold text-white">{t("leads.demo.purchaseTitle")}</h3>
+            <h3 className="lead-demo-title text-lg font-semibold text-white">{t("leads.demo.purchaseTitle")}</h3>
             <p className="mt-2 text-sm text-slate-500">{t("leads.demo.purchaseLead")}</p>
             <div className="mt-4">
               <DemoRow label={t("leads.demo.rowOperator")} value={DEMO_FICHE.exploitant} />

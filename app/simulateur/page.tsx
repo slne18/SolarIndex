@@ -18,8 +18,15 @@ export const metadata = buildPageMetadata({
 
 export default function SimulateurPage() {
   return (
-    <SimulateurPageShell>
-      <SimulateurClient />
-    </SimulateurPageShell>
+    <>
+      <div className="hero-surface hero-surface-compact">
+        <SimulateurPageShell />
+      </div>
+      <div className="surface-light border-t border-slate-100">
+        <div className="container-x owner-tool-page py-10 sm:py-14">
+          <SimulateurClient />
+        </div>
+      </div>
+    </>
   );
 }

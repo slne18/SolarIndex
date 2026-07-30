@@ -99,7 +99,9 @@ const fr = {
 
   "persona.chooseProfile": "Choisir votre profil",
   "persona.installer": "Installateur",
+  "persona.installerFooter": "Professionnel photovoltaïque",
   "persona.owner": "Propriétaire",
+  "persona.ownerFooter": "Propriétaire ou gestionnaire",
   "persona.ownerSubtitle": "ou gestionnaire",
   "persona.installerShort": "Installateur",
   "persona.ownerShort": "Propriétaire",
@@ -133,10 +135,8 @@ const fr = {
 
   "home.heroTagline":
     "Transformez une obligation réglementaire en opportunité énergétique grâce à des partenaires qualifiés.",
-  "home.chooseTitleLine1": "La plateforme qui simplifie la mise en conformité",
-  "home.chooseTitleLine2": "des parkings avec la loi APER.",
   "home.chooseTitlePrefix": "La plateforme qui simplifie la mise en conformité des parkings avec la ",
-  "home.chooseTitleAccent": "loi APER.",
+  "home.chooseTitleAccent": "loi\u00a0APER.",
   "home.chooseLeadBefore":
     "SolarIndex met en relation gestionnaires de parking et installateurs pour développer des projets d'",
   "home.chooseLeadHighlight": "ombrières photovoltaïques ou végétalisées",
@@ -153,6 +153,7 @@ const fr = {
   "home.benefit3": "Trouvez les\nbons partenaires",
   "home.benefit4": "Contribuez à la\ntransition énergétique",
   "home.discover": "Découvrir",
+  "home.viewPricing": "Tarifs",
   "home.installerHeroTitle": "Repérez les parkings non conformes APER",
   "home.installerHeroAccent": "avant l'amende.",
   "home.installerHeroLead": "Deux sources de chantiers pour votre prospection B2B.",

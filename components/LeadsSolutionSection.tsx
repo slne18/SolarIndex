@@ -31,7 +31,7 @@ export default function LeadsSolutionSection() {
   const t = useTranslations();
 
   return (
-    <section id="solution" className="solution-section-panel pb-4 sm:pb-6">
+    <section id="solution" className="pb-4 sm:pb-6">
       <SectionEyebrow>{t("solution.eyebrow")}</SectionEyebrow>
       <h2 className="section-subtitle mt-3">{t("solution.title")}</h2>
       <p className="section-lead mt-4">{t("solution.lead")}</p>

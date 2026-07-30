@@ -1,6 +1,6 @@
 import { buildPageMetadata } from "@/lib/seo-config";
 import VerifierClient from "./VerifierClient";
-import VerifierPageShell from "./VerifierPageShell";
+import VerifierPageShell, { VerifierPageContent } from "./VerifierPageShell";
 
 export const metadata = buildPageMetadata({
   title: "Vérifier l'éligibilité APER de mon parking",
@@ -17,8 +17,17 @@ export const metadata = buildPageMetadata({
 
 export default function VerifierPage() {
   return (
-    <VerifierPageShell>
-      <VerifierClient />
-    </VerifierPageShell>
+    <>
+      <div className="hero-surface hero-surface-compact">
+        <VerifierPageShell />
+      </div>
+      <div className="surface-light border-t border-slate-100">
+        <div className="container-x owner-tool-page py-10 sm:py-14">
+          <VerifierPageContent>
+            <VerifierClient />
+          </VerifierPageContent>
+        </div>
+      </div>
+    </>
   );
 }

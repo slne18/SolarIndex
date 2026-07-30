@@ -157,12 +157,12 @@ export default function VerifierClient() {
               autoComplete="off"
             />
             {suggestions.length > 0 && (
-              <ul className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-xl border border-white/10 bg-night-900 shadow-lg">
+              <ul className="verifier-suggestions absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-xl border shadow-lg">
                 {suggestions.map((f, i) => (
                   <li key={`${f.properties.label}-${i}`}>
                     <button
                       type="button"
-                      className="block w-full px-4 py-2.5 text-left text-sm hover:bg-white/5"
+                      className="block w-full px-4 py-2.5 text-left text-sm text-slate-700 hover:bg-slate-50"
                       onClick={() => pickSuggestion(f)}
                     >
                       {f.properties.label}
@@ -231,7 +231,7 @@ export default function VerifierClient() {
               className={`rounded-xl border px-4 py-3 ${
                 result.eligibility === "concerned"
                   ? "border-solar/40 bg-solar/10 text-solar"
-                  : "border-white/10 bg-white/5 text-slate-200"
+                  : "border-slate-200 bg-slate-50 text-slate-800"
               }`}
             >
               <p className="font-semibold">{eligibilityLabel(result.eligibility)}</p>
@@ -266,8 +266,8 @@ export default function VerifierClient() {
       </div>
 
       <aside className="space-y-4">
-        <RegulatoryCountdown variant="full" wave="large" theme="dark" />
-        <RegulatoryCountdown variant="full" wave="small" theme="dark" />
+        <RegulatoryCountdown variant="full" wave="large" theme="light" />
+        <RegulatoryCountdown variant="full" wave="small" theme="light" />
         <p className="text-xs leading-relaxed text-slate-500">{t("verifier.disclaimer")}</p>
       </aside>
     </div>
@@ -276,9 +276,9 @@ export default function VerifierClient() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-night-900/50 px-4 py-3">
+    <div className="tool-stat rounded-xl border border-white/10 bg-night-900/50 px-4 py-3">
       <p className="text-xs text-slate-500">{label}</p>
-      <p className="mt-1 font-semibold text-white">{value}</p>
+      <p className="tool-stat-value mt-1 font-semibold text-white">{value}</p>
     </div>
   );
 }

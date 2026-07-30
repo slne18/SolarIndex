@@ -13,6 +13,7 @@ import HeroActionList, {
 import HomeHeroBenefits from "@/components/HomeHeroBenefits";
 import OwnerPersonaLabel from "@/components/OwnerPersonaLabel";
 import TypewriterText from "@/components/TypewriterText";
+import HeroScrollCue from "@/components/HeroScrollCue";
 import { INSTALLER_CHANTIERS_LINKS } from "@/lib/installer-nav";
 import type { Persona } from "@/lib/persona";
 
@@ -65,10 +66,8 @@ export default function HomeHeroPersona() {
             <>
               <div className="hero-home-head">
                 <h1 className="hero-home-platform-title">
-                  <span className="hero-home-platform-line">{t("home.chooseTitleLine1")}</span>
-                  <span className="hero-home-platform-line hero-home-platform-accent">
-                    {t("home.chooseTitleLine2")}
-                  </span>
+                  {t("home.chooseTitlePrefix")}
+                  <span className="hero-home-platform-accent">{t("home.chooseTitleAccent")}</span>
                 </h1>
                 <TypewriterText text={t("home.heroTagline")} className="hero-home-panel-lead" />
               </div>
@@ -113,24 +112,9 @@ export default function HomeHeroPersona() {
       </div>
 
       {showChooser ? (
-        <div className="mt-auto flex justify-center pb-8 pt-4 sm:pb-10">
-          <a
-            href="#loi-aper"
-            className="group flex flex-col items-center gap-1 text-xs font-medium uppercase tracking-widest text-white/[0.85] transition hover:text-white"
-          >
-            {t("home.discover")}
-            <svg
-              className="mt-1 h-4 w-4 animate-bounce text-white/70 group-hover:text-solar"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden
-            >
-              <path d="M12 5v14M5 12l7 7 7-7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </a>
-        </div>
+        <HeroScrollCue href="#loi-aper" label={t("home.discover")} />
+      ) : persona === "installer" ? (
+        <HeroScrollCue href="#tarifs" label={t("home.viewPricing")} />
       ) : null}
     </section>
   );
