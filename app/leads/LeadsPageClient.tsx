@@ -220,13 +220,13 @@ function LeadsCatalog() {
         </div>
       </div>
 
-      <div className="surface-light border-t border-slate-100">
+      <div className="hero-surface border-t border-white/[0.06]">
         <div className="container-x py-10 sm:py-12">
           <section id="ma-zone" className="scroll-mt-24">
-            <p className="pill-accent-solar w-fit">{t("leads.zonePill")}</p>
+            <p className="pill-accent w-fit">{t("leads.zonePill")}</p>
             <h2 className="section-title mt-4">{t("leads.zoneTitle")}</h2>
-            <p className="section-lead mt-2 max-w-2xl">{t("leads.zoneLead")}</p>
-            <div className="mt-6">
+            <p className="hero-on-photo-lead mt-2 !mx-0 max-w-2xl">{t("leads.zoneLead")}</p>
+            <div className="surface-light hero-home-panel mt-6 max-w-2xl !px-6 !py-6 sm:!px-8 sm:!py-8">
               <TerritoireClient embedded onExploreCatalog={exploreCatalogFromZone} />
             </div>
           </section>

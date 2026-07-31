@@ -224,71 +224,86 @@ function LeadDetailContent({ id }: { id: string }) {
 
         <aside className="page-aside-sticky space-y-4">
           <div className="card p-6">
-            {!isOwned && canPurchase ? (
+            {!isOwned ? (
               <>
                 <div className="text-sm text-slate-600">
                   {fmt(t("leads.detail.priceLead"), { tier: t(tierLabelKey(lead.tier)) })}
                 </div>
                 <div className="mt-1 text-3xl font-bold text-solar">{`${lead.prix_lead} €`}</div>
-                <div className="mt-4">
-                  <PurchaseButton
-                    leadId={lead.id}
-                    prix={displayPrix}
-                    tier={lead.tier}
-                    departement={lead.departement}
-                    flag={lead.flag_urgence}
-                    full
-                    disabled={!slotOpen}
-                    disabledReason="sold_out"
-                  />
-                </div>
-                <p className="mt-3 text-center text-xs text-slate-500">
-                  {fmt(t("leads.detail.checkoutHint"), { guarantee: t("leads.guaranteeBody") })}
-                </p>
-              </>
-            ) : !isOwned ? (
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-600">
-                {!authed ? (
-                  <>
-                    {t("leads.detail.signInToPurchase")}{" "}
-                    <Link
-                      href={`/login?mode=signup&next=${encodeURIComponent(`/leads/${id}`)}`}
-                      className="text-solar-700 underline"
-                    >
-                      {t("leads.detail.createSpaceLink")}
-                    </Link>
-                    .
-                  </>
-                ) : (
-                  <>
-                    {t("leads.detail.purchaseInstallerOnly")}{" "}
-                    <Link href="/appels-offres/nouveau" className="text-solar-700 underline">
-                      {t("leads.detail.depositProjectLink")}
-                    </Link>
-                    .
-                  </>
-                )}
-              </div>
-            ) : (
-              <div className="rounded-xl border border-solar/30 bg-amber-50 p-4 text-center text-sm text-slate-700">
-                {t("leads.detail.purchased")}{" "}
-                <Link href={MON_ESPACE_PATH} className="text-solar-700 underline">
-                  {t("leads.detail.mySpace")}
-                </Link>
-                .
-              </div>
-            )}
 
-            <div className={!isOwned ? "mt-6 border-t border-slate-200 pt-6" : ""}>
-              <h2 className="text-lg font-semibold text-slate-900">
-                {isOwned ? t("leads.detail.contactsUnlocked") : t("leads.detail.whatYouBuy")}
-              </h2>
-              <p className="mt-2 text-sm text-slate-600">
-                {isOwned ? t("leads.detail.contactsUnlockedDesc") : t("leads.detail.whatYouBuyDesc")}
-              </p>
-              <div className="mt-4">
-                {isOwned ? (
-                  <>
+                {canPurchase ? (
+                  <div className="mt-4">
+                    <PurchaseButton
+                      leadId={lead.id}
+                      prix={displayPrix}
+                      tier={lead.tier}
+                      departement={lead.departement}
+                      flag={lead.flag_urgence}
+                      full
+                      disabled={!slotOpen}
+                      disabledReason="sold_out"
+                    />
+                  </div>
+                ) : (
+                  <p className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+                    {!authed ? (
+                      <>
+                        {t("leads.detail.signInToPurchase")}{" "}
+                        <Link
+                          href={`/login?mode=signup&next=${encodeURIComponent(`/leads/${id}`)}`}
+                          className="text-solar-700 underline"
+                        >
+                          {t("leads.detail.createSpaceLink")}
+                        </Link>
+                        .
+                      </>
+                    ) : (
+                      <>
+                        {t("leads.detail.purchaseInstallerOnly")}{" "}
+                        <Link href="/appels-offres/nouveau" className="text-solar-700 underline">
+                          {t("leads.detail.depositProjectLink")}
+                        </Link>
+                        .
+                      </>
+                    )}
+                  </p>
+                )}
+
+                {canPurchase ? (
+                  <p className="mt-3 text-center text-xs text-slate-500">
+                    {fmt(t("leads.detail.checkoutHint"), { guarantee: t("leads.guaranteeBody") })}
+                  </p>
+                ) : null}
+
+                <div className="mt-6 border-t border-slate-200 pt-6">
+                  <h2 className="text-lg font-semibold text-slate-900">{t("leads.detail.whatYouBuy")}</h2>
+                  <p className="mt-2 text-sm text-slate-600">{t("leads.detail.whatYouBuyDesc")}</p>
+                  <div className="mt-4 space-y-1">
+                    <MaskedRow label={t("leads.detail.contactOperator")} />
+                    <MaskedRow label={t("leads.detail.contactSiren")} />
+                    <MaskedRow label={t("leads.detail.contactDirectorOp")} />
+                    <MaskedRow label={t("leads.detail.contactOwner")} />
+                    <MaskedRow label={t("leads.detail.contactDirectorOwner")} />
+                    <MaskedRow label={t("leads.detail.contactAddress")} />
+                    <MaskedRow label={t("leads.detail.contactParcel")} />
+                    <MaskedRow label={t("leads.detail.contactGps")} />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="rounded-xl border border-solar/30 bg-amber-50 p-4 text-center text-sm text-slate-700">
+                  {t("leads.detail.purchased")}{" "}
+                  <Link href={MON_ESPACE_PATH} className="text-solar-700 underline">
+                    {t("leads.detail.mySpace")}
+                  </Link>
+                  .
+                </div>
+
+                <div className="mt-6 border-t border-slate-200 pt-6">
+                  <h2 className="text-lg font-semibold text-slate-900">{t("leads.detail.contactsUnlocked")}</h2>
+                  <p className="mt-2 text-sm text-slate-600">{t("leads.detail.contactsUnlockedDesc")}</p>
+                  <div className="mt-4">
                     <ContactRow label={t("leads.detail.contactOperator")} value={lead.raison_sociale} />
                     <ContactRow label={t("leads.detail.contactSiren")} value={lead.siren} />
                     <ContactRow
@@ -321,21 +336,10 @@ function LeadDetailContent({ id }: { id: string }) {
                         </a>
                       </div>
                     ) : null}
-                  </>
-                ) : (
-                  <>
-                    <MaskedRow label={t("leads.detail.contactOperator")} />
-                    <MaskedRow label={t("leads.detail.contactSiren")} />
-                    <MaskedRow label={t("leads.detail.contactDirectorOp")} />
-                    <MaskedRow label={t("leads.detail.contactOwner")} />
-                    <MaskedRow label={t("leads.detail.contactDirectorOwner")} />
-                    <MaskedRow label={t("leads.detail.contactAddress")} />
-                    <MaskedRow label={t("leads.detail.contactParcel")} />
-                    <MaskedRow label={t("leads.detail.contactGps")} />
-                  </>
-                )}
-              </div>
-            </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="card p-5 text-sm text-slate-600">
