@@ -20,6 +20,9 @@ export type SimulatorSolutionMode = "pv_pur" | "mixte_pv_vegetal";
 /** Tarif électricité professionnelle indicatif (€/kWh TTC). */
 export const ELECTRICITY_PRICE_EUR = 0.18;
 
+/** Entretien & assurance indicatifs (€/kWc/an). */
+export const OPEX_EUR_PER_KWC = 12;
+
 /** Part autoconsommée par défaut (éclairage, bornes, locaux) si conso non renseignée. */
 export const DEFAULT_AUTOCONSUMPTION_RATIO = 0.55;
 
@@ -95,12 +98,15 @@ export type SimulatorResult = {
   autoconsommationSavingsEur: number;
   surplusRevenueEur: number;
   autoconsommationTotalEur: number;
+  opexEurPerYear: number;
+  netOperatingBenefitEur: number;
   edfOaFullInjectionEur: number;
   edfOaTariff: number;
   fineAvoidedEur: number;
   installationCostPvEur: number;
   installationCostVegetationEur: number;
   installationCostEur: number;
+  roiYearsNet: number | null;
   roiYearsAutoconsommation: number | null;
   roiYearsFullInjection: number | null;
   aperEligible: boolean;
@@ -188,6 +194,8 @@ export function runParkingSolarSimulator(input: SimulatorInput): SimulatorResult
   const surplusTariff = edfOaTariffEurPerKwh(puissanceKwc);
   const surplusRevenueEur = Math.round(surplusKwh * surplusTariff);
   const autoconsommationTotalEur = autoconsommationSavingsEur + surplusRevenueEur;
+  const opexEurPerYear = Math.round(puissanceKwc * OPEX_EUR_PER_KWC);
+  const netOperatingBenefitEur = autoconsommationTotalEur - opexEurPerYear;
 
   const edfOaFullInjectionEur = Math.round(edfOaRevenue(productionKwhPerYear, puissanceKwc));
   const installationCostPvEur = puissanceKwc * COUT_KWC_EUR;
@@ -198,10 +206,11 @@ export function runParkingSolarSimulator(input: SimulatorInput): SimulatorResult
   const installationCostEur = installationCostPvEur + installationCostVegetationEur;
   const fineAvoidedEur = surfaceM2 >= SURFACE_APER_MIN_M2 ? maxAperAnnualFineEur(surfaceM2) : 0;
 
-  const roiYearsAutoconsommation =
-    autoconsommationTotalEur > 0
-      ? Math.round((installationCostEur / autoconsommationTotalEur) * 10) / 10
+  const roiYearsNet =
+    netOperatingBenefitEur > 0
+      ? Math.round((installationCostEur / netOperatingBenefitEur) * 10) / 10
       : null;
+  const roiYearsAutoconsommation = roiYearsNet;
   const roiYearsFullInjection =
     edfOaFullInjectionEur > 0
       ? Math.round((installationCostEur / edfOaFullInjectionEur) * 10) / 10
@@ -223,12 +232,15 @@ export function runParkingSolarSimulator(input: SimulatorInput): SimulatorResult
     autoconsommationSavingsEur,
     surplusRevenueEur,
     autoconsommationTotalEur,
+    opexEurPerYear,
+    netOperatingBenefitEur,
     edfOaFullInjectionEur,
     edfOaTariff: surplusTariff,
     fineAvoidedEur,
     installationCostPvEur,
     installationCostVegetationEur,
     installationCostEur,
+    roiYearsNet,
     roiYearsAutoconsommation,
     roiYearsFullInjection,
     aperEligible: surfaceM2 >= SURFACE_APER_MIN_M2,

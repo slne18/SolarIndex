@@ -1006,6 +1006,46 @@ h3,
     @apply border-slate-200 bg-slate-50;
   }
 
+  .surface-light .owner-tool-page .simulator-results-header {
+    @apply border-slate-200 bg-slate-50;
+  }
+
+  .surface-light .owner-tool-page .simulator-results-header-title {
+    @apply text-slate-800;
+  }
+
+  .surface-light .owner-tool-page .simulator-kpi-card {
+    @apply border-slate-200 bg-slate-50;
+  }
+
+  .surface-light .owner-tool-page .simulator-kpi-value {
+    @apply text-slate-900;
+  }
+
+  .surface-light .owner-tool-page .simulator-detail-card {
+    @apply border-slate-200 bg-slate-50;
+  }
+
+  .surface-light .owner-tool-page .simulator-detail-title {
+    @apply text-slate-800;
+  }
+
+  .surface-light .owner-tool-page .simulator-detail-rows dd {
+    @apply text-slate-900;
+  }
+
+  .surface-light .owner-tool-page .simulator-detail-capex strong {
+    @apply text-slate-900;
+  }
+
+  .surface-light .owner-tool-page .simulator-flow-label {
+    @apply text-slate-800;
+  }
+
+  .surface-light .owner-tool-page .simulator-flow-amount {
+    @apply text-slate-900;
+  }
+
   .surface-light .owner-tool-page .simulator-summary-value {
     @apply text-slate-900;
   }
@@ -1351,6 +1391,142 @@ h3,
 
   .simulator-summary-grid {
     @apply grid gap-3 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .simulator-results-panel {
+    @apply space-y-5;
+  }
+
+  .simulator-results-header {
+    @apply rounded-xl border border-white/10 bg-night-900/30 px-4 py-3;
+  }
+
+  .simulator-results-header-title {
+    @apply text-sm font-bold uppercase tracking-wide text-slate-200;
+  }
+
+  .simulator-results-header-meta {
+    @apply mt-1 text-xs text-slate-500;
+  }
+
+  .simulator-kpi-grid {
+    @apply grid gap-3 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .simulator-kpi-card {
+    @apply rounded-xl border border-white/10 bg-night-900/40 px-4 py-4;
+  }
+
+  .simulator-kpi-card-fine {
+    @apply border-solar/25 bg-solar/5;
+  }
+
+  .simulator-kpi-label {
+    @apply text-xs font-medium uppercase tracking-wide text-slate-500;
+  }
+
+  .simulator-kpi-value {
+    @apply mt-2 text-2xl font-bold tabular-nums text-white;
+  }
+
+  .simulator-kpi-sub {
+    @apply mt-2 text-xs leading-relaxed text-slate-500;
+  }
+
+  .simulator-detail-grid {
+    @apply grid gap-4 lg:grid-cols-2;
+  }
+
+  .simulator-detail-card {
+    @apply rounded-xl border border-white/10 bg-night-900/30 p-4;
+  }
+
+  .simulator-detail-title {
+    @apply text-sm font-semibold text-slate-200;
+  }
+
+  .simulator-detail-rows {
+    @apply mt-4 space-y-3 text-sm;
+  }
+
+  .simulator-detail-rows dt {
+    @apply text-xs text-slate-500;
+  }
+
+  .simulator-detail-rows dd {
+    @apply mt-0.5 font-semibold tabular-nums text-white;
+  }
+
+  .simulator-detail-badge {
+    @apply ml-2 rounded-md bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-300;
+  }
+
+  .simulator-detail-note {
+    @apply mt-1 text-xs text-slate-500;
+  }
+
+  .simulator-detail-divider {
+    @apply my-4 border-t border-white/10;
+  }
+
+  .simulator-detail-section-label {
+    @apply text-xs font-medium uppercase tracking-wide text-slate-500;
+  }
+
+  .simulator-detail-capex {
+    @apply flex items-center justify-between gap-3 text-sm text-slate-400;
+  }
+
+  .simulator-detail-capex strong {
+    @apply text-lg font-bold tabular-nums text-white;
+  }
+
+  .simulator-flow-list {
+    @apply mt-4 space-y-3;
+  }
+
+  .simulator-flow-line {
+    @apply flex items-start gap-3 rounded-lg border px-3 py-2.5 text-sm;
+  }
+
+  .simulator-flow-positive {
+    @apply border-emerald-500/20 bg-emerald-500/5;
+  }
+
+  .simulator-flow-negative {
+    @apply border-red-400/20 bg-red-400/5;
+  }
+
+  .simulator-flow-icon {
+    @apply mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold;
+  }
+
+  .simulator-flow-positive .simulator-flow-icon {
+    @apply bg-emerald-500/20 text-emerald-300;
+  }
+
+  .simulator-flow-negative .simulator-flow-icon {
+    @apply bg-red-400/20 text-red-300;
+  }
+
+  .simulator-flow-label {
+    @apply font-medium text-slate-200;
+  }
+
+  .simulator-flow-detail {
+    @apply mt-0.5 text-xs text-slate-500;
+  }
+
+  .simulator-flow-amount {
+    @apply shrink-0 text-right text-sm font-semibold tabular-nums text-white;
+  }
+
+  .simulator-flow-total {
+    @apply flex items-center justify-between gap-3 rounded-lg border border-solar/25 bg-solar/10 px-3 py-3 text-sm;
+  }
+
+  .simulator-flow-total strong {
+    @apply text-base font-bold tabular-nums text-solar;
   }
 
   .simulator-summary-card {

@@ -57,6 +57,20 @@ describe("solar-simulator", () => {
     expect(r.installationCostPvEur).toBe(175 * 1200);
     expect(r.installationCostVegetationEur).toBe(1625 * 150);
     expect(r.installationCostEur).toBe(175 * 1200 + 1625 * 150);
+    expect(r.opexEurPerYear).toBe(175 * 12);
+  });
+
+  it("net gain and ROI exclude APER fine and include OPEX", () => {
+    const r = runParkingSolarSimulator({
+      surface: { mode: "direct", surfaceM2: 5000 },
+      region: "Occitanie",
+    });
+    expect(r.autoconsommationSavingsEur).toBe(66_330);
+    expect(r.surplusRevenueEur).toBe(26_713);
+    expect(r.opexEurPerYear).toBe(6_000);
+    expect(r.netOperatingBenefitEur).toBe(87_043);
+    expect(r.roiYearsNet).toBe(6.9);
+    expect(r.fineAvoidedEur).toBe(20_000);
   });
 
   it("pv_pur mode unchanged vs 50% solar surface", () => {

@@ -2,49 +2,36 @@
 
 import { euros, eurosCompact, nf, nfSurface } from "@/lib/format";
 import { fmt } from "@/lib/i18n/format";
-import { useTranslations } from "@/components/LocaleProvider";
-import type { SimulatorResult } from "@/lib/solar-simulator";
+import { useLocale, useTranslations } from "@/components/LocaleProvider";
+import {
+  ELECTRICITY_PRICE_EUR,
+  OPEX_EUR_PER_KWC,
+  type SimulatorResult,
+} from "@/lib/solar-simulator";
 
-type BenefitSegment = {
-  id: string;
-  label: string;
-  value: number;
-  color: string;
-};
-
-function benefitSegments(result: SimulatorResult, t: ReturnType<typeof useTranslations>): BenefitSegment[] {
-  const segments: BenefitSegment[] = [
-    {
-      id: "savings",
-      label: t("simulateur.segSavings"),
-      value: result.autoconsommationSavingsEur,
-      color: "var(--sim-seg-savings)",
-    },
-    {
-      id: "surplus",
-      label: t("simulateur.segSurplus"),
-      value: result.surplusRevenueEur,
-      color: "var(--sim-seg-surplus)",
-    },
-  ];
-  if (result.aperEligible && result.fineAvoidedEur > 0) {
-    segments.push({
-      id: "fine",
-      label: t("simulateur.segFine"),
-      value: result.fineAvoidedEur,
-      color: "var(--sim-seg-fine)",
-    });
-  }
-  return segments.filter((s) => s.value > 0);
+function selfConsumptionPct(result: SimulatorResult): number {
+  if (result.productionKwhPerYear <= 0) return 0;
+  return Math.round((result.selfConsumedKwh / result.productionKwhPerYear) * 100);
 }
 
-function totalAnnualBenefit(result: SimulatorResult): number {
-  return result.autoconsommationTotalEur + (result.aperEligible ? result.fineAvoidedEur : 0);
+function surplusPct(result: SimulatorResult): number {
+  if (result.productionKwhPerYear <= 0) return 0;
+  return Math.round((result.surplusKwh / result.productionKwhPerYear) * 100);
 }
 
-function surfaceSharePct(partM2: number, totalM2: number): number {
-  if (totalM2 <= 0) return 0;
-  return (partM2 / totalM2) * 100;
+function formatTariffCents(tariffEur: number, locale: string): string {
+  const cents = (tariffEur * 100).toLocaleString(locale === "en" ? "en-US" : "fr-FR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  return `${cents} c€`;
+}
+
+function formatPriceEur(locale: string): string {
+  return ELECTRICITY_PRICE_EUR.toLocaleString(locale === "en" ? "en-US" : "fr-FR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
 export function SimulatorModeComparison({
@@ -55,8 +42,6 @@ export function SimulatorModeComparison({
   mix: SimulatorResult;
 }) {
   const t = useTranslations();
-  const fullGain = totalAnnualBenefit(fullPv);
-  const mixGain = totalAnnualBenefit(mix);
 
   return (
     <div className="simulator-mode-compare">
@@ -66,8 +51,11 @@ export function SimulatorModeComparison({
           <p className="simulator-mode-compare-head">{t("simulateur.solutionPvPur")}</p>
           <dl className="simulator-mode-compare-rows">
             <div>
-              <dt>{t("simulateur.summaryAnnualGain")}</dt>
-              <dd>{euros(fullGain)}{t("simulateur.perYear")}</dd>
+              <dt>{t("simulateur.summaryNetGain")}</dt>
+              <dd>
+                {euros(fullPv.netOperatingBenefitEur)}
+                {t("simulateur.perYear")}
+              </dd>
             </div>
             <div>
               <dt>{t("simulateur.detailInstallCost")}</dt>
@@ -76,8 +64,8 @@ export function SimulatorModeComparison({
             <div>
               <dt>{t("simulateur.summaryRoi")}</dt>
               <dd>
-                {fullPv.roiYearsAutoconsommation != null
-                  ? fmt(t("simulateur.roiYears"), { years: fullPv.roiYearsAutoconsommation })
+                {fullPv.roiYearsNet != null
+                  ? fmt(t("simulateur.roiYears"), { years: fullPv.roiYearsNet })
                   : "—"}
               </dd>
             </div>
@@ -87,8 +75,11 @@ export function SimulatorModeComparison({
           <p className="simulator-mode-compare-head">{t("simulateur.modeCompareMixCol")}</p>
           <dl className="simulator-mode-compare-rows">
             <div>
-              <dt>{t("simulateur.summaryAnnualGain")}</dt>
-              <dd>{euros(mixGain)}{t("simulateur.perYear")}</dd>
+              <dt>{t("simulateur.summaryNetGain")}</dt>
+              <dd>
+                {euros(mix.netOperatingBenefitEur)}
+                {t("simulateur.perYear")}
+              </dd>
             </div>
             <div>
               <dt>{t("simulateur.detailInstallCost")}</dt>
@@ -97,8 +88,8 @@ export function SimulatorModeComparison({
             <div>
               <dt>{t("simulateur.summaryRoi")}</dt>
               <dd>
-                {mix.roiYearsAutoconsommation != null
-                  ? fmt(t("simulateur.roiYears"), { years: mix.roiYearsAutoconsommation })
+                {mix.roiYearsNet != null
+                  ? fmt(t("simulateur.roiYears"), { years: mix.roiYearsNet })
                   : "—"}
               </dd>
             </div>
@@ -109,223 +100,211 @@ export function SimulatorModeComparison({
   );
 }
 
-export function SimulatorResultsSummary({ result }: { result: SimulatorResult }) {
+export function SimulatorResultsPanel({
+  result,
+  region,
+}: {
+  result: SimulatorResult;
+  region: string;
+}) {
   const t = useTranslations();
-  const totalBenefit = totalAnnualBenefit(result);
-
-  return (
-    <div className="simulator-summary-grid">
-      <div className="simulator-summary-card">
-        <p className="simulator-summary-label">{t("simulateur.summaryAnnualGain")}</p>
-        <p className="simulator-summary-value">
-          {euros(totalBenefit)}
-          {t("simulateur.perYear")}
-        </p>
-        <p className="simulator-summary-sub">
-          {t("simulateur.summaryAnnualGainSub")}
-          {result.aperEligible ? t("simulateur.summaryAnnualGainSubFine") : ""}
-        </p>
-      </div>
-      <div className="simulator-summary-card">
-        <p className="simulator-summary-label">{t("simulateur.summaryRoi")}</p>
-        <p className="simulator-summary-value">
-          {result.roiYearsAutoconsommation != null
-            ? `${result.roiYearsAutoconsommation} ${t("simulateur.years")}`
-            : "—"}
-        </p>
-        <p className="simulator-summary-sub">{t("simulateur.summaryRoiSub")}</p>
-      </div>
-      {result.aperEligible ? (
-        <div className="simulator-summary-card">
-          <p className="simulator-summary-label">{t("simulateur.summaryFine")}</p>
-          <p className="simulator-summary-value text-solar">
-            {euros(result.fineAvoidedEur)}
-            {t("simulateur.perYear")}
-          </p>
-          <p className="simulator-summary-sub">{t("simulateur.summaryFineSub")}</p>
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-export function SimulatorParkingVisual({ result }: { result: SimulatorResult }) {
-  const t = useTranslations();
+  const { locale } = useLocale();
+  const selfPct = selfConsumptionPct(result);
+  const surPct = surplusPct(result);
   const isMix = result.solutionMode === "mixte_pv_vegetal";
-  const solarPct = surfaceSharePct(result.surfaceSolaireM2, result.surfaceM2);
-  const vegPct = surfaceSharePct(result.surfaceVegetaliseeM2, result.surfaceM2);
-  const restPct = surfaceSharePct(result.restSurfaceM2, result.surfaceM2);
-  const prodTotal = result.productionKwhPerYear || 1;
-  const selfPct = (result.selfConsumedKwh / prodTotal) * 100;
-  const surplusPct = (result.surplusKwh / prodTotal) * 100;
+  const priceLabel = formatPriceEur(locale);
+  const edfTariffLabel = formatTariffCents(result.edfOaTariff, locale);
+  const canopySurface = result.surfaceObligatoireTotaleM2;
 
   return (
-    <figure className="simulator-visual-card">
-      <figcaption className="simulator-visual-title">{t("simulateur.visualParkingTitle")}</figcaption>
-
-      {isMix ? (
-        <p className="simulator-surface-split-caption">
-          {fmt(t("simulateur.visualMixSplit"), {
-            pv: `${solarPct.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} %`,
-            veg: `${vegPct.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} %`,
-            rest: `${restPct.toLocaleString("fr-FR", { maximumFractionDigits: 0 })} %`,
+    <div className="simulator-results-panel">
+      <header className="simulator-results-header">
+        <h3 className="simulator-results-header-title">{t("simulateur.resultsTitle")}</h3>
+        <p className="simulator-results-header-meta">
+          {fmt(t("simulateur.resultsHeaderMeta"), {
+            price: priceLabel,
+            edfTariff: edfTariffLabel,
+            opex: nf(OPEX_EUR_PER_KWC),
           })}
         </p>
-      ) : null}
+      </header>
 
-      <div className="simulator-parking-plan" aria-hidden>
-        {isMix ? (
-          <>
-            <div className="simulator-parking-solar" style={{ width: `${solarPct}%` }}>
-              <span>{t("simulateur.visualCanopiesPv")}</span>
-            </div>
-            <div className="simulator-parking-veg" style={{ width: `${vegPct}%` }}>
-              <span>{t("simulateur.visualVegetation")}</span>
-            </div>
-            <div className="simulator-parking-rest" style={{ width: `${restPct}%` }}>
-              <span>{t("simulateur.visualRest")}</span>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="simulator-parking-solar" style={{ width: `${solarPct}%` }}>
-              <span>{fmt(t("simulateur.visualCanopies"), { ratio: result.solarRatioLabel })}</span>
-            </div>
-            <div className="simulator-parking-rest" style={{ width: `${restPct}%` }}>
-              <span>{t("simulateur.visualRest")}</span>
-            </div>
-          </>
-        )}
-      </div>
-
-      <dl className="simulator-parking-stats">
-        <div>
-          <dt>{t("simulateur.visualParkingSurface")}</dt>
-          <dd>{nfSurface(result.surfaceM2)} m²</dd>
+      <div className="simulator-kpi-grid">
+        <div className="simulator-kpi-card">
+          <p className="simulator-kpi-label">{t("simulateur.summaryNetGain")}</p>
+          <p className="simulator-kpi-value">
+            {euros(result.netOperatingBenefitEur)}
+            {t("simulateur.perYear")}
+          </p>
+          <p className="simulator-kpi-sub">{t("simulateur.summaryNetGainSub")}</p>
         </div>
-        <div>
-          <dt>{t("simulateur.visualSolarSurface")}</dt>
-          <dd>{nfSurface(result.surfaceSolaireM2)} m²</dd>
+        <div className="simulator-kpi-card">
+          <p className="simulator-kpi-label">{t("simulateur.summaryRoi")}</p>
+          <p className="simulator-kpi-value">
+            {result.roiYearsNet != null
+              ? fmt(t("simulateur.roiYears"), { years: result.roiYearsNet })
+              : "—"}
+          </p>
+          <p className="simulator-kpi-sub">{t("simulateur.summaryRoiSub")}</p>
         </div>
-        {isMix ? (
-          <div>
-            <dt>{t("simulateur.visualVegetationSurface")}</dt>
-            <dd>{nfSurface(result.surfaceVegetaliseeM2)} m²</dd>
+        {result.aperEligible ? (
+          <div className="simulator-kpi-card simulator-kpi-card-fine">
+            <p className="simulator-kpi-label">{t("simulateur.summaryFine")}</p>
+            <p className="simulator-kpi-value text-solar">
+              {euros(result.fineAvoidedEur)}
+              {t("simulateur.perYear")}
+            </p>
+            <p className="simulator-kpi-sub">{t("simulateur.summaryFineSub")}</p>
           </div>
         ) : null}
-        <div>
-          <dt>{t("simulateur.visualPower")}</dt>
-          <dd>{nf(result.puissanceKwc)} kWc</dd>
-        </div>
-      </dl>
-
-      <p className="simulator-visual-caption">{t("simulateur.visualProductionSplit")}</p>
-      <div
-        className="simulator-production-bar"
-        role="img"
-        aria-label={`${nf(result.selfConsumedKwh)} kWh, ${nf(result.surplusKwh)} kWh`}
-      >
-        <div className="simulator-production-self" style={{ width: `${selfPct}%` }} />
-        <div className="simulator-production-surplus" style={{ width: `${surplusPct}%` }} />
-      </div>
-      <ul className="simulator-production-legend">
-        <li>
-          <span className="simulator-legend-dot simulator-legend-dot-self" aria-hidden />
-          {fmt(t("simulateur.visualSelfConsumed"), { kwh: nf(result.selfConsumedKwh) })}
-        </li>
-        <li>
-          <span className="simulator-legend-dot simulator-legend-dot-surplus" aria-hidden />
-          {fmt(t("simulateur.visualSurplus"), { kwh: nf(result.surplusKwh) })}
-        </li>
-      </ul>
-    </figure>
-  );
-}
-
-export function SimulatorBenefitDonut({ result }: { result: SimulatorResult }) {
-  const t = useTranslations();
-  const segments = benefitSegments(result, t);
-  const total = segments.reduce((sum, s) => sum + s.value, 0);
-  const r = 42;
-  const c = 2 * Math.PI * r;
-  let offset = 0;
-
-  const arcs =
-    total > 0
-      ? segments.map((seg) => {
-          const len = (seg.value / total) * c;
-          const dash = `${len} ${c - len}`;
-          const dashOffset = -offset;
-          offset += len;
-          return { ...seg, dash, dashOffset };
-        })
-      : [];
-
-  return (
-    <figure className="simulator-visual-card">
-      <figcaption className="simulator-visual-title">{t("simulateur.visualBenefitsTitle")}</figcaption>
-
-      <div className="simulator-donut-wrap">
-        <svg viewBox="0 0 100 100" className="simulator-donut" aria-hidden>
-          <circle cx="50" cy="50" r={r} className="simulator-donut-track" />
-          {arcs.map((arc) => (
-            <circle
-              key={arc.id}
-              cx="50"
-              cy="50"
-              r={r}
-              fill="none"
-              stroke={arc.color}
-              strokeWidth="16"
-              strokeDasharray={arc.dash}
-              strokeDashoffset={arc.dashOffset}
-              transform="rotate(-90 50 50)"
-            />
-          ))}
-        </svg>
-        <div className="simulator-donut-center">
-          <p className="simulator-donut-total">{total > 0 ? euros(total) : "—"}</p>
-          <p className="simulator-donut-total-label">{t("simulateur.perYear")}</p>
-        </div>
       </div>
 
-      <ul className="simulator-benefit-legend">
-        {segments.map((seg) => (
-          <li key={seg.id}>
-            <span className="simulator-legend-dot" style={{ background: seg.color }} aria-hidden />
-            <span className="simulator-benefit-legend-label min-w-0 flex-1">{seg.label}</span>
-            <span className="simulator-benefit-legend-value font-semibold tabular-nums">
-              {euros(seg.value)}
-            </span>
-          </li>
-        ))}
-        {total === 0 ? (
-          <li className="text-sm text-slate-500">{t("simulateur.visualAdjustSurface")}</li>
-        ) : null}
-      </ul>
-    </figure>
-  );
-}
+      <div className="simulator-detail-grid">
+        <section className="simulator-detail-card">
+          <h4 className="simulator-detail-title">{t("simulateur.panelInstallation")}</h4>
+          <dl className="simulator-detail-rows">
+            <div>
+              <dt>{t("simulateur.panelCanopySurface")}</dt>
+              <dd>
+                {nfSurface(canopySurface)} m²
+                <span className="simulator-detail-badge">{t("simulateur.panelCompliant")}</span>
+              </dd>
+              {isMix ? (
+                <dd className="simulator-detail-note">
+                  {fmt(t("simulateur.panelCanopyMixSub"), {
+                    pv: nfSurface(result.surfaceSolaireM2),
+                    veg: nfSurface(result.surfaceVegetaliseeM2),
+                  })}
+                </dd>
+              ) : null}
+            </div>
+            <div>
+              <dt>{t("simulateur.panelPower")}</dt>
+              <dd>{nf(result.puissanceKwc)} kWc</dd>
+            </div>
+            <div>
+              <dt>{t("simulateur.panelProduction")}</dt>
+              <dd>{nf(result.productionKwhPerYear)} kWh/an</dd>
+            </div>
+          </dl>
 
-export function SimulatorRoiTimeline({ result }: { result: SimulatorResult }) {
-  const t = useTranslations();
-  const benefit = result.autoconsommationTotalEur;
-  const years = result.roiYearsAutoconsommation;
-  const horizon = 15;
+          <div className="simulator-detail-divider" />
 
-  return (
-    <div className="simulator-roi-bar">
-      <p className="simulator-mode-compare-title">{t("simulateur.roiTitle")}</p>
-      <p className="simulator-roi-value mt-2">
-        {years != null ? `${years} ${t("simulateur.years")}` : "—"}
-      </p>
-      <p className="simulator-roi-footnote mt-2">
-        {fmt(t("simulateur.roiFootnote"), {
-          invest: euros(result.installationCostEur),
-          benefit: euros(benefit),
-          horizon,
-        })}
-      </p>
+          <p className="simulator-detail-section-label">{t("simulateur.panelElectricitySplit")}</p>
+          <div
+            className="simulator-production-bar"
+            role="img"
+            aria-label={fmt(t("simulateur.visualSelfConsumed"), {
+              kwh: nf(result.selfConsumedKwh),
+            })}
+          >
+            <div className="simulator-production-self" style={{ width: `${selfPct}%` }} />
+            <div className="simulator-production-surplus" style={{ width: `${surPct}%` }} />
+          </div>
+          <ul className="simulator-production-legend">
+            <li>
+              <span className="simulator-legend-dot simulator-legend-dot-self" aria-hidden />
+              {fmt(t("simulateur.panelSelfPct"), {
+                pct: selfPct,
+                kwh: nf(result.selfConsumedKwh),
+              })}
+            </li>
+            <li>
+              <span className="simulator-legend-dot simulator-legend-dot-surplus" aria-hidden />
+              {fmt(t("simulateur.panelSurplusPct"), {
+                pct: surPct,
+                kwh: nf(result.surplusKwh),
+              })}
+            </li>
+          </ul>
+
+          <div className="simulator-detail-divider" />
+
+          <div className="simulator-detail-capex">
+            <span>{t("simulateur.panelCapex")}</span>
+            <strong>{eurosCompact(result.installationCostEur)}</strong>
+          </div>
+          {isMix ? (
+            <p className="simulator-detail-note">
+              {fmt(t("simulateur.panelCapexMixSub"), {
+                pv: eurosCompact(result.installationCostPvEur),
+                veg: eurosCompact(result.installationCostVegetationEur),
+              })}
+            </p>
+          ) : null}
+        </section>
+
+        <section className="simulator-detail-card">
+          <h4 className="simulator-detail-title">{t("simulateur.panelCashflows")}</h4>
+          <ul className="simulator-flow-list">
+            <li className="simulator-flow-line simulator-flow-positive">
+              <span className="simulator-flow-icon" aria-hidden>
+                +
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="simulator-flow-label">{t("simulateur.flowSavings")}</p>
+                <p className="simulator-flow-detail">
+                  {fmt(t("simulateur.flowSavingsDetail"), {
+                    kwh: nf(result.selfConsumedKwh),
+                    price: priceLabel,
+                  })}
+                </p>
+              </div>
+              <span className="simulator-flow-amount">
+                + {euros(result.autoconsommationSavingsEur)}
+                {t("simulateur.perYear")}
+              </span>
+            </li>
+            <li className="simulator-flow-line simulator-flow-positive">
+              <span className="simulator-flow-icon" aria-hidden>
+                +
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="simulator-flow-label">{t("simulateur.flowSurplus")}</p>
+                <p className="simulator-flow-detail">
+                  {fmt(t("simulateur.flowSurplusDetail"), {
+                    kwh: nf(result.surplusKwh),
+                    tariff: (result.edfOaTariff * 100).toFixed(2),
+                  })}
+                </p>
+              </div>
+              <span className="simulator-flow-amount">
+                + {euros(result.surplusRevenueEur)}
+                {t("simulateur.perYear")}
+              </span>
+            </li>
+            <li className="simulator-flow-line simulator-flow-negative">
+              <span className="simulator-flow-icon" aria-hidden>
+                −
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="simulator-flow-label">{t("simulateur.flowOpex")}</p>
+                <p className="simulator-flow-detail">
+                  {fmt(t("simulateur.flowOpexDetail"), {
+                    opex: nf(OPEX_EUR_PER_KWC),
+                  })}
+                </p>
+              </div>
+              <span className="simulator-flow-amount">
+                − {euros(result.opexEurPerYear)}
+                {t("simulateur.perYear")}
+              </span>
+            </li>
+          </ul>
+
+          <div className="simulator-detail-divider" />
+
+          <div className="simulator-flow-total">
+            <span>{t("simulateur.flowNetTotal")}</span>
+            <strong>
+              = {euros(result.netOperatingBenefitEur)}
+              {t("simulateur.perYear")}
+            </strong>
+          </div>
+
+          <p className="simulator-detail-note mt-3">{fmt(t("simulateur.panelRegionNote"), { region })}</p>
+        </section>
+      </div>
     </div>
   );
 }

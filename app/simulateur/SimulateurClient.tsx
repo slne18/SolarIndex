@@ -5,11 +5,8 @@ import Link from "next/link";
 import HeroActionList, { HeroActionCheckIcon } from "@/components/HeroActionList";
 import RfpLegalNotice from "@/components/RfpLegalNotice";
 import {
-  SimulatorBenefitDonut,
   SimulatorModeComparison,
-  SimulatorParkingVisual,
-  SimulatorResultsSummary,
-  SimulatorRoiTimeline,
+  SimulatorResultsPanel,
 } from "@/components/SimulatorResultVisuals";
 import { usePersona } from "@/components/PersonaProvider";
 import { useLocale, useTranslations } from "@/components/LocaleProvider";
@@ -17,16 +14,12 @@ import { showOwnerProjectDeposit } from "@/lib/persona";
 import { euros, eurosCompact, nf, nfSurface } from "@/lib/format";
 import { fmt } from "@/lib/i18n/format";
 import {
-  COUT_KWC_EUR,
-  COUT_VEGETALISATION_M2,
   DEFAULT_AUTOCONSUMPTION_RATIO,
-  ELECTRICITY_PRICE_EUR,
   MIX_PV_MAX_SHARE,
   runParkingSolarSimulator,
   SIMULATOR_REGIONS,
   type SimulatorSolutionMode,
 } from "@/lib/solar-simulator";
-import { formatAperAnnualFine } from "@/lib/aper-fine";
 import { HUWART_MIN_PANEL_PCT } from "@/lib/huwart-law";
 
 type SurfaceMode = "direct" | "dimensions";
@@ -101,11 +94,6 @@ export default function SimulateurClient() {
     }
     return `/appels-offres/nouveau?${p.toString()}`;
   })();
-
-  const priceLabel = ELECTRICITY_PRICE_EUR.toLocaleString(locale === "en" ? "en-US" : "fr-FR").replace(
-    /\u202f/g,
-    " ",
-  );
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">
@@ -283,26 +271,11 @@ export default function SimulateurClient() {
         </div>
 
         <div className="card space-y-5 p-6">
-          <h2 className="owner-tool-heading text-lg font-bold">{t("simulateur.resultsTitle")}</h2>
-          <p className="text-xs text-slate-500">
-            {fmt(t("simulateur.resultsDisclaimer"), { price: priceLabel })}
-            {solutionMode === "mixte_pv_vegetal"
-              ? ` ${fmt(t("simulateur.resultsDisclaimerVegetation"), { vegCost: nf(COUT_VEGETALISATION_M2) })}`
-              : ""}
-          </p>
-
-          <SimulatorResultsSummary result={result} />
+          <SimulatorResultsPanel result={result} region={region} />
 
           {solutionMode === "mixte_pv_vegetal" ? (
             <SimulatorModeComparison fullPv={resultFullPv} mix={result} />
           ) : null}
-
-          <div className="simulator-visuals-grid">
-            <SimulatorParkingVisual result={result} />
-            <SimulatorBenefitDonut result={result} />
-          </div>
-
-          <SimulatorRoiTimeline result={result} />
 
           <details className="simulator-details group">
             <summary className="simulator-details-summary">
@@ -312,61 +285,26 @@ export default function SimulateurClient() {
             <div className="simulator-details-body">
               <div className="grid gap-3 sm:grid-cols-2">
                 <Result
+                  label={t("simulateur.detailFullInjection")}
+                  value={euros(result.edfOaFullInjectionEur) + t("simulateur.perYear")}
+                  sub={t("simulateur.detailFullInjectionSub")}
+                />
+                <Result
+                  label={t("simulateur.roiFullInjection")}
+                  value={
+                    result.roiYearsFullInjection != null
+                      ? fmt(t("simulateur.roiYears"), { years: result.roiYearsFullInjection })
+                      : "—"
+                  }
+                  sub={t("simulateur.detailFullInjectionSub")}
+                />
+                <Result
                   label={t("simulateur.detailSolarSurface")}
                   value={`${nfSurface(result.surfaceSolaireM2)} m²`}
                   sub={
                     result.solutionMode === "mixte_pv_vegetal"
                       ? t("simulateur.detailSolarSurfaceMix")
                       : fmt(t("simulateur.detailAperLaw"), { ratio: result.solarRatioLabel })
-                  }
-                />
-                <Result
-                  label={t("simulateur.detailPower")}
-                  value={`${nf(result.puissanceKwc)} kWc`}
-                />
-                <Result
-                  label={t("simulateur.detailProduction")}
-                  value={`${nf(result.productionKwhPerYear)} kWh/an`}
-                  sub={fmt(t("simulateur.detailZone"), { region })}
-                />
-                <Result
-                  label={t("simulateur.detailSavings")}
-                  value={euros(result.autoconsommationSavingsEur) + t("simulateur.perYear")}
-                  sub={fmt(t("simulateur.detailSelfConsumed"), {
-                    kwh: nf(result.selfConsumedKwh),
-                  })}
-                />
-                <Result
-                  label={t("simulateur.detailSurplus")}
-                  value={euros(result.surplusRevenueEur) + t("simulateur.perYear")}
-                  sub={fmt(t("simulateur.detailSurplusSub"), {
-                    kwh: nf(result.surplusKwh),
-                    tariff: (result.edfOaTariff * 100).toFixed(2),
-                  })}
-                />
-                <Result
-                  label={t("simulateur.detailFullInjection")}
-                  value={euros(result.edfOaFullInjectionEur) + t("simulateur.perYear")}
-                  sub={t("simulateur.detailFullInjectionSub")}
-                />
-                {result.aperEligible && (
-                  <Result
-                    label={t("simulateur.detailFineAvoided")}
-                    value={formatAperAnnualFine(result.surfaceM2) + t("simulateur.perYear")}
-                    highlight
-                  />
-                )}
-                <Result
-                  label={t("simulateur.detailInstallCost")}
-                  value={eurosCompact(result.installationCostEur)}
-                  sub={
-                    result.solutionMode === "mixte_pv_vegetal"
-                      ? fmt(t("simulateur.detailInstallMixSub"), {
-                          pv: eurosCompact(result.installationCostPvEur),
-                          veg: eurosCompact(result.installationCostVegetationEur),
-                          vegCost: nf(COUT_VEGETALISATION_M2),
-                        })
-                      : fmt(t("simulateur.detailInstallSub"), { cost: nf(COUT_KWC_EUR) })
                   }
                 />
                 {result.solutionMode === "mixte_pv_vegetal" ? (
@@ -376,20 +314,6 @@ export default function SimulateurClient() {
                     sub={t("simulateur.detailVegetationCostHint")}
                   />
                 ) : null}
-              </div>
-
-              <div className="simulator-roi-callout mt-4 px-4 py-3 text-sm">
-                <p>
-                  <strong className="text-solar">{t("simulateur.roiFullInjection")}</strong>{" "}
-                  {result.roiYearsFullInjection != null
-                    ? fmt(t("simulateur.roiYears"), { years: result.roiYearsFullInjection })
-                    : "—"}
-                </p>
-                <p className="owner-tool-body mt-2 text-xs">
-                  {t("simulateur.annualBenefitMix")}{" "}
-                  {euros(result.autoconsommationTotalEur)}
-                  {t("simulateur.perYear")}
-                </p>
               </div>
             </div>
           </details>
