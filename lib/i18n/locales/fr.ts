@@ -721,10 +721,18 @@ const fr = {
   "simulateur.panelSelfPct": "Autoconsommé : {pct} % ({kwh} kWh)",
   "simulateur.panelSurplusPct": "Surplus injecté : {pct} % ({kwh} kWh)",
   "simulateur.panelCapex": "CAPEX (coût projet)",
+  "simulateur.panelCapexLegend":
+    "{m2PerKwc} m²/kWc = surface panneaux par kWc installé · {costKwc} €/kWc = coût projet indicatif (ombrières + PV, marché)",
+  "simulateur.panelCapexFormula":
+    "CAPEX = (surface parking × 50 %) ÷ {m2PerKwc} m²/kWc × {costKwc} €/kWc",
   "simulateur.panelCapexDetail":
-    "{kwc} kWc × {costKwc} €/kWc ({surface} m² ÷ {m2PerKwc} m²/kWc)",
+    "= ({surfaceParking} × 0,5) ÷ {m2PerKwc} × {costKwc} = {total}",
+  "simulateur.panelCapexFormulaMix":
+    "CAPEX = (surface parking × {pvPct} % ÷ {m2PerKwc} m²/kWc × {costKwc} €/kWc) + ((surface parking × 50 % − surface PV) × {vegCost} €/m²)",
+  "simulateur.panelCapexLegendMix":
+    "{m2PerKwc} m²/kWc = surface panneaux par kWc · {costKwc} €/kWc = coût indicatif ombrières + PV · {vegCost} €/m² = coût indicatif végétalisation (complète l'ombrage APER à 50 %)",
   "simulateur.panelCapexDetailMix":
-    "PV : {kwc} kWc × {costKwc} €/kWc = {pvCost} · Végétal : {vegM2} m² × {vegCost} €/m² = {vegTotal}",
+    "= ({surfaceParking} × {pvPct} % ÷ {m2PerKwc} × {costKwc}) + (({surfaceParking} × 0,5 − {surfacePv}) × {vegCost}) = {total} · PV {pvCost} + végétal {vegTotal}",
   "simulateur.panelCashflows": "Flux financiers annuels",
   "simulateur.flowSavings": "Économies autoconsommation",
   "simulateur.flowSavingsDetail": "({kwh} kWh × {price} €)",

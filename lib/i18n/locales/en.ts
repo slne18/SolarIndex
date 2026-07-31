@@ -721,10 +721,18 @@ const en: Record<MessageKey, string> = {
   "simulateur.panelSelfPct": "Self-consumed: {pct}% ({kwh} kWh)",
   "simulateur.panelSurplusPct": "Injected surplus: {pct}% ({kwh} kWh)",
   "simulateur.panelCapex": "CAPEX (project cost)",
+  "simulateur.panelCapexLegend":
+    "{m2PerKwc} m²/kWp = panel area per installed kWp · €{costKwc}/kWp = indicative turnkey project cost (canopies + PV)",
+  "simulateur.panelCapexFormula":
+    "CAPEX = (parking area × 50%) ÷ {m2PerKwc} m²/kWp × €{costKwc}/kWp",
   "simulateur.panelCapexDetail":
-    "{kwc} kWp × €{costKwc}/kWp ({surface} m² ÷ {m2PerKwc} m²/kWp)",
+    "= ({surfaceParking} × 0.5) ÷ {m2PerKwc} × {costKwc} = {total}",
+  "simulateur.panelCapexFormulaMix":
+    "CAPEX = (parking area × {pvPct}% ÷ {m2PerKwc} m²/kWp × €{costKwc}/kWp) + ((parking area × 50% − PV area) × €{vegCost}/m²)",
+  "simulateur.panelCapexLegendMix":
+    "{m2PerKwc} m²/kWp = panel area per kWp · €{costKwc}/kWp = indicative canopy + PV cost · €{vegCost}/m² = indicative vegetation (completes shading to 50% APER)",
   "simulateur.panelCapexDetailMix":
-    "PV: {kwc} kWp × €{costKwc}/kWp = {pvCost} · Vegetation: {vegM2} m² × €{vegCost}/m² = {vegTotal}",
+    "= ({surfaceParking} × {pvPct}% ÷ {m2PerKwc} × {costKwc}) + (({surfaceParking} × 0.5 − {surfacePv}) × {vegCost}) = {total} · PV {pvCost} + vegetation {vegTotal}",
   "simulateur.panelCashflows": "Annual cash flows",
   "simulateur.flowSavings": "Self-consumption savings",
   "simulateur.flowSavingsDetail": "({kwh} kWh × €{price})",

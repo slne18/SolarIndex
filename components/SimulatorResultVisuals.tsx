@@ -115,6 +115,12 @@ export function SimulatorResultsPanel({
   const selfPct = selfConsumptionPct(result);
   const surPct = surplusPct(result);
   const isMix = result.solutionMode === "mixte_pv_vegetal";
+  const pvPctLabel =
+    result.pvShareOfTotalSurface != null
+      ? (result.pvShareOfTotalSurface * 100).toLocaleString(locale === "en" ? "en-US" : "fr-FR", {
+          maximumFractionDigits: 1,
+        })
+      : "17,5";
   const priceLabel = formatPriceEur(locale);
   const edfTariffLabel = formatTariffCents(result.edfOaTariff, locale);
   const canopySurface = result.surfaceObligatoireTotaleM2;
@@ -226,23 +232,63 @@ export function SimulatorResultsPanel({
             <span>{t("simulateur.panelCapex")}</span>
             <strong>{eurosCompact(result.installationCostEur)}</strong>
           </div>
-          <p className="simulator-detail-note">
-            {isMix
-              ? fmt(t("simulateur.panelCapexDetailMix"), {
-                  kwc: nf(result.puissanceKwc),
-                  costKwc: nf(COUT_KWC_EUR),
-                  pvCost: eurosCompact(result.installationCostPvEur),
-                  vegM2: nfSurface(result.surfaceVegetaliseeM2),
-                  vegCost: nf(COUT_VEGETALISATION_M2),
-                  vegTotal: eurosCompact(result.installationCostVegetationEur),
-                })
-              : fmt(t("simulateur.panelCapexDetail"), {
-                  kwc: nf(result.puissanceKwc),
-                  costKwc: nf(COUT_KWC_EUR),
-                  surface: nfSurface(result.surfaceSolaireM2),
-                  m2PerKwc: nf(M2_PAR_KWC),
-                })}
-          </p>
+          <div className="simulator-detail-note space-y-1">
+            {isMix ? (
+              <>
+                <p>
+                  {fmt(t("simulateur.panelCapexLegendMix"), {
+                    m2PerKwc: nf(M2_PAR_KWC),
+                    costKwc: nf(COUT_KWC_EUR),
+                    vegCost: nf(COUT_VEGETALISATION_M2),
+                  })}
+                </p>
+                <p>
+                  {fmt(t("simulateur.panelCapexFormulaMix"), {
+                    pvPct: pvPctLabel,
+                    m2PerKwc: nf(M2_PAR_KWC),
+                    costKwc: nf(COUT_KWC_EUR),
+                    vegCost: nf(COUT_VEGETALISATION_M2),
+                  })}
+                </p>
+                <p>
+                  {fmt(t("simulateur.panelCapexDetailMix"), {
+                    surfaceParking: nfSurface(result.surfaceM2),
+                    pvPct: pvPctLabel,
+                    m2PerKwc: nf(M2_PAR_KWC),
+                    costKwc: nf(COUT_KWC_EUR),
+                    surfacePv: nfSurface(result.surfaceSolaireM2),
+                    vegCost: nf(COUT_VEGETALISATION_M2),
+                    total: eurosCompact(result.installationCostEur),
+                    pvCost: eurosCompact(result.installationCostPvEur),
+                    vegTotal: eurosCompact(result.installationCostVegetationEur),
+                  })}
+                </p>
+              </>
+            ) : (
+              <>
+                <p>
+                  {fmt(t("simulateur.panelCapexLegend"), {
+                    m2PerKwc: nf(M2_PAR_KWC),
+                    costKwc: nf(COUT_KWC_EUR),
+                  })}
+                </p>
+                <p>
+                  {fmt(t("simulateur.panelCapexFormula"), {
+                    m2PerKwc: nf(M2_PAR_KWC),
+                    costKwc: nf(COUT_KWC_EUR),
+                  })}
+                </p>
+                <p>
+                  {fmt(t("simulateur.panelCapexDetail"), {
+                    surfaceParking: nfSurface(result.surfaceM2),
+                    m2PerKwc: nf(M2_PAR_KWC),
+                    costKwc: nf(COUT_KWC_EUR),
+                    total: eurosCompact(result.installationCostEur),
+                  })}
+                </p>
+              </>
+            )}
+          </div>
         </section>
 
         <section className="simulator-detail-card">
@@ -290,7 +336,7 @@ export function SimulatorResultsPanel({
               </span>
               <div className="min-w-0 flex-1">
                 <p className="simulator-flow-label">{t("simulateur.flowOpex")}</p>
-                <p className="simulator-flow-detail">
+                <p className="simulator-flow-detail whitespace-nowrap">
                   {fmt(t("simulateur.flowOpexDetail"), {
                     opex: nf(OPEX_EUR_PER_KWC),
                   })}
