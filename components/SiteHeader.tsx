@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import HeaderAuthNav from "@/components/HeaderAuthNav";
 import HeaderSignupCta from "@/components/HeaderSignupCta";
 import HeaderNavLinks from "@/components/HeaderNavLinks";
@@ -12,14 +11,10 @@ import SolarIndexWordmark from "@/components/SolarIndexWordmark";
 import { usePersona } from "@/components/PersonaProvider";
 
 export default function SiteHeader() {
-  const pathname = usePathname();
-  const isHome = pathname === "/";
   const { clearPersona } = usePersona();
 
   function onLogoClick() {
-    if (isHome) {
-      clearPersona();
-    }
+    clearPersona();
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }

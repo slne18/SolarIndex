@@ -8,6 +8,7 @@ import { LocaleProvider } from "@/components/LocaleProvider";
 import SiteChrome from "@/components/SiteChrome";
 import SiteFooter from "@/components/SiteFooter";
 import ScrollToTopOnNavigate from "@/components/ScrollToTopOnNavigate";
+import NavBackHandler from "@/components/NavBackHandler";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
 import { SEO_DEFAULT_DESCRIPTION, SEO_KEYWORDS } from "@/lib/seo-config";
@@ -74,6 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <LocaleProvider>
             <PersonaProvider>
               <ScrollToTopOnNavigate />
+              <NavBackHandler />
               {!isAdmin && (
                 <div className="site-chrome">
                   <Header />

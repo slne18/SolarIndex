@@ -120,10 +120,11 @@ export default function AdminDashboard() {
   const [rfpActionId, setRfpActionId] = useState<string | null>(null);
 
   const [faqQueue, setFaqQueue] = useState<FaqEntryRow[]>([]);
+  const [faqPublished, setFaqPublished] = useState<FaqEntryRow[]>([]);
   const [faqActionId, setFaqActionId] = useState<string | null>(null);
-  const [faqAnswers, setFaqAnswers] = useState<Record<string, { answerFr: string; answerEn: string }>>(
-    {},
-  );
+  const [faqAnswers, setFaqAnswers] = useState<
+    Record<string, { answerFr: string; answerEn: string; questionEn: string }>
+  >({});
 
   const verifyAndLoad = useCallback(async (token?: string) => {
     setLoading(true);
@@ -198,8 +199,10 @@ export default function AdminDashboard() {
       if (faqRes.ok) {
         const faqJson = await faqRes.json();
         setFaqQueue(faqJson.entries ?? []);
+        setFaqPublished(faqJson.published ?? []);
       } else {
         setFaqQueue([]);
+        setFaqPublished([]);
         const body = await faqRes.json().catch(() => ({}));
         errors.push(body.error || `FAQ HTTP ${faqRes.status}`);
       }
@@ -315,10 +318,17 @@ export default function AdminDashboard() {
     }
   }
 
-  async function moderateFaq(id: string, action: "publie" | "archive") {
-    const draft = faqAnswers[id] ?? { answerFr: "", answerEn: "" };
+  async function moderateFaq(
+    id: string,
+    action: "publie" | "archive" | "supprime",
+    scope: "queue" | "published" = "queue",
+  ) {
+    const draft = faqAnswers[id] ?? { answerFr: "", answerEn: "", questionEn: "" };
     if (action === "publie" && draft.answerFr.trim().length < 10) {
       alert("Rédigez une réponse d'au moins 10 caractères avant de publier.");
+      return;
+    }
+    if (action === "supprime" && !confirm("Supprimer définitivement cette entrée FAQ ?")) {
       return;
     }
 
@@ -332,6 +342,7 @@ export default function AdminDashboard() {
           action,
           answer_fr: draft.answerFr,
           answer_en: draft.answerEn || undefined,
+          question_en: draft.questionEn || undefined,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -339,7 +350,11 @@ export default function AdminDashboard() {
         alert(data.error || "Modération FAQ échouée.");
         return;
       }
-      setFaqQueue((prev) => prev.filter((f) => f.id !== id));
+      if (scope === "queue") {
+        setFaqQueue((prev) => prev.filter((f) => f.id !== id));
+      } else {
+        setFaqPublished((prev) => prev.filter((f) => f.id !== id));
+      }
       setFaqAnswers((prev) => {
         const next = { ...prev };
         delete next[id];
@@ -558,7 +573,7 @@ export default function AdminDashboard() {
         ) : (
           <ul className="mt-4 space-y-4">
             {faqQueue.map((entry) => {
-              const draft = faqAnswers[entry.id] ?? { answerFr: "", answerEn: "" };
+              const draft = faqAnswers[entry.id] ?? { answerFr: "", answerEn: "", questionEn: "" };
               return (
                 <li
                   key={entry.id}
@@ -592,6 +607,24 @@ export default function AdminDashboard() {
                         }))
                       }
                       placeholder="Rédigez la réponse qui apparaîtra sur la FAQ…"
+                    />
+                  </label>
+
+                  <label className="mt-3 block">
+                    <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                      Question EN (optionnel)
+                    </span>
+                    <textarea
+                      rows={2}
+                      className="input mt-1 w-full !border-white/10 !bg-night-900 !text-white"
+                      value={draft.questionEn}
+                      onChange={(e) =>
+                        setFaqAnswers((prev) => ({
+                          ...prev,
+                          [entry.id]: { ...draft, questionEn: e.target.value },
+                        }))
+                      }
+                      placeholder="English question (sinon la version FR s'affiche aussi en anglais)"
                     />
                   </label>
 
@@ -634,6 +667,55 @@ export default function AdminDashboard() {
                 </li>
               );
             })}
+          </ul>
+        )}
+      </section>
+
+      {/* 2d. FAQ publiées sur le site */}
+      <section className="card p-6">
+        <h2 className="text-lg font-semibold">FAQ — publiées sur le site</h2>
+        <p className="mt-2 text-sm text-slate-400">
+          Entrées visibles sur <code className="text-solar">/faq</code>. Supprimez une question test ou
+          erreur — elle disparaît immédiatement du site.
+        </p>
+        {faqPublished.length === 0 ? (
+          <p className="mt-4 text-sm text-slate-500">Aucune question publiée dynamiquement.</p>
+        ) : (
+          <ul className="mt-4 space-y-4">
+            {faqPublished.map((entry) => (
+              <li
+                key={entry.id}
+                className="rounded-lg border border-white/10 bg-night-800/50 p-4 text-sm"
+              >
+                <div className="font-semibold text-white">{entry.question_fr}</div>
+                {entry.question_en ? (
+                  <p className="mt-1 text-slate-400">EN : {entry.question_en}</p>
+                ) : (
+                  <p className="mt-1 text-xs text-amber-300/90">
+                    Pas de traduction EN — le titre FR s&apos;affiche aussi sur la version anglaise.
+                  </p>
+                )}
+                {entry.answer_fr ? (
+                  <p className="mt-2 line-clamp-3 text-slate-300">{entry.answer_fr}</p>
+                ) : null}
+                <p className="mt-2 text-xs text-slate-500">
+                  Publiée le{" "}
+                  {entry.published_at
+                    ? new Date(entry.published_at).toLocaleString("fr-FR")
+                    : new Date(entry.created_at).toLocaleString("fr-FR")}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    className="btn-ghost text-xs text-red-300"
+                    disabled={faqActionId === entry.id}
+                    onClick={() => moderateFaq(entry.id, "supprime", "published")}
+                  >
+                    Supprimer de la FAQ
+                  </button>
+                </div>
+              </li>
+            ))}
           </ul>
         )}
       </section>

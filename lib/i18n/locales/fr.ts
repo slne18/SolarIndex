@@ -721,7 +721,10 @@ const fr = {
   "simulateur.panelSelfPct": "Autoconsommé : {pct} % ({kwh} kWh)",
   "simulateur.panelSurplusPct": "Surplus injecté : {pct} % ({kwh} kWh)",
   "simulateur.panelCapex": "CAPEX (coût projet)",
-  "simulateur.panelCapexMixSub": "PV {pv} + végétalisation {veg}",
+  "simulateur.panelCapexDetail":
+    "{kwc} kWc × {costKwc} €/kWc ({surface} m² ÷ {m2PerKwc} m²/kWc)",
+  "simulateur.panelCapexDetailMix":
+    "PV : {kwc} kWc × {costKwc} €/kWc = {pvCost} · Végétal : {vegM2} m² × {vegCost} €/m² = {vegTotal}",
   "simulateur.panelCashflows": "Flux financiers annuels",
   "simulateur.flowSavings": "Économies autoconsommation",
   "simulateur.flowSavingsDetail": "({kwh} kWh × {price} €)",

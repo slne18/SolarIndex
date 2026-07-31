@@ -721,7 +721,10 @@ const en: Record<MessageKey, string> = {
   "simulateur.panelSelfPct": "Self-consumed: {pct}% ({kwh} kWh)",
   "simulateur.panelSurplusPct": "Injected surplus: {pct}% ({kwh} kWh)",
   "simulateur.panelCapex": "CAPEX (project cost)",
-  "simulateur.panelCapexMixSub": "PV {pv} + vegetation {veg}",
+  "simulateur.panelCapexDetail":
+    "{kwc} kWp × €{costKwc}/kWp ({surface} m² ÷ {m2PerKwc} m²/kWp)",
+  "simulateur.panelCapexDetailMix":
+    "PV: {kwc} kWp × €{costKwc}/kWp = {pvCost} · Vegetation: {vegM2} m² × €{vegCost}/m² = {vegTotal}",
   "simulateur.panelCashflows": "Annual cash flows",
   "simulateur.flowSavings": "Self-consumption savings",
   "simulateur.flowSavingsDetail": "({kwh} kWh × €{price})",

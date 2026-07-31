@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import HomeChooserLink from "@/components/HomeChooserLink";
 import { FAQ_IDS } from "@/lib/i18n/faq-ids";
 import { useLocale, useTranslations } from "@/components/LocaleProvider";
 import type { FaqPublishedView } from "@/lib/faq-db";
@@ -82,9 +82,9 @@ export default function FaqPageClient({ publishedItems: initialPublished }: FaqP
   return (
     <div className="surface-light min-h-[60vh] py-14 sm:py-20">
       <div className="container-x mx-auto max-w-3xl">
-        <Link href="/" className="text-sm text-slate-500 transition hover:text-slate-800">
+        <HomeChooserLink href="/" className="text-sm text-slate-500 transition hover:text-slate-800">
           {t("common.backHome")}
-        </Link>
+        </HomeChooserLink>
         <h1 className="mt-6 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
           {t("faq.title")}
         </h1>

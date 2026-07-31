@@ -70,6 +70,17 @@ export async function queryPublishedFaqEntries(locale: Locale): Promise<FaqPubli
     .filter((item): item is FaqPublishedView => item != null);
 }
 
+export async function queryPublishedFaqEntriesAdmin(): Promise<FaqEntryRow[]> {
+  const { data, error } = await getAdminClient()
+    .from("faq_entries")
+    .select("*")
+    .eq("statut", "publie")
+    .order("sort_order", { ascending: true, nullsFirst: false })
+    .order("published_at", { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as FaqEntryRow[];
+}
+
 export async function queryFaqSubmissionQueue(): Promise<FaqEntryRow[]> {
   const { data, error } = await getAdminClient()
     .from("faq_entries")
@@ -119,7 +130,7 @@ async function nextPublishedSortOrder(): Promise<number> {
 
 export async function publishFaqEntry(
   id: string,
-  input: { answerFr: string; answerEn?: string | null },
+  input: { answerFr: string; answerEn?: string | null; questionEn?: string | null },
 ): Promise<FaqEntryRow> {
   const answerErr = validateFaqAnswer(input.answerFr);
   if (answerErr) throw new Error(answerErr);
@@ -128,6 +139,11 @@ export async function publishFaqEntry(
   if (answerEn) {
     const enErr = validateFaqAnswer(answerEn);
     if (enErr) throw new Error(enErr);
+  }
+
+  const questionEn = input.questionEn?.trim() || null;
+  if (questionEn && questionEn.length < MIN_QUESTION_LEN) {
+    throw new Error(`La question EN doit contenir au moins ${MIN_QUESTION_LEN} caractères.`);
   }
 
   const sortOrder = await nextPublishedSortOrder();
@@ -139,6 +155,7 @@ export async function publishFaqEntry(
       statut: "publie",
       answer_fr: input.answerFr.trim(),
       answer_en: answerEn,
+      question_en: questionEn,
       sort_order: sortOrder,
       published_at: now,
       updated_at: now,
@@ -161,10 +178,15 @@ export async function archiveFaqEntry(id: string): Promise<FaqEntryRow> {
       updated_at: now,
     })
     .eq("id", id)
-    .eq("statut", "soumission")
+    .in("statut", ["soumission", "publie"])
     .select("*")
     .single();
   if (error) throw error;
   if (!data) throw new Error("Question introuvable ou déjà traitée.");
   return data as FaqEntryRow;
+}
+
+export async function deleteFaqEntry(id: string): Promise<void> {
+  const { error } = await getAdminClient().from("faq_entries").delete().eq("id", id);
+  if (error) throw error;
 }

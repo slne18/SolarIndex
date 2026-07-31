@@ -298,15 +298,6 @@ export default function SimulateurClient() {
                   }
                   sub={t("simulateur.detailFullInjectionSub")}
                 />
-                <Result
-                  label={t("simulateur.detailSolarSurface")}
-                  value={`${nfSurface(result.surfaceSolaireM2)} m²`}
-                  sub={
-                    result.solutionMode === "mixte_pv_vegetal"
-                      ? t("simulateur.detailSolarSurfaceMix")
-                      : fmt(t("simulateur.detailAperLaw"), { ratio: result.solarRatioLabel })
-                  }
-                />
                 {result.solutionMode === "mixte_pv_vegetal" ? (
                   <Result
                     label={t("simulateur.detailVegetationCost")}

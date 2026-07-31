@@ -4,7 +4,10 @@ import { euros, eurosCompact, nf, nfSurface } from "@/lib/format";
 import { fmt } from "@/lib/i18n/format";
 import { useLocale, useTranslations } from "@/components/LocaleProvider";
 import {
+  COUT_KWC_EUR,
+  COUT_VEGETALISATION_M2,
   ELECTRICITY_PRICE_EUR,
+  M2_PAR_KWC,
   OPEX_EUR_PER_KWC,
   type SimulatorResult,
 } from "@/lib/solar-simulator";
@@ -167,7 +170,6 @@ export function SimulatorResultsPanel({
               <dt>{t("simulateur.panelCanopySurface")}</dt>
               <dd>
                 {nfSurface(canopySurface)} m²
-                <span className="simulator-detail-badge">{t("simulateur.panelCompliant")}</span>
               </dd>
               {isMix ? (
                 <dd className="simulator-detail-note">
@@ -224,14 +226,23 @@ export function SimulatorResultsPanel({
             <span>{t("simulateur.panelCapex")}</span>
             <strong>{eurosCompact(result.installationCostEur)}</strong>
           </div>
-          {isMix ? (
-            <p className="simulator-detail-note">
-              {fmt(t("simulateur.panelCapexMixSub"), {
-                pv: eurosCompact(result.installationCostPvEur),
-                veg: eurosCompact(result.installationCostVegetationEur),
-              })}
-            </p>
-          ) : null}
+          <p className="simulator-detail-note">
+            {isMix
+              ? fmt(t("simulateur.panelCapexDetailMix"), {
+                  kwc: nf(result.puissanceKwc),
+                  costKwc: nf(COUT_KWC_EUR),
+                  pvCost: eurosCompact(result.installationCostPvEur),
+                  vegM2: nfSurface(result.surfaceVegetaliseeM2),
+                  vegCost: nf(COUT_VEGETALISATION_M2),
+                  vegTotal: eurosCompact(result.installationCostVegetationEur),
+                })
+              : fmt(t("simulateur.panelCapexDetail"), {
+                  kwc: nf(result.puissanceKwc),
+                  costKwc: nf(COUT_KWC_EUR),
+                  surface: nfSurface(result.surfaceSolaireM2),
+                  m2PerKwc: nf(M2_PAR_KWC),
+                })}
+          </p>
         </section>
 
         <section className="simulator-detail-card">
