@@ -786,6 +786,12 @@ const fr = {
   "faq.questionPlaceholder": "Ex. : Puis-je filtrer les leads par département avant achat ?",
   "faq.send": "Envoyer ma question",
   "faq.minChars": "10 caractères minimum",
+  "faq.emailLabel": "Votre email (optionnel)",
+  "faq.emailPlaceholder": "Pour vous recontacter si besoin",
+  "faq.sending": "Envoi…",
+  "faq.sendSuccess":
+    "Merci ! Votre question a bien été envoyée. Si elle est utile à tous, nous la publierons sur cette page.",
+  "faq.sendError": "Impossible d'envoyer votre question. Réessayez ou écrivez à contact@solarindex.fr.",
 } as const;
 
 export type MessageKey = keyof typeof fr;

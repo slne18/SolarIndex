@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { AdminClientsByRegion, AdminDashboardData } from "@/lib/admin-data";
+import type { FaqEntryRow } from "@/lib/faq-db";
 import type { RfpSubmissionRow } from "@/lib/rfp";
 import { ADMIN_LEAD_CSV_COLUMNS } from "@/lib/admin-csv";
 import {
@@ -118,6 +119,12 @@ export default function AdminDashboard() {
   const [rfpQueue, setRfpQueue] = useState<RfpSubmissionRow[]>([]);
   const [rfpActionId, setRfpActionId] = useState<string | null>(null);
 
+  const [faqQueue, setFaqQueue] = useState<FaqEntryRow[]>([]);
+  const [faqActionId, setFaqActionId] = useState<string | null>(null);
+  const [faqAnswers, setFaqAnswers] = useState<Record<string, { answerFr: string; answerEn: string }>>(
+    {},
+  );
+
   const verifyAndLoad = useCallback(async (token?: string) => {
     setLoading(true);
     setError(null);
@@ -149,10 +156,11 @@ export default function AdminDashboard() {
       });
 
       const errors: string[] = [];
-      const [leadsRes, clientsRes, rfpRes] = await Promise.all([
+      const [leadsRes, clientsRes, rfpRes, faqRes] = await Promise.all([
         adminFetch(`/api/admin/leads?${q}`),
         adminFetch("/api/admin/clients"),
         adminFetch("/api/admin/rfp"),
+        adminFetch("/api/admin/faq"),
       ]);
 
       if (leadsRes.ok) {
@@ -185,6 +193,15 @@ export default function AdminDashboard() {
         setRfpQueue([]);
         const body = await rfpRes.json().catch(() => ({}));
         errors.push(body.error || `RFP HTTP ${rfpRes.status}`);
+      }
+
+      if (faqRes.ok) {
+        const faqJson = await faqRes.json();
+        setFaqQueue(faqJson.entries ?? []);
+      } else {
+        setFaqQueue([]);
+        const body = await faqRes.json().catch(() => ({}));
+        errors.push(body.error || `FAQ HTTP ${faqRes.status}`);
       }
 
       if (errors.length > 0) {
@@ -295,6 +312,42 @@ export default function AdminDashboard() {
       await verifyAndLoad();
     } finally {
       setRfpActionId(null);
+    }
+  }
+
+  async function moderateFaq(id: string, action: "publie" | "archive") {
+    const draft = faqAnswers[id] ?? { answerFr: "", answerEn: "" };
+    if (action === "publie" && draft.answerFr.trim().length < 10) {
+      alert("Rédigez une réponse d'au moins 10 caractères avant de publier.");
+      return;
+    }
+
+    setFaqActionId(id);
+    try {
+      const res = await adminFetch("/api/admin/faq", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id,
+          action,
+          answer_fr: draft.answerFr,
+          answer_en: draft.answerEn || undefined,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(data.error || "Modération FAQ échouée.");
+        return;
+      }
+      setFaqQueue((prev) => prev.filter((f) => f.id !== id));
+      setFaqAnswers((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+      await verifyAndLoad();
+    } finally {
+      setFaqActionId(null);
     }
   }
 
@@ -489,6 +542,98 @@ export default function AdminDashboard() {
                 </div>
               </li>
             ))}
+          </ul>
+        )}
+      </section>
+
+      {/* 2c. Modération FAQ */}
+      <section className="card p-6">
+        <h2 className="text-lg font-semibold">FAQ — questions visiteurs</h2>
+        <p className="mt-2 text-sm text-slate-400">
+          Questions soumises depuis <code className="text-solar">/faq</code>. Rédigez une réponse et
+          publiez pour l&apos;afficher sur la page FAQ, ou archivez sans publier.
+        </p>
+        {faqQueue.length === 0 ? (
+          <p className="mt-4 text-sm text-slate-500">Aucune question en attente.</p>
+        ) : (
+          <ul className="mt-4 space-y-4">
+            {faqQueue.map((entry) => {
+              const draft = faqAnswers[entry.id] ?? { answerFr: "", answerEn: "" };
+              return (
+                <li
+                  key={entry.id}
+                  className="rounded-lg border border-white/10 bg-night-800/50 p-4 text-sm"
+                >
+                  <div className="font-semibold text-white">{entry.question_fr}</div>
+                  {entry.sender_email ? (
+                    <p className="mt-1 text-slate-400">
+                      Email visiteur :{" "}
+                      <a href={`mailto:${entry.sender_email}`} className="text-solar hover:underline">
+                        {entry.sender_email}
+                      </a>
+                    </p>
+                  ) : null}
+                  <p className="mt-2 text-xs text-slate-500">
+                    Reçue le {new Date(entry.created_at).toLocaleString("fr-FR")}
+                  </p>
+
+                  <label className="mt-4 block">
+                    <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                      Votre réponse (FR)
+                    </span>
+                    <textarea
+                      rows={4}
+                      className="input mt-1 w-full !border-white/10 !bg-night-900 !text-white"
+                      value={draft.answerFr}
+                      onChange={(e) =>
+                        setFaqAnswers((prev) => ({
+                          ...prev,
+                          [entry.id]: { ...draft, answerFr: e.target.value },
+                        }))
+                      }
+                      placeholder="Rédigez la réponse qui apparaîtra sur la FAQ…"
+                    />
+                  </label>
+
+                  <label className="mt-3 block">
+                    <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                      Réponse EN (optionnel)
+                    </span>
+                    <textarea
+                      rows={3}
+                      className="input mt-1 w-full !border-white/10 !bg-night-900 !text-white"
+                      value={draft.answerEn}
+                      onChange={(e) =>
+                        setFaqAnswers((prev) => ({
+                          ...prev,
+                          [entry.id]: { ...draft, answerEn: e.target.value },
+                        }))
+                      }
+                      placeholder="English version (sinon la version FR sera affichée)"
+                    />
+                  </label>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      className="btn-solar text-xs"
+                      disabled={faqActionId === entry.id}
+                      onClick={() => moderateFaq(entry.id, "publie")}
+                    >
+                      Publier sur la FAQ
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-ghost text-xs text-red-300"
+                      disabled={faqActionId === entry.id}
+                      onClick={() => moderateFaq(entry.id, "archive")}
+                    >
+                      Archiver
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>
