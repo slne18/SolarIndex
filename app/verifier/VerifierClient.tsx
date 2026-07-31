@@ -143,7 +143,7 @@ export default function VerifierClient() {
     <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
       <div>
         <form onSubmit={onSubmit} className="card p-6">
-          <label className="block text-sm font-medium text-slate-200">{t("verifier.addressLabel")}</label>
+          <label className="owner-tool-muted block text-sm font-medium">{t("verifier.addressLabel")}</label>
           <div className="relative mt-2">
             <input
               className="input w-full"
@@ -191,7 +191,7 @@ export default function VerifierClient() {
 
         {result?.needsManualSurface && !result.surfaceM2 && (
           <form onSubmit={onManualSubmit} className="card mt-6 space-y-4 p-6">
-            <p className="text-sm text-slate-300">{t("verifier.manualLead")}</p>
+            <p className="owner-tool-body text-sm">{t("verifier.manualLead")}</p>
             <input
               className="input"
               type="number"
@@ -212,7 +212,7 @@ export default function VerifierClient() {
           <div className="card mt-6 space-y-5 p-6">
             <div>
               <p className="text-xs uppercase tracking-wide text-slate-500">{t("verifier.resultAddress")}</p>
-              <p className="mt-1 font-medium text-white">{result.label}</p>
+              <p className="owner-tool-heading mt-1 font-medium">{result.label}</p>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
@@ -238,7 +238,7 @@ export default function VerifierClient() {
             </div>
 
             {result.deadline && (
-              <p className="text-sm text-slate-300">
+              <p className="owner-tool-body text-sm">
                 {fmt(t("verifier.deadlineApplicable"), {
                   ratio: result.deadline.ratio,
                   date: result.deadline.date,
@@ -248,9 +248,9 @@ export default function VerifierClient() {
             )}
 
             {result.fineLabel && (
-              <p className="text-sm text-slate-300">
+              <p className="owner-tool-body text-sm">
                 {t("verifier.potentialFine")}{" "}
-                <strong className="text-white">{result.fineLabel}</strong>
+                <strong className="owner-tool-heading">{result.fineLabel}</strong>
               </p>
             )}
 
@@ -278,7 +278,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="tool-stat rounded-xl border border-white/10 bg-night-900/50 px-4 py-3">
       <p className="text-xs text-slate-500">{label}</p>
-      <p className="tool-stat-value mt-1 font-semibold text-white">{value}</p>
+      <p className="tool-stat-value owner-tool-heading mt-1 font-semibold">{value}</p>
     </div>
   );
 }
@@ -289,7 +289,7 @@ function DerogationBlock({ result }: { result: VerifierResult }) {
 
   return (
     <div className="space-y-3 border-t border-white/10 pt-4">
-      <p className="text-sm font-semibold text-slate-200">{t("verifier.derogTitle")}</p>
+      <p className="owner-tool-body text-sm font-semibold">{t("verifier.derogTitle")}</p>
 
       {derogations.derogationPente && derogations.pentePct != null && (
         <p className="text-sm text-amber-100">

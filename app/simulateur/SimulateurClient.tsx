@@ -110,8 +110,8 @@ export default function SimulateurClient() {
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">
       <aside className="page-aside-sticky order-2 space-y-4 lg:order-1">
-        <div className="card p-5 text-sm text-slate-300">
-          <p className="font-semibold text-white">{t("simulateur.asideTitle")}</p>
+        <div className="card p-5 text-sm">
+          <p className="owner-tool-heading font-semibold">{t("simulateur.asideTitle")}</p>
           <p className="mt-2 leading-relaxed">{t("simulateur.asideLead")}</p>
         </div>
         <div className="card p-5 text-xs leading-relaxed text-slate-400">
@@ -134,7 +134,7 @@ export default function SimulateurClient() {
 
       <div className="order-1 space-y-6 lg:order-2">
         <div className="card space-y-5 p-6">
-          <p className="text-sm font-medium text-slate-200">{t("simulateur.yourParking")}</p>
+          <p className="owner-tool-muted text-sm font-medium">{t("simulateur.yourParking")}</p>
 
           <div className="flex flex-wrap gap-2">
             <ModeBtn active={surfaceMode === "direct"} onClick={() => setSurfaceMode("direct")}>
@@ -291,7 +291,7 @@ export default function SimulateurClient() {
         </div>
 
         <div className="card space-y-5 p-6">
-          <h2 className="text-lg font-bold text-white">{t("simulateur.resultsTitle")}</h2>
+          <h2 className="owner-tool-heading text-lg font-bold">{t("simulateur.resultsTitle")}</h2>
           <p className="text-xs text-slate-500">
             {fmt(t("simulateur.resultsDisclaimer"), { price: priceLabel })}
             {solutionMode === "mixte_pv_vegetal"

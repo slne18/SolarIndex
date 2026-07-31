@@ -31,7 +31,7 @@ function Fact({
   return (
     <div className={`lead-demo-fact p-4 ${highlight ? "lead-demo-fact-highlight" : ""}`}>
       <div className="text-xs uppercase tracking-wide text-slate-500">{label}</div>
-      <div className={`lead-demo-fact-value mt-1 text-lg font-bold ${highlight ? "text-solar" : ""}`}>{value}</div>
+      <div className={`lead-demo-fact-value mt-1 text-lg font-bold`}>{value}</div>
     </div>
   );
 }
@@ -118,7 +118,7 @@ export default function LeadDemoFiche() {
                 <li key={f.label} className="flex gap-3 text-sm">
                   <DemoFactorIcon kind={f.kind} />
                   <div>
-                    <div className="font-medium text-slate-200">{f.label}</div>
+                    <div className="lead-demo-factor-label font-medium text-slate-200">{f.label}</div>
                     <div className="text-slate-400">{f.detail}</div>
                   </div>
                 </li>

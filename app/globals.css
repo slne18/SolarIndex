@@ -230,6 +230,18 @@ h3,
     @apply mt-0.5 text-[10px] font-medium normal-case tracking-normal text-slate-500;
   }
 
+  .owner-tool-muted {
+    @apply text-slate-500;
+  }
+
+  .owner-tool-body {
+    @apply text-slate-600;
+  }
+
+  .owner-tool-heading {
+    @apply text-slate-900;
+  }
+
   .input {
     @apply w-full rounded-xl border border-white/[0.12] bg-night-800/90 px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-solar/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-solar/30;
   }
@@ -840,28 +852,28 @@ h3,
     @apply bg-solar/[0.08];
   }
 
-  .surface-light .lead-demo-fiche .lead-demo-fact-value:not(.text-solar) {
+  .surface-light .lead-demo-fiche .lead-demo-fact-value {
     @apply text-slate-900;
   }
 
-  .surface-light .lead-demo-fiche .font-medium.text-slate-200 {
+  .surface-light .lead-demo-fiche .lead-demo-fact-highlight .lead-demo-fact-value {
+    @apply text-solar;
+  }
+
+  .surface-light .lead-demo-fiche .lead-demo-factor-label {
     @apply text-slate-800;
   }
 
-  .surface-light .owner-tool-page .card .text-white {
-    @apply text-slate-900;
+  .surface-light .owner-tool-page .owner-tool-muted {
+    @apply text-slate-600;
   }
 
-  .surface-light .owner-tool-page .card .text-slate-200 {
-    @apply text-slate-800;
-  }
-
-  .surface-light .owner-tool-page .card .text-slate-300 {
+  .surface-light .owner-tool-page .owner-tool-body {
     @apply text-slate-700;
   }
 
-  .surface-light .owner-tool-page .card .font-medium.text-slate-200 {
-    @apply text-slate-800;
+  .surface-light .owner-tool-page .owner-tool-heading {
+    @apply text-slate-900;
   }
 
   .surface-light .owner-tool-page .tool-stat {
