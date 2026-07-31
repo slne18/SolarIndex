@@ -252,6 +252,15 @@ const fr = {
   "leads.directorIdentified": "Dirigeant identifié",
   "leads.directorTitle": "Dirigeant exploitant identifié (open data SIREN)",
 
+  "leads.canopy.badgePct": "Photo {pct} ombrière",
+  "leads.canopy.badgePctShort": "{pct} photo",
+  "leads.canopy.badgePossible": "Ombrière photo",
+  "leads.canopy.hintHuwart":
+    "≥ 17,5 % recouvrement photo — mix PV + végétalisation possible (loi Huwart). Ouvert aux paysagistes.",
+  "leads.canopy.hintSuspect":
+    "Ombrière suspectée sur photo — mix ou végétalisation à étudier. Ouvert aux paysagistes.",
+  "leads.canopy.hintPhoto": "Recouvrement ombrière estimé sur photo aérienne",
+
   "leads.score.high": "Élevé",
   "leads.score.medium": "Moyen",
   "leads.score.low": "À vérifier",
@@ -324,7 +333,12 @@ const fr = {
     "Zone ABF / patrimoine historique détectée. L'installation d'ombrières peut nécessiter l'accord de l'Architecte des Bâtiments de France.",
   "leads.detail.huwartTitle": "Loi Huwart — mix panneaux + végétalisation",
   "leads.detail.huwartBody":
-    "Depuis la loi n° 2025-1129 du 26 novembre 2025 (dite loi Huwart), l'obligation de 50 % peut être remplie par un mix panneaux (min. 17,5 % de la surface) + végétalisation équivalente. Ce parking peut donc déjà être partiellement ou totalement conforme via une solution non détectable automatiquement.",
+    "Depuis la loi n° 2025-1129 du 26 novembre 2025 (dite loi Huwart), l'obligation de 50 % peut être remplie par un mix panneaux (min. 17,5 % de la surface) + végétalisation équivalente. Ce parking peut donc déjà être partiellement ou totalement conforme via une solution non détectable automatiquement — projet ouvert aux installateurs PV et aux paysagistes.",
+  "leads.detail.canopySuspectTitle": "Ombrière suspectée — végétalisation envisageable",
+  "leads.detail.canopySuspectBodyWithPct":
+    "Une analyse photo a détecté une ombrière possible ({pct} de recouvrement estimé). Même en dessous du seuil Huwart (17,5 %), un mix panneaux + végétalisation ou une solution paysagère peut répondre à l'obligation APER — à confirmer sur site.",
+  "leads.detail.canopySuspectBodyNoPct":
+    "Une analyse photo signale une ombrière possible. Un mix panneaux + végétalisation ou une solution paysagère peut répondre à l'obligation APER — à confirmer sur site.",
   "leads.detail.contactsUnlocked": "Contacts débloqués",
   "leads.detail.whatYouBuy": "Ce que vous achetez",
   "leads.detail.contactsUnlockedDesc": "Identité entreprise, parcelle cadastrale et coordonnées GPS.",

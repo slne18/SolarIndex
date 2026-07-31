@@ -252,6 +252,15 @@ const en: Record<MessageKey, string> = {
   "leads.directorIdentified": "Director identified",
   "leads.directorTitle": "Operating director identified (SIREN open data)",
 
+  "leads.canopy.badgePct": "Photo {pct} canopy",
+  "leads.canopy.badgePctShort": "{pct} photo",
+  "leads.canopy.badgePossible": "Canopy (photo)",
+  "leads.canopy.hintHuwart":
+    "≥ 17.5% photo coverage — PV + vegetation mix possible (Huwart law). Open to landscapers.",
+  "leads.canopy.hintSuspect":
+    "Suspected canopy on photo — mix or vegetation worth exploring. Open to landscapers.",
+  "leads.canopy.hintPhoto": "Estimated canopy coverage from aerial photo",
+
   "leads.score.high": "High",
   "leads.score.medium": "Medium",
   "leads.score.low": "Needs review",
@@ -324,7 +333,12 @@ const en: Record<MessageKey, string> = {
     "ABF / heritage zone detected. Canopy installation may require approval from the Architecte des Bâtiments de France.",
   "leads.detail.huwartTitle": "Huwart law — panels + vegetation mix",
   "leads.detail.huwartBody":
-    "Since Law no. 2025-1129 of 26 November 2025 (Huwart law), the 50% obligation can be met with a mix of panels (min. 17.5% of the area) plus equivalent vegetation. This parking may therefore already be partially or fully compliant via a solution that cannot be detected automatically.",
+    "Since Law no. 2025-1129 of 26 November 2025 (Huwart law), the 50% obligation can be met with a mix of panels (min. 17.5% of the area) plus equivalent vegetation. This parking may therefore already be partially or fully compliant via a solution that cannot be detected automatically — open to PV installers and landscapers.",
+  "leads.detail.canopySuspectTitle": "Suspected canopy — vegetation option",
+  "leads.detail.canopySuspectBodyWithPct":
+    "Photo analysis detected a possible canopy ({pct} estimated coverage). Even below the Huwart threshold (17.5%), a panel + vegetation mix or landscaping solution may meet the APER obligation — to be confirmed on site.",
+  "leads.detail.canopySuspectBodyNoPct":
+    "Photo analysis flags a possible canopy. A panel + vegetation mix or landscaping solution may meet the APER obligation — to be confirmed on site.",
   "leads.detail.contactsUnlocked": "Contacts unlocked",
   "leads.detail.whatYouBuy": "What you're buying",
   "leads.detail.contactsUnlockedDesc": "Company identity, cadastral parcel and GPS coordinates.",

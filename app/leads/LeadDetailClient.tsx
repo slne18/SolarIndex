@@ -15,7 +15,12 @@ import {
   isUrgenceAbsolueLead,
 } from "@/lib/pv-overlap";
 import { effectiveLeadScore, isHuwartPartialComplianceLead } from "@/lib/huwart-law";
+import {
+  canopyCoverageLabel,
+  isCanopyPhotoSignal,
+} from "@/lib/lead-canopy-display";
 import { resolveLeadSolutionType } from "@/lib/solution-type";
+import LeadCanopyBadge from "@/components/LeadCanopyBadge";
 import SolutionTypeBadge from "@/components/SolutionTypeBadge";
 import type { LeadRow, PublicLead } from "@/lib/types";
 import SolarSimulator from "@/components/SolarSimulator";
@@ -125,6 +130,9 @@ function LeadDetailContent({ id }: { id: string }) {
     level: t(scoreLevelKey(effectiveLeadScore(lead))),
   });
   const showHuwartNotice = isHuwartPartialComplianceLead(lead);
+  const showCanopySuspectNotice =
+    isCanopyPhotoSignal(lead) && !!lead.vision_flag && !showHuwartNotice;
+  const canopyPctLabel = canopyCoverageLabel(lead);
   const solutionType = resolveLeadSolutionType(lead);
 
   return (
@@ -144,6 +152,7 @@ function LeadDetailContent({ id }: { id: string }) {
               <LeadCompletenessBadge pct={lead.completude_pct} />
             ) : null}
             <LeadAvailabilityBadge available={slotOpen} />
+            <LeadCanopyBadge lead={lead} compact light />
             <SolutionTypeBadge type={solutionType} compact showAudience light />
             <span className="text-xs text-slate-500" title={t("leads.detail.confidenceHint")}>
               {scoreText}
@@ -189,9 +198,20 @@ function LeadDetailContent({ id }: { id: string }) {
           </p>
 
           {showHuwartNotice ? (
-            <div className="card mt-4 border-sky-200 bg-sky-50 p-5 text-sm leading-relaxed text-slate-700">
-              <div className="font-semibold text-sky-800">{t("leads.detail.huwartTitle")}</div>
+            <div className="card mt-4 border-emerald-200 bg-emerald-50 p-5 text-sm leading-relaxed text-slate-700">
+              <div className="font-semibold text-emerald-800">{t("leads.detail.huwartTitle")}</div>
               <p className="mt-2">{t("leads.detail.huwartBody")}</p>
+            </div>
+          ) : null}
+
+          {showCanopySuspectNotice ? (
+            <div className="card mt-4 border-sky-200 bg-sky-50 p-5 text-sm leading-relaxed text-slate-700">
+              <div className="font-semibold text-sky-800">{t("leads.detail.canopySuspectTitle")}</div>
+              <p className="mt-2">
+                {canopyPctLabel
+                  ? fmt(t("leads.detail.canopySuspectBodyWithPct"), { pct: canopyPctLabel })
+                  : t("leads.detail.canopySuspectBodyNoPct")}
+              </p>
             </div>
           ) : null}
 

@@ -248,9 +248,7 @@ export function SimulatorResultsPanel({
                     m2PerKwc: nf(M2_PAR_KWC),
                     costKwc: nf(COUT_KWC_EUR),
                     vegCost: nf(COUT_VEGETALISATION_M2),
-                  })}
-                </p>
-                <p>
+                  })}{" "}
                   {fmt(t("simulateur.panelCapexDetailMix"), {
                     surfaceParking: nfSurface(result.surfaceM2),
                     pvPct: pvPctLabel,
@@ -276,9 +274,7 @@ export function SimulatorResultsPanel({
                   {fmt(t("simulateur.panelCapexFormula"), {
                     m2PerKwc: nf(M2_PAR_KWC),
                     costKwc: nf(COUT_KWC_EUR),
-                  })}
-                </p>
-                <p>
+                  })}{" "}
                   {fmt(t("simulateur.panelCapexDetail"), {
                     surfaceParking: nfSurface(result.surfaceM2),
                     m2PerKwc: nf(M2_PAR_KWC),
