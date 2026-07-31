@@ -595,8 +595,10 @@ const fr = {
 
   "verifier.pill": "Outil gratuit",
   "verifier.title": "Vérificateur d'éligibilité APER",
-  "verifier.lead":
-    "Saisissez l'adresse de votre parking. Nous détectons la surface via OpenStreetMap ou le cadastre, puis estimons votre échéance réglementaire et les dérogations possibles.",
+  "verifier.leadLine1":
+    "Saisissez l'adresse de votre parking. Nous détectons la surface via OpenStreetMap",
+  "verifier.leadLine2":
+    "ou le cadastre, puis estimons votre échéance réglementaire et les dérogations possibles.",
   "verifier.addressLabel": "Adresse du parking",
   "verifier.addressPlaceholder": "12 avenue de la République, Toulouse",
   "verifier.submit": "Vérifier l'éligibilité",

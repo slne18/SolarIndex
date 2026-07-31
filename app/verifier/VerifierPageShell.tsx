@@ -9,7 +9,10 @@ export default function VerifierPageShell() {
   return (
     <div className="container-x py-10 sm:py-14">
       <h1 className="hero-tool-title">{t("verifier.title")}</h1>
-      <p className="hero-on-photo-lead mt-3 !mx-0 max-w-2xl">{t("verifier.lead")}</p>
+      <p className="hero-on-photo-lead mt-3 !mx-0 max-w-3xl">
+        <span className="block">{t("verifier.leadLine1")}</span>
+        <span className="block">{t("verifier.leadLine2")}</span>
+      </p>
     </div>
   );
 }

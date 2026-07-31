@@ -595,8 +595,10 @@ const en: Record<MessageKey, string> = {
 
   "verifier.pill": "Free tool",
   "verifier.title": "APER eligibility checker",
-  "verifier.lead":
-    "Enter your parking address. We detect area via OpenStreetMap or cadastre, then estimate your regulatory deadline and possible exemptions.",
+  "verifier.leadLine1":
+    "Enter your parking address. We detect area via OpenStreetMap",
+  "verifier.leadLine2":
+    "or cadastre, then estimate your regulatory deadline and possible exemptions.",
   "verifier.addressLabel": "Parking address",
   "verifier.addressPlaceholder": "12 Avenue de la République, Toulouse",
   "verifier.submit": "Check eligibility",
