@@ -46,10 +46,10 @@ export function RfpSolarMetricsCard({ rfp }: { rfp: PublicRfp }) {
   if (!solar) return null;
 
   return (
-    <div className="rounded-xl border border-white/10 bg-night-800/40 p-5 text-sm">
-      <h3 className="font-semibold text-white">Potentiel photovoltaïque estimé</h3>
+    <div className="text-sm">
+      <h3 className="font-semibold text-slate-900">Potentiel photovoltaïque estimé</h3>
       <p className="mt-1 text-xs text-slate-500">Indicatif — simulateur SolarIndex, non audit.</p>
-      <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+      <dl className="mt-4 grid gap-x-6 gap-y-0 sm:grid-cols-2">
         <Metric k="Puissance estimée" v={`${nf(solar.puissance_kwc)} kWc`} />
         <Metric k="Production estimée" v={`${nf(solar.production_kwh_an)} kWh/an`} />
         <Metric k="CA autoconsommation" v={`${eurosCompact(solar.ca_autoconsommation_eur)}/an`} />
@@ -70,9 +70,9 @@ export function RfpSolarMetricsCard({ rfp }: { rfp: PublicRfp }) {
 
 function Metric({ k, v }: { k: string; v: string }) {
   return (
-    <div className="rounded-lg border border-white/5 px-3 py-2">
-      <dt className="text-xs text-slate-500">{k}</dt>
-      <dd className="mt-0.5 font-medium text-slate-100">{v}</dd>
+    <div className="flex justify-between gap-4 border-b border-slate-100 py-2.5">
+      <dt className="text-slate-500">{k}</dt>
+      <dd className="text-right font-medium text-slate-800">{v}</dd>
     </div>
   );
 }

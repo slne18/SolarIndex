@@ -13,7 +13,7 @@ export default function HomeHeroBenefits() {
   const t = useTranslations();
 
   return (
-    <ul className="home-hero-benefits mt-10">
+    <ul className="home-hero-benefits">
       {BENEFITS.map(({ key, icon: Icon }) => {
         const lines = t(key).split("\n");
 

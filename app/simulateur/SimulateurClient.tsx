@@ -114,7 +114,7 @@ export default function SimulateurClient() {
           <p className="owner-tool-heading font-semibold">{t("simulateur.asideTitle")}</p>
           <p className="mt-2 leading-relaxed">{t("simulateur.asideLead")}</p>
         </div>
-        <div className="card p-5 text-xs leading-relaxed text-slate-400">
+        <div className="card p-5 text-xs leading-relaxed owner-tool-body">
           <p>{t("simulateur.asideEdfNote")}</p>
           <div className="mt-4">
             <HeroActionList
@@ -191,9 +191,9 @@ export default function SimulateurClient() {
                   onChange={(e) => setWidthMInput(e.target.value)}
                 />
               </Field>
-              <p className="sm:col-span-2 text-sm text-slate-400">
+              <p className="owner-tool-body sm:col-span-2 text-sm">
                 {t("simulateur.calculatedSurface")}{" "}
-                <strong className="text-white">{nfSurface(lengthM * widthM)} m²</strong>
+                <strong className="owner-tool-heading">{nfSurface(lengthM * widthM)} m²</strong>
               </p>
             </div>
           )}
@@ -260,11 +260,12 @@ export default function SimulateurClient() {
           </Field>
 
           <div className="space-y-3">
-            <label className="flex items-center gap-2 text-sm text-slate-300">
+            <label className="simulator-checkbox-label flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
                 checked={hasConsumption}
                 onChange={(e) => setHasConsumption(e.target.checked)}
+                className="accent-solar"
               />
               {t("simulateur.hasConsumption")}
             </label>
@@ -312,12 +313,12 @@ export default function SimulateurClient() {
 
           <SimulatorRoiTimeline result={result} />
 
-          <details className="group rounded-xl border border-white/10 bg-night-900/20">
-            <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-slate-300 marker:content-none [&::-webkit-details-marker]:hidden">
+          <details className="simulator-details group">
+            <summary className="simulator-details-summary">
               {t("simulateur.detailsToggle")}
               <span className="ml-2 text-slate-500 transition group-open:rotate-180">▾</span>
             </summary>
-            <div className="border-t border-white/[0.06] px-4 pb-4 pt-3">
+            <div className="simulator-details-body">
               <div className="grid gap-3 sm:grid-cols-2">
                 <Result
                   label={t("simulateur.detailSolarSurface")}
@@ -386,14 +387,14 @@ export default function SimulateurClient() {
                 ) : null}
               </div>
 
-              <div className="mt-4 rounded-xl border border-solar/30 bg-solar/10 px-4 py-3 text-sm text-slate-200">
+              <div className="simulator-roi-callout mt-4 px-4 py-3 text-sm">
                 <p>
                   <strong className="text-solar">{t("simulateur.roiFullInjection")}</strong>{" "}
                   {result.roiYearsFullInjection != null
                     ? fmt(t("simulateur.roiYears"), { years: result.roiYearsFullInjection })
                     : "—"}
                 </p>
-                <p className="mt-2 text-xs text-slate-400">
+                <p className="owner-tool-body mt-2 text-xs">
                   {t("simulateur.annualBenefitMix")}{" "}
                   {euros(result.autoconsommationTotalEur)}
                   {t("simulateur.perYear")}
@@ -437,8 +438,8 @@ function SolutionOption({
         {active ? "●" : "○"}
       </span>
       <span className="min-w-0 text-left">
-        <span className="block text-sm font-medium text-slate-100">{title}</span>
-        <span className="mt-0.5 block text-xs text-slate-500">{hint}</span>
+        <span className="simulator-solution-option-title">{title}</span>
+        <span className="simulator-solution-option-hint">{hint}</span>
       </span>
     </button>
   );
@@ -457,9 +458,7 @@ function ModeBtn({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
-        active ? "bg-solar text-night" : "bg-white/5 text-slate-400 hover:bg-white/10"
-      }`}
+      className={`simulator-mode-btn ${active ? "simulator-mode-btn-active" : ""}`}
     >
       {children}
     </button>
@@ -469,7 +468,7 @@ function ModeBtn({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-medium text-slate-400">{label}</label>
+      <label className="owner-tool-muted mb-1.5 block text-xs font-medium">{label}</label>
       {children}
     </div>
   );
@@ -487,14 +486,10 @@ function Result({
   highlight?: boolean;
 }) {
   return (
-    <div
-      className={`rounded-xl border px-4 py-3 ${
-        highlight ? "border-solar/40 bg-solar/10" : "border-white/10 bg-night-900/40"
-      }`}
-    >
-      <p className="text-xs text-slate-500">{label}</p>
-      <p className={`mt-1 text-lg font-bold ${highlight ? "text-solar" : "text-white"}`}>{value}</p>
-      {sub && <p className="mt-0.5 text-xs text-slate-500">{sub}</p>}
+    <div className={`simulator-result-box ${highlight ? "simulator-result-box-highlight" : ""}`}>
+      <p className="simulator-result-label">{label}</p>
+      <p className={`simulator-result-value ${highlight ? "text-solar" : ""}`}>{value}</p>
+      {sub && <p className="simulator-result-sub">{sub}</p>}
     </div>
   );
 }

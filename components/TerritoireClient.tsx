@@ -126,7 +126,7 @@ export default function TerritoireClient({
       <div className="card mt-6 space-y-4 p-6">
         {mode === "address" ? (
           <>
-            <label className="block text-sm font-medium">{t("territoire.addressLabel")}</label>
+            <label className="block text-sm font-medium text-slate-800">{t("territoire.addressLabel")}</label>
             <div className="relative">
               <input
                 className="input w-full"
@@ -138,12 +138,12 @@ export default function TerritoireClient({
                 placeholder={t("territoire.addressPlaceholder")}
               />
               {suggestions.length > 0 && (
-                <ul className="absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-xl border border-white/10 bg-night-900">
+                <ul className="absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-xl border border-slate-200 bg-white shadow-lg">
                   {suggestions.map((f, i) => (
                     <li key={i}>
                       <button
                         type="button"
-                        className="block w-full px-4 py-2 text-left text-sm hover:bg-white/5"
+                        className="block w-full px-4 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
                         onClick={() => {
                           const [lon, lat] = f.geometry.coordinates;
                           setSelected({ label: f.properties.label, lat, lon });
@@ -158,7 +158,7 @@ export default function TerritoireClient({
                 </ul>
               )}
             </div>
-            <label className="block text-sm font-medium">{t("territoire.radius")}</label>
+            <label className="block text-sm font-medium text-slate-800">{t("territoire.radius")}</label>
             <div className="flex gap-2">
               {([25, 50, 100] as const).map((r) => (
                 <button
@@ -174,7 +174,7 @@ export default function TerritoireClient({
           </>
         ) : (
           <>
-            <label className="block text-sm font-medium">{t("territoire.deptLabel")}</label>
+            <label className="block text-sm font-medium text-slate-800">{t("territoire.deptLabel")}</label>
             <select
               className="input w-full"
               value={departement}
@@ -194,11 +194,11 @@ export default function TerritoireClient({
         </button>
       </div>
 
-      {error && <p className="mt-4 text-sm text-red-300">{error}</p>}
+      {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
 
       {summary && (
         <div className="card mt-6 space-y-4 p-6">
-          <h2 className="text-lg font-bold text-white">
+          <h2 className="text-lg font-bold text-slate-900">
             {summary.mode === "radius"
               ? fmt(t("territoire.radiusSummary"), {
                   radius: summary.radiusKm ?? 0,
@@ -206,12 +206,12 @@ export default function TerritoireClient({
                 })
               : summary.label}
           </h2>
-          <ul className="space-y-2 text-sm text-slate-300">
+          <ul className="space-y-2 text-sm text-slate-600">
             <li>
-              <strong className="text-white">{nf(summary.total)}</strong> {t("territoire.leadsAvailable")}
+              <strong className="text-slate-900">{nf(summary.total)}</strong> {t("territoire.leadsAvailable")}
             </li>
             <li>
-              <strong className="text-white">{nf(summary.urgences)}</strong> {t("territoire.urgences")}
+              <strong className="text-slate-900">{nf(summary.urgences)}</strong> {t("territoire.urgences")}
             </li>
             <li>
               {fmt(t("territoire.standardPremium"), {

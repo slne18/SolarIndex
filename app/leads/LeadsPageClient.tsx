@@ -125,17 +125,15 @@ function LeadsCatalog() {
 
   return (
     <>
-      <div className="hero-surface hero-surface-compact">
+      <div className="surface-light">
         <div className="container-x py-10 sm:py-12">
-          <p className="pill-accent w-fit">{t("leads.pill")}</p>
+          <p className="pill-accent-solar w-fit">{t("leads.pill")}</p>
           <h1 className="section-title mt-4">{t("leads.title")}</h1>
-        </div>
-      </div>
 
-      <div className="surface-light border-t border-slate-100">
-        <div className="container-x py-10 sm:py-12">
-          <LeadsSolutionSection />
-          <LeadDemoFiche />
+          <div className="mt-10 border-t border-slate-100 pt-10 sm:mt-12 sm:pt-12">
+            <LeadsSolutionSection />
+            <LeadDemoFiche />
+          </div>
         </div>
       </div>
 
@@ -222,12 +220,12 @@ function LeadsCatalog() {
         </div>
       </div>
 
-      <div className="hero-surface border-t border-white/[0.06]">
+      <div className="surface-light border-t border-slate-100">
         <div className="container-x py-10 sm:py-12">
           <section id="ma-zone" className="scroll-mt-24">
-            <p className="pill-accent w-fit">{t("leads.zonePill")}</p>
+            <p className="pill-accent-solar w-fit">{t("leads.zonePill")}</p>
             <h2 className="section-title mt-4">{t("leads.zoneTitle")}</h2>
-            <p className="mt-2 max-w-2xl text-slate-500">{t("leads.zoneLead")}</p>
+            <p className="section-lead mt-2 max-w-2xl">{t("leads.zoneLead")}</p>
             <div className="mt-6">
               <TerritoireClient embedded onExploreCatalog={exploreCatalogFromZone} />
             </div>

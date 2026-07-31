@@ -35,7 +35,7 @@ export default function SolarSimulator({
   return (
     <div className="card p-6 sm:p-8">
       <div className="flex items-baseline justify-between">
-        <label htmlFor="surface" className="text-sm font-medium text-slate-300">
+        <label htmlFor="surface" className="text-sm font-medium text-slate-800">
           Surface parking (m²)
         </label>
         <span className="text-2xl font-bold text-solar">{nf(surface)} m²</span>
@@ -66,8 +66,8 @@ export default function SolarSimulator({
       <div
         className={`mt-6 rounded-lg px-4 py-3 text-sm font-medium ${
           isUrgence
-            ? "bg-red-500/15 text-red-300"
-            : "bg-amber-500/15 text-amber-300"
+            ? "border border-red-200 bg-red-50 text-red-800"
+            : "border border-amber-200 bg-amber-50 text-amber-900"
         }`}
       >
         {isUrgence
@@ -92,11 +92,11 @@ function Stat({
   return (
     <div
       className={`rounded-xl border p-4 text-center ${
-        highlight ? "border-solar/40 bg-solar/10" : "border-white/10 bg-night-700/50"
+        highlight ? "border-solar/40 bg-amber-50" : "border-slate-200 bg-slate-50"
       }`}
     >
-      <div className="text-xs uppercase tracking-wide text-slate-400">{title}</div>
-      <div className={`mt-2 text-xl font-bold ${highlight ? "text-solar" : "text-white"}`}>
+      <div className="text-xs uppercase tracking-wide text-slate-500">{title}</div>
+      <div className={`mt-2 text-xl font-bold ${highlight ? "text-solar" : "text-slate-900"}`}>
         {value}
       </div>
       <div className="mt-1 text-xs text-slate-500">{sub}</div>

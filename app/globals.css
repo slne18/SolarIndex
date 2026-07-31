@@ -38,9 +38,58 @@ h3,
   }
 
   .site-header {
-    @apply relative z-50 w-full border-b border-white/[0.06] bg-night-950 backdrop-blur-xl;
+    @apply relative z-50 w-full border-b border-slate-200 bg-white/95 text-slate-800 backdrop-blur-xl;
     padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
     padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  }
+
+  .site-header .brand-wordmark,
+  .site-header .header-brand-text {
+    @apply text-slate-900;
+  }
+
+  .site-header .nav-link {
+    @apply text-slate-600 hover:bg-slate-100 hover:text-slate-900;
+  }
+
+  .site-header .header-product-link-active {
+    @apply font-semibold text-slate-900;
+  }
+
+  .site-header .language-switcher-trigger {
+    @apply border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900;
+  }
+
+  .site-header .language-switcher-chevron {
+    @apply text-slate-400;
+  }
+
+  .site-header .language-switcher-menu {
+    @apply border-slate-200 bg-white shadow-lg;
+  }
+
+  .site-header .language-switcher-option {
+    @apply text-slate-600 hover:bg-slate-50 hover:text-slate-900;
+  }
+
+  .site-header .language-switcher-option-active {
+    @apply bg-solar/10 font-medium text-slate-900;
+  }
+
+  .site-header .header-tools-dropdown {
+    @apply rounded-xl border border-slate-200 bg-white py-1.5 shadow-lg;
+  }
+
+  .site-header .header-tools-dropdown-link {
+    @apply block px-4 py-2.5 text-sm text-slate-600 transition hover:bg-slate-50 hover:text-slate-900;
+  }
+
+  .site-header .header-tools-dropdown-link-active {
+    @apply text-solar-600;
+  }
+
+  .site-header .btn {
+    --tw-ring-offset-color: #fff;
   }
 
   .header-start-nav {
@@ -48,17 +97,17 @@ h3,
   }
 
   .header-menu-btn {
-    @apply grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-200 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-solar/40;
+    @apply grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-solar/40;
   }
 
   .mobile-nav-panel {
-    @apply absolute left-0 right-0 top-full z-50 overflow-y-auto border-b border-white/10 bg-night-950 px-5 py-5 shadow-2xl backdrop-blur-xl;
+    @apply absolute left-0 right-0 top-full z-50 overflow-y-auto border-b border-slate-200 bg-white px-5 py-5 shadow-2xl backdrop-blur-xl;
     max-height: min(32rem, calc(100dvh - 4.75rem));
     padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
   }
 
   .mobile-nav-backdrop {
-    @apply fixed inset-x-0 bottom-0 z-40 bg-night-950/70 backdrop-blur-sm;
+    @apply fixed inset-x-0 bottom-0 z-40 bg-slate-900/20 backdrop-blur-sm;
     top: 4.75rem;
   }
 
@@ -67,7 +116,7 @@ h3,
   }
 
   .mobile-nav-section + .mobile-nav-section {
-    @apply mt-6 border-t border-white/[0.08] pt-6;
+    @apply mt-6 border-t border-slate-200 pt-6;
   }
 
   .mobile-nav-section-label {
@@ -79,15 +128,15 @@ h3,
   }
 
   .mobile-nav-link {
-    @apply rounded-xl px-3.5 py-3 text-base font-medium text-slate-200 transition hover:bg-white/[0.05] hover:text-white;
+    @apply rounded-xl px-3.5 py-3 text-base font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-900;
   }
 
   .mobile-nav-link-active {
-    @apply bg-solar/10 text-solar;
+    @apply bg-solar/10 text-solar-600;
   }
 
   .mobile-nav-link-muted {
-    @apply cursor-default opacity-40 hover:bg-transparent hover:text-slate-200;
+    @apply cursor-default opacity-40 hover:bg-transparent hover:text-slate-700;
   }
 
   .mobile-nav-cta {
@@ -104,6 +153,22 @@ h3,
 
   .mobile-nav-section-lang .language-switcher-menu {
     @apply static mt-2 w-full;
+  }
+
+  .mobile-nav-panel .language-switcher-trigger {
+    @apply border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900;
+  }
+
+  .mobile-nav-panel .language-switcher-menu {
+    @apply border-slate-200 bg-white shadow-lg;
+  }
+
+  .mobile-nav-panel .language-switcher-option {
+    @apply text-slate-600 hover:bg-slate-50 hover:text-slate-900;
+  }
+
+  .mobile-nav-panel .language-switcher-option-active {
+    @apply bg-solar/10 font-medium text-slate-900;
   }
 
   .persona-switcher-drawer {
@@ -524,7 +589,7 @@ h3,
   }
 
   .hero-home-panel .home-hero-benefits {
-    @apply mt-8 border-slate-200/80 sm:mt-10;
+    @apply mt-5 border-slate-200/80 pt-5 sm:mt-6 sm:pt-6;
   }
 
   .hero-home-panel .home-hero-benefit-icon {
@@ -890,6 +955,131 @@ h3,
 
   .surface-light .owner-tool-page .border-white\/10 {
     @apply border-slate-200;
+  }
+
+  /* Simulateur — thème clair */
+  .surface-light .owner-tool-page .simulator-solution-option {
+    @apply border-slate-200 bg-white hover:border-slate-300;
+  }
+
+  .surface-light .owner-tool-page .simulator-solution-option-active {
+    @apply border-solar/50 bg-amber-50/80 ring-1 ring-solar/25;
+  }
+
+  .surface-light .owner-tool-page .simulator-solution-option-title {
+    @apply block text-sm font-medium text-slate-900;
+  }
+
+  .surface-light .owner-tool-page .simulator-solution-option-hint {
+    @apply mt-0.5 block text-xs text-slate-600;
+  }
+
+  .surface-light .owner-tool-page .simulator-mode-btn {
+    @apply rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-slate-300 hover:bg-slate-50;
+  }
+
+  .surface-light .owner-tool-page .simulator-mode-btn-active {
+    @apply border-solar bg-solar text-night hover:border-solar hover:bg-solar;
+  }
+
+  .surface-light .owner-tool-page .simulator-checkbox-label {
+    @apply text-slate-700;
+  }
+
+  .surface-light .owner-tool-page .simulator-summary-card {
+    @apply border-slate-200 bg-slate-50;
+  }
+
+  .surface-light .owner-tool-page .simulator-summary-value {
+    @apply text-slate-900;
+  }
+
+  .surface-light .owner-tool-page .simulator-mode-compare {
+    @apply border-slate-200 bg-slate-50;
+  }
+
+  .surface-light .owner-tool-page .simulator-mode-compare-col {
+    @apply border-slate-200 bg-white;
+  }
+
+  .surface-light .owner-tool-page .simulator-mode-compare-title {
+    @apply text-sm font-medium text-slate-800;
+  }
+
+  .surface-light .owner-tool-page .simulator-mode-compare-rows dd {
+    @apply text-slate-900;
+  }
+
+  .surface-light .owner-tool-page .simulator-visual-card {
+    @apply border-slate-200 bg-slate-50;
+  }
+
+  .surface-light .owner-tool-page .simulator-visual-title {
+    @apply text-slate-800;
+  }
+
+  .surface-light .owner-tool-page .simulator-parking-plan {
+    @apply border-slate-200;
+  }
+
+  .surface-light .owner-tool-page .simulator-parking-rest {
+    @apply bg-slate-100 text-slate-600;
+  }
+
+  .surface-light .owner-tool-page .simulator-parking-stats dd {
+    @apply text-slate-900;
+  }
+
+  .surface-light .owner-tool-page .simulator-production-bar {
+    @apply bg-slate-200;
+  }
+
+  .surface-light .owner-tool-page .simulator-donut-track {
+    stroke: rgb(226 232 240);
+  }
+
+  .surface-light .owner-tool-page .simulator-roi-bar {
+    @apply rounded-xl border border-slate-200 bg-slate-50 p-4;
+  }
+
+  .surface-light .owner-tool-page .simulator-roi-track {
+    @apply bg-slate-200;
+  }
+
+  .surface-light .owner-tool-page .simulator-details {
+    @apply rounded-xl border border-slate-200 bg-slate-50;
+  }
+
+  .surface-light .owner-tool-page .simulator-details-summary {
+    @apply cursor-pointer list-none px-4 py-3 text-sm font-medium text-slate-700 marker:content-none [&::-webkit-details-marker]:hidden;
+  }
+
+  .surface-light .owner-tool-page .simulator-details-body {
+    @apply border-t border-slate-200 px-4 pb-4 pt-3;
+  }
+
+  .surface-light .owner-tool-page .simulator-result-box {
+    @apply rounded-xl border border-slate-200 bg-white px-4 py-3;
+  }
+
+  .surface-light .owner-tool-page .simulator-result-box-highlight {
+    @apply border-solar/40 bg-amber-50/80;
+  }
+
+  .surface-light .owner-tool-page .simulator-result-label {
+    @apply text-xs text-slate-500;
+  }
+
+  .surface-light .owner-tool-page .simulator-result-value {
+    @apply mt-1 text-lg font-bold text-slate-900;
+  }
+
+  .surface-light .owner-tool-page .simulator-result-sub {
+    @apply mt-0.5 text-xs text-slate-500;
+  }
+
+  .surface-light .owner-tool-page .simulator-roi-callout {
+    @apply rounded-xl border border-solar/30 bg-amber-50/80 text-slate-800;
   }
 
   /* Footer clair */

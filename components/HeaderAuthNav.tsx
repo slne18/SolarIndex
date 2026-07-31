@@ -35,7 +35,7 @@ export default function HeaderAuthNav() {
 
   if (authed) {
     return (
-      <Link href={MON_ESPACE_PATH} className="nav-link inline-flex font-medium text-slate-200">
+      <Link href={MON_ESPACE_PATH} className="nav-link inline-flex font-medium">
         {t("header.mySpace")}
       </Link>
     );

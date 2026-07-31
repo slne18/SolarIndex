@@ -136,7 +136,8 @@ const en: Record<MessageKey, string> = {
 
   "home.heroTagline":
     "Turn a regulatory obligation into an energy opportunity with qualified partners.",
-  "home.chooseTitlePrefix": "The platform that simplifies parking compliance with the ",
+  "home.chooseTitlePrefix":
+    "The platform that helps parking operators and solar professionals achieve compliance with the ",
   "home.chooseTitleAccent": "APER law.",
   "home.chooseLeadBefore":
     "SolarIndex connects parking operators and installers to develop ",

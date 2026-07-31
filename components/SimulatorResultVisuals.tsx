@@ -60,7 +60,7 @@ export function SimulatorModeComparison({
 
   return (
     <div className="simulator-mode-compare">
-      <p className="text-sm font-medium text-slate-200">{t("simulateur.modeCompareTitle")}</p>
+      <p className="simulator-mode-compare-title">{t("simulateur.modeCompareTitle")}</p>
       <div className="simulator-mode-compare-grid">
         <div className="simulator-mode-compare-col">
           <p className="simulator-mode-compare-head">{t("simulateur.solutionPvPur")}</p>
@@ -315,7 +315,7 @@ export function SimulatorRoiTimeline({ result }: { result: SimulatorResult }) {
   return (
     <div className="simulator-roi-bar">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <p className="text-sm font-medium text-slate-200">{t("simulateur.roiTitle")}</p>
+        <p className="simulator-mode-compare-title">{t("simulateur.roiTitle")}</p>
         <p className="text-sm tabular-nums text-solar">
           {years != null ? `${years} ${t("simulateur.years")}` : "—"}
         </p>

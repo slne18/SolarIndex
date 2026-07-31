@@ -13,7 +13,7 @@ export default function TypewriterText({
   text,
   className = "",
   charDelayMs = 26,
-  startDelayMs = 500,
+  startDelayMs = 850,
 }: {
   text: string;
   className?: string;
@@ -23,6 +23,11 @@ export default function TypewriterText({
   const [displayed, setDisplayed] = useState("");
   const [motionOk, setMotionOk] = useState(true);
   const [done, setDone] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -33,21 +38,30 @@ export default function TypewriterText({
   }, []);
 
   useEffect(() => {
+    if (!mounted) return;
+
+    let cancelled = false;
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const clear = () => {
+      cancelled = true;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+
     if (!motionOk) {
       setDisplayed(text);
       setDone(true);
-      return;
+      return clear;
     }
 
     setDisplayed("");
     setDone(false);
 
     let index = 0;
-    let timeoutId: ReturnType<typeof setTimeout>;
 
     const typeNext = () => {
-      if (index >= text.length) {
-        setDone(true);
+      if (cancelled || index >= text.length) {
+        if (!cancelled) setDone(true);
         return;
       }
 
@@ -57,13 +71,13 @@ export default function TypewriterText({
     };
 
     timeoutId = setTimeout(typeNext, startDelayMs);
-    return () => clearTimeout(timeoutId);
-  }, [text, motionOk, charDelayMs, startDelayMs]);
+    return clear;
+  }, [text, motionOk, charDelayMs, startDelayMs, mounted]);
 
   return (
     <p className={className} aria-label={text}>
-      {displayed}
-      {!done && motionOk ? (
+      {mounted ? displayed : ""}
+      {mounted && !done && motionOk ? (
         <span className="typewriter-cursor" aria-hidden>
           |
         </span>

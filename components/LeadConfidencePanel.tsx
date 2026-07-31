@@ -23,11 +23,11 @@ export default function LeadConfidencePanel({ lead }: { lead: PublicLead }) {
   return (
     <div className="card p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold">{t("leads.confidence.title")}</h2>
+        <h2 className="text-lg font-semibold text-slate-900">{t("leads.confidence.title")}</h2>
         <LeadTierBadge tier={lead.tier} />
       </div>
 
-      <p className="mt-2 text-sm text-slate-400">
+      <p className="mt-2 text-sm text-slate-600">
         {fmt(t("leads.confidence.intro"), {
           score: score.toFixed(2),
           level: t(scoreLevelKey(score)),
@@ -39,15 +39,15 @@ export default function LeadConfidencePanel({ lead }: { lead: PublicLead }) {
           <li key={f.id} className="flex gap-3 text-sm">
             <span
               className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                f.ok ? "bg-accent/20 text-accent" : "bg-amber-500/15 text-amber-300"
+                f.ok ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-800"
               }`}
               aria-hidden
             >
               {f.ok ? "✓" : "!"}
             </span>
             <div>
-              <div className="font-medium text-slate-200">{t(confidenceFactorLabelKey(f.id))}</div>
-              <div className="text-slate-400">{f.detail}</div>
+              <div className="font-medium text-slate-800">{t(confidenceFactorLabelKey(f.id))}</div>
+              <div className="text-slate-600">{f.detail}</div>
             </div>
           </li>
         ))}
@@ -56,12 +56,12 @@ export default function LeadConfidencePanel({ lead }: { lead: PublicLead }) {
       <div
         className={`mt-5 rounded-lg border p-4 text-xs ${
           detection?.tone === "warn"
-            ? "border-amber-500/30 bg-amber-500/5"
-            : "border-white/10 bg-night-800/60"
+            ? "border-amber-200 bg-amber-50"
+            : "border-slate-200 bg-slate-50"
         }`}
       >
-        <p className="text-slate-400">
-          <strong className="text-slate-300">{t(tierLabelKey(lead.tier))}</strong>
+        <p className="text-slate-600">
+          <strong className="text-slate-800">{t(tierLabelKey(lead.tier))}</strong>
           {" — "}
           {t(tierDescKey)}
         </p>
@@ -69,8 +69,8 @@ export default function LeadConfidencePanel({ lead }: { lead: PublicLead }) {
           <p
             className={`mt-3 border-t pt-3 ${
               detection.tone === "warn"
-                ? "border-amber-500/20 text-amber-200/90"
-                : "border-white/10 text-slate-400"
+                ? "border-amber-200 text-amber-900"
+                : "border-slate-200 text-slate-600"
             }`}
           >
             <strong>{detection.badge}</strong>

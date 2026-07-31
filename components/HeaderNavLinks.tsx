@@ -14,13 +14,15 @@ type HeaderNavLinksProps = {
 };
 
 function desktopLinkClass(active: boolean) {
-  return `nav-link header-product-link ${active ? "text-white" : ""}`;
+  return `nav-link header-product-link ${active ? "header-product-link-active" : ""}`;
 }
 
 export default function HeaderNavLinks({ variant, onNavigate }: HeaderNavLinksProps) {
   const pathname = usePathname();
   const { persona, ready, setPersona } = usePersona();
   const t = useTranslations();
+
+  const isHome = pathname === "/";
 
   if (!ready) return null;
 
@@ -59,19 +61,21 @@ export default function HeaderNavLinks({ variant, onNavigate }: HeaderNavLinksPr
 
     return (
       <>
-        <div className="mobile-nav-section">
-          <p className="mobile-nav-section-label">{t("persona.installer")}</p>
-          <div className="mobile-nav-links">
-            {installerLinks.map((item) => (
-              <Link
-                key={item.href}
-                {...drawerLinkProps(item.href, item.active, drawerLink(item.active), "installer")}
-              >
-                {item.label}
-              </Link>
-            ))}
+        {!isHome ? (
+          <div className="mobile-nav-section">
+            <p className="mobile-nav-section-label">{t("persona.installer")}</p>
+            <div className="mobile-nav-links">
+              {installerLinks.map((item) => (
+                <Link
+                  key={item.href}
+                  {...drawerLinkProps(item.href, item.active, drawerLink(item.active), "installer")}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
 
         <div className="mobile-nav-section">
           <OwnerPersonaLabel
@@ -111,7 +115,9 @@ export default function HeaderNavLinks({ variant, onNavigate }: HeaderNavLinksPr
           <button
             type="button"
             className={`nav-link header-product-link flex items-center gap-1 ${
-              pathname.startsWith("/verifier") || pathname.startsWith("/simulateur") ? "text-white" : ""
+              pathname.startsWith("/verifier") || pathname.startsWith("/simulateur")
+                ? "header-product-link-active"
+                : ""
             }`}
             aria-haspopup="true"
             aria-expanded="false"
@@ -129,19 +135,19 @@ export default function HeaderNavLinks({ variant, onNavigate }: HeaderNavLinksPr
             </svg>
           </button>
           <div className="header-tools-menu pointer-events-none absolute left-0 top-full z-50 min-w-[15rem] pt-2 opacity-0 transition group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
-            <div className="rounded-xl border border-white/10 bg-night-900 py-1.5 shadow-xl">
+            <div className="header-tools-dropdown">
               <Link
                 href="/verifier"
-                className={`block px-4 py-2.5 text-sm transition hover:bg-white/[0.06] hover:text-white ${
-                  pathname.startsWith("/verifier") ? "text-solar" : "text-slate-300"
+                className={`header-tools-dropdown-link ${
+                  pathname.startsWith("/verifier") ? "header-tools-dropdown-link-active" : ""
                 }`}
               >
                 {t("nav.verifyEligibility")}
               </Link>
               <Link
                 href="/simulateur"
-                className={`block px-4 py-2.5 text-sm transition hover:bg-white/[0.06] hover:text-white ${
-                  pathname.startsWith("/simulateur") ? "text-solar" : "text-slate-300"
+                className={`header-tools-dropdown-link ${
+                  pathname.startsWith("/simulateur") ? "header-tools-dropdown-link-active" : ""
                 }`}
               >
                 {t("nav.simulatorGains")}
@@ -155,6 +161,8 @@ export default function HeaderNavLinks({ variant, onNavigate }: HeaderNavLinksPr
       </nav>
     );
   }
+
+  if (isHome) return null;
 
   return (
     <nav className="header-product-nav" aria-label={t("persona.installer")}>

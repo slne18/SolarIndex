@@ -69,7 +69,11 @@ export default function HomeHeroPersona() {
                   {t("home.chooseTitlePrefix")}
                   <span className="hero-home-platform-accent">{t("home.chooseTitleAccent")}</span>
                 </h1>
-                <TypewriterText text={t("home.heroTagline")} className="hero-home-panel-lead" />
+                <TypewriterText
+                  text={t("home.heroTagline")}
+                  className="hero-home-panel-lead"
+                  startDelayMs={850}
+                />
               </div>
               <div className="hero-home-panel mt-8 sm:mt-10">
                 <div className="persona-cards">

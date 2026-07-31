@@ -35,9 +35,11 @@ type DetailLead = PublicLead & Partial<LeadRow>;
 
 function MaskedRow({ label }: { label: string }) {
   return (
-    <div className="flex items-center justify-between border-b border-white/5 py-2.5 text-sm">
-      <span className="text-slate-400">{label}</span>
-      <span className="select-none rounded bg-white/10 px-8 py-1 blur-[3px]">██████</span>
+    <div className="flex items-center justify-between border-b border-slate-100 py-2.5 text-sm">
+      <span className="text-slate-500">{label}</span>
+      <span className="select-none rounded bg-slate-200 px-8 py-1 text-xs font-medium text-slate-400">
+        ••••••
+      </span>
     </div>
   );
 }
@@ -88,16 +90,22 @@ function LeadDetailContent({ id }: { id: string }) {
   }, [lead, plausible]);
 
   if (loading) {
-    return <p className="container-x py-10 text-slate-400">{t("leads.detail.loading")}</p>;
+    return (
+      <div className="surface-light min-h-[50vh]">
+        <p className="container-x py-10 text-slate-600">{t("leads.detail.loading")}</p>
+      </div>
+    );
   }
 
   if (error || !lead) {
     return (
-      <div className="container-x py-10">
-        <p className="text-red-300">{error || t("leads.detail.notFound")}</p>
-        <Link href="/leads" className="mt-4 inline-block text-sm text-solar underline">
-          {t("leads.detail.backCatalog")}
-        </Link>
+      <div className="surface-light min-h-[50vh]">
+        <div className="container-x py-10">
+          <p className="text-red-600">{error || t("leads.detail.notFound")}</p>
+          <Link href="/leads" className="back-link mt-4 inline-block text-sm underline">
+            {t("leads.detail.backCatalog")}
+          </Link>
+        </div>
       </div>
     );
   }
@@ -120,8 +128,9 @@ function LeadDetailContent({ id }: { id: string }) {
   const solutionType = resolveLeadSolutionType(lead);
 
   return (
-    <div className="container-x py-10">
-      <Link href={backHref} className="text-sm text-slate-400 hover:text-white">
+    <div className="surface-light min-h-[50vh]">
+    <div className="container-x lead-detail-page py-10">
+      <Link href={backHref} className="back-link text-sm">
         {backLabel}
       </Link>
 
@@ -135,25 +144,25 @@ function LeadDetailContent({ id }: { id: string }) {
               <LeadCompletenessBadge pct={lead.completude_pct} />
             ) : null}
             <LeadAvailabilityBadge available={slotOpen} />
-            <SolutionTypeBadge type={solutionType} compact showAudience />
-            <span className="text-xs text-slate-400" title={t("leads.detail.confidenceHint")}>
+            <SolutionTypeBadge type={solutionType} compact showAudience light />
+            <span className="text-xs text-slate-500" title={t("leads.detail.confidenceHint")}>
               {scoreText}
             </span>
           </div>
 
-          <p className="mt-3 text-sm text-slate-400">{t("leads.detail.intro")}</p>
+          <p className="mt-3 text-sm text-slate-600">{t("leads.detail.intro")}</p>
 
-          <h1 className="mt-4 text-3xl font-bold tracking-tight">{displayName}</h1>
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900">{displayName}</h1>
           {lead.nom_osm && lead.raison_sociale && lead.nom_osm !== lead.raison_sociale ? (
             <p className="mt-1 text-sm text-slate-500">
               {t("leads.detail.siteOsm")} {lead.nom_osm}
             </p>
           ) : null}
-          <p className="mt-1 text-slate-400">
+          <p className="mt-1 text-slate-600">
             {lead.ville || t("leads.detail.location")} · {lead.region ?? ""} ({lead.departement})
           </p>
 
-          <div className="card mt-6 grid grid-cols-2 gap-px overflow-hidden sm:grid-cols-3 lg:grid-cols-5">
+          <div className="card mt-6 grid grid-cols-2 gap-px overflow-hidden bg-slate-200 sm:grid-cols-3 lg:grid-cols-5">
             <Fact label={t("leads.detail.factSurface")} value={`${nf(lead.surface_m2)} m²`} />
             <Fact label={t("leads.detail.factSolar")} value={`${nf(lead.surface_solaire_m2)} m²`} />
             <Fact label={t("leads.detail.factPower")} value={`${nf(lead.puissance_kwc)} kWc`} />
@@ -180,14 +189,14 @@ function LeadDetailContent({ id }: { id: string }) {
           </p>
 
           {showHuwartNotice ? (
-            <div className="card mt-4 border-sky-500/30 bg-sky-500/5 p-5 text-sm leading-relaxed text-slate-300">
-              <div className="font-semibold text-sky-200">{t("leads.detail.huwartTitle")}</div>
+            <div className="card mt-4 border-sky-200 bg-sky-50 p-5 text-sm leading-relaxed text-slate-700">
+              <div className="font-semibold text-sky-800">{t("leads.detail.huwartTitle")}</div>
               <p className="mt-2">{t("leads.detail.huwartBody")}</p>
             </div>
           ) : null}
 
-          <h2 className="mt-10 text-lg font-semibold">{t("leads.detail.simulatorTitle")}</h2>
-          <p className="mb-3 text-sm text-slate-400">{t("leads.detail.simulatorLead")}</p>
+          <h2 className="mt-10 text-lg font-semibold text-slate-900">{t("leads.detail.simulatorTitle")}</h2>
+          <p className="mb-3 text-sm text-slate-600">{t("leads.detail.simulatorLead")}</p>
           <SolarSimulator surfaceFromLead={Math.round(lead.surface_m2)} locked />
 
           <div className="mt-10">
@@ -195,8 +204,8 @@ function LeadDetailContent({ id }: { id: string }) {
           </div>
 
           {(lead.derogation_pente || lead.derogation_abf) && (
-            <div className="card mt-4 border-amber-500/30 p-5 text-sm text-slate-300">
-              <div className="font-semibold text-amber-300">{t("leads.detail.derogTitle")}</div>
+            <div className="card mt-4 border-amber-200 bg-amber-50 p-5 text-sm text-slate-700">
+              <div className="font-semibold text-amber-800">{t("leads.detail.derogTitle")}</div>
               {lead.derogation_pente && (
                 <p className="mt-2">
                   ⚠️{" "}
@@ -213,90 +222,32 @@ function LeadDetailContent({ id }: { id: string }) {
           )}
         </div>
 
-        <aside>
+        <aside className="page-aside-sticky space-y-4">
           <div className="card p-6">
-            <h2 className="text-lg font-semibold">
-              {isOwned ? t("leads.detail.contactsUnlocked") : t("leads.detail.whatYouBuy")}
-            </h2>
-            <p className="mt-2 text-sm text-slate-400">
-              {isOwned ? t("leads.detail.contactsUnlockedDesc") : t("leads.detail.whatYouBuyDesc")}
-            </p>
-            <div className="mt-4">
-              {isOwned ? (
-                <>
-                  <ContactRow label={t("leads.detail.contactOperator")} value={lead.raison_sociale} />
-                  <ContactRow label={t("leads.detail.contactSiren")} value={lead.siren} />
-                  <ContactRow
-                    label={t("leads.detail.contactDirectorOp")}
-                    value={formatDirigeant(
-                      lead.dirigeant_exploitant ?? lead.dirigeant_nom,
-                      lead.dirigeant_exploitant_qualite,
-                    )}
-                  />
-                  <ContactRow label={t("leads.detail.contactOwner")} value={lead.proprietaire_foncier} />
-                  <ContactRow
-                    label={t("leads.detail.contactDirectorOwner")}
-                    value={formatDirigeant(
-                      lead.dirigeant_proprietaire,
-                      lead.dirigeant_proprietaire_qualite,
-                    )}
-                  />
-                  <ContactRow label={t("leads.detail.contactAddress")} value={lead.adresse} />
-                  <ContactRow label={t("leads.detail.contactParcel")} value={lead.id_parcelle} />
-                  <ContactRow label={t("leads.detail.contactGps")} value={gpsCoords} />
-                  {gpsCoords && lead.latitude != null && lead.longitude != null ? (
-                    <div className="border-b border-white/5 py-2.5 text-right text-sm">
-                      <a
-                        href={openStreetMapUrl(lead.latitude, lead.longitude)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-solar underline"
-                      >
-                        {t("leads.detail.viewOsm")}
-                      </a>
-                    </div>
-                  ) : null}
-                </>
-              ) : (
-                <>
-                  <MaskedRow label={t("leads.detail.contactOperator")} />
-                  <MaskedRow label={t("leads.detail.contactSiren")} />
-                  <MaskedRow label={t("leads.detail.contactDirectorOp")} />
-                  <MaskedRow label={t("leads.detail.contactOwner")} />
-                  <MaskedRow label={t("leads.detail.contactDirectorOwner")} />
-                  <MaskedRow label={t("leads.detail.contactAddress")} />
-                  <MaskedRow label={t("leads.detail.contactParcel")} />
-                  <MaskedRow label={t("leads.detail.contactGps")} />
-                </>
-              )}
-            </div>
-
             {!isOwned && canPurchase ? (
-              <div className="mt-6">
-                <div className="mb-4 flex items-baseline justify-between">
-                  <span className="text-sm text-slate-400">
-                    {fmt(t("leads.detail.priceLead"), { tier: t(tierLabelKey(lead.tier)) })}
-                  </span>
-                  <span className="text-2xl font-bold text-solar">
-                    {`${lead.prix_lead} €`}
-                  </span>
+              <>
+                <div className="text-sm text-slate-600">
+                  {fmt(t("leads.detail.priceLead"), { tier: t(tierLabelKey(lead.tier)) })}
                 </div>
-                <PurchaseButton
-                  leadId={lead.id}
-                  prix={displayPrix}
-                  tier={lead.tier}
-                  departement={lead.departement}
-                  flag={lead.flag_urgence}
-                  full
-                  disabled={!slotOpen}
-                  disabledReason="sold_out"
-                />
+                <div className="mt-1 text-3xl font-bold text-solar">{`${lead.prix_lead} €`}</div>
+                <div className="mt-4">
+                  <PurchaseButton
+                    leadId={lead.id}
+                    prix={displayPrix}
+                    tier={lead.tier}
+                    departement={lead.departement}
+                    flag={lead.flag_urgence}
+                    full
+                    disabled={!slotOpen}
+                    disabledReason="sold_out"
+                  />
+                </div>
                 <p className="mt-3 text-center text-xs text-slate-500">
                   {fmt(t("leads.detail.checkoutHint"), { guarantee: t("leads.guaranteeBody") })}
                 </p>
-              </div>
+              </>
             ) : !isOwned ? (
-              <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-600">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-600">
                 {!authed ? (
                   <>
                     {t("leads.detail.signInToPurchase")}{" "}
@@ -319,18 +270,76 @@ function LeadDetailContent({ id }: { id: string }) {
                 )}
               </div>
             ) : (
-              <div className="mt-6 rounded-xl border border-solar/30 bg-solar/5 p-4 text-center text-sm text-slate-300">
+              <div className="rounded-xl border border-solar/30 bg-amber-50 p-4 text-center text-sm text-slate-700">
                 {t("leads.detail.purchased")}{" "}
-                <Link href={MON_ESPACE_PATH} className="text-solar underline">
+                <Link href={MON_ESPACE_PATH} className="text-solar-700 underline">
                   {t("leads.detail.mySpace")}
                 </Link>
                 .
               </div>
             )}
+
+            <div className={!isOwned ? "mt-6 border-t border-slate-200 pt-6" : ""}>
+              <h2 className="text-lg font-semibold text-slate-900">
+                {isOwned ? t("leads.detail.contactsUnlocked") : t("leads.detail.whatYouBuy")}
+              </h2>
+              <p className="mt-2 text-sm text-slate-600">
+                {isOwned ? t("leads.detail.contactsUnlockedDesc") : t("leads.detail.whatYouBuyDesc")}
+              </p>
+              <div className="mt-4">
+                {isOwned ? (
+                  <>
+                    <ContactRow label={t("leads.detail.contactOperator")} value={lead.raison_sociale} />
+                    <ContactRow label={t("leads.detail.contactSiren")} value={lead.siren} />
+                    <ContactRow
+                      label={t("leads.detail.contactDirectorOp")}
+                      value={formatDirigeant(
+                        lead.dirigeant_exploitant ?? lead.dirigeant_nom,
+                        lead.dirigeant_exploitant_qualite,
+                      )}
+                    />
+                    <ContactRow label={t("leads.detail.contactOwner")} value={lead.proprietaire_foncier} />
+                    <ContactRow
+                      label={t("leads.detail.contactDirectorOwner")}
+                      value={formatDirigeant(
+                        lead.dirigeant_proprietaire,
+                        lead.dirigeant_proprietaire_qualite,
+                      )}
+                    />
+                    <ContactRow label={t("leads.detail.contactAddress")} value={lead.adresse} />
+                    <ContactRow label={t("leads.detail.contactParcel")} value={lead.id_parcelle} />
+                    <ContactRow label={t("leads.detail.contactGps")} value={gpsCoords} />
+                    {gpsCoords && lead.latitude != null && lead.longitude != null ? (
+                      <div className="border-b border-slate-100 py-2.5 text-right text-sm">
+                        <a
+                          href={openStreetMapUrl(lead.latitude, lead.longitude)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-solar underline"
+                        >
+                          {t("leads.detail.viewOsm")}
+                        </a>
+                      </div>
+                    ) : null}
+                  </>
+                ) : (
+                  <>
+                    <MaskedRow label={t("leads.detail.contactOperator")} />
+                    <MaskedRow label={t("leads.detail.contactSiren")} />
+                    <MaskedRow label={t("leads.detail.contactDirectorOp")} />
+                    <MaskedRow label={t("leads.detail.contactOwner")} />
+                    <MaskedRow label={t("leads.detail.contactDirectorOwner")} />
+                    <MaskedRow label={t("leads.detail.contactAddress")} />
+                    <MaskedRow label={t("leads.detail.contactParcel")} />
+                    <MaskedRow label={t("leads.detail.contactGps")} />
+                  </>
+                )}
+              </div>
+            </div>
           </div>
 
-          <div className="card mt-4 p-5 text-sm text-slate-400">
-            <div className="font-semibold text-slate-200">{t("leads.detail.whyLead")}</div>
+          <div className="card p-5 text-sm text-slate-600">
+            <div className="font-semibold text-slate-900">{t("leads.detail.whyLead")}</div>
             <p className="mt-2">
               {fmt(t("leads.detail.whyLeadBody"), {
                 fine: formatAperAnnualFine(lead.surface_m2),
@@ -341,12 +350,17 @@ function LeadDetailContent({ id }: { id: string }) {
         </aside>
       </div>
     </div>
+    </div>
   );
 }
 
 function LeadDetailLoading() {
   const t = useTranslations();
-  return <p className="container-x py-10 text-slate-400">{t("leads.detail.loading")}</p>;
+  return (
+    <div className="surface-light min-h-[50vh]">
+      <p className="container-x py-10 text-slate-600">{t("leads.detail.loading")}</p>
+    </div>
+  );
 }
 
 export default function LeadDetailClient({ id }: { id: string }) {
@@ -359,9 +373,9 @@ export default function LeadDetailClient({ id }: { id: string }) {
 
 function ContactRow({ label, value }: { label: string; value: string | null | undefined }) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-white/5 py-2.5 text-sm">
-      <span className="text-slate-400">{label}</span>
-      <span className="text-right font-medium text-slate-100">{value?.trim() || "—"}</span>
+    <div className="flex items-center justify-between gap-4 border-b border-slate-100 py-2.5 text-sm">
+      <span className="text-slate-500">{label}</span>
+      <span className="text-right font-medium text-slate-800">{value?.trim() || "—"}</span>
     </div>
   );
 }
@@ -386,9 +400,9 @@ function Fact({
   subtitle?: string;
 }) {
   return (
-    <div className={`bg-night-800 p-4 ${highlight ? "bg-solar/10" : ""}`} title={title}>
-      <div className="text-xs uppercase tracking-wide text-slate-400">{label}</div>
-      <div className={`mt-1 text-lg font-bold ${highlight ? "text-solar" : "text-white"}`}>{value}</div>
+    <div className={`bg-white p-4 ${highlight ? "bg-amber-50" : ""}`} title={title}>
+      <div className="text-xs uppercase tracking-wide text-slate-500">{label}</div>
+      <div className={`mt-1 text-lg font-bold ${highlight ? "text-solar" : "text-slate-900"}`}>{value}</div>
       {subtitle ? <div className="mt-0.5 text-[10px] text-slate-500">{subtitle}</div> : null}
     </div>
   );
