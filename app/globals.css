@@ -1465,6 +1465,14 @@ h3,
     @apply mt-1 text-xs text-slate-500;
   }
 
+  .simulator-detail-legend {
+    @apply text-xs font-medium text-emerald-600;
+  }
+
+  .surface-light .owner-tool-page .simulator-detail-legend {
+    @apply text-emerald-800;
+  }
+
   .simulator-detail-divider {
     @apply my-4 border-t border-white/10;
   }

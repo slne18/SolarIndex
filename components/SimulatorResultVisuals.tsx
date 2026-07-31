@@ -235,7 +235,7 @@ export function SimulatorResultsPanel({
           <div className="simulator-detail-note space-y-1">
             {isMix ? (
               <>
-                <p>
+                <p className="simulator-detail-legend">
                   {fmt(t("simulateur.panelCapexLegendMix"), {
                     m2PerKwc: nf(M2_PAR_KWC),
                     costKwc: nf(COUT_KWC_EUR),
@@ -264,7 +264,7 @@ export function SimulatorResultsPanel({
               </>
             ) : (
               <>
-                <p>
+                <p className="simulator-detail-legend">
                   {fmt(t("simulateur.panelCapexLegend"), {
                     m2PerKwc: nf(M2_PAR_KWC),
                     costKwc: nf(COUT_KWC_EUR),
