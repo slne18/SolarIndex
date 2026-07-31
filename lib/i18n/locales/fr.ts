@@ -136,7 +136,7 @@ const fr = {
   "home.heroTagline":
     "Transformez une obligation réglementaire en opportunité énergétique grâce à des partenaires qualifiés.",
   "home.chooseTitlePrefix":
-    "La plateforme qui accompagne propriétaires et installateurs dans la mise en conformité des parkings avec la ",
+    "La plateforme qui accompagne propriétaires et installateurs pour mettre leurs parkings en conformité avec la ",
   "home.chooseTitleAccent": "loi\u00a0APER.",
   "home.chooseLeadBefore":
     "SolarIndex met en relation gestionnaires de parking et installateurs pour développer des projets d'",
