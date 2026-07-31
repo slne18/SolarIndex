@@ -522,7 +522,7 @@ h3,
   }
 
   .hero-home-platform-title {
-    @apply w-full font-display text-lg font-bold leading-[1.18] tracking-tight text-white sm:text-xl lg:text-[1.375rem];
+    @apply w-full font-display text-2xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-3xl lg:text-4xl;
     text-shadow: 0 2px 28px rgb(15 23 42 / 0.55);
   }
 

@@ -270,9 +270,6 @@ export default function RfpDetailClient({ id }: { id: string }) {
                       ? ` ${rfp.acheteurs_count} installateur${rfp.acheteurs_count > 1 ? "s ont" : " a"} déjà débloqué l'accès.`
                       : null}
                   </p>
-                  <div className="mt-4">
-                    <RfpLegalNotice variant="installer" />
-                  </div>
                 </div>
 
                 <div className="mt-6 border-t border-slate-200 pt-6">
@@ -302,6 +299,9 @@ export default function RfpDetailClient({ id }: { id: string }) {
                       </div>
                     </>
                   )}
+                  <div className="mt-4">
+                    <RfpLegalNotice variant="installer" />
+                  </div>
                 </div>
               </>
             )}

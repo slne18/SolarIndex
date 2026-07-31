@@ -66,8 +66,11 @@ export default function HomeHeroPersona() {
             <>
               <div className="hero-home-head">
                 <h1 className="hero-home-platform-title">
-                  {t("home.chooseTitlePrefix")}
-                  <span className="hero-home-platform-accent">{t("home.chooseTitleAccent")}</span>
+                  <span className="block">{t("home.chooseTitleLine1")}</span>
+                  <span className="block">
+                    {t("home.chooseTitleLine2Before")}
+                    <span className="hero-home-platform-accent">{t("home.chooseTitleAccent")}</span>
+                  </span>
                 </h1>
                 <TypewriterText
                   text={t("home.heroTagline")}
