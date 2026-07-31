@@ -122,7 +122,7 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
                 <td className="px-4 py-3 text-right">
                   <Link
                     href={`/leads/${lead.id}`}
-                    className="rounded-lg border border-white/15 px-3 py-1.5 text-xs font-semibold text-slate-100 hover:bg-white/5"
+                    className="catalog-table-action"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {fmt(t("leads.table.view"), { price: lead.prix_lead })}

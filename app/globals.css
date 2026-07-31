@@ -737,7 +737,7 @@ h3,
     color: rgb(71 85 105);
   }
 
-  .surface-light table a.rounded-lg {
+  .surface-light .catalog-table-action {
     @apply border-slate-300 text-slate-700 hover:bg-slate-100;
   }
 
@@ -788,6 +788,10 @@ h3,
 
   .catalog-row {
     @apply hover:bg-white/5;
+  }
+
+  .catalog-table-action {
+    @apply inline-block rounded-lg border border-white/15 px-3 py-1.5 text-xs font-semibold text-slate-100 hover:bg-white/5;
   }
 
   .surface-light .catalog-row {
