@@ -159,15 +159,6 @@ export default function SimulateurClient() {
                 value={surfaceM2Input}
                 onChange={(e) => setSurfaceM2Input(e.target.value)}
               />
-              <input
-                type="range"
-                min={1500}
-                max={50000}
-                step={100}
-                value={Math.min(50000, Math.max(1500, surfaceM2 || 1500))}
-                onChange={(e) => setSurfaceM2Input(e.target.value)}
-                className="mt-3 w-full accent-solar"
-              />
             </Field>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">

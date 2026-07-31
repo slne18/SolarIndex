@@ -136,9 +136,8 @@ const fr = {
   "home.heroTagline":
     "Transformez une obligation réglementaire en opportunité énergétique grâce à des partenaires qualifiés.",
   "home.chooseTitleLine1":
-    "La plateforme qui accompagne propriétaires et installateurs",
-  "home.chooseTitleLine2Before":
-    "pour mettre leurs parkings en conformité avec la ",
+    "La plateforme qui simplifie la mise en conformité des parkings",
+  "home.chooseTitleLine2Before": "avec la ",
   "home.chooseTitleAccent": "loi\u00a0APER.",
   "home.chooseLeadBefore":
     "SolarIndex met en relation gestionnaires de parking et installateurs pour développer des projets d'",
@@ -636,7 +635,7 @@ const fr = {
   "simulateur.pill": "Gestionnaires de parking",
   "simulateur.title": "Combien votre parking peut-il vous rapporter ?",
   "simulateur.lead":
-    "Estimez vos économies d'électricité, les revenus solaires, l'amende évitée et le retour sur investissement — puis recevez des propositions d'installateurs via un appel d'offres.",
+    "Estimez vos économies d'électricité, les revenus solaires, l'amende évitée et le retour sur investissement.",
   "simulateur.yourParking": "Votre parking",
   "simulateur.modeDirect": "Surface en m²",
   "simulateur.modeDimensions": "Longueur × largeur",

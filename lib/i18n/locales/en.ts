@@ -136,9 +136,8 @@ const en: Record<MessageKey, string> = {
 
   "home.heroTagline":
     "Turn a regulatory obligation into an energy opportunity with qualified partners.",
-  "home.chooseTitleLine1":
-    "The platform helping parking operators and solar professionals",
-  "home.chooseTitleLine2Before": "bring their parking sites into compliance with the ",
+  "home.chooseTitleLine1": "The platform that simplifies parking compliance",
+  "home.chooseTitleLine2Before": "with the ",
   "home.chooseTitleAccent": "APER law.",
   "home.chooseLeadBefore":
     "SolarIndex connects parking operators and installers to develop ",
@@ -636,7 +635,7 @@ const en: Record<MessageKey, string> = {
   "simulateur.pill": "Parking operators",
   "simulateur.title": "How much can your parking earn?",
   "simulateur.lead":
-    "Estimate electricity savings, solar revenue, fine avoided and ROI — then receive installer proposals via a tender.",
+    "Estimate electricity savings, solar revenue, fine avoided and return on investment.",
   "simulateur.yourParking": "Your parking lot",
   "simulateur.modeDirect": "Area in m²",
   "simulateur.modeDimensions": "Length × width",

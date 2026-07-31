@@ -293,8 +293,10 @@ export function SimulatorBenefitDonut({ result }: { result: SimulatorResult }) {
         {segments.map((seg) => (
           <li key={seg.id}>
             <span className="simulator-legend-dot" style={{ background: seg.color }} aria-hidden />
-            <span className="min-w-0 flex-1">{seg.label}</span>
-            <span className="font-semibold tabular-nums text-slate-200">{euros(seg.value)}</span>
+            <span className="simulator-benefit-legend-label min-w-0 flex-1">{seg.label}</span>
+            <span className="simulator-benefit-legend-value font-semibold tabular-nums">
+              {euros(seg.value)}
+            </span>
           </li>
         ))}
         {total === 0 ? (
@@ -310,23 +312,14 @@ export function SimulatorRoiTimeline({ result }: { result: SimulatorResult }) {
   const benefit = result.autoconsommationTotalEur;
   const years = result.roiYearsAutoconsommation;
   const horizon = 15;
-  const fillPct = years != null && years > 0 ? Math.min(100, (years / horizon) * 100) : 0;
 
   return (
     <div className="simulator-roi-bar">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <p className="simulator-mode-compare-title">{t("simulateur.roiTitle")}</p>
-        <p className="text-sm tabular-nums text-solar">
-          {years != null ? `${years} ${t("simulateur.years")}` : "—"}
-        </p>
-      </div>
-      <div className="simulator-roi-track" aria-hidden>
-        <div className="simulator-roi-fill" style={{ width: `${fillPct}%` }} />
-        {years != null && years <= horizon ? (
-          <span className="simulator-roi-marker" style={{ left: `${fillPct}%` }} />
-        ) : null}
-      </div>
-      <p className="mt-2 text-xs text-slate-500">
+      <p className="simulator-mode-compare-title">{t("simulateur.roiTitle")}</p>
+      <p className="simulator-roi-value mt-2">
+        {years != null ? `${years} ${t("simulateur.years")}` : "—"}
+      </p>
+      <p className="simulator-roi-footnote mt-2">
         {fmt(t("simulateur.roiFootnote"), {
           invest: euros(result.installationCostEur),
           benefit: euros(benefit),
