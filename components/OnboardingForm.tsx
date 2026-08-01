@@ -5,6 +5,12 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getAccessToken } from "@/lib/supabaseBrowser";
 import {
+  DEFAULT_PROFIL_ACHETEUR,
+  isProfilAcheteur,
+  PROFIL_ACHETEUR_LABELS,
+  type ProfilAcheteur,
+} from "@/lib/profil-acheteur";
+import {
   type ProjetDelai,
   type UserType,
   userTypeToPersona,
@@ -13,6 +19,8 @@ import { writeStoredPersona } from "@/lib/persona";
 import { useTranslations } from "@/components/LocaleProvider";
 import EntrepriseAutocomplete from "@/components/EntrepriseAutocomplete";
 import type { MessageKey } from "@/lib/i18n";
+
+const PROFIL_ACHETEUR_OPTIONS: ProfilAcheteur[] = ["installateur", "tiers_investisseur"];
 
 const USER_TYPES: UserType[] = ["installateur", "proprietaire", "gerant_parking"];
 const PROJET_DELAIS: ProjetDelai[] = ["en_cours", "six_mois", "reflexion"];
@@ -51,6 +59,7 @@ export default function OnboardingForm() {
   const [msg, setMsg] = useState<string | null>(null);
 
   const [userType, setUserType] = useState<UserType | "">("");
+  const [profilAcheteur, setProfilAcheteur] = useState<ProfilAcheteur>(DEFAULT_PROFIL_ACHETEUR);
   const [entreprise, setEntreprise] = useState("");
   const [siren, setSiren] = useState("");
   const [siret, setSiret] = useState("");
@@ -104,6 +113,9 @@ export default function OnboardingForm() {
           }
           const p = data.profile ?? {};
           if (p.user_type) setUserType(p.user_type);
+          if (p.profil_acheteur && isProfilAcheteur(p.profil_acheteur)) {
+            setProfilAcheteur(p.profil_acheteur);
+          }
           if (p.entreprise) setEntreprise(p.entreprise);
           if (p.siren) setSiren(p.siren);
           if (p.siret) setSiret(p.siret);
@@ -147,6 +159,7 @@ export default function OnboardingForm() {
         },
         body: JSON.stringify({
           user_type: userType,
+          profil_acheteur: userType === "installateur" ? profilAcheteur : undefined,
           entreprise,
           entreprise_etrangere: entrepriseEtrangere,
           siren: entrepriseEtrangere ? null : siren,
@@ -226,6 +239,37 @@ export default function OnboardingForm() {
                 ))}
               </div>
             </fieldset>
+
+            {userType === "installateur" ? (
+              <fieldset className="space-y-3">
+                <legend className="text-xs font-semibold uppercase tracking-wide text-slate-300">
+                  {t("onboarding.profilAcheteur")}
+                </legend>
+                <p className="text-xs text-slate-500">{t("onboarding.profilAcheteurHint")}</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {PROFIL_ACHETEUR_OPTIONS.map((value) => (
+                    <label
+                      key={value}
+                      className={`cursor-pointer rounded-lg border p-4 text-sm transition-colors ${
+                        profilAcheteur === value
+                          ? "border-solar/60 bg-solar/10 text-white"
+                          : "border-white/10 text-slate-300 hover:border-white/20"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="profil_acheteur"
+                        required
+                        className="sr-only"
+                        checked={profilAcheteur === value}
+                        onChange={() => setProfilAcheteur(value)}
+                      />
+                      {PROFIL_ACHETEUR_LABELS[value]}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            ) : null}
 
             {userType ? (
               <>

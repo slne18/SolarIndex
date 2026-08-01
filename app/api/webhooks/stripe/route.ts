@@ -7,6 +7,7 @@ import {
   handleTerritoirePackCheckoutCompleted,
 } from "@/lib/stripe-subscription";
 import { fulfillLeadPurchase, fulfillRfpPurchase } from "@/lib/fulfillment";
+import { parseDureeContratAns, parseTypeOffre } from "@/lib/rfp-offer-type";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -73,6 +74,8 @@ async function fulfillRfpCheckout(session: Stripe.Checkout.Session) {
   }
   const montantEur =
     session.amount_total != null ? Math.round(session.amount_total / 100) : 0;
+  const typeOffre = parseTypeOffre(session.metadata?.typeOffre) ?? "devis_installation";
+  const dureeContratAns = parseDureeContratAns(session.metadata?.dureeContratAns);
   await fulfillRfpPurchase({
     rfpId,
     userId,
@@ -80,6 +83,8 @@ async function fulfillRfpCheckout(session: Stripe.Checkout.Session) {
     stripeSessionId: session.id,
     stripePaymentId:
       typeof session.payment_intent === "string" ? session.payment_intent : null,
+    typeOffre,
+    dureeContratAns: typeOffre === "tiers_investissement" ? dureeContratAns : null,
   });
 }
 

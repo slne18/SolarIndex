@@ -1,3 +1,9 @@
+import {
+  DEFAULT_PROFIL_ACHETEUR,
+  isProfilAcheteur,
+  type ProfilAcheteur,
+} from "./profil-acheteur";
+
 export type UserType = "installateur" | "proprietaire" | "gerant_parking";
 export type ProjetDelai = "en_cours" | "six_mois" | "reflexion";
 
@@ -15,6 +21,7 @@ export const PROJET_DELAI_LABELS: Record<ProjetDelai, string> = {
 
 export interface ProfileOnboardingInput {
   user_type?: string;
+  profil_acheteur?: string;
   entreprise?: string;
   entreprise_etrangere?: boolean;
   siren?: string;
@@ -35,6 +42,7 @@ export interface ProfileOnboardingInput {
 
 export interface ProfileOnboardingPayload {
   user_type: UserType;
+  profil_acheteur: ProfilAcheteur | null;
   entreprise: string | null;
   siren: string | null;
   siret: string | null;
@@ -85,6 +93,15 @@ export function validateProfileOnboarding(
   const userTypeRaw = clean(input.user_type);
   if (!isUserType(userTypeRaw)) {
     return { ok: false, error: "Indiquez si vous êtes installateur, propriétaire ou gérant de parking." };
+  }
+
+  let profilAcheteur: ProfilAcheteur | null = null;
+  if (userTypeRaw === "installateur") {
+    const rawProfil = clean(input.profil_acheteur);
+    if (rawProfil && !isProfilAcheteur(rawProfil)) {
+      return { ok: false, error: "Profil acheteur invalide." };
+    }
+    profilAcheteur = rawProfil ? rawProfil : DEFAULT_PROFIL_ACHETEUR;
   }
 
   const entreprise = clean(input.entreprise) || null;
@@ -164,6 +181,7 @@ export function validateProfileOnboarding(
     ok: true,
     data: {
       user_type: userTypeRaw,
+      profil_acheteur: profilAcheteur,
       entreprise,
       siren: siren.length === 9 ? siren : null,
       siret: siret.length === 14 ? siret : null,

@@ -2,6 +2,7 @@ import { Resend } from "resend";
 import { LeadRow } from "./types";
 import { euros, nf, formatCoords } from "./format";
 import { LEAD_REPLACEMENT_GUARANTEE_EMAIL } from "./guarantee";
+import type { ProfilAcheteur } from "./profil-acheteur";
 
 // Envoi d'emails via Resend. Si RESEND_API_KEY est absent, on ne lève pas
 // d'erreur : on log et on renvoie false (la vente reste valide, l'acheteur
@@ -82,17 +83,23 @@ export async function sendRegionalNotificationEmail(
 export async function sendLeadDeliveryEmail(
   to: string,
   lead: LeadRow,
+  context?: { profilAcheteur?: ProfilAcheteur },
 ): Promise<boolean> {
   if (!isEmailConfigured()) {
     console.warn("[email] RESEND_API_KEY absent — email de livraison non envoyé.");
     return false;
   }
+  const profilAcheteur = context?.profilAcheteur ?? "installateur";
   const appUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
   const subject = `Votre lead SolarIndex — ${lead.ville || "Parking"} (${lead.departement}) · ${nf(lead.surface_m2)} m²`;
+  const intro =
+    profilAcheteur === "tiers_investisseur"
+      ? `<p style="color:#475569;">Merci pour votre achat. Voici la fiche complète pour étudier une proposition de financement (loyer / PPA).</p>`
+      : `<p style="color:#475569;">Merci pour votre achat. Voici la fiche complète du prospect.</p>`;
   const html = `
   <div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:560px;margin:auto;">
     <h1 style="font-size:20px;color:#0f172a;">Votre lead est débloqué</h1>
-    <p style="color:#475569;">Merci pour votre achat. Voici la fiche complète du prospect.</p>
+    ${intro}
     <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:12px;">
       ${row("Exploitant", lead.raison_sociale)}
       ${row("SIREN exploitant", lead.siren)}

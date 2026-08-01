@@ -5,6 +5,7 @@ import { getAnonClient } from "@/lib/supabase";
 import { getRfpById, userOwnsRfp } from "@/lib/rfp-db";
 import { computeRfpAccessPrice } from "@/lib/rfp";
 import { isRfpDeposant } from "@/lib/rfp-withdrawal";
+import { validateRfpOfferInput } from "@/lib/rfp-offer-type";
 import { getStripe, isStripeConfigured } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
@@ -12,9 +13,9 @@ export const runtime = "nodejs";
 
 const NO_STORE = { "Cache-Control": "no-store, max-age=0" } as const;
 
-// POST /api/rfp/checkout { rfpId }
+// POST /api/rfp/checkout { rfpId, type_offre?, duree_contrat_ans? }
 export async function POST(req: Request) {
-  let body: { rfpId?: string };
+  let body: { rfpId?: string; type_offre?: string; duree_contrat_ans?: number | string };
   try {
     body = await req.json();
   } catch {
@@ -23,6 +24,14 @@ export async function POST(req: Request) {
   const rfpId = body.rfpId;
   if (!rfpId) {
     return Response.json({ error: "rfpId requis." }, { status: 400, headers: NO_STORE });
+  }
+
+  const offer = validateRfpOfferInput({
+    type_offre: body.type_offre ?? "devis_installation",
+    duree_contrat_ans: body.duree_contrat_ans,
+  });
+  if (!offer.ok) {
+    return Response.json({ error: offer.error }, { status: 400, headers: NO_STORE });
   }
 
   const token = getBearerToken(req);
@@ -85,7 +94,14 @@ export async function POST(req: Request) {
           },
         },
       ],
-      metadata: { rfpId, userId: user.id, product: "rfp" },
+      metadata: {
+        rfpId,
+        userId: user.id,
+        product: "rfp",
+        typeOffre: offer.type_offre,
+        dureeContratAns:
+          offer.duree_contrat_ans != null ? String(offer.duree_contrat_ans) : "",
+      },
       success_url: `${appUrl}/success?rfp=1&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/appels-offres/${rfpId}`,
     });

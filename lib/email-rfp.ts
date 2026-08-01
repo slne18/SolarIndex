@@ -1,5 +1,7 @@
 import { Resend } from "resend";
 import type { RfpSubmissionRow } from "./rfp";
+import type { ProfilAcheteur } from "./profil-acheteur";
+import { typeOffreDetailLabel, type TypeOffre } from "./rfp-offer-type";
 import { isEmailConfigured } from "./email";
 import { adminEmailRecipients } from "./email-config";
 import { nf } from "./format";
@@ -172,16 +174,37 @@ function rfpContactRows(
   </table>`;
 }
 
-/** Installateur : accès débloqué après paiement (coordonnées du déposant). */
+/** Installateur / tiers-investisseur : accès débloqué après paiement (coordonnées du déposant). */
 export async function sendRfpAccessDeliveryEmail(
   to: string,
   rfp: RfpSubmissionRow,
+  context?: {
+    profilAcheteur?: ProfilAcheteur;
+    typeOffre?: TypeOffre;
+    dureeContratAns?: number | null;
+  },
 ): Promise<boolean> {
+  const profilAcheteur = context?.profilAcheteur ?? "installateur";
+  const typeOffre = context?.typeOffre ?? "devis_installation";
   const dept = rfp.departement || "?";
   const detailUrl = `${APP_URL}/appels-offres/${rfp.id}?from=mon-espace`;
+
+  const intro =
+    profilAcheteur === "tiers_investisseur"
+      ? `<p style="color:#475569;">Merci pour votre achat. Voici les coordonnées du déposant pour préparer votre proposition de financement (loyer / PPA).</p>`
+      : `<p style="color:#475569;">Merci pour votre achat. Voici les coordonnées du déposant pour vous proposer un devis.</p>`;
+
+  const offerLine =
+    typeOffre === "tiers_investissement"
+      ? `<p style="color:#475569;margin:12px 0;">Votre réponse est enregistrée comme <strong>${typeOffreDetailLabel(typeOffre, context?.dureeContratAns ?? null)}</strong>.</p>`
+      : `<p style="color:#475569;margin:12px 0;">Votre réponse est enregistrée comme <strong>${typeOffreDetailLabel(typeOffre, null)}</strong>.</p>`;
+
   const html = shell(
-    "Accès débloqué — consultation installateurs",
-    `<p style="color:#475569;">Merci pour votre achat. Voici les coordonnées du déposant pour vous proposer un devis.</p>
+    profilAcheteur === "tiers_investisseur"
+      ? "Accès débloqué — proposition de financement"
+      : "Accès débloqué — consultation installateurs",
+    `${intro}
+    ${offerLine}
     ${rfpSummary(rfp)}
     <p style="color:#475569;font-weight:600;margin:16px 0 8px;">Coordonnées directes</p>
     ${rfpContactRows(rfp)}
@@ -191,9 +214,11 @@ export async function sendRfpAccessDeliveryEmail(
     </p>
     <p style="color:#94a3b8;font-size:12px;">Conservez cet email : vous retrouvez aussi cette fiche dans Mon espace → Mes appels d'offres achetés.</p>`,
   );
+  const subjectPrefix =
+    profilAcheteur === "tiers_investisseur" ? "Accès projet · financement" : "Accès appel d'offres";
   return sendOne(
     to,
-    `SolarIndex — Accès appel d'offres · ${rfp.entreprise || "projet"} (dép. ${dept})`,
+    `SolarIndex — ${subjectPrefix} · ${rfp.entreprise || "projet"} (dép. ${dept})`,
     html,
   );
 }

@@ -6,6 +6,7 @@ import {
   type ProfileOnboardingInput,
   validateProfileOnboarding,
 } from "@/lib/profile-onboarding";
+import { PROFIL_ACHETEUR_LABELS } from "@/lib/profil-acheteur";
 import { getAdminClient } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +21,10 @@ function profileResponse(profile: NonNullable<Awaited<ReturnType<typeof getUserP
       email: profile.email,
       user_type: profile.user_type,
       user_type_label: profile.user_type ? USER_TYPE_LABELS[profile.user_type] : null,
+      profil_acheteur: profile.profil_acheteur,
+      profil_acheteur_label: profile.profil_acheteur
+        ? PROFIL_ACHETEUR_LABELS[profile.profil_acheteur]
+        : null,
       entreprise: profile.entreprise,
       siren: profile.siren,
       siret: profile.siret,
@@ -88,6 +93,7 @@ export async function POST(req: Request) {
       .from("profiles")
       .update({
         user_type: data.user_type,
+        profil_acheteur: data.profil_acheteur,
         entreprise: data.entreprise,
         siren: data.siren,
         siret: data.siret,

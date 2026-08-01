@@ -1,5 +1,6 @@
 import { getAdminClient } from "./supabase";
 import type { ProjetDelai, UserType } from "./profile-onboarding";
+import type { ProfilAcheteur } from "./profil-acheteur";
 
 export interface UserProfile {
   id: string;
@@ -11,6 +12,7 @@ export interface UserProfile {
   sample_leads_remaining: number;
   sample_departement: string | null;
   user_type: UserType | null;
+  profil_acheteur: ProfilAcheteur | null;
   proprietaire_raison_sociale: string | null;
   proprietaire_nom: string | null;
   responsable_prenom: string | null;
@@ -29,7 +31,7 @@ export interface UserProfile {
 }
 
 const PROFILE_SELECT =
-  "id, email, entreprise, plan, abonnement_actif, leads_achetes, sample_leads_remaining, sample_departement, user_type, proprietaire_raison_sociale, proprietaire_nom, responsable_prenom, responsable_nom, telephone, telephone_bureau, adresse_parking, surface_m2_estimee, projet_delai, commentaire, profile_completed_at, siren, siret, pays_entreprise, immatriculation_etrangere";
+  "id, email, entreprise, plan, abonnement_actif, leads_achetes, sample_leads_remaining, sample_departement, user_type, profil_acheteur, proprietaire_raison_sociale, proprietaire_nom, responsable_prenom, responsable_nom, telephone, telephone_bureau, adresse_parking, surface_m2_estimee, projet_delai, commentaire, profile_completed_at, siren, siret, pays_entreprise, immatriculation_etrangere";
 
 export async function getUserProfile(userId: string): Promise<UserProfile | null> {
   const { data, error } = await getAdminClient()

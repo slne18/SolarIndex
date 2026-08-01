@@ -59,6 +59,9 @@ const en: Record<MessageKey, string> = {
   "onboarding.lead":
     "A few details to tailor SolarIndex to your situation. Parking address and area will be collected when you submit a tender.",
   "onboarding.userType": "You are *",
+  "onboarding.profilAcheteur": "Your buyer profile *",
+  "onboarding.profilAcheteurHint":
+    "Does not affect catalog access — used to tailor emails and notifications.",
   "onboarding.entrepriseRequired": "Company name",
   "onboarding.entrepriseOptional": "Company or personal name",
   "onboarding.entrepriseHintInstallateur": "Your business (installer or operator).",
@@ -393,7 +396,29 @@ const en: Record<MessageKey, string> = {
   "rfp.detail.contactsMasked": "Contact details hidden",
   "rfp.detail.solutionSought": "Solution sought",
   "rfp.detail.purchaseOwnerOnly":
-    "Access purchases require an installer account. You can submit your own project from My account.",
+    "Access purchases require an installer or third-party investor account. You can submit your own project from My account.",
+
+  "rfp.purchase.offerTypeLegend": "Response type",
+  "rfp.purchase.contractDuration": "Target contract duration",
+  "rfp.purchase.years": "years",
+  "rfp.purchase.invalidDuration": "Enter a duration between 1 and 40 years.",
+  "rfp.purchase.checkoutError": "Unable to start checkout.",
+  "rfp.purchase.networkError": "Network error.",
+  "rfp.purchase.loading": "Redirecting…",
+  "rfp.purchase.unlock": "Unlock contact details — €{price}",
+
+  "rfp.offerType.devis_installation.label": "Standard installation quote",
+  "rfp.offerType.devis_installation.short": "Quote",
+  "rfp.offerType.devis_installation.hint": "Classic works / EPC proposal.",
+  "rfp.offerType.tiers_investissement.label": "Third-party investment (lease / PPA)",
+  "rfp.offerType.tiers_investissement.short": "Financing",
+  "rfp.offerType.tiers_investissement.hint": "Financing or canopy lease proposal.",
+  "rfp.offerType.tiersInvestissementHint": "Financing proposal · {years} years",
+
+  "rfp.responses.title": "Responses received",
+  "rfp.responses.lead":
+    "Each row is a professional who unlocked your contact details — the badge shows the intended proposal type.",
+  "rfp.responses.anonymous": "SolarIndex professional",
 
   "common.prev": "← Previous",
   "common.next": "Next →",

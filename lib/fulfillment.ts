@@ -3,6 +3,8 @@ import { getLeadById } from "./db";
 import { getRfpById } from "./rfp-db";
 import { sendLeadDeliveryEmail } from "./email";
 import { sendRfpAccessDeliveryEmail } from "./email-rfp";
+import type { ProfilAcheteur } from "./profil-acheteur";
+import type { TypeOffre } from "./rfp-offer-type";
 
 export type PurchaseType = "unit" | "subscription" | "sample";
 
@@ -56,7 +58,7 @@ export async function fulfillLeadPurchase(params: FulfillLeadParams): Promise<bo
 
   const { data: prof } = await supabase
     .from("profiles")
-    .select("leads_achetes, email")
+    .select("leads_achetes, email, profil_acheteur")
     .eq("id", userId)
     .maybeSingle();
   if (prof) {
@@ -69,7 +71,9 @@ export async function fulfillLeadPurchase(params: FulfillLeadParams): Promise<bo
   const deliveredLead = await getLeadById(leadId);
   const to = prof?.email ?? undefined;
   if (deliveredLead && to) {
-    await sendLeadDeliveryEmail(to, deliveredLead);
+    await sendLeadDeliveryEmail(to, deliveredLead, {
+      profilAcheteur: (prof?.profil_acheteur as ProfilAcheteur | null) ?? "installateur",
+    });
   }
 
   return true;
@@ -81,6 +85,8 @@ export async function fulfillRfpPurchase(params: {
   montantEur: number;
   stripeSessionId: string;
   stripePaymentId?: string | null;
+  typeOffre?: TypeOffre;
+  dureeContratAns?: number | null;
 }): Promise<boolean> {
   const supabase = getAdminClient();
 
@@ -107,6 +113,10 @@ export async function fulfillRfpPurchase(params: {
     .maybeSingle();
   if (!rfp) return false;
 
+  const typeOffre = params.typeOffre ?? "devis_installation";
+  const dureeContratAns =
+    typeOffre === "tiers_investissement" ? (params.dureeContratAns ?? null) : null;
+
   const { error: insErr } = await supabase.from("rfp_purchases").insert({
     rfp_id: params.rfpId,
     user_id: params.userId,
@@ -114,6 +124,8 @@ export async function fulfillRfpPurchase(params: {
     stripe_payment_id: params.stripePaymentId,
     montant_eur: params.montantEur,
     statut: "completed",
+    type_offre: typeOffre,
+    duree_contrat_ans: dureeContratAns,
   });
   if (insErr) throw insErr;
 
@@ -124,13 +136,17 @@ export async function fulfillRfpPurchase(params: {
 
   const { data: prof } = await supabase
     .from("profiles")
-    .select("email")
+    .select("email, profil_acheteur")
     .eq("id", params.userId)
     .maybeSingle();
   const delivered = await getRfpById(params.rfpId);
   const to = prof?.email ?? undefined;
   if (delivered && to) {
-    await sendRfpAccessDeliveryEmail(to, delivered);
+    await sendRfpAccessDeliveryEmail(to, delivered, {
+      profilAcheteur: (prof?.profil_acheteur as ProfilAcheteur | null) ?? "installateur",
+      typeOffre,
+      dureeContratAns,
+    });
   }
 
   return true;
@@ -144,7 +160,7 @@ export async function afterSubscriptionRedemption(
   const supabase = getAdminClient();
   const { data: prof } = await supabase
     .from("profiles")
-    .select("leads_achetes, email")
+    .select("leads_achetes, email, profil_acheteur")
     .eq("id", userId)
     .maybeSingle();
   if (prof) {
@@ -156,7 +172,9 @@ export async function afterSubscriptionRedemption(
   const deliveredLead = await getLeadById(leadId);
   const to = prof?.email ?? undefined;
   if (deliveredLead && to) {
-    await sendLeadDeliveryEmail(to, deliveredLead);
+    await sendLeadDeliveryEmail(to, deliveredLead, {
+      profilAcheteur: (prof?.profil_acheteur as ProfilAcheteur | null) ?? "installateur",
+    });
   }
 }
 

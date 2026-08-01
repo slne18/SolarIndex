@@ -58,6 +58,9 @@ const fr = {
   "onboarding.lead":
     "Quelques informations pour adapter SolarIndex à votre situation. L'adresse et la surface du parking seront demandées lors du dépôt d'appel d'offres.",
   "onboarding.userType": "Vous êtes *",
+  "onboarding.profilAcheteur": "Votre profil acheteur *",
+  "onboarding.profilAcheteurHint":
+    "N'affecte pas l'accès au catalogue — permet d'adapter les emails et notifications.",
   "onboarding.entrepriseRequired": "Raison sociale",
   "onboarding.entrepriseOptional": "Raison sociale ou nom",
   "onboarding.entrepriseHintInstallateur": "Votre structure (exploitant ou société d'installation).",
@@ -393,7 +396,29 @@ const fr = {
   "rfp.detail.contactsMasked": "Coordonnées masquées",
   "rfp.detail.solutionSought": "Solution recherchée",
   "rfp.detail.purchaseOwnerOnly":
-    "L'achat d'accès est réservé aux comptes installateur. Vous pouvez déposer votre propre projet depuis Mon espace.",
+    "L'achat d'accès est réservé aux comptes installateur et tiers-investisseur. Vous pouvez déposer votre propre projet depuis Mon espace.",
+
+  "rfp.purchase.offerTypeLegend": "Type de réponse",
+  "rfp.purchase.contractDuration": "Durée de contrat visée",
+  "rfp.purchase.years": "ans",
+  "rfp.purchase.invalidDuration": "Indiquez une durée entre 1 et 40 ans.",
+  "rfp.purchase.checkoutError": "Impossible de démarrer le paiement.",
+  "rfp.purchase.networkError": "Erreur réseau.",
+  "rfp.purchase.loading": "Redirection…",
+  "rfp.purchase.unlock": "Débloquer les coordonnées — {price} €",
+
+  "rfp.offerType.devis_installation.label": "Devis installation classique",
+  "rfp.offerType.devis_installation.short": "Devis",
+  "rfp.offerType.devis_installation.hint": "Proposition de travaux / EPC classique.",
+  "rfp.offerType.tiers_investissement.label": "Tiers-investissement (loyer / PPA)",
+  "rfp.offerType.tiers_investissement.short": "Financement",
+  "rfp.offerType.tiers_investissement.hint": "Proposition de financement ou location d'ombrières.",
+  "rfp.offerType.tiersInvestissementHint": "Proposition de financement · {years} ans",
+
+  "rfp.responses.title": "Réponses reçues",
+  "rfp.responses.lead":
+    "Chaque ligne correspond à un professionnel ayant débloqué vos coordonnées — le badge indique le type de proposition envisagé.",
+  "rfp.responses.anonymous": "Professionnel SolarIndex",
 
   "common.prev": "← Précédent",
   "common.next": "Suivant →",

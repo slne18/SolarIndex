@@ -10,6 +10,7 @@ import type { OwnedRfp, PublicRfp } from "@/lib/rfp";
 import { MON_ESPACE_PATH } from "@/lib/paths";
 import RfpLegalNotice from "@/components/RfpLegalNotice";
 import RfpPurchaseButton from "@/components/RfpPurchaseButton";
+import RfpResponsesList from "@/components/RfpResponsesList";
 import {
   RfpOfficialBadge,
   RfpOfficialLinkButton,
@@ -226,6 +227,8 @@ export default function RfpDetailClient({ id }: { id: string }) {
                     </dl>
                   </div>
                 ) : null}
+
+                {isDeposant && rfp.statut === "publie" ? <RfpResponsesList rfpId={rfp.id} /> : null}
               </div>
             ) : (
               <>

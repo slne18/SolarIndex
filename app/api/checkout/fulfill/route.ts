@@ -5,6 +5,7 @@ import { getStripe, isStripeConfigured } from "@/lib/stripe";
 import {
   handleTerritoirePackCheckoutCompleted,
 } from "@/lib/stripe-subscription";
+import { parseDureeContratAns, parseTypeOffre } from "@/lib/rfp-offer-type";
 import type Stripe from "stripe";
 
 export const dynamic = "force-dynamic";
@@ -71,6 +72,8 @@ export async function POST(req: Request) {
       }
       const montantEur =
         session.amount_total != null ? Math.round(session.amount_total / 100) : 0;
+      const typeOffre = parseTypeOffre(session.metadata?.typeOffre) ?? "devis_installation";
+      const dureeContratAns = parseDureeContratAns(session.metadata?.dureeContratAns);
       await fulfillRfpPurchase({
         rfpId,
         userId: user.id,
@@ -78,6 +81,8 @@ export async function POST(req: Request) {
         stripeSessionId: session.id,
         stripePaymentId:
           typeof session.payment_intent === "string" ? session.payment_intent : null,
+        typeOffre,
+        dureeContratAns: typeOffre === "tiers_investissement" ? dureeContratAns : null,
       });
       return Response.json({ fulfilled: true, kind: "rfp", rfpId }, { headers: NO_STORE });
     }
