@@ -181,7 +181,7 @@ const en: Record<MessageKey, string> = {
   "leads.opportunities": "APER opportunities",
   "leads.guaranteeTitle": "Non-negotiable guarantee",
   "leads.guaranteeBody":
-    "Free replacement if the parking is more than 50% covered with PV canopies (APER obligation already met).",
+    "Free replacement or full refund if the parking is more than 50% covered with PV canopies (APER obligation already met).",
   "leads.mapHint": "Click a department to open the filtered list.",
   "leads.loadingLeads": "Loading leads…",
   "leads.loadError": "Could not load the catalog.",
@@ -806,9 +806,9 @@ const en: Record<MessageKey, string> = {
   "faq.payment.q": "How do I pay and receive leads?",
   "faq.payment.a":
     "Secure payment via Stripe. The record unlocks immediately in My account. A confirmation email may be sent if transactional email is configured. The Territory pack lets you use included credits instead of paying per lead.",
-  "faq.guarantee.q": "How does the replacement guarantee work?",
+  "faq.guarantee.q": "What if an automated lead is already APER-compliant?",
   "faq.guarantee.a":
-    "For automated leads: free replacement if the parking is already more than 50% covered with PV canopies (APER obligation met). Contact us within 48 h with proof (photo, registry, etc.).",
+    "For automated leads: free replacement or full refund if the parking is already more than 50% covered with PV canopies (APER obligation met), at the buyer's choice. Contact us within 48 h with proof (photo, registry, etc.).",
   "faq.rfp-deposit.q": "How do I submit a parking project?",
   "faq.rfp-deposit.a":
     "Create an account (private actors only), then use « Submit a project ». Confirm you are not a public entity under public procurement law. Your request is verified by email then moderated.",

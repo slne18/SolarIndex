@@ -181,7 +181,7 @@ const fr = {
   "leads.opportunities": "opportunités APER",
   "leads.guaranteeTitle": "Garantie non-négociable",
   "leads.guaranteeBody":
-    "Remplacement gratuit si le parking est recouvert à plus de 50 % d'ombrières photovoltaïques (obligation APER déjà remplie).",
+    "Remplacement gratuit ou remboursement intégral si le parking est recouvert à plus de 50 % d'ombrières photovoltaïques (obligation APER déjà remplie).",
   "leads.mapHint": "Cliquez sur un département pour ouvrir la liste filtrée.",
   "leads.loadingLeads": "Chargement des leads…",
   "leads.loadError": "Impossible de charger le catalogue.",
@@ -806,9 +806,9 @@ const fr = {
   "faq.payment.q": "Comment payer et recevoir mes leads ?",
   "faq.payment.a":
     "Paiement sécurisé par Stripe (carte bancaire). La fiche est débloquée immédiatement dans Mon espace. Un email de confirmation peut être envoyé si la messagerie transactionnelle est configurée. Le Pack Territoire permet de consommer des crédits inclus à la place d'un paiement unitaire.",
-  "faq.guarantee.q": "Comment fonctionne la garantie de remplacement ?",
+  "faq.guarantee.q": "Que se passe-t-il si un lead automatisé est déjà conforme APER ?",
   "faq.guarantee.a":
-    "Pour les leads automatisés : remplacement gratuit si le parking est déjà recouvert à plus de 50 % d'ombrières photovoltaïques (obligation APER considérée comme satisfaite). Contactez-nous sous 48 h avec la preuve (photo, registre, etc.).",
+    "Pour les leads automatisés : remplacement gratuit ou remboursement intégral si le parking est déjà recouvert à plus de 50 % d'ombrières photovoltaïques (obligation APER considérée comme satisfaite), au choix de l'acheteur. Contactez-nous sous 48 h avec la preuve (photo, registre, etc.).",
   "faq.rfp-deposit.q": "Comment déposer un projet parking (consultation installateurs) ?",
   "faq.rfp-deposit.a":
     "Créez un compte (acteurs privés uniquement), puis utilisez le formulaire « Déposer un projet ». Vous confirmez que vous n'êtes pas une personne publique soumise au Code de la commande publique. Votre demande est vérifiée par email puis modérée.",

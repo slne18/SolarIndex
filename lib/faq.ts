@@ -37,9 +37,9 @@ export const FAQ_ITEMS: FaqItem[] = [
   },
   {
     id: "guarantee",
-    question: "Comment fonctionne la garantie de remplacement ?",
+    question: "Que se passe-t-il si un lead automatisé est déjà conforme APER ?",
     answer:
-      "Pour les leads automatisés : remplacement gratuit si le parking est déjà recouvert à plus de 50 % d'ombrières photovoltaïques (obligation APER considérée comme satisfaite). Contactez-nous sous 48 h avec la preuve (photo, registre, etc.).",
+      "Pour les leads automatisés : remplacement gratuit ou remboursement intégral si le parking est déjà recouvert à plus de 50 % d'ombrières photovoltaïques (obligation APER considérée comme satisfaite), au choix de l'acheteur. Contactez-nous sous 48 h avec la preuve (photo, registre, etc.).",
   },
   {
     id: "rfp-deposit",

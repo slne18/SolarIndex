@@ -171,7 +171,7 @@ export default function ConfidentialitePage() {
         <p>
           Nous ne pouvons pas toujours supprimer immédiatement toutes les données : les factures et
           éléments comptables doivent être conservés 10 ans ; un achat déjà réalisé peut laisser une
-          trace contractuelle nécessaire à la gestion du service et à la garantie de remplacement.
+          trace contractuelle nécessaire à la gestion du service et à la garantie de remplacement ou de remboursement.
         </p>
 
         <p className="mt-4">

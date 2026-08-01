@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import LegalPageShell from "@/components/LegalPageShell";
-import { LEAD_REPLACEMENT_GUARANTEE } from "@/lib/guarantee";
+import {
+  LEAD_REPLACEMENT_GUARANTEE,
+  LEAD_REPLACEMENT_GUARANTEE_CGV_DETAIL,
+} from "@/lib/guarantee";
 import { PRIX_LEAD } from "@/lib/leads";
 import { MAX_BUYERS_PER_LEAD } from "@/lib/lead-slots";
 import { PRIX_RFP } from "@/lib/rfp";
@@ -21,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function CgvPage() {
   return (
-    <LegalPageShell title="Conditions générales de vente" updatedAt="20 juillet 2026">
+    <LegalPageShell title="Conditions générales de vente" updatedAt="1 août 2026">
       <section>
         <h2>1. Objet</h2>
         <p>
@@ -106,12 +109,14 @@ export default function CgvPage() {
       </section>
 
       <section>
-        <h2>6. Garantie de remplacement (leads automatisés uniquement)</h2>
+        <h2>6. Garantie conformité APER — remplacement ou remboursement (leads automatisés uniquement)</h2>
         <p>{LEAD_REPLACEMENT_GUARANTEE}</p>
+        <p>{LEAD_REPLACEMENT_GUARANTEE_CGV_DETAIL}</p>
         <p>
           Cette garantie porte sur la <strong>conformité factuelle</strong> du parking (recouvrement
-          APER), et non sur l&apos;obtention d&apos;un contrat commercial. Demande sous 48 h à{" "}
-          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> avec éléments de preuve.
+          APER), et non sur l&apos;obtention d&apos;un contrat commercial. Demande à{" "}
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> avec éléments de preuve (photo,
+          registre, etc.).
         </p>
       </section>
 
