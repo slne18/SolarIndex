@@ -113,7 +113,7 @@ const fr = {
   "nav.appelsOffres": "Appels d'offres",
   "nav.deposerProjet": "Déposer mon projet",
   "nav.tools": "Outils",
-  "nav.verifyEligibility": "Vérifier éligibilité",
+  "nav.verifyEligibility": "Suis-je concerné ?",
   "nav.simulatorGains": "Gains & économies",
   "nav.menu": "Menu",
   "nav.openMenu": "Ouvrir le menu",
@@ -125,7 +125,7 @@ const fr = {
   "footer.taglineOwner":
     "Vérifiez votre obligation APER, estimez vos gains et recevez des propositions d'installateurs.",
   "footer.taglineDefault":
-    "Leads APER pour installateurs · éligibilité, gains estimés et propositions d'installateurs pour propriétaires et gérants de parking.",
+    "Leads APER pour installateurs · vérification d'obligation, gains estimés et propositions d'installateurs pour propriétaires et gérants de parking.",
   "footer.privacy": "Politique de confidentialité",
   "footer.legalNotice": "Mentions légales",
   "footer.cgu": "CGU (déposants)",
@@ -171,7 +171,7 @@ const fr = {
   "home.ownerHeroLead":
     "Vérifiez votre obligation, estimez vos gains, puis déposez votre projet pour recevoir des propositions d'installateurs solaires.",
   "home.ownerVerifyLabel": "Vérifier mon parking",
-  "home.ownerVerifyHint": "Éligibilité APER et échéances",
+  "home.ownerVerifyHint": "Obligation APER et échéances",
   "home.ownerSimLabel": "Simuler gains & économies",
   "home.ownerSimHint": "ROI estimé et amende évitée",
   "home.ownerDepositLabel": "Déposer mon projet",
@@ -263,6 +263,12 @@ const fr = {
   "leads.canopy.hintSuspect":
     "Ombrière suspectée sur photo — mix ou végétalisation à étudier. Ouvert aux paysagistes.",
   "leads.canopy.hintPhoto": "Recouvrement ombrière estimé sur photo aérienne",
+
+  "leads.sirenStability.badge": "Exploitant · {years} ans",
+  "leads.sirenStability.badgeShort": "{years} ans SIREN",
+  "leads.sirenStability.hint": "Entreprise immatriculée depuis {years} ans (registre SIRENE).",
+  "leads.sirenStability.hintActive": "Entreprise active · immatriculée depuis {years} ans (SIRENE).",
+  "leads.sirenStability.hintInactive": "Entreprise radiée ou inactive au registre SIRENE — à vérifier.",
 
   "leads.score.high": "Élevé",
   "leads.score.medium": "Moyen",
@@ -445,7 +451,7 @@ const fr = {
     "Chaque fiche est scorée (0 – 1) : revêtement, cadastre, absence de doute PV, photo aérienne. Plus le score est haut, moins de vérifications avant d'appeler.",
   "solution.step3.tag": "Fiabilité documentée",
   "solution.metricsAria": "Chiffres clés du catalogue leads",
-  "solution.metric1.title": "Parkings éligibles",
+  "solution.metric1.title": "Parkings concernés",
   "solution.metric1.detail": "OpenStreetMap · France entière",
   "solution.metric2.title": "Valeur marché / kWc",
   "solution.metric2.detail": "Estimation marché · 2026",
@@ -570,7 +576,7 @@ const fr = {
   "rfp.filter.studyDone": "Déjà étudié",
   "rfp.filter.studyNotDone": "Non étudié",
   "rfp.filter.aperAll": "APER : tous",
-  "rfp.filter.aperEligible": "Éligible APER",
+  "rfp.filter.aperEligible": "Concerné APER",
   "rfp.filter.aperBelow": "Sous seuil APER",
   "rfp.filter.ownerType": "Type propriétaire",
   "rfp.filter.solutionAll": "Solution : toutes",
@@ -633,14 +639,14 @@ const fr = {
   "account.deleteError": "Échec de la suppression.",
 
   "verifier.pill": "Outil gratuit",
-  "verifier.title": "Vérificateur d'éligibilité APER",
+  "verifier.title": "Êtes-vous concerné par l'obligation APER ?",
   "verifier.leadLine1":
     "Saisissez l'adresse de votre parking. Nous détectons la surface via OpenStreetMap",
   "verifier.leadLine2":
     "ou le cadastre, puis estimons votre échéance réglementaire et les dérogations possibles.",
   "verifier.addressLabel": "Adresse du parking",
   "verifier.addressPlaceholder": "12 avenue de la République, Toulouse",
-  "verifier.submit": "Vérifier l'éligibilité",
+  "verifier.submit": "Vérifier si je suis concerné",
   "verifier.searching": "Recherche de votre parking…",
   "verifier.loadingStatus": "Recherche de votre parking… Analyse OpenStreetMap et cadastre (2 à 8 s).",
   "verifier.selectAddress": "Sélectionnez une adresse dans la liste.",
@@ -713,7 +719,7 @@ const fr = {
     "Voyez ce que vous pouvez gagner (économies, revenus solaires, amende évitée) avant de consulter des installateurs qualifiés via notre formulaire (acteurs privés, hors marchés publics).",
   "simulateur.asideEdfNote":
     "Tarifs EDF OA : valeurs indicatives arrêté S21 (métropole). Les projets > 100 kWc peuvent relever d'appels d'offres CRE depuis sept. 2025.",
-  "simulateur.checkEligibilityLabel": "Vérifier l'éligibilité APER",
+  "simulateur.checkEligibilityLabel": "Suis-je concerné par l'APER ?",
   "simulateur.checkEligibilityHint": "Échéances et seuils de surface",
   "simulateur.detailSolarSurface": "Surface solaire obligatoire",
   "simulateur.detailPower": "Puissance installée estimée",

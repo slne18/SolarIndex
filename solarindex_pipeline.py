@@ -1424,12 +1424,17 @@ def enrich_lead(lat: float, lon: float, surface_osm: float,
 
     try:
         from lib.company_enrichment import enrich_lead_contacts
+        from lib.sirene_stability import fetch_siren_stability
+        from datetime import datetime, timezone
 
         contacts = enrich_lead_contacts(
             ent.get("siren"),
             result.get("siren_proprietaire_foncier"),
         )
         result.update(contacts)
+        stability = fetch_siren_stability(ent.get("siren"))
+        result.update(stability)
+        result["siren_anciennete_checked_at"] = datetime.now(timezone.utc).isoformat()
     except Exception as exc:
         errors.append(f"DIRIGEANTS:{type(exc).__name__}:{exc}")
 
@@ -1464,6 +1469,7 @@ def supabase_enrich_payload(result: dict) -> dict:
         "dirigeant_proprietaire", "dirigeant_proprietaire_qualite",
         "telephone", "telephone_exploitant", "telephone_proprietaire",
         "proprietaire_foncier", "siren_proprietaire_foncier",
+        "siren_date_creation", "siren_etat_administratif", "siren_anciennete_checked_at",
         "pente_pct", "derogation_pente", "derogation_abf", "score_confiance",
         "type_solution_recherchee",
     }

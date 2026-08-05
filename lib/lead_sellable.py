@@ -9,6 +9,18 @@ from lib.surface_thresholds import is_surface_sellable
 VISION_COVERAGE_EQUIPE = 45
 
 
+MAX_BUYERS_PER_LEAD = 3
+
+
+def catalog_rest_filters() -> dict[str, str]:
+    """Filtres PostgREST catalogue vendable (alignés lib/db.ts + catalog-stats)."""
+    return {
+        **sellable_rest_filters(),
+        "statut": "eq.disponible",
+        "buyers_count": f"lt.{MAX_BUYERS_PER_LEAD}",
+    }
+
+
 def is_vision_equipped_pct(pct: float | None) -> bool:
     if pct is None:
         return False

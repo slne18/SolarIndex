@@ -21,6 +21,7 @@ import {
 } from "@/lib/lead-canopy-display";
 import { resolveLeadSolutionType } from "@/lib/solution-type";
 import LeadCanopyBadge from "@/components/LeadCanopyBadge";
+import LeadSirenStabilityBadge from "@/components/LeadSirenStabilityBadge";
 import SolutionTypeBadge from "@/components/SolutionTypeBadge";
 import type { LeadRow, PublicLead } from "@/lib/types";
 import SolarSimulator from "@/components/SolarSimulator";
@@ -153,6 +154,7 @@ function LeadDetailContent({ id }: { id: string }) {
             ) : null}
             <LeadAvailabilityBadge available={slotOpen} />
             <LeadCanopyBadge lead={lead} compact light />
+            <LeadSirenStabilityBadge lead={lead} compact light />
             <SolutionTypeBadge type={solutionType} compact showAudience light />
             <span className="text-xs text-slate-500" title={t("leads.detail.confidenceHint")}>
               {scoreText}

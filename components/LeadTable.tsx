@@ -11,6 +11,7 @@ import LeadAvailabilityBadge from "@/components/LeadAvailabilityBadge";
 import LeadTierBadge from "@/components/LeadTierBadge";
 import LeadCompletenessBadge, { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
 import LeadCanopyBadge from "@/components/LeadCanopyBadge";
+import LeadSirenStabilityBadge from "@/components/LeadSirenStabilityBadge";
 import SolutionTypeBadge from "@/components/SolutionTypeBadge";
 import { resolveLeadSolutionType } from "@/lib/solution-type";
 import { isLeadSlotOpen } from "@/lib/lead-slots";
@@ -103,6 +104,7 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
                     {lead.has_dirigeant ? <LeadDirigeantBadge compact /> : null}
                     <LeadCompletenessBadge pct={lead.completude_pct} compact />
                     <LeadCanopyBadge lead={lead} compact />
+                    <LeadSirenStabilityBadge lead={lead} compact />
                     {resolveLeadSolutionType(lead) !== "pv_pur" ? (
                       <SolutionTypeBadge type={resolveLeadSolutionType(lead)} compact />
                     ) : null}

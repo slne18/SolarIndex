@@ -114,7 +114,7 @@ const en: Record<MessageKey, string> = {
   "nav.appelsOffres": "Tenders",
   "nav.deposerProjet": "Submit my project",
   "nav.tools": "Tools",
-  "nav.verifyEligibility": "Check eligibility",
+  "nav.verifyEligibility": "Am I affected?",
   "nav.simulatorGains": "Savings & revenue",
   "nav.menu": "Menu",
   "nav.openMenu": "Open menu",
@@ -126,7 +126,7 @@ const en: Record<MessageKey, string> = {
   "footer.taglineOwner":
     "Check your APER obligation, estimate savings and receive proposals from installers.",
   "footer.taglineDefault":
-    "APER leads for installers · eligibility checks, estimated savings and installer proposals for owners and parking operators.",
+    "APER leads for installers · obligation checks, estimated savings and installer proposals for owners and parking operators.",
   "footer.privacy": "Privacy policy",
   "footer.legalNotice": "Legal notice",
   "footer.cgu": "Terms of use (depositors)",
@@ -171,7 +171,7 @@ const en: Record<MessageKey, string> = {
   "home.ownerHeroLead":
     "Check your obligation, estimate gains, then submit your project to receive solar installer proposals.",
   "home.ownerVerifyLabel": "Check my parking",
-  "home.ownerVerifyHint": "APER eligibility and deadlines",
+  "home.ownerVerifyHint": "APER obligation and deadlines",
   "home.ownerSimLabel": "Simulate savings & revenue",
   "home.ownerSimHint": "Estimated ROI and fine avoided",
   "home.ownerDepositLabel": "Submit my project",
@@ -263,6 +263,12 @@ const en: Record<MessageKey, string> = {
   "leads.canopy.hintSuspect":
     "Suspected canopy on photo — mix or vegetation worth exploring. Open to landscapers.",
   "leads.canopy.hintPhoto": "Estimated canopy coverage from aerial photo",
+
+  "leads.sirenStability.badge": "Operator · {years} yrs",
+  "leads.sirenStability.badgeShort": "{years} yrs SIREN",
+  "leads.sirenStability.hint": "Company registered for {years} years (SIRENE registry).",
+  "leads.sirenStability.hintActive": "Active company · registered for {years} years (SIRENE).",
+  "leads.sirenStability.hintInactive": "Company struck off or inactive in SIRENE — verify before outreach.",
 
   "leads.score.high": "High",
   "leads.score.medium": "Medium",
@@ -445,7 +451,7 @@ const en: Record<MessageKey, string> = {
     "Each record is scored (0–1): surfacing, cadastre, no PV doubt, aerial photo. Higher score means fewer checks before calling.",
   "solution.step3.tag": "Documented reliability",
   "solution.metricsAria": "Lead catalog key figures",
-  "solution.metric1.title": "Eligible parking lots",
+  "solution.metric1.title": "Affected parking lots",
   "solution.metric1.detail": "OpenStreetMap · All of France",
   "solution.metric2.title": "Market value / kWp",
   "solution.metric2.detail": "Market estimate · 2026",
@@ -570,7 +576,7 @@ const en: Record<MessageKey, string> = {
   "rfp.filter.studyDone": "Already studied",
   "rfp.filter.studyNotDone": "Not studied",
   "rfp.filter.aperAll": "APER: all",
-  "rfp.filter.aperEligible": "APER eligible",
+  "rfp.filter.aperEligible": "Subject to APER",
   "rfp.filter.aperBelow": "Below APER threshold",
   "rfp.filter.ownerType": "Owner type",
   "rfp.filter.solutionAll": "Solution: all",
@@ -633,14 +639,14 @@ const en: Record<MessageKey, string> = {
   "account.deleteError": "Deletion failed.",
 
   "verifier.pill": "Free tool",
-  "verifier.title": "APER eligibility checker",
+  "verifier.title": "Are you subject to the APER obligation?",
   "verifier.leadLine1":
     "Enter your parking address. We detect area via OpenStreetMap",
   "verifier.leadLine2":
     "or cadastre, then estimate your regulatory deadline and possible exemptions.",
   "verifier.addressLabel": "Parking address",
   "verifier.addressPlaceholder": "12 Avenue de la République, Toulouse",
-  "verifier.submit": "Check eligibility",
+  "verifier.submit": "Check if I'm affected",
   "verifier.searching": "Searching for your parking lot…",
   "verifier.loadingStatus": "Searching… OpenStreetMap and cadastre analysis (2–8 s).",
   "verifier.selectAddress": "Select an address from the list.",
@@ -713,7 +719,7 @@ const en: Record<MessageKey, string> = {
     "See potential gains (savings, solar revenue, fine avoided) before contacting qualified installers via our form (private actors, not public procurement).",
   "simulateur.asideEdfNote":
     "EDF OA tariffs: indicative S21 values (mainland France). Projects > 100 kWp may fall under CRE tenders from Sept. 2025.",
-  "simulateur.checkEligibilityLabel": "Check APER eligibility",
+  "simulateur.checkEligibilityLabel": "Am I subject to APER?",
   "simulateur.checkEligibilityHint": "Deadlines and area thresholds",
   "simulateur.detailSolarSurface": "Required solar area",
   "simulateur.detailPower": "Estimated installed capacity",

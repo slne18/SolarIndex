@@ -59,6 +59,11 @@ export interface LeadRow {
   proprietaire_foncier: string | null;
   siren_proprietaire_foncier: string | null;
 
+  /** Stabilité exploitant (API SIRENE). */
+  siren_date_creation: string | null;
+  siren_etat_administratif: string | null;
+  siren_anciennete_checked_at: string | null;
+
   // Bypass 4 : validation vision ombrières
   vision_flag: boolean | null;
   vision_confidence: number | null;
