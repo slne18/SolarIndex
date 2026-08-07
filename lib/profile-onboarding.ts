@@ -1,6 +1,6 @@
 import {
   DEFAULT_PROFIL_ACHETEUR,
-  isProfilAcheteur,
+  parseProfilAcheteur,
   type ProfilAcheteur,
 } from "./profil-acheteur";
 
@@ -98,10 +98,11 @@ export function validateProfileOnboarding(
   let profilAcheteur: ProfilAcheteur | null = null;
   if (userTypeRaw === "installateur") {
     const rawProfil = clean(input.profil_acheteur);
-    if (rawProfil && !isProfilAcheteur(rawProfil)) {
+    const parsedProfil = parseProfilAcheteur(rawProfil);
+    if (rawProfil && !parsedProfil) {
       return { ok: false, error: "Profil acheteur invalide." };
     }
-    profilAcheteur = rawProfil ? rawProfil : DEFAULT_PROFIL_ACHETEUR;
+    profilAcheteur = parsedProfil ?? DEFAULT_PROFIL_ACHETEUR;
   }
 
   const entreprise = clean(input.entreprise) || null;
