@@ -177,6 +177,9 @@ export interface PipelineLead {
   score_confiance?: number;
   siren_proprietaire_foncier?: string;
   proprietaire_foncier?: string;
+  siren_date_creation?: string;
+  siren_etat_administratif?: string;
+  siren_anciennete_checked_at?: string;
   vision_flag?: boolean;
   vision_confidence?: number;
   vision_checked_at?: string;

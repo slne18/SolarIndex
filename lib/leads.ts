@@ -227,6 +227,11 @@ export function mapPipelineToLead(
     proprietaire_foncier: p.proprietaire_foncier ?? null,
     siren_proprietaire_foncier: p.siren_proprietaire_foncier ?? null,
 
+    // Stabilité exploitant (SIRENE)
+    siren_date_creation: p.siren_date_creation ?? null,
+    siren_etat_administratif: p.siren_etat_administratif ?? null,
+    siren_anciennete_checked_at: p.siren_anciennete_checked_at ?? null,
+
     // Bypass 4 : validation vision ombrières
     vision_flag: typeof p.vision_flag === "boolean" ? p.vision_flag : null,
     vision_confidence:
