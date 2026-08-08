@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { NEWS_TICKER_ITEMS } from "@/lib/news-ticker";
+import { NEWS_FALLBACK_IMAGE, NEWS_TICKER_ITEMS, resolveNewsImage } from "@/lib/news-ticker";
 
 describe("NEWS_TICKER_ITEMS", () => {
   it("expose quatre sources presse avec URL https", () => {
@@ -24,5 +24,12 @@ describe("NEWS_TICKER_ITEMS", () => {
     for (const item of withImage) {
       expect(item.imageUrl?.startsWith("https://")).toBe(true);
     }
+  });
+
+  it("fournit une image de repli pour les articles sans illustration", () => {
+    const withoutImage = NEWS_TICKER_ITEMS.find((item) => !item.imageUrl);
+    expect(withoutImage).toBeDefined();
+    expect(resolveNewsImage(withoutImage!).url).toBe(NEWS_FALLBACK_IMAGE);
+    expect(resolveNewsImage(withoutImage!).alt.length).toBeGreaterThan(10);
   });
 });

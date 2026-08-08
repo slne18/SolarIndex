@@ -12,6 +12,7 @@ export function resolveNavBackTarget(pathname: string): NavBackTarget | null {
   if (
     pathname.startsWith("/legal") ||
     pathname.startsWith("/faq") ||
+    pathname.startsWith("/loi-aper") ||
     pathname === "/login" ||
     pathname.startsWith("/auth/")
   ) {

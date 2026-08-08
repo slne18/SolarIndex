@@ -18,7 +18,7 @@ export default function HomeHeroBenefits() {
         const lines = t(key).split("\n");
 
         return (
-          <li key={key} className="home-hero-benefit">
+          <li key={key} className="home-hero-benefit home-hero-benefit-card">
             <span className="home-hero-benefit-icon" aria-hidden>
               <Icon />
             </span>

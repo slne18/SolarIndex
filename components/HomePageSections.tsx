@@ -8,11 +8,12 @@ import {
   TERRITOIRE_PACK_EUR,
 } from "@/lib/subscription";
 import { PRIX_RFP, RFP_SURFACE_TIER_M2 } from "@/lib/rfp";
-import { APER_DEADLINES, APER_LAW_LINKS } from "@/lib/aper-law";
-import { HUWART_LAW_LINKS } from "@/lib/huwart-law";
+import LoiAperContent from "@/components/LoiAperContent";
 import SectionEyebrow from "@/components/SectionEyebrow";
-import RegulatoryCountdown from "@/components/RegulatoryCountdown";
 import HomeFeaturedNewsBanner from "@/components/HomeFeaturedNewsBanner";
+import HomeInstallerPageSections from "@/components/HomeInstallerPageSections";
+import HomeInstallerFaqSection from "@/components/HomeInstallerFaqSection";
+import HomeOwnerPageSections from "@/components/HomeOwnerPageSections";
 import { usePersona } from "@/components/PersonaProvider";
 import { useLocale, useTranslations } from "@/components/LocaleProvider";
 import { fmt } from "@/lib/i18n/format";
@@ -20,6 +21,7 @@ import { fmt } from "@/lib/i18n/format";
 export default function HomePageSections() {
   const { persona, sessionPick, ready } = usePersona();
   const showChooser = !ready || persona === null || !sessionPick;
+  const showOwner = ready && sessionPick && persona === "owner";
   const showInstaller = ready && sessionPick && persona === "installer";
 
   return (
@@ -31,63 +33,23 @@ export default function HomePageSections() {
       <div className="surface-light">
         {showChooser ? <HomeSignupCta /> : null}
       </div>
-      {showInstaller ? <InstallerTarifsSections /> : null}
+      {showOwner ? <HomeOwnerPageSections /> : null}
+      {showInstaller ? (
+        <>
+          <HomeInstallerPageSections />
+          <InstallerTarifsSections />
+          <HomeInstallerFaqSection />
+        </>
+      ) : null}
     </>
   );
 }
 
 function LoiAperSection() {
-  const t = useTranslations();
-
   return (
     <section id="loi-aper" className="py-14 sm:py-20">
       <div className="container-x">
-        <SectionEyebrow>{t("home.aperEyebrow")}</SectionEyebrow>
-        <h2 className="section-title mt-3">{t("home.aperTitle")}</h2>
-        <p className="section-lead mt-4">{t("home.aperSummary")}</p>
-        <p className="mt-3 text-xs text-slate-500">
-          <a
-            href={APER_LAW_LINKS.loi2023Art40}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-slate-600 underline decoration-slate-400 underline-offset-2 hover:text-solar hover:decoration-solar/60"
-          >
-            {t("home.aperRefLaw")}
-          </a>
-          {t("home.aperRefMid")}
-          <a
-            href={APER_LAW_LINKS.l111_19_1}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-slate-600 underline decoration-slate-400 underline-offset-2 hover:text-solar hover:decoration-solar/60"
-          >
-            {t("home.aperRefEnergy")}
-          </a>
-          {t("home.aperRefClimate")}
-          {t("home.aperRefHuwartMid")}
-          <a
-            href={HUWART_LAW_LINKS.loi2025}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-slate-600 underline decoration-slate-400 underline-offset-2 hover:text-solar hover:decoration-solar/60"
-          >
-            {t("home.aperRefHuwart")}
-          </a>
-        </p>
-
-        <div className="card mt-10 overflow-hidden">
-          <div className="card-header border-b px-6 py-4 sm:px-8">
-            <h3 className="font-semibold text-slate-900">{t("home.aperCalendarTitle")}</h3>
-            <p className="mt-1 text-sm text-slate-500">{t("home.aperCalendarLead")}</p>
-          </div>
-          <div className="grid gap-4 px-6 py-6 sm:grid-cols-2 sm:gap-5 sm:px-8 sm:py-8">
-            {APER_DEADLINES.map((step) => (
-              <RegulatoryCountdown key={step.id} variant="timeline" wave={step.id} />
-            ))}
-          </div>
-        </div>
-
-        <p className="mt-4 text-xs leading-relaxed text-slate-500">{t("home.aperPublicNote")}</p>
+        <LoiAperContent />
       </div>
     </section>
   );
@@ -100,16 +62,18 @@ function InstallerTarifsSections() {
   const surfaceLabel = RFP_SURFACE_TIER_M2.toLocaleString(locale === "en" ? "en-US" : "fr-FR");
 
   return (
-    <div className="surface-light">
-      <div className="container-x pt-14 sm:pt-16">
+    <div className="surface-light border-t border-slate-100">
+      <div className="container-x pt-14 sm:pt-16 text-center">
         <SectionEyebrow>{t("home.pricingEyebrow")}</SectionEyebrow>
-        <h2 className="pricing-headline mt-3">{t("home.pricingTitle")}</h2>
-        <p className="pricing-lead mt-3 max-w-2xl">{t("home.pricingLead")}</p>
+        <h2 className="pricing-headline mt-3 text-slate-900">{t("home.pricingTitle")}</h2>
+        <p className="pricing-lead mx-auto mt-3 max-w-2xl text-slate-600">{t("home.pricingLead")}</p>
       </div>
 
       <section id="tarifs" className="container-x scroll-mt-24 py-10 sm:py-12">
-        <h3 className="pricing-subhead">{t("home.pricingLeadsHead")}</h3>
-        <p className="pricing-sublead mt-2 max-w-xl">{t("home.pricingLeadsLead")}</p>
+        <h3 className="pricing-subhead text-center text-slate-900">{t("home.pricingLeadsHead")}</h3>
+        <p className="pricing-sublead mx-auto mt-2 max-w-xl text-center text-slate-600">
+          {t("home.pricingLeadsLead")}
+        </p>
         <div className="pricing-grid mt-8 md:grid-cols-3">
           <PricingCard
             title={t("home.pricingStandardTitle")}
@@ -161,8 +125,10 @@ function InstallerTarifsSections() {
       <div className="pricing-split" aria-hidden />
 
       <section id="tarifs-appels-offres" className="container-x py-10 pb-16 sm:py-12 sm:pb-20">
-        <h3 className="pricing-subhead">{t("home.pricingRfpHead")}</h3>
-        <p className="pricing-sublead mt-2 max-w-xl">{t("home.pricingRfpLead")}</p>
+        <h3 className="pricing-subhead text-center text-slate-900">{t("home.pricingRfpHead")}</h3>
+        <p className="pricing-sublead mx-auto mt-2 max-w-xl text-center text-slate-600">
+          {t("home.pricingRfpLead")}
+        </p>
         <div className="pricing-grid mt-8 md:grid-cols-2">
           <PricingCard
             title={fmt(t("home.pricingRfpSmallTitle"), { surface: surfaceLabel })}

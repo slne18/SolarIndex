@@ -4,15 +4,13 @@ import type { ReactNode } from "react";
 import { usePersona } from "@/components/PersonaProvider";
 import { useTranslations } from "@/components/LocaleProvider";
 import HeroActionList, {
-  HeroActionCalculatorIcon,
   HeroActionCheckIcon,
   HeroActionDocumentIcon,
+  HeroActionPercentIcon,
   HeroActionRadarIcon,
   HeroActionUploadIcon,
 } from "@/components/HeroActionList";
 import HomeHeroBenefits from "@/components/HomeHeroBenefits";
-import OwnerPersonaLabel from "@/components/OwnerPersonaLabel";
-import TypewriterText from "@/components/TypewriterText";
 import HeroScrollCue from "@/components/HeroScrollCue";
 import { INSTALLER_CHANTIERS_LINKS } from "@/lib/installer-nav";
 import type { Persona } from "@/lib/persona";
@@ -59,26 +57,27 @@ export default function HomeHeroPersona() {
   ];
 
   return (
-    <section className="hero-surface relative overflow-hidden">
+    <section
+      className={`hero-surface relative overflow-hidden ${
+        showChooser ? "" : persona === "owner" ? "hero-surface-owner" : ""
+      }`.trim()}
+    >
       <div className="container-x relative flex flex-1 flex-col justify-center py-10 sm:py-14">
         <div className="mx-auto w-full max-w-6xl animate-fade-up">
           {showChooser ? (
             <>
               <div className="hero-home-head">
                 <h1 className="hero-home-platform-title">
-                  <span className="block">{t("home.chooseTitleLine1")}</span>
                   <span className="block">
-                    {t("home.chooseTitleLine2Before")}
+                    {t("home.chooseTitleLine1Before")}
                     <span className="hero-home-platform-accent">{t("home.chooseTitleAccent")}</span>
+                    {t("home.chooseTitleLine1After")}
                   </span>
+                  <span className="block">{t("home.chooseTitleLine2")}</span>
                 </h1>
-                <TypewriterText
-                  text={t("home.heroTagline")}
-                  className="hero-home-panel-lead"
-                  startDelayMs={850}
-                />
+                <p className="hero-home-lead">{t("home.heroLead")}</p>
               </div>
-              <div className="hero-home-panel mt-8 sm:mt-10">
+              <div className="hero-home-chooser mt-8 sm:mt-10">
                 <div className="persona-cards">
                   {personaCards.map((card) => (
                     <button
@@ -130,14 +129,14 @@ export default function HomeHeroPersona() {
 function InstallerHero({ t }: { t: (key: import("@/lib/i18n").MessageKey) => string }) {
   return (
     <>
-      <p className="mt-6 text-xs font-semibold uppercase tracking-widest text-solar">
-        {t("persona.installer")}
+      <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-solar">
+        {t("home.installerHeroEyebrow")}
       </p>
-      <h1 className="hero-persona-title">
-        {t("home.installerHeroTitle")}{" "}
-        <span className="text-gradient">{t("home.installerHeroAccent")}</span>
-      </h1>
-      <p className="hero-on-photo-lead">{t("home.installerHeroLead")}</p>
+      <h1 className="hero-persona-title">{t("home.installerHeroTitle")}</h1>
+      <p className="hero-on-photo-lead mx-auto max-w-3xl">{t("home.installerHeroLead")}</p>
+      <p className="hero-on-photo-lead mx-auto mt-4 max-w-3xl text-slate-300/90">
+        {t("home.installerHeroBody")}
+      </p>
       <HeroActionList
         items={[
           {
@@ -161,18 +160,11 @@ function InstallerHero({ t }: { t: (key: import("@/lib/i18n").MessageKey) => str
 function OwnerHero({ t }: { t: (key: import("@/lib/i18n").MessageKey) => string }) {
   return (
     <>
-      <div className="mt-6">
-        <OwnerPersonaLabel
-          variant="hero"
-          subtitleKey="home.ownerCardSubtitle"
-          className="persona-owner-label-home"
-        />
-      </div>
-      <h1 className="hero-persona-title">
-        {t("home.ownerHeroTitle")}{" "}
-        <span className="text-gradient">{t("home.ownerHeroAccent")}</span>
-      </h1>
-      <p className="hero-on-photo-lead">{t("home.ownerHeroLead")}</p>
+      <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-solar">
+        {t("home.ownerHeroEyebrow")}
+      </p>
+      <h1 className="hero-persona-title">{t("home.ownerHeroTitle")}</h1>
+      <p className="hero-on-photo-lead mx-auto max-w-3xl">{t("home.ownerHeroLead")}</p>
       <HeroActionList
         badge={t("home.freeBadge")}
         items={[
@@ -186,7 +178,7 @@ function OwnerHero({ t }: { t: (key: import("@/lib/i18n").MessageKey) => string 
             href: "/simulateur",
             label: t("home.ownerSimLabel"),
             hint: t("home.ownerSimHint"),
-            icon: <HeroActionCalculatorIcon />,
+            icon: <HeroActionPercentIcon />,
           },
           {
             href: "/appels-offres/nouveau",

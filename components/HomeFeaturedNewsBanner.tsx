@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { NEWS_TICKER_ITEMS } from "@/lib/news-ticker";
+import { NEWS_TICKER_ITEMS, resolveNewsImage } from "@/lib/news-ticker";
 
 const ROTATE_MS = 30_000;
 
@@ -30,26 +30,22 @@ export default function HomeFeaturedNewsBanner() {
   }, [motionOk]);
 
   const item = NEWS_TICKER_ITEMS[activeIndex];
-  const hasImage = Boolean(item.imageUrl);
+  const image = resolveNewsImage(item);
 
   return (
     <section className="home-news-banner" aria-label="Actualités ombrières solaires et loi APER">
       <div className="container-x py-10 sm:py-12">
-        <div
-          className={`home-news-banner-panel ${hasImage ? "home-news-banner-panel-split" : "home-news-banner-panel-text"}`}
-        >
-          {hasImage ? (
-            <figure className="home-news-banner-media">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={item.imageUrl}
-                alt={item.imageAlt ?? ""}
-                className="home-news-banner-image"
-                loading="lazy"
-                decoding="async"
-              />
-            </figure>
-          ) : null}
+        <div className="home-news-banner-panel home-news-banner-panel-split">
+          <figure className="home-news-banner-media">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={image.url}
+              alt={image.alt}
+              className="home-news-banner-image"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
 
           <div className="home-news-banner-body">
             <p className="home-news-banner-eyebrow">
@@ -57,7 +53,7 @@ export default function HomeFeaturedNewsBanner() {
               <span>{item.source}</span>
             </p>
 
-            <blockquote className="home-news-banner-excerpt">&ldquo;{item.excerpt}&rdquo;</blockquote>
+            <blockquote className="home-news-banner-excerpt">«&nbsp;{item.excerpt}&nbsp;»</blockquote>
 
             <a
               href={item.url}

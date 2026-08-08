@@ -500,6 +500,31 @@ h3,
     );
   }
 
+  .hero-surface-owner::after {
+    background: linear-gradient(
+      180deg,
+      rgb(15 23 42 / 0.82) 0%,
+      rgb(15 23 42 / 0.72) 45%,
+      rgb(15 23 42 / 0.78) 100%
+    );
+  }
+
+  .hero-surface-owner .hero-actions-wrap {
+    @apply max-w-2xl;
+  }
+
+  .hero-surface-owner .hero-action {
+    @apply px-5 py-4 sm:px-6;
+  }
+
+  .hero-surface-owner .hero-action-label {
+    @apply text-base font-bold;
+  }
+
+  .hero-surface-owner .hero-action-hint {
+    @apply text-sm;
+  }
+
   .hero-surface-compact {
     min-height: auto;
   }
@@ -541,13 +566,66 @@ h3,
   }
 
   .hero-home-platform-accent {
-    @apply text-solar-300;
+    @apply text-solar;
   }
 
   .hero-home-panel-lead {
     @apply mx-auto mt-6 max-w-4xl font-display text-lg font-semibold leading-snug text-white/95 sm:mt-8 sm:text-xl lg:text-[1.35rem];
     text-shadow: 0 1px 16px rgb(15 23 42 / 0.5);
     min-height: 3.25em;
+  }
+
+  .hero-home-lead {
+    @apply mx-auto mt-6 max-w-4xl text-base font-medium leading-relaxed text-white/90 sm:mt-8 sm:text-lg;
+    text-shadow: 0 1px 16px rgb(15 23 42 / 0.5);
+  }
+
+  .hero-home-chooser {
+    @apply mx-auto w-full max-w-5xl;
+  }
+
+  .hero-home-chooser .persona-cards {
+    @apply grid gap-4 sm:gap-5;
+  }
+
+  .hero-home-chooser .persona-card {
+    @apply border-white/15 bg-night-950/45 px-6 py-5 shadow-[0_16px_40px_-12px_rgb(15_23_42_/_0.55)] backdrop-blur-md hover:border-solar/45 hover:bg-night-950/55 sm:px-8 sm:py-6;
+  }
+
+  .hero-home-chooser .persona-card-row {
+    @apply flex-row items-center gap-5 text-left;
+  }
+
+  .hero-home-chooser .persona-card-icon {
+    @apply h-14 w-14 shrink-0 rounded-full bg-solar text-night-950 sm:h-16 sm:w-16;
+  }
+
+  .hero-home-chooser .persona-card-title {
+    @apply text-base font-bold text-white sm:text-lg;
+  }
+
+  .hero-home-chooser .persona-card-desc {
+    @apply text-sm leading-relaxed text-white/75 sm:text-[0.9375rem];
+  }
+
+  .hero-home-chooser .persona-card-arrow {
+    @apply block shrink-0 text-solar;
+  }
+
+  .hero-home-chooser .home-hero-benefits {
+    @apply mt-8 gap-4 border-t-0 pt-0 sm:mt-10 sm:gap-5;
+  }
+
+  .hero-home-chooser .home-hero-benefit-card {
+    @apply rounded-2xl border border-white/10 bg-night-950/40 p-4 shadow-[0_12px_32px_-10px_rgb(15_23_42_/_0.5)] backdrop-blur-md sm:p-5;
+  }
+
+  .hero-home-chooser .home-hero-benefit-icon {
+    @apply h-14 w-14 rounded-full border-0 bg-solar text-night-950 shadow-none sm:h-[3.75rem] sm:w-[3.75rem];
+  }
+
+  .hero-home-chooser .home-hero-benefit-label {
+    @apply text-sm font-bold leading-snug text-white sm:text-[0.9375rem];
   }
 
   .typewriter-cursor {
@@ -1278,15 +1356,11 @@ h3,
   }
 
   .home-news-banner-panel-split {
-    @apply grid gap-0 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-stretch;
-  }
-
-  .home-news-banner-panel-text {
-    @apply mx-auto max-w-3xl;
+    @apply grid gap-0 sm:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] sm:items-stretch;
   }
 
   .home-news-banner-media {
-    @apply relative m-0 min-h-[12rem] bg-slate-100 sm:min-h-[14rem] lg:min-h-[18rem];
+    @apply relative m-0 min-h-[11rem] bg-slate-100 sm:min-h-[12rem];
   }
 
   .home-news-banner-image {
@@ -1294,27 +1368,27 @@ h3,
   }
 
   .home-news-banner-body {
-    @apply flex flex-col items-center px-6 py-8 text-center sm:px-10 sm:py-10;
+    @apply flex min-h-[11rem] flex-col px-5 py-5 text-left sm:min-h-[12rem] sm:px-6 sm:py-6 lg:px-7 lg:py-7;
   }
 
   .home-news-banner-panel-split .home-news-banner-body {
-    @apply justify-center lg:px-8 lg:py-10;
+    @apply justify-between;
   }
 
   .home-news-banner-eyebrow {
-    @apply flex flex-wrap items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500 sm:text-sm;
+    @apply flex flex-wrap items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 sm:text-[11px];
   }
 
   .home-news-banner-badge {
-    @apply rounded-lg border border-slate-200 bg-white px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-slate-800 sm:text-[11px];
+    @apply rounded-md border border-slate-200 bg-white px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-[0.16em] text-slate-800 sm:text-[10px];
   }
 
   .home-news-banner-excerpt {
-    @apply mt-5 max-w-2xl text-lg font-medium leading-relaxed text-slate-800 sm:mt-6 sm:text-xl sm:leading-relaxed;
+    @apply mt-3 flex-1 text-sm font-normal leading-relaxed text-slate-700 sm:mt-4 sm:text-[0.9375rem] sm:leading-relaxed;
   }
 
   .home-news-banner-link {
-    @apply mt-6 inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-900 transition hover:border-solar/40 hover:text-solar-600;
+    @apply mt-4 inline-flex items-center gap-1 self-end text-xs font-semibold text-slate-800 transition hover:text-solar sm:text-sm;
   }
 
   .home-news-banner-nav {
@@ -1322,11 +1396,15 @@ h3,
   }
 
   .home-news-banner-dot {
-    @apply h-2.5 w-2.5 rounded-full border border-white/60 bg-white/30 transition hover:bg-white/50;
+    @apply h-2 w-2 rounded-full border border-white/60 bg-white/30 transition hover:bg-white/50;
   }
 
   .home-news-banner-dot-active {
-    @apply scale-110 border-white bg-white;
+    @apply scale-110 border-solar bg-solar;
+  }
+
+  .aper-calendar-card {
+    @apply flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 sm:p-6;
   }
 
   .persona-cards {
@@ -1839,6 +1917,184 @@ h3,
 
   .pricing-card-cta {
     @apply mt-6;
+  }
+
+  /* Homepage — sections propriétaire */
+  .owner-why-grid {
+    @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-4;
+  }
+
+  .owner-why-card {
+    @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_8px_30px_-10px_rgba(15,23,42,0.1)];
+  }
+
+  .owner-why-card-title {
+    @apply text-base font-bold text-slate-900;
+  }
+
+  .owner-why-card-text {
+    @apply mt-3 text-sm leading-relaxed text-slate-600;
+  }
+
+  .owner-how-steps {
+    @apply mx-auto grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4;
+  }
+
+  .owner-how-step {
+    @apply list-none;
+  }
+
+  .owner-how-step-link {
+    @apply flex flex-col items-center text-center transition;
+  }
+
+  .owner-how-step-track {
+    @apply relative flex w-full items-center justify-center;
+  }
+
+  .owner-how-step-dot {
+    @apply relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-solar text-sm font-bold text-night shadow-[0_4px_14px_-4px_rgba(232,168,32,0.55)] transition duration-200;
+  }
+
+  .owner-how-step-line {
+    @apply absolute top-1/2 h-0.5 -translate-y-1/2 bg-slate-200 transition-colors duration-200 group-hover:bg-solar/50;
+  }
+
+  .owner-how-step-line-left {
+    @apply right-1/2 left-0 mr-5;
+  }
+
+  .owner-how-step-line-right {
+    @apply right-0 left-1/2 ml-5;
+  }
+
+  .owner-how-step-label {
+    @apply mt-4 max-w-[11rem] text-sm font-medium leading-snug text-slate-700 transition group-hover:text-slate-900;
+  }
+
+  .owner-how-step-link:hover .owner-how-step-dot,
+  .owner-how-step-link:focus-visible .owner-how-step-dot {
+    @apply scale-110 shadow-[0_6px_20px_-4px_rgba(232,168,32,0.65)];
+  }
+
+  .owner-how-step-link-active .owner-how-step-dot {
+    @apply ring-4 ring-solar/25;
+  }
+
+  .owner-how-step-link-active .owner-how-step-label {
+    @apply font-semibold text-slate-900;
+  }
+
+  .owner-transparency-grid {
+    @apply mx-auto grid max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .owner-transparency-item {
+    @apply flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm font-medium text-slate-800 shadow-[0_4px_20px_-8px_rgba(15,23,42,0.12)];
+  }
+
+  .owner-transparency-check {
+    @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-solar/15 text-sm font-bold text-solar;
+  }
+
+  .owner-deposit-cta {
+    @apply mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white px-6 py-10 text-center shadow-[0_8px_30px_-10px_rgba(15,23,42,0.12)] sm:px-10 sm:py-12;
+  }
+
+  .owner-deposit-cta-title {
+    @apply text-xl font-bold tracking-tight text-slate-900 sm:text-2xl;
+  }
+
+  .owner-deposit-cta-bullets {
+    @apply mt-6 flex flex-col gap-2 text-sm text-slate-600 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-8 sm:gap-y-2;
+  }
+
+  .owner-deposit-cta-bullets li::before {
+    content: "✓ ";
+    @apply font-bold text-solar;
+  }
+
+  .owner-deposit-cta-btn {
+    @apply mt-8 inline-flex min-w-[16rem] items-center justify-center gap-1 px-10;
+  }
+
+  @media (max-width: 1023px) {
+    .owner-how-step-line {
+      @apply hidden;
+    }
+  }
+
+  /* Homepage — sections installateur */
+  .installer-source-grid {
+    @apply mx-auto grid max-w-5xl gap-6 lg:grid-cols-2;
+  }
+
+  .installer-source-card {
+    @apply rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-[0_8px_30px_-10px_rgba(15,23,42,0.1)] sm:p-8;
+  }
+
+  .installer-source-icon {
+    @apply mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-solar/15 text-solar;
+  }
+
+  .installer-source-title {
+    @apply mt-5 text-lg font-bold text-slate-900;
+  }
+
+  .installer-source-desc {
+    @apply mt-3 text-sm leading-relaxed text-slate-600;
+  }
+
+  .installer-source-list {
+    @apply mt-5 space-y-2 text-left text-sm text-slate-700;
+  }
+
+  .installer-source-list li {
+    @apply relative pl-6 before:absolute before:left-0 before:font-bold before:text-solar before:content-['✓'];
+  }
+
+  .installer-advantages-grid {
+    @apply mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4;
+  }
+
+  .installer-advantage-card {
+    @apply rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-[0_8px_30px_-10px_rgba(15,23,42,0.1)];
+  }
+
+  .installer-advantage-icon {
+    @apply mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-solar/15 text-solar;
+  }
+
+  .installer-advantage-title {
+    @apply mt-4 text-base font-bold text-slate-900;
+  }
+
+  .installer-advantage-text {
+    @apply mt-3 text-sm leading-relaxed text-slate-600;
+  }
+
+  .installer-how-grid {
+    @apply mx-auto grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-4;
+  }
+
+  .installer-how-card {
+    @apply relative list-none overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-[0_8px_30px_-10px_rgba(15,23,42,0.1)];
+  }
+
+  .installer-how-num {
+    @apply pointer-events-none absolute right-4 top-3 text-5xl font-extrabold leading-none text-slate-100;
+  }
+
+  .installer-how-icon {
+    @apply mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-solar/15 text-solar;
+  }
+
+  .installer-how-title {
+    @apply mt-4 text-base font-bold text-slate-900;
+  }
+
+  .installer-how-text {
+    @apply mt-3 text-sm leading-relaxed text-slate-600;
   }
 
   .hero-actions-wrap {

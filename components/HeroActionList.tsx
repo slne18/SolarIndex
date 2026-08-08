@@ -97,6 +97,16 @@ export function HeroActionCalculatorIcon() {
   );
 }
 
+export function HeroActionPercentIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+      <circle cx="7.5" cy="7.5" r="2.5" />
+      <circle cx="16.5" cy="16.5" r="2.5" />
+      <path d="M19 5L5 19" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function HeroActionUploadIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">

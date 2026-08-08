@@ -7,7 +7,7 @@ export interface FaqItem {
 export const FAQ_ITEMS: FaqItem[] = [
   {
     id: "lead-definition",
-    question: "Qu'est-ce qu'un lead SolarIndex ?",
+    question: "Qu'est-ce qu'un lead exactement ?",
     answer:
       "Un lead est une fiche de prospection B2B : parking soumis à l'obligation d'ombrières photovoltaïques (loi APER), enrichi avec l'exploitant (SIREN), le propriétaire foncier lorsque identifié, la parcelle cadastrale et les coordonnées GPS. Ce n'est pas un chantier signé, mais un signal qualifié pour votre prospection commerciale.",
   },

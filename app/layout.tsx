@@ -58,15 +58,6 @@ function Header() {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = headers().get("x-pathname") ?? "";
   const isAdmin = pathname.startsWith("/admin");
-  const isHome = pathname === "/";
-  const isLightFooter =
-    isHome ||
-    pathname.startsWith("/leads") ||
-    pathname.startsWith("/appels-offres") ||
-    pathname.startsWith("/legal") ||
-    pathname.startsWith("/faq") ||
-    pathname.startsWith("/simulateur") ||
-    pathname.startsWith("/verifier");
 
   return (
     <html lang="fr" className={`${dmSans.variable} ${syne.variable}`}>
@@ -82,7 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </div>
               )}
               <main>{children}</main>
-              {!isAdmin && <SiteFooter light={isLightFooter} />}
+              {!isAdmin && <SiteFooter />}
             </PersonaProvider>
           </LocaleProvider>
         </AnalyticsProvider>

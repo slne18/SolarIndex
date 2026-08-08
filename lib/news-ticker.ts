@@ -8,6 +8,18 @@ export interface NewsTickerItem {
   imageAlt?: string;
 }
 
+/** Illustration par défaut (parking + ombrières) quand la source ne fournit pas d'image. */
+export const NEWS_FALLBACK_IMAGE = "/images/hero-home.png";
+export const NEWS_FALLBACK_IMAGE_ALT =
+  "Parking équipé d'ombrières photovoltaïques — illustration";
+
+export function resolveNewsImage(item: NewsTickerItem): { url: string; alt: string } {
+  return {
+    url: item.imageUrl ?? NEWS_FALLBACK_IMAGE,
+    alt: item.imageAlt ?? NEWS_FALLBACK_IMAGE_ALT,
+  };
+}
+
 /** Actualités APER / ombrières — sources presse (liens externes). */
 export const NEWS_TICKER_ITEMS: NewsTickerItem[] = [
   {

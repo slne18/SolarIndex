@@ -10,6 +10,7 @@ describe("resolveNavBackTarget", () => {
   it("FAQ et pages légales → choix profil", () => {
     expect(resolveNavBackTarget("/faq")).toEqual({ kind: "chooser" });
     expect(resolveNavBackTarget("/legal/cgu")).toEqual({ kind: "chooser" });
+    expect(resolveNavBackTarget("/loi-aper")).toEqual({ kind: "chooser" });
   });
 
   it("outils propriétaire → hub owner", () => {
