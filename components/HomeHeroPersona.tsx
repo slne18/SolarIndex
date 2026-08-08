@@ -125,8 +125,8 @@ export default function HomeHeroPersona() {
 
       {showChooser ? (
         <HeroScrollCue href="#loi-aper" label={t("home.discover")} />
-      ) : persona === "installer" ? (
-        <HeroScrollCue href="#tarifs" label={t("home.viewPricing")} />
+      ) : persona ? (
+        <HeroScrollCue href="#decouvrir" label={t("home.discover")} />
       ) : null}
     </section>
   );
@@ -138,7 +138,11 @@ function InstallerHero({ t }: { t: (key: import("@/lib/i18n").MessageKey) => str
       <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-solar">
         {t("home.installerHeroEyebrow")}
       </p>
-      <h1 className="hero-persona-title">{t("home.installerHeroTitle")}</h1>
+      <h1 className="hero-persona-title">
+        {t("home.installerHeroTitleBefore")}
+        <span className="text-solar">APER</span>
+        {t("home.installerHeroTitleAfter")}
+      </h1>
       <p className="hero-on-photo-lead mx-auto max-w-3xl font-bold">{t("home.installerHeroLead")}</p>
       <p className="hero-on-photo-lead mx-auto mt-4 max-w-3xl">
         Solar<span className="hero-home-platform-accent">Index</span>
@@ -172,10 +176,13 @@ function OwnerHero({ t }: { t: (key: import("@/lib/i18n").MessageKey) => string 
       <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-solar">
         {t("home.ownerHeroEyebrow")}
       </p>
-      <h1 className="hero-persona-title">{t("home.ownerHeroTitle")}</h1>
+      <h1 className="hero-persona-title">
+        {t("home.ownerHeroTitleBefore")}
+        <span className="text-solar">APER</span>
+        {t("home.ownerHeroTitleAfter")}
+      </h1>
       <p className="hero-on-photo-lead mx-auto max-w-3xl">{t("home.ownerHeroLead")}</p>
       <HeroActionList
-        badge={t("home.freeBadge")}
         items={[
           {
             href: "/verifier",

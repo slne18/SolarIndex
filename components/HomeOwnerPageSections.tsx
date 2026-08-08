@@ -49,7 +49,7 @@ export default function HomeOwnerPageSections() {
   const t = useTranslations();
 
   return (
-    <div className="surface-light">
+    <div id="decouvrir" className="surface-light scroll-mt-24">
       <section className="container-x py-14 sm:py-20">
         <div className="mx-auto max-w-4xl text-center">
           <SectionEyebrow>{t("home.ownerWhy.eyebrow")}</SectionEyebrow>

@@ -503,9 +503,9 @@ h3,
   .hero-surface-owner::after {
     background: linear-gradient(
       180deg,
-      rgb(15 23 42 / 0.82) 0%,
-      rgb(15 23 42 / 0.72) 45%,
-      rgb(15 23 42 / 0.78) 100%
+      rgb(15 23 42 / 0.58) 0%,
+      rgb(15 23 42 / 0.48) 45%,
+      rgb(15 23 42 / 0.54) 100%
     );
   }
 
@@ -588,7 +588,7 @@ h3,
   }
 
   .hero-home-chooser .persona-card {
-    @apply border-white/45 bg-white/20 px-4 py-3.5 shadow-[0_12px_32px_-10px_rgb(15_23_42_/_0.35)] backdrop-blur-md hover:border-white/70 hover:bg-white/30 sm:px-5 sm:py-4;
+    @apply border-white/15 bg-night-950/85 px-4 py-3.5 shadow-[0_12px_32px_-10px_rgb(15_23_42_/_0.45)] hover:border-solar/40 hover:bg-night-950 sm:px-5 sm:py-4;
   }
 
   .hero-home-chooser .persona-card-row {
@@ -596,7 +596,7 @@ h3,
   }
 
   .hero-home-chooser .persona-card-icon {
-    @apply h-auto w-auto shrink-0 rounded-none bg-transparent p-0 text-solar;
+    @apply grid h-11 w-11 shrink-0 place-items-center rounded-full bg-solar text-night-950;
   }
 
   .hero-home-chooser .persona-card-title {
@@ -612,19 +612,19 @@ h3,
   }
 
   .hero-home-chooser .home-hero-benefits {
-    @apply mt-6 gap-3 border-t-0 pt-0 sm:mt-8 sm:gap-4;
+    @apply mt-6 gap-4 border-t-0 pt-0 sm:mt-8 sm:gap-5;
   }
 
   .hero-home-chooser .home-hero-benefit-card {
-    @apply rounded-xl border border-white/35 bg-white/15 p-3 backdrop-blur-md sm:p-3.5;
+    @apply border-0 bg-transparent p-0 shadow-none backdrop-blur-none;
   }
 
   .hero-home-chooser .home-hero-benefit-icon {
-    @apply h-auto w-auto rounded-none border-0 bg-transparent p-0 text-solar shadow-none;
+    @apply grid h-11 w-11 place-items-center rounded-full bg-solar text-night-950 shadow-none;
   }
 
   .hero-home-chooser .home-hero-benefit-label {
-    @apply text-[0.6875rem] font-semibold leading-snug text-white sm:text-xs;
+    @apply text-xs font-bold leading-snug text-white sm:text-[0.8125rem];
   }
 
   .typewriter-cursor {
