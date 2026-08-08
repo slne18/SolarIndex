@@ -551,8 +551,7 @@ h3,
     @apply mx-auto w-full max-w-6xl text-center;
   }
 
-  .hero-home-panel,
-  .home-news-banner-panel {
+  .hero-home-panel {
     @apply mx-auto w-full max-w-4xl rounded-2xl border border-white/40 bg-white/[0.88] shadow-[0_24px_64px_-12px_rgb(15_23_42_/_0.35)] backdrop-blur-md;
   }
 
@@ -585,27 +584,27 @@ h3,
   }
 
   .hero-home-chooser .persona-cards {
-    @apply grid gap-4 sm:gap-5;
+    @apply grid gap-3 sm:grid-cols-2 sm:gap-4;
   }
 
   .hero-home-chooser .persona-card {
-    @apply border-white/15 bg-night-950/45 px-6 py-5 shadow-[0_16px_40px_-12px_rgb(15_23_42_/_0.55)] backdrop-blur-md hover:border-solar/45 hover:bg-night-950/55 sm:px-8 sm:py-6;
+    @apply border-white/45 bg-white/20 px-4 py-3.5 shadow-[0_12px_32px_-10px_rgb(15_23_42_/_0.35)] backdrop-blur-md hover:border-white/70 hover:bg-white/30 sm:px-5 sm:py-4;
   }
 
   .hero-home-chooser .persona-card-row {
-    @apply flex-row items-center gap-5 text-left;
+    @apply flex-row items-center gap-3.5 text-left;
   }
 
   .hero-home-chooser .persona-card-icon {
-    @apply h-14 w-14 shrink-0 rounded-full bg-solar text-night-950 sm:h-16 sm:w-16;
+    @apply h-auto w-auto shrink-0 rounded-none bg-transparent p-0 text-solar;
   }
 
   .hero-home-chooser .persona-card-title {
-    @apply text-base font-bold text-white sm:text-lg;
+    @apply text-sm font-bold leading-snug text-white sm:text-[0.9375rem];
   }
 
   .hero-home-chooser .persona-card-desc {
-    @apply text-sm leading-relaxed text-white/75 sm:text-[0.9375rem];
+    @apply text-xs leading-relaxed text-white/80;
   }
 
   .hero-home-chooser .persona-card-arrow {
@@ -613,19 +612,19 @@ h3,
   }
 
   .hero-home-chooser .home-hero-benefits {
-    @apply mt-8 gap-4 border-t-0 pt-0 sm:mt-10 sm:gap-5;
+    @apply mt-6 gap-3 border-t-0 pt-0 sm:mt-8 sm:gap-4;
   }
 
   .hero-home-chooser .home-hero-benefit-card {
-    @apply rounded-2xl border border-white/10 bg-night-950/40 p-4 shadow-[0_12px_32px_-10px_rgb(15_23_42_/_0.5)] backdrop-blur-md sm:p-5;
+    @apply rounded-xl border border-white/35 bg-white/15 p-3 backdrop-blur-md sm:p-3.5;
   }
 
   .hero-home-chooser .home-hero-benefit-icon {
-    @apply h-14 w-14 rounded-full border-0 bg-solar text-night-950 shadow-none sm:h-[3.75rem] sm:w-[3.75rem];
+    @apply h-auto w-auto rounded-none border-0 bg-transparent p-0 text-solar shadow-none;
   }
 
   .hero-home-chooser .home-hero-benefit-label {
-    @apply text-sm font-bold leading-snug text-white sm:text-[0.9375rem];
+    @apply text-[0.6875rem] font-semibold leading-snug text-white sm:text-xs;
   }
 
   .typewriter-cursor {
@@ -1352,15 +1351,15 @@ h3,
   }
 
   .home-news-banner-panel {
-    @apply overflow-hidden text-slate-800;
+    @apply mx-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-white/40 bg-white/[0.88] text-slate-800 shadow-[0_24px_64px_-12px_rgb(15_23_42_/_0.35)] backdrop-blur-md;
   }
 
   .home-news-banner-panel-split {
-    @apply grid gap-0 sm:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] sm:items-stretch;
+    @apply grid gap-0 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:items-stretch;
   }
 
   .home-news-banner-media {
-    @apply relative m-0 min-h-[11rem] bg-slate-100 sm:min-h-[12rem];
+    @apply relative m-0 min-h-[10.5rem] bg-slate-100 sm:min-h-[11.5rem];
   }
 
   .home-news-banner-image {
@@ -1368,7 +1367,7 @@ h3,
   }
 
   .home-news-banner-body {
-    @apply flex min-h-[11rem] flex-col px-5 py-5 text-left sm:min-h-[12rem] sm:px-6 sm:py-6 lg:px-7 lg:py-7;
+    @apply flex min-h-[10.5rem] flex-col px-5 py-5 text-left sm:min-h-[11.5rem] sm:px-6 sm:py-6;
   }
 
   .home-news-banner-panel-split .home-news-banner-body {
@@ -1936,8 +1935,28 @@ h3,
     @apply mt-3 text-sm leading-relaxed text-slate-600;
   }
 
+  .owner-how-steps-wrap {
+    @apply relative px-2;
+  }
+
+  .owner-how-progress-rail {
+    @apply pointer-events-none absolute left-[12.5%] right-[12.5%] top-[1.375rem] z-0 h-0.5;
+  }
+
+  .owner-how-progress-track {
+    @apply absolute inset-0 rounded-full bg-slate-200;
+  }
+
+  .owner-how-progress-fill {
+    @apply absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-solar/50 to-solar transition-[width] duration-700 ease-in-out;
+  }
+
+  .owner-how-progress-traveler {
+    @apply absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-solar shadow-[0_0_14px_rgba(232,168,32,0.75)] transition-[left] duration-700 ease-in-out;
+  }
+
   .owner-how-steps {
-    @apply mx-auto grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4;
+    @apply relative z-10 mx-auto grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4;
   }
 
   .owner-how-step {
@@ -1953,36 +1972,33 @@ h3,
   }
 
   .owner-how-step-dot {
-    @apply relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-solar text-sm font-bold text-night shadow-[0_4px_14px_-4px_rgba(232,168,32,0.55)] transition duration-200;
+    @apply relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-200 text-sm font-bold text-slate-500 transition-all duration-500;
   }
 
-  .owner-how-step-line {
-    @apply absolute top-1/2 h-0.5 -translate-y-1/2 bg-slate-200 transition-colors duration-200 group-hover:bg-solar/50;
+  .owner-how-step-dot-passed {
+    @apply bg-solar text-night shadow-[0_4px_14px_-4px_rgba(232,168,32,0.55)];
   }
 
-  .owner-how-step-line-left {
-    @apply right-1/2 left-0 mr-5;
-  }
-
-  .owner-how-step-line-right {
-    @apply right-0 left-1/2 ml-5;
+  .owner-how-step-dot-active {
+    @apply scale-110 bg-solar text-night shadow-[0_6px_20px_-4px_rgba(232,168,32,0.65)] ring-4 ring-solar/25;
   }
 
   .owner-how-step-label {
-    @apply mt-4 max-w-[11rem] text-sm font-medium leading-snug text-slate-700 transition group-hover:text-slate-900;
+    @apply mt-4 max-w-[11rem] text-sm font-medium leading-snug text-slate-600 transition-all duration-500;
+  }
+
+  .owner-how-step-label-active,
+  .owner-how-step-link-active .owner-how-step-label {
+    @apply font-semibold text-slate-900;
   }
 
   .owner-how-step-link:hover .owner-how-step-dot,
   .owner-how-step-link:focus-visible .owner-how-step-dot {
-    @apply scale-110 shadow-[0_6px_20px_-4px_rgba(232,168,32,0.65)];
+    @apply scale-105;
   }
 
   .owner-how-step-link-active .owner-how-step-dot {
     @apply ring-4 ring-solar/25;
-  }
-
-  .owner-how-step-link-active .owner-how-step-label {
-    @apply font-semibold text-slate-900;
   }
 
   .owner-transparency-grid {
@@ -2016,12 +2032,6 @@ h3,
 
   .owner-deposit-cta-btn {
     @apply mt-8 inline-flex min-w-[16rem] items-center justify-center gap-1 px-10;
-  }
-
-  @media (max-width: 1023px) {
-    .owner-how-step-line {
-      @apply hidden;
-    }
   }
 
   /* Homepage — sections installateur */

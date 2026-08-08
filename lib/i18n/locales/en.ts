@@ -146,9 +146,9 @@ const en: Record<MessageKey, string> = {
   "home.chooseTitleLine1Before": "The ",
   "home.chooseTitleAccent": "APER law",
   "home.chooseTitleLine1After": " changes the rules",
-  "home.chooseTitleLine2": "SolarIndex simplifies your project",
-  "home.heroLead":
-    "SolarIndex connects parking operators and solar developers to deliver photovoltaic or vegetated canopy projects compliant with the APER law.",
+  "home.chooseTitleLine2After": " simplifies your project",
+  "home.heroLeadAfter":
+    " connects parking operators and solar developers to deliver photovoltaic or vegetated canopy projects compliant with the APER law.",
   "home.installerCardTitle": "I'm a solar professional",
   "home.installerCardDesc":
     "Access qualified projects and grow your business through targeted matchmaking.",
@@ -166,8 +166,9 @@ const en: Record<MessageKey, string> = {
   "home.installerHeroTitle": "Find your next APER projects before your competitors.",
   "home.installerHeroAccent": "",
   "home.installerHeroLead": "Two exclusive project sources to grow your business.",
-  "home.installerHeroBody":
-    "SolarIndex identifies parking lots subject to the APER law and gives you access to leads as well as projects submitted directly by owners and operators.",
+  "home.installerHeroBodyBefore": " identifies parking lots subject to the ",
+  "home.installerHeroBodyAfter":
+    " law and gives you access to leads as well as projects submitted directly by owners and operators.",
   "home.installerLeadsLabel": "Browse leads",
   "home.installerLeadsHint": "Automated catalog · zone estimate included",
   "home.installerRfpLabel": "Browse tenders",
@@ -551,7 +552,7 @@ const en: Record<MessageKey, string> = {
   "home.aperIntro.p1Before": "The ",
   "home.aperIntro.p1After":
     " law is gradually turning parking lots into genuine energy infrastructure.",
-  "home.aperIntro.p2Owners": "Owners and operators",
+  "home.aperIntro.p2Owners": "Owners and parking operators",
   "home.aperIntro.p2Mid1": " must now meet ",
   "home.aperIntro.p2Obligations": "new regulatory obligations",
   "home.aperIntro.p2Mid2":

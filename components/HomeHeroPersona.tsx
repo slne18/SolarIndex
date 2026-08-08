@@ -17,7 +17,7 @@ import type { Persona } from "@/lib/persona";
 
 const CARD_ICONS: Record<Persona, ReactNode> = {
   installer: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
       <circle cx="12" cy="12" r="9" opacity="0.35" />
       <circle cx="12" cy="12" r="5.5" opacity="0.55" />
       <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
@@ -25,7 +25,7 @@ const CARD_ICONS: Record<Persona, ReactNode> = {
     </svg>
   ),
   owner: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
       <path d="M4 10h16v10H4z" strokeLinejoin="round" />
       <path d="M2 10l10-6 10 6" strokeLinejoin="round" />
       <path d="M9 20v-6h6v6" strokeLinejoin="round" />
@@ -59,7 +59,7 @@ export default function HomeHeroPersona() {
   return (
     <section
       className={`hero-surface relative overflow-hidden ${
-        showChooser ? "" : persona === "owner" ? "hero-surface-owner" : ""
+        !showChooser && persona ? "hero-surface-owner" : ""
       }`.trim()}
     >
       <div className="container-x relative flex flex-1 flex-col justify-center py-10 sm:py-14">
@@ -73,9 +73,15 @@ export default function HomeHeroPersona() {
                     <span className="hero-home-platform-accent">{t("home.chooseTitleAccent")}</span>
                     {t("home.chooseTitleLine1After")}
                   </span>
-                  <span className="block">{t("home.chooseTitleLine2")}</span>
+                  <span className="block">
+                    Solar<span className="hero-home-platform-accent">Index</span>
+                    {t("home.chooseTitleLine2After")}
+                  </span>
                 </h1>
-                <p className="hero-home-lead">{t("home.heroLead")}</p>
+                <p className="hero-home-lead">
+                  Solar<span className="hero-home-platform-accent">Index</span>
+                  {t("home.heroLeadAfter")}
+                </p>
               </div>
               <div className="hero-home-chooser mt-8 sm:mt-10">
                 <div className="persona-cards">
@@ -93,8 +99,8 @@ export default function HomeHeroPersona() {
                       </span>
                       <svg
                         className="persona-card-arrow shrink-0"
-                        width="20"
-                        height="20"
+                        width="16"
+                        height="16"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -133,9 +139,12 @@ function InstallerHero({ t }: { t: (key: import("@/lib/i18n").MessageKey) => str
         {t("home.installerHeroEyebrow")}
       </p>
       <h1 className="hero-persona-title">{t("home.installerHeroTitle")}</h1>
-      <p className="hero-on-photo-lead mx-auto max-w-3xl">{t("home.installerHeroLead")}</p>
-      <p className="hero-on-photo-lead mx-auto mt-4 max-w-3xl text-slate-300/90">
-        {t("home.installerHeroBody")}
+      <p className="hero-on-photo-lead mx-auto max-w-3xl font-bold">{t("home.installerHeroLead")}</p>
+      <p className="hero-on-photo-lead mx-auto mt-4 max-w-3xl">
+        Solar<span className="hero-home-platform-accent">Index</span>
+        {t("home.installerHeroBodyBefore")}
+        <span className="text-solar">APER</span>
+        {t("home.installerHeroBodyAfter")}
       </p>
       <HeroActionList
         items={[

@@ -8,19 +8,25 @@ export interface NewsTickerItem {
   imageAlt?: string;
 }
 
-/** Illustration par défaut (parking + ombrières) quand la source ne fournit pas d'image. */
-export const NEWS_FALLBACK_IMAGE = "/images/hero-home.png";
+/** Illustration par défaut — jamais la photo hero de la page d'accueil. */
+export const NEWS_FALLBACK_IMAGE =
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Parking_ombri%C3%A8res_Photovolta%C3%AFque.jpg/960px-Parking_ombri%C3%A8res_Photovolta%C3%AFque.jpg";
 export const NEWS_FALLBACK_IMAGE_ALT =
   "Parking équipé d'ombrières photovoltaïques — illustration";
 
+const HERO_HOME_IMAGE = "/images/hero-home.png";
+
 export function resolveNewsImage(item: NewsTickerItem): { url: string; alt: string } {
+  const candidate = item.imageUrl ?? NEWS_FALLBACK_IMAGE;
+  const url = candidate === HERO_HOME_IMAGE ? NEWS_FALLBACK_IMAGE : candidate;
   return {
-    url: item.imageUrl ?? NEWS_FALLBACK_IMAGE,
+    url,
     alt: item.imageAlt ?? NEWS_FALLBACK_IMAGE_ALT,
   };
 }
 
-/** Actualités APER / ombrières — sources presse (liens externes). */
+/** Actualités APER / ombrières — sources presse (liens externes).
+ *  Chaque entrée doit avoir une imageUrl distincte (jamais /images/hero-home.png). */
 export const NEWS_TICKER_ITEMS: NewsTickerItem[] = [
   {
     source: "L'Echo du Solaire",
@@ -51,6 +57,9 @@ export const NEWS_TICKER_ITEMS: NewsTickerItem[] = [
     excerpt:
       "Malgré les demandes de report de la FCD, le gouvernement maintient le calendrier APER : la grande distribution ne bénéficiera pas d'un délai de grâce pour équiper ses parkings de panneaux solaires.",
     url: "https://www.lesechos.fr/industrie-services/conso-distribution/panneaux-solaires-sur-les-parkings-pas-de-delai-de-grace-pour-la-grande-distribution-2131963",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Solar_panel_carpark.jpg/960px-Solar_panel_carpark.jpg",
+    imageAlt: "Parking de grande distribution avec ombrières solaires",
   },
   {
     source: "Le Monde",
@@ -59,6 +68,9 @@ export const NEWS_TICKER_ITEMS: NewsTickerItem[] = [
     excerpt:
       "Face aux canicules, les ombrières solaires se multiplient sur les parkings privés et publics — production d'énergie et ombre pour les automobilistes dans le même geste.",
     url: "https://www.lemonde.fr/planete/article/2023/08/24/canicule-les-ombrieres-solaires-gagnent-du-terrain-sur-les-parkings-prives-et-publics_6186458_3244.html",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Solar_carports_at_Google%27s_Mountain_View_offices.jpg/960px-Solar_carports_at_Google%27s_Mountain_View_offices.jpg",
+    imageAlt: "Ombrières solaires sur un grand parking",
   },
   {
     source: "Le Moniteur",
@@ -67,5 +79,8 @@ export const NEWS_TICKER_ITEMS: NewsTickerItem[] = [
     excerpt:
       "Environ 11 000 parkings extérieurs de plus de 10 000 m² devaient être couverts d'ombrières photovoltaïques au 1er juillet 2026. Les indicateurs convergent : la fraction réellement conforme sera très minoritaire.",
     url: "https://www.lemoniteur.fr/produits-et-materiels/photovoltaique/solarisation-des-parkings-seule-une-fraction-minoritaire-des-surfaces-de-plus-de-10-000-m2-sera-prete-au-1er-juillet.HSVI3HXVYFC2BNWJZ6UEUNTFZ4.html",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Parking_solar_%C3%A0_Grenoble.JPG/960px-Parking_solar_%C3%A0_Grenoble.JPG",
+    imageAlt: "Parking solarisé en France",
   },
 ];

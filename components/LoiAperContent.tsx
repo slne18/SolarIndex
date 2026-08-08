@@ -13,7 +13,7 @@ export function LoiAperIntro() {
   const t = useTranslations();
 
   return (
-    <div className="section-lead max-w-3xl space-y-4">
+    <div className="section-lead max-w-4xl lg:max-w-5xl space-y-4">
       <p>
         {t("home.aperIntro.p1Before")}
         <span className="font-semibold text-solar">APER</span>

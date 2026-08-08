@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import SectionEyebrow from "@/components/SectionEyebrow";
+import HowStepsTimeline from "@/components/HowStepsTimeline";
 import { useTranslations } from "@/components/LocaleProvider";
 import type { MessageKey } from "@/lib/i18n";
 
@@ -47,7 +47,6 @@ const TRANSPARENCY_KEYS = [
 
 export default function HomeOwnerPageSections() {
   const t = useTranslations();
-  const pathname = usePathname() ?? "";
 
   return (
     <div className="surface-light">
@@ -71,29 +70,7 @@ export default function HomeOwnerPageSections() {
           <SectionEyebrow>{t("home.ownerHow.eyebrow")}</SectionEyebrow>
           <h2 className="section-title mt-3">{t("home.ownerHow.title")}</h2>
         </div>
-        <ol className="owner-how-steps mt-12">
-          {HOW_STEPS.map((step, index) => {
-            const active = step.match(pathname);
-            return (
-              <li key={step.href} className="owner-how-step">
-                <Link
-                  href={step.href}
-                  className={`owner-how-step-link group${active ? " owner-how-step-link-active" : ""}`}
-                  aria-current={active ? "step" : undefined}
-                >
-                  <span className="owner-how-step-track" aria-hidden>
-                    {index > 0 ? <span className="owner-how-step-line owner-how-step-line-left" /> : null}
-                    <span className="owner-how-step-dot">{index + 1}</span>
-                    {index < HOW_STEPS.length - 1 ? (
-                      <span className="owner-how-step-line owner-how-step-line-right" />
-                    ) : null}
-                  </span>
-                  <span className="owner-how-step-label">{t(step.labelKey)}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ol>
+        <HowStepsTimeline steps={HOW_STEPS} t={t} />
       </section>
 
       <section className="container-x border-t border-slate-100 py-14 sm:py-20">

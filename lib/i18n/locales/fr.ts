@@ -146,9 +146,9 @@ const fr = {
   "home.chooseTitleLine1Before": "La ",
   "home.chooseTitleAccent": "loi APER",
   "home.chooseTitleLine1After": " change les règles",
-  "home.chooseTitleLine2": "SolarIndex simplifie votre projet",
-  "home.heroLead":
-    "SolarIndex met en relation gestionnaires de parking et opérateurs photovoltaïques pour développer des projets d'ombrières photovoltaïques ou végétalisées conformes à la loi APER.",
+  "home.chooseTitleLine2After": " simplifie votre projet",
+  "home.heroLeadAfter":
+    " met en relation gestionnaires de parking et opérateurs photovoltaïques pour développer des projets d'ombrières photovoltaïques ou végétalisées conformes à la loi APER.",
   "home.installerCardTitle": "Je suis un professionnel du photovoltaïque",
   "home.installerCardDesc":
     "Accédez à des projets qualifiés et développez votre activité grâce à une mise en relation ciblée.",
@@ -166,8 +166,9 @@ const fr = {
   "home.installerHeroTitle": "Trouvez vos prochains chantiers APER avant vos concurrents.",
   "home.installerHeroAccent": "",
   "home.installerHeroLead": "Deux sources exclusives de projets pour développer votre activité.",
-  "home.installerHeroBody":
-    "SolarIndex détecte les parkings soumis à la loi APER et met à votre disposition des leads ainsi que des projets déposés directement par les propriétaires et gestionnaires.",
+  "home.installerHeroBodyBefore": " détecte les parkings soumis à la loi ",
+  "home.installerHeroBodyAfter":
+    " et met à votre disposition des leads ainsi que des projets déposés directement par les propriétaires et gestionnaires.",
   "home.installerLeadsLabel": "Accéder aux leads",
   "home.installerLeadsHint": "Catalogue automatisé · estimation par zone incluse",
   "home.installerRfpLabel": "Consulter les appels d'offres",
@@ -555,8 +556,8 @@ const fr = {
   "home.aperIntro.p1Before": "La loi ",
   "home.aperIntro.p1After":
     " transforme progressivement les parkings en véritables infrastructures énergétiques.",
-  "home.aperIntro.p2Owners": "Propriétaires et gestionnaires",
-  "home.aperIntro.p2Mid1": " de parkings doivent désormais répondre à de ",
+  "home.aperIntro.p2Owners": "Propriétaires et gestionnaires de parkings",
+  "home.aperIntro.p2Mid1": " doivent désormais répondre à de ",
   "home.aperIntro.p2Obligations": "nouvelles obligations réglementaires",
   "home.aperIntro.p2Mid2":
     ". Au-delà de la mise en conformité, ces projets permettent de ",
