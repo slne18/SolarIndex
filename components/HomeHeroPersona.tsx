@@ -16,8 +16,21 @@ import { INSTALLER_CHANTIERS_LINKS } from "@/lib/installer-nav";
 import type { Persona } from "@/lib/persona";
 
 const CARD_ICONS: Record<Persona, ReactNode> = {
-  installer: <HeroActionRadarIcon />,
-  owner: <HeroActionOwnerIcon />,
+  installer: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+      <circle cx="12" cy="12" r="9" opacity="0.35" />
+      <circle cx="12" cy="12" r="5.5" opacity="0.55" />
+      <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
+      <path d="M12 12 L20 6" strokeLinecap="round" />
+    </svg>
+  ),
+  owner: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+      <path d="M4 10h16v10H4z" strokeLinejoin="round" />
+      <path d="M2 10l10-6 10 6" strokeLinejoin="round" />
+      <path d="M9 20v-6h6v6" strokeLinejoin="round" />
+    </svg>
+  ),
 };
 
 export default function HomeHeroPersona() {
@@ -71,37 +84,33 @@ export default function HomeHeroPersona() {
                 </p>
               </div>
               <div className="hero-home-chooser mt-8 sm:mt-10">
-                <div className="hero-actions-wrap">
-                  <div className="hero-actions">
-                    {personaCards.map((card) => (
-                      <button
-                        key={card.id}
-                        type="button"
-                        className="hero-action group"
-                        onClick={() => setPersona(card.id)}
+                <div className="persona-cards">
+                  {personaCards.map((card) => (
+                    <button
+                      key={card.id}
+                      type="button"
+                      className="persona-card persona-card-row group"
+                      onClick={() => setPersona(card.id)}
+                    >
+                      <span className="persona-card-icon shrink-0">{CARD_ICONS[card.id]}</span>
+                      <span className="persona-card-content min-w-0 flex-1">
+                        <span className="persona-card-title block">{card.title}</span>
+                        <span className="persona-card-desc mt-1.5 block">{card.description}</span>
+                      </span>
+                      <svg
+                        className="persona-card-arrow shrink-0"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        aria-hidden
                       >
-                        <span className="hero-action-icon" aria-hidden>
-                          {CARD_ICONS[card.id]}
-                        </span>
-                        <span className="hero-action-body">
-                          <span className="hero-action-label">{card.title}</span>
-                          <span className="hero-action-hint">{card.description}</span>
-                        </span>
-                        <svg
-                          className="hero-action-arrow"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          aria-hidden
-                        >
-                          <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </button>
-                    ))}
-                  </div>
+                        <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                  ))}
                 </div>
                 <HomeHeroBenefits />
               </div>
@@ -196,15 +205,5 @@ function OwnerHero({ t }: { t: (key: import("@/lib/i18n").MessageKey) => string 
         ]}
       />
     </>
-  );
-}
-
-function HeroActionOwnerIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-      <path d="M4 10h16v10H4z" strokeLinejoin="round" />
-      <path d="M2 10l10-6 10 6" strokeLinejoin="round" />
-      <path d="M9 20v-6h6v6" strokeLinejoin="round" />
-    </svg>
   );
 }
