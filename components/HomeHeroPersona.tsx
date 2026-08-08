@@ -59,7 +59,7 @@ export default function HomeHeroPersona() {
   return (
     <section
       className={`hero-surface relative overflow-hidden ${
-        !showChooser && persona ? "hero-surface-owner" : ""
+        showChooser ? "hero-surface-home" : persona ? "hero-surface-owner" : ""
       }`.trim()}
     >
       <div className="container-x relative flex flex-1 flex-col justify-center py-10 sm:py-14">

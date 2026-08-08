@@ -500,6 +500,15 @@ h3,
     );
   }
 
+  .hero-surface-home::after {
+    background: linear-gradient(
+      180deg,
+      rgb(15 23 42 / 0.24) 0%,
+      rgb(15 23 42 / 0.14) 45%,
+      rgb(15 23 42 / 0.32) 100%
+    );
+  }
+
   .hero-surface-owner::after {
     background: linear-gradient(
       180deg,
