@@ -307,6 +307,14 @@ h3,
     @apply text-slate-900;
   }
 
+  .tool-warning-text {
+    @apply text-amber-800;
+  }
+
+  .tool-success-text {
+    @apply text-emerald-800;
+  }
+
   .input {
     @apply w-full rounded-xl border border-white/[0.12] bg-night-800/90 px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-solar/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-solar/30;
   }
@@ -1246,6 +1254,28 @@ h3,
 
   .surface-light .owner-tool-page .simulator-roi-callout {
     @apply rounded-xl border border-solar/30 bg-amber-50/80 text-slate-800;
+  }
+
+  /* Jamais de jaune clair illisible sur fond blanc / clair */
+  .surface-light .text-amber-100,
+  .surface-light .text-amber-200,
+  .surface-light .text-amber-300,
+  .surface-light .text-yellow-100,
+  .surface-light .text-yellow-200,
+  .surface-light .text-yellow-300 {
+    @apply text-amber-800;
+  }
+
+  .surface-light .text-red-200 {
+    @apply text-red-800;
+  }
+
+  .surface-light .text-emerald-300 {
+    @apply text-emerald-800;
+  }
+
+  .surface-light .owner-tool-page .bg-solar\/10.text-solar {
+    @apply text-solar-600;
   }
 
   /* Footer clair */

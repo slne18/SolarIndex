@@ -299,7 +299,7 @@ export default function VerifierClient() {
         )}
 
         {error && (
-          <p className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          <p className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-800">
             {error}
           </p>
         )}
@@ -335,13 +335,13 @@ export default function VerifierClient() {
             </div>
 
             {result.surfaceNote && (
-              <p className="text-xs text-amber-200/90">{result.surfaceNote}</p>
+              <p className="tool-warning-text text-xs">{result.surfaceNote}</p>
             )}
 
             <div
               className={`rounded-xl border px-4 py-3 ${
                 result.eligibility === "concerned"
-                  ? "border-solar/40 bg-solar/10 text-solar"
+                  ? "border-solar/40 bg-solar/10 text-solar-600"
                   : "border-slate-200 bg-slate-50 text-slate-800"
               }`}
             >
@@ -399,21 +399,21 @@ function DerogationBlock({ result }: { result: VerifierResult }) {
   const { derogations } = result;
 
   return (
-    <div className="space-y-3 border-t border-white/10 pt-4">
+    <div className="space-y-3 border-t border-slate-200 pt-4">
       <p className="owner-tool-body text-sm font-semibold">{t("verifier.derogTitle")}</p>
 
       {derogations.derogationPente && derogations.pentePct != null && (
-        <p className="text-sm text-amber-100">
+        <p className="tool-warning-text text-sm">
           ⚠️ {fmt(t("verifier.derogPente"), { pct: nf(derogations.pentePct) })}
         </p>
       )}
 
       {derogations.zoneAbf && (
-        <p className="text-sm text-amber-100">⚠️ {t("verifier.derogAbf")}</p>
+        <p className="tool-warning-text text-sm">⚠️ {t("verifier.derogAbf")}</p>
       )}
 
       {derogations.summary === "none" && (
-        <p className="text-sm text-emerald-300">✅ {t("verifier.derogNone")}</p>
+        <p className="tool-success-text text-sm">✅ {t("verifier.derogNone")}</p>
       )}
 
       <p className="text-xs text-slate-500">

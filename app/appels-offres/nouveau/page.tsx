@@ -250,7 +250,7 @@ function NouveauRfpForm() {
             <span>Oui — personne publique ou établissement soumis au Code de la commande publique</span>
           </label>
           {blockedPublic ? (
-            <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-xs leading-relaxed text-red-200">
+            <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-xs leading-relaxed text-red-800">
               <p className="font-semibold text-red-100">Dépôt non disponible pour les personnes publiques</p>
               <p className="mt-2">{RFP_PUBLIC_ENTITY_BLOCK_MESSAGE}</p>
               <p className="mt-2">
