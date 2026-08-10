@@ -351,10 +351,12 @@ export default function RfpEditClient({ id }: { id: string }) {
 function Field({
   label,
   required,
+  hint,
   children,
 }: {
   label: string;
   required?: boolean;
+  hint?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -363,6 +365,7 @@ function Field({
         {label}
         {required ? " *" : ""}
       </span>
+      {hint ? <span className="mb-2 block text-xs text-slate-500">{hint}</span> : null}
       {children}
     </label>
   );

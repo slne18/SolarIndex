@@ -316,11 +316,13 @@ export default function RfpDetailClient({ id }: { id: string }) {
   );
 }
 
-function Row({ k, v, solar = false }: { k: string; v: string; solar?: boolean }) {
+function Row({ k, v, solar = false }: { k: string; v: string | null | undefined; solar?: boolean }) {
   return (
     <div className="flex justify-between gap-4 border-b border-slate-100 py-2 last:border-0">
       <dt className="text-slate-500">{k}</dt>
-      <dd className={solar ? "font-medium text-solar-700" : "text-right font-medium text-slate-800"}>{v}</dd>
+      <dd className={solar ? "font-medium text-solar-700" : "text-right font-medium text-slate-800"}>
+        {v?.trim() || "—"}
+      </dd>
     </div>
   );
 }
