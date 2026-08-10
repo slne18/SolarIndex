@@ -55,9 +55,7 @@ export async function patchRfpAsDeposant(
   if (!body.contact_nom?.trim() || !contactEmail || !body.contact_telephone?.trim()) {
     return { ok: false, error: "Contact incomplet.", status: 400 };
   }
-  if (!body.adresse?.trim()) {
-    return { ok: false, error: "Adresse requise.", status: 400 };
-  }
+  const adresse = body.adresse?.trim() || null;
   const typeSolution = parseTypeSolutionRecherchee(body.type_solution_recherchee);
   if (!typeSolution) {
     return { ok: false, error: "Type de solution recherchée invalide.", status: 400 };
@@ -92,7 +90,7 @@ export async function patchRfpAsDeposant(
   }
 
   const official = officialCheck.data;
-  const geo = inferGeoFromAddress(body.adresse);
+  const geo = inferGeoFromAddress(adresse);
 
   const row = await updateRfpSubmission(
     rfpId,
@@ -104,7 +102,7 @@ export async function patchRfpAsDeposant(
       contact_fonction: body.contact_fonction?.trim() || null,
       contact_email: contactEmail,
       contact_telephone: body.contact_telephone.trim(),
-      adresse: body.adresse.trim(),
+      adresse,
       latitude: body.latitude ?? null,
       longitude: body.longitude ?? null,
       departement: geo.departement,

@@ -121,7 +121,7 @@ function NouveauRfpForm() {
         contact_fonction: fd.get("contact_fonction"),
         contact_email: fd.get("contact_email"),
         contact_telephone: fd.get("contact_telephone"),
-        adresse: fd.get("adresse"),
+        adresse: String(fd.get("adresse") ?? "").trim() || undefined,
         surface_estimee_m2: Number(fd.get("surface_estimee_m2")) || undefined,
         type_solution_recherchee: typeSolutionRecherchee,
         deja_equipe_partiel: fd.get("deja_equipe_partiel") === "on",
@@ -293,14 +293,16 @@ function NouveauRfpForm() {
             <input name="contact_telephone" required disabled={blockedPublic} className="input" />
           </Field>
         </div>
-        <Field label="Adresse du parking" required>
+        <Field
+          label="Adresse du parking"
+          hint="Optionnel — certains parkings n'ont pas d'adresse postale dédiée. Précisez la localisation dans « Particularités » si besoin."
+        >
           <AddressAutocomplete
             name="adresse"
-            required
             disabled={blockedPublic}
             value={adresse}
             onChange={setAdresse}
-            placeholder="Adresse complète"
+            placeholder="Adresse complète (si connue)"
           />
         </Field>
         <Field label="Surface estimée (m²)">

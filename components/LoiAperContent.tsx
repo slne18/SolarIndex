@@ -135,7 +135,7 @@ export function LoiAperObligationDetail() {
           {t("loiAper.ctaVerify")}
         </Link>
         <Link href="/simulateur" className="btn-ghost border border-slate-200 bg-white text-slate-800 hover:bg-slate-50">
-          {t("loiAper.ctaSimulate")}
+          {t("footer.simulator")}
         </Link>
       </div>
     </div>

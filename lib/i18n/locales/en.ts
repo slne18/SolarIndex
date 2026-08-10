@@ -115,7 +115,6 @@ const en: Record<MessageKey, string> = {
   "nav.deposerProjet": "Submit my project",
   "nav.tools": "Tools",
   "nav.verifyEligibility": "Am I affected?",
-  "nav.simulatorGains": "Savings & revenue",
   "nav.menu": "Menu",
   "nav.openMenu": "Open menu",
   "nav.closeMenu": "Close menu",
@@ -591,7 +590,6 @@ const en: Record<MessageKey, string> = {
   "loiAper.huwartBody":
     "Since Law no. 2025-1129 (Huwart law), the obligation can be met with a mix of at least {pct}% panel coverage and up to 32.5% vegetation.",
   "loiAper.ctaVerify": "Check my parking",
-  "loiAper.ctaSimulate": "Simulate savings & revenue",
   "home.pricingEyebrow": "Pricing",
   "home.pricingTitle": "Pricing",
   "home.pricingLead":
@@ -767,22 +765,31 @@ const en: Record<MessageKey, string> = {
   "verifier.pill": "Free tool",
   "verifier.title": "Are you subject to the APER obligation?",
   "verifier.leadLine1":
-    "Enter your parking address. We detect area via OpenStreetMap",
+    "Enter the parking location (postal address or GPS coordinates). We detect area via OpenStreetMap",
   "verifier.leadLine2":
     "or cadastre, then estimate your regulatory deadline and possible exemptions.",
+  "verifier.modeAddress": "Address",
+  "verifier.modeCoordinates": "GPS coordinates",
+  "verifier.coordsHint":
+    "Parking centre in decimal degrees (WGS84). Find it on a map or your GPS — useful when the site has no dedicated postal address.",
+  "verifier.coordsLat": "Latitude",
+  "verifier.coordsLon": "Longitude",
+  "verifier.coordsPlaceholderLat": "e.g. 43.604652",
+  "verifier.coordsPlaceholderLon": "e.g. 1.444209",
+  "verifier.invalidCoords": "Enter a valid latitude and longitude.",
+  "verifier.outsideFrance": "Location outside metropolitan France.",
   "verifier.addressLabel": "Parking address",
   "verifier.addressPlaceholder": "12 Avenue de la République, Toulouse",
   "verifier.submit": "Check if I'm affected",
   "verifier.searching": "Searching for your parking lot…",
   "verifier.loadingStatus": "Searching… OpenStreetMap and cadastre analysis (2–8 s).",
   "verifier.selectAddress": "Select an address from the list.",
-  "verifier.invalidSurface": "Enter a valid area in m².",
   "verifier.verifyError": "Verification error.",
-  "verifier.manualLead":
-    "No mapped parking or cadastral parcel found at this address. Enter the estimated parking area to continue.",
-  "verifier.surfacePlaceholder": "Area in m²",
-  "verifier.analyzeManual": "Analyze with this area",
+  "verifier.noParkingLead":
+    "No parking was detected at this location from our map sources. Submit your project on the platform to describe your situation and receive proposals from qualified installers.",
   "verifier.resultAddress": "Address",
+  "verifier.resultLocation": "Location",
+  "verifier.rfpCoordsNote": "Parking GPS coordinates: {coords}",
   "verifier.surfaceDetected": "Detected area",
   "verifier.source": "Source",
   "verifier.sourceOsm": "OpenStreetMap (parking)",

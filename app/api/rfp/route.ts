@@ -161,9 +161,7 @@ export async function POST(req: Request) {
   if (!body.contact_nom?.trim() || !contactEmail || !body.contact_telephone?.trim()) {
     return Response.json({ error: "Contact incomplet." }, { status: 400, headers: NO_STORE });
   }
-  if (!body.adresse?.trim()) {
-    return Response.json({ error: "Adresse requise." }, { status: 400, headers: NO_STORE });
-  }
+  const adresse = body.adresse?.trim() || null;
   const typeSolution = parseTypeSolutionRecherchee(body.type_solution_recherchee);
   if (!typeSolution) {
     return Response.json({ error: "Type de solution recherchée invalide." }, { status: 400, headers: NO_STORE });
@@ -218,7 +216,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const geo = inferGeoFromAddress(body.adresse);
+  const geo = inferGeoFromAddress(adresse);
   const token = randomBytes(32).toString("hex");
   const appUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
   const verifyUrl = `${appUrl}/api/rfp/verify?token=${token}`;
@@ -235,7 +233,7 @@ export async function POST(req: Request) {
       contact_telephone: body.contact_telephone.trim(),
       email_verifie: false,
       verification_token: token,
-      adresse: body.adresse.trim(),
+      adresse,
       latitude: body.latitude ?? null,
       longitude: body.longitude ?? null,
       departement: geo.departement,

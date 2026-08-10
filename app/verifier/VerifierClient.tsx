@@ -6,9 +6,10 @@ import RegulatoryCountdown from "@/components/RegulatoryCountdown";
 import { usePersona } from "@/components/PersonaProvider";
 import { useTranslations } from "@/components/LocaleProvider";
 import { showOwnerProjectDeposit } from "@/lib/persona";
-import { nf, nfSurface } from "@/lib/format";
+import { nf, nfSurface, formatCoords } from "@/lib/format";
 import { fmt } from "@/lib/i18n/format";
 import { PENTE_DEROGATION_PCT } from "@/lib/verifier/derogations";
+import { isMetropolitanFrancePoint } from "@/lib/verifier/geo";
 import type { AperEligibilityStatus } from "@/lib/aper-deadlines";
 import type { VerifierResult } from "@/lib/verifier/run";
 
@@ -19,6 +20,9 @@ type BanFeature = {
   };
   geometry: { coordinates: [number, number] };
 };
+
+type InputMode = "address" | "coordinates";
+type LocationKind = InputMode;
 
 function useEligibilityLabel() {
   const t = useTranslations();
@@ -39,17 +43,20 @@ export default function VerifierClient() {
   const eligibilityLabel = useEligibilityLabel();
   const { persona, ready } = usePersona();
   const showDepositCta = !ready || showOwnerProjectDeposit(persona);
+  const [inputMode, setInputMode] = useState<InputMode>("address");
+  const [locationKind, setLocationKind] = useState<LocationKind>("address");
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<BanFeature[]>([]);
   const [selected, setSelected] = useState<{ label: string; lat: number; lon: number } | null>(null);
+  const [latInput, setLatInput] = useState("");
+  const [lonInput, setLonInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<VerifierResult | null>(null);
-  const [manualSurface, setManualSurface] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (query.trim().length < 3 || selected?.label === query) {
+    if (inputMode !== "address" || query.trim().length < 3 || selected?.label === query) {
       setSuggestions([]);
       return;
     }
@@ -62,23 +69,22 @@ export default function VerifierClient() {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [query, selected?.label]);
+  }, [query, selected?.label, inputMode]);
 
   const runCheck = useCallback(
-    async (opts?: { manualSurfaceM2?: number }) => {
-      if (!selected) return;
+    async (point: { lat: number; lon: number; label: string; kind: LocationKind }) => {
       setLoading(true);
       setError(null);
       setResult(null);
+      setLocationKind(point.kind);
       try {
         const res = await fetch("/api/verifier", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            lat: selected.lat,
-            lon: selected.lon,
-            label: selected.label,
-            manualSurfaceM2: opts?.manualSurfaceM2,
+            lat: point.lat,
+            lon: point.lon,
+            label: point.label,
           }),
         });
         const data = await res.json();
@@ -93,8 +99,19 @@ export default function VerifierClient() {
         setLoading(false);
       }
     },
-    [selected, t],
+    [t],
   );
+
+  function resetResults() {
+    setSelected(null);
+    setResult(null);
+    setError(null);
+  }
+
+  function switchMode(mode: InputMode) {
+    setInputMode(mode);
+    resetResults();
+  }
 
   function pickSuggestion(f: BanFeature) {
     const [lon, lat] = f.geometry.coordinates;
@@ -105,31 +122,59 @@ export default function VerifierClient() {
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!selected) {
-      setError(t("verifier.selectAddress"));
-      return;
-    }
-    void runCheck();
-  }
 
-  function onManualSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const val = Number(manualSurface.replace(/\s/g, ""));
-    if (!Number.isFinite(val) || val <= 0) {
-      setError(t("verifier.invalidSurface"));
+    if (inputMode === "address") {
+      if (!selected) {
+        setError(t("verifier.selectAddress"));
+        return;
+      }
+      void runCheck({
+        lat: selected.lat,
+        lon: selected.lon,
+        label: selected.label,
+        kind: "address",
+      });
       return;
     }
-    void runCheck({ manualSurfaceM2: val });
+
+    const lat = Number(latInput.replace(",", ".").trim());
+    const lon = Number(lonInput.replace(",", ".").trim());
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+      setError(t("verifier.invalidCoords"));
+      return;
+    }
+    if (!isMetropolitanFrancePoint(lat, lon)) {
+      setError(t("verifier.outsideFrance"));
+      return;
+    }
+
+    void runCheck({
+      lat,
+      lon,
+      label: formatCoords(lat, lon) ?? `${lat}, ${lon}`,
+      kind: "coordinates",
+    });
   }
 
   function rfpHref(): string {
     if (!result) return "/appels-offres/nouveau";
     const p = new URLSearchParams();
-    p.set("adresse", result.label);
+    if (locationKind === "address" && result.label.trim()) {
+      p.set("adresse", result.label);
+    } else if (locationKind === "coordinates") {
+      const coords = formatCoords(result.lat, result.lon);
+      if (coords) {
+        p.set("notes_particulieres", fmt(t("verifier.rfpCoordsNote"), { coords }));
+      }
+    }
     if (result.surfaceM2) p.set("surface_estimee_m2", String(Math.round(result.surfaceM2)));
     if (result.derogations.derogationPente) p.set("derogation_pente", "1");
     if (result.derogations.zoneAbf) p.set("derogation_abf", "1");
     return `/appels-offres/nouveau?${p.toString()}`;
+  }
+
+  function locationResultLabel(): string {
+    return locationKind === "coordinates" ? t("verifier.resultLocation") : t("verifier.resultAddress");
   }
 
   function surfaceSourceLabel(source: VerifierResult["surfaceSource"]): string {
@@ -143,35 +188,105 @@ export default function VerifierClient() {
     <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
       <div>
         <form onSubmit={onSubmit} className="card p-6">
-          <label className="owner-tool-muted block text-sm font-medium">{t("verifier.addressLabel")}</label>
-          <div className="relative mt-2">
-            <input
-              className="input w-full"
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                setSelected(null);
-                setResult(null);
-              }}
-              placeholder={t("verifier.addressPlaceholder")}
-              autoComplete="off"
-            />
-            {suggestions.length > 0 && (
-              <ul className="verifier-suggestions absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-xl border shadow-lg">
-                {suggestions.map((f, i) => (
-                  <li key={`${f.properties.label}-${i}`}>
-                    <button
-                      type="button"
-                      className="block w-full px-4 py-2.5 text-left text-sm text-slate-700 hover:bg-slate-50"
-                      onClick={() => pickSuggestion(f)}
-                    >
-                      {f.properties.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                inputMode === "address"
+                  ? "bg-solar text-night-950"
+                  : "border border-slate-200 bg-white text-slate-600 hover:border-solar/40"
+              }`}
+              onClick={() => switchMode("address")}
+            >
+              {t("verifier.modeAddress")}
+            </button>
+            <button
+              type="button"
+              className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                inputMode === "coordinates"
+                  ? "bg-solar text-night-950"
+                  : "border border-slate-200 bg-white text-slate-600 hover:border-solar/40"
+              }`}
+              onClick={() => switchMode("coordinates")}
+            >
+              {t("verifier.modeCoordinates")}
+            </button>
           </div>
+
+          {inputMode === "address" ? (
+            <>
+              <label className="owner-tool-muted mt-4 block text-sm font-medium">
+                {t("verifier.addressLabel")}
+              </label>
+              <div className="relative mt-2">
+                <input
+                  className="input w-full"
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    setSelected(null);
+                    setResult(null);
+                  }}
+                  placeholder={t("verifier.addressPlaceholder")}
+                  autoComplete="off"
+                />
+                {suggestions.length > 0 && (
+                  <ul className="verifier-suggestions absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-xl border shadow-lg">
+                    {suggestions.map((f, i) => (
+                      <li key={`${f.properties.label}-${i}`}>
+                        <button
+                          type="button"
+                          className="block w-full px-4 py-2.5 text-left text-sm text-slate-700 hover:bg-slate-50"
+                          onClick={() => pickSuggestion(f)}
+                        >
+                          {f.properties.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="mt-4 space-y-4">
+              <p className="text-xs leading-relaxed text-slate-500">{t("verifier.coordsHint")}</p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block">
+                  <span className="owner-tool-muted mb-1 block text-sm font-medium">
+                    {t("verifier.coordsLat")}
+                  </span>
+                  <input
+                    className="input w-full"
+                    inputMode="decimal"
+                    value={latInput}
+                    onChange={(e) => {
+                      setLatInput(e.target.value);
+                      setResult(null);
+                    }}
+                    placeholder={t("verifier.coordsPlaceholderLat")}
+                    autoComplete="off"
+                  />
+                </label>
+                <label className="block">
+                  <span className="owner-tool-muted mb-1 block text-sm font-medium">
+                    {t("verifier.coordsLon")}
+                  </span>
+                  <input
+                    className="input w-full"
+                    inputMode="decimal"
+                    value={lonInput}
+                    onChange={(e) => {
+                      setLonInput(e.target.value);
+                      setResult(null);
+                    }}
+                    placeholder={t("verifier.coordsPlaceholderLon")}
+                    autoComplete="off"
+                  />
+                </label>
+              </div>
+            </div>
+          )}
+
           <button type="submit" className="btn-solar mt-4 w-full sm:w-auto" disabled={loading}>
             {loading ? t("verifier.searching") : t("verifier.submit")}
           </button>
@@ -190,28 +305,24 @@ export default function VerifierClient() {
         )}
 
         {result?.needsManualSurface && !result.surfaceM2 && (
-          <form onSubmit={onManualSubmit} className="card mt-6 space-y-4 p-6">
-            <p className="owner-tool-body text-sm">{t("verifier.manualLead")}</p>
-            <input
-              className="input"
-              type="number"
-              min={1}
-              step={1}
-              value={manualSurface}
-              onChange={(e) => setManualSurface(e.target.value)}
-              placeholder={t("verifier.surfacePlaceholder")}
-              required
-            />
-            <button type="submit" className="btn-solar" disabled={loading}>
-              {t("verifier.analyzeManual")}
-            </button>
-          </form>
+          <div className="card mt-6 space-y-4 p-6">
+            <div>
+              <p className="text-xs uppercase tracking-wide text-slate-500">{locationResultLabel()}</p>
+              <p className="owner-tool-heading mt-1 font-medium">{result.label}</p>
+            </div>
+            <p className="owner-tool-body text-sm">{t("verifier.noParkingLead")}</p>
+            {showDepositCta ? (
+              <Link href={rfpHref()} className="btn-mint inline-flex w-full justify-center sm:w-auto">
+                {t("nav.deposerProjet")}
+              </Link>
+            ) : null}
+          </div>
         )}
 
         {result && result.surfaceM2 != null && (
           <div className="card mt-6 space-y-5 p-6">
             <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500">{t("verifier.resultAddress")}</p>
+              <p className="text-xs uppercase tracking-wide text-slate-500">{locationResultLabel()}</p>
               <p className="owner-tool-heading mt-1 font-medium">{result.label}</p>
             </div>
 

@@ -38,7 +38,7 @@ export interface RfpSubmissionRow {
   contact_email: string;
   contact_telephone: string;
   email_verifie: boolean;
-  adresse: string;
+  adresse: string | null;
   latitude: number | null;
   longitude: number | null;
   departement: string | null;
@@ -171,11 +171,13 @@ export function departementFromPostal(codePostal: string | null | undefined): st
   return codePostal.slice(0, 2);
 }
 
-export function inferGeoFromAddress(adresse: string): {
+export function inferGeoFromAddress(adresse: string | null | undefined): {
   departement: string | null;
   region: string | null;
 } {
-  const cpMatch = adresse.match(/\b(\d{5})\b/);
+  const trimmed = adresse?.trim();
+  if (!trimmed) return { departement: null, region: null };
+  const cpMatch = trimmed.match(/\b(\d{5})\b/);
   const dept = departementFromPostal(cpMatch?.[1]);
   return { departement: dept, region: getRegion(dept) };
 }

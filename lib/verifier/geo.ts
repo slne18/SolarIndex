@@ -62,3 +62,8 @@ export function bboxAroundPoint(lat: number, lon: number, radiusM: number) {
   const dLon = radiusM / (111_000 * Math.cos((lat * Math.PI) / 180));
   return { minLat: lat - dLat, maxLat: lat + dLat, minLon: lon - dLon, maxLon: lon + dLon };
 }
+
+/** Bornes approximatives France métropolitaine (aligné POST /api/verifier). */
+export function isMetropolitanFrancePoint(lat: number, lon: number): boolean {
+  return lat >= 41 && lat <= 52 && lon >= -5.5 && lon <= 10;
+}

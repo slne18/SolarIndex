@@ -114,7 +114,6 @@ const fr = {
   "nav.deposerProjet": "Déposer mon projet",
   "nav.tools": "Outils",
   "nav.verifyEligibility": "Suis-je concerné ?",
-  "nav.simulatorGains": "Gains & économies",
   "nav.menu": "Menu",
   "nav.openMenu": "Ouvrir le menu",
   "nav.closeMenu": "Fermer le menu",
@@ -595,7 +594,6 @@ const fr = {
   "loiAper.huwartBody":
     "Depuis la loi n° 2025-1129 (loi Huwart), l'obligation peut être remplie par un mix avec au minimum {pct} % de recouvrement panneaux et jusqu'à 32,5 % de végétalisation.",
   "loiAper.ctaVerify": "Vérifier mon parking",
-  "loiAper.ctaSimulate": "Simuler gains & économies",
   "home.pricingEyebrow": "Tarifs",
   "home.pricingTitle": "Les tarifs",
   "home.pricingLead":
@@ -771,22 +769,31 @@ const fr = {
   "verifier.pill": "Outil gratuit",
   "verifier.title": "Êtes-vous concerné par l'obligation APER ?",
   "verifier.leadLine1":
-    "Saisissez l'adresse de votre parking. Nous détectons la surface via OpenStreetMap",
+    "Indiquez l'emplacement du parking (adresse postale ou coordonnées GPS). Nous détectons la surface via OpenStreetMap",
   "verifier.leadLine2":
     "ou le cadastre, puis estimons votre échéance réglementaire et les dérogations possibles.",
+  "verifier.modeAddress": "Adresse",
+  "verifier.modeCoordinates": "Coordonnées GPS",
+  "verifier.coordsHint":
+    "Centre du parking en degrés décimaux (WGS84). Repérez-le sur une carte ou votre GPS — utile si le site n'a pas d'adresse postale dédiée.",
+  "verifier.coordsLat": "Latitude",
+  "verifier.coordsLon": "Longitude",
+  "verifier.coordsPlaceholderLat": "Ex. 43.604652",
+  "verifier.coordsPlaceholderLon": "Ex. 1.444209",
+  "verifier.invalidCoords": "Indiquez une latitude et une longitude valides.",
+  "verifier.outsideFrance": "Point hors France métropolitaine.",
   "verifier.addressLabel": "Adresse du parking",
   "verifier.addressPlaceholder": "12 avenue de la République, Toulouse",
   "verifier.submit": "Vérifier si je suis concerné",
   "verifier.searching": "Recherche de votre parking…",
   "verifier.loadingStatus": "Recherche de votre parking… Analyse OpenStreetMap et cadastre (2 à 8 s).",
   "verifier.selectAddress": "Sélectionnez une adresse dans la liste.",
-  "verifier.invalidSurface": "Indiquez une surface valide en m².",
   "verifier.verifyError": "Erreur de vérification.",
-  "verifier.manualLead":
-    "Aucun parking cartographié ni parcelle cadastrale trouvée à cette adresse. Indiquez la surface estimée du parking pour poursuivre l'analyse.",
-  "verifier.surfacePlaceholder": "Surface en m²",
-  "verifier.analyzeManual": "Analyser avec cette surface",
+  "verifier.noParkingLead":
+    "Aucun parking n'a été détecté à cet emplacement via nos sources cartographiques. Déposez votre projet sur la plateforme pour préciser votre situation et recevoir des propositions d'installateurs qualifiés.",
   "verifier.resultAddress": "Adresse",
+  "verifier.resultLocation": "Localisation",
+  "verifier.rfpCoordsNote": "Coordonnées GPS du parking : {coords}",
   "verifier.surfaceDetected": "Surface détectée",
   "verifier.source": "Source",
   "verifier.sourceOsm": "OpenStreetMap (parking)",

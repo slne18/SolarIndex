@@ -56,7 +56,7 @@ export default function HeaderNavLinks({ variant, onNavigate }: HeaderNavLinksPr
 
     const ownerLinks = [
       { href: "/verifier", label: t("nav.verifyEligibility"), active: pathname.startsWith("/verifier") },
-      { href: "/simulateur", label: t("nav.simulatorGains"), active: pathname.startsWith("/simulateur") },
+      { href: "/simulateur", label: t("footer.simulator"), active: pathname.startsWith("/simulateur") },
     ] as const;
 
     return (
@@ -150,7 +150,7 @@ export default function HeaderNavLinks({ variant, onNavigate }: HeaderNavLinksPr
                   pathname.startsWith("/simulateur") ? "header-tools-dropdown-link-active" : ""
                 }`}
               >
-                {t("nav.simulatorGains")}
+                {t("footer.simulator")}
               </Link>
             </div>
           </div>

@@ -69,7 +69,7 @@ export default function RfpEditClient({ id }: { id: string }) {
         setContactFonction(r.contact_fonction ?? "");
         setContactEmail(r.contact_email);
         setContactTelephone(r.contact_telephone);
-        setAdresse(r.adresse);
+        setAdresse(r.adresse ?? "");
         setSurfaceEstimee(r.surface_estimee_m2 ? String(r.surface_estimee_m2) : "");
         setTypeSolution(r.type_solution_recherchee);
         setDejaEquipe(r.deja_equipe_partiel);
@@ -118,7 +118,7 @@ export default function RfpEditClient({ id }: { id: string }) {
         contact_fonction: contactFonction,
         contact_email: contactEmail,
         contact_telephone: contactTelephone,
-        adresse,
+        adresse: adresse.trim() || undefined,
         surface_estimee_m2: Number(surfaceEstimee) || undefined,
         type_solution_recherchee: typeSolution,
         deja_equipe_partiel: dejaEquipe,
@@ -222,8 +222,11 @@ export default function RfpEditClient({ id }: { id: string }) {
             />
           </Field>
         </div>
-        <Field label="Adresse du parking" required>
-          <AddressAutocomplete name="adresse" required value={adresse} onChange={setAdresse} />
+        <Field
+          label="Adresse du parking"
+          hint="Optionnel — précisez la localisation dans « Particularités » si l'adresse n'est pas connue."
+        >
+          <AddressAutocomplete name="adresse" value={adresse} onChange={setAdresse} />
         </Field>
         <Field label="Surface estimée (m²)">
           <input
