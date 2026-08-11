@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import type { MessageKey } from "@/lib/i18n";
 
-const ROTATE_MS = 3_500;
+const ROTATE_MS = 1_000;
 
 export type HowStep = {
   href: string;

@@ -1983,11 +1983,11 @@ h3,
   }
 
   .owner-how-progress-fill {
-    @apply absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-solar/50 to-solar transition-[width] duration-700 ease-in-out;
+    @apply absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-solar/50 to-solar transition-[width] duration-500 ease-in-out;
   }
 
   .owner-how-progress-traveler {
-    @apply absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-solar shadow-[0_0_14px_rgba(232,168,32,0.75)] transition-[left] duration-700 ease-in-out;
+    @apply absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-solar shadow-[0_0_14px_rgba(232,168,32,0.75)] transition-[left] duration-500 ease-in-out;
   }
 
   .owner-how-steps {
@@ -2007,7 +2007,7 @@ h3,
   }
 
   .owner-how-step-dot {
-    @apply relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-200 text-sm font-bold text-slate-500 transition-all duration-500;
+    @apply relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-200 text-sm font-bold text-slate-500 transition-all duration-300;
   }
 
   .owner-how-step-dot-passed {
@@ -2019,7 +2019,7 @@ h3,
   }
 
   .owner-how-step-label {
-    @apply mt-4 max-w-[11rem] text-sm font-medium leading-snug text-slate-600 transition-all duration-500;
+    @apply mt-4 max-w-[11rem] text-sm font-medium leading-snug text-slate-600 transition-all duration-300;
   }
 
   .owner-how-step-label-active,
