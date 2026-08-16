@@ -35,17 +35,21 @@ export default function HomeFeaturedNewsBanner() {
   return (
     <section className="home-news-banner" aria-label="Actualités ombrières solaires et loi APER">
       <div className="container-x py-10 sm:py-12">
-        <div className="home-news-banner-panel home-news-banner-panel-split">
-          <figure className="home-news-banner-media">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={image.url}
-              alt={image.alt}
-              className="home-news-banner-image"
-              loading="lazy"
-              decoding="async"
-            />
-          </figure>
+        <div
+          className={`home-news-banner-panel${image ? " home-news-banner-panel-split" : ""}`}
+        >
+          {image ? (
+            <figure className="home-news-banner-media">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={image.url}
+                alt={image.alt}
+                className="home-news-banner-image"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          ) : null}
 
           <div className="home-news-banner-body">
             <p className="home-news-banner-eyebrow">

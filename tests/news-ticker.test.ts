@@ -21,25 +21,28 @@ describe("NEWS_TICKER_ITEMS", () => {
     }
   });
 
-  it("assigne une illustration distincte à chaque article (jamais la photo hero)", () => {
-    const urls = NEWS_TICKER_ITEMS.map((item) => resolveNewsImage(item).url);
-    expect(new Set(urls).size).toBe(NEWS_TICKER_ITEMS.length);
+  it("n'affiche une illustration que pour les articles qui en ont une", () => {
+    const withImage = NEWS_TICKER_ITEMS.filter((item) => resolveNewsImage(item));
+    const withoutImage = NEWS_TICKER_ITEMS.filter((item) => !resolveNewsImage(item));
+    expect(withImage).toHaveLength(2);
+    expect(withoutImage).toHaveLength(3);
+    expect(withoutImage.map((item) => item.source)).toEqual(["Les Echos", "Le Monde", "Le Moniteur"]);
+    const urls = withImage.map((item) => resolveNewsImage(item)!.url);
+    expect(new Set(urls).size).toBe(2);
     for (const url of urls) {
       expect(url.startsWith("https://")).toBe(true);
       expect(url).not.toBe(HERO_HOME_IMAGE);
     }
   });
 
-  it("fournit une image de repli externe si imageUrl absent", () => {
+  it("ne fournit pas d'image de repli si imageUrl absent", () => {
     const resolved = resolveNewsImage({
       source: "Test",
       headline: "Titre de test assez long",
-      excerpt: "Extrait de test suffisamment long pour valider le comportement de repli.",
+      excerpt: "Extrait de test suffisamment long pour valider le comportement sans image.",
       url: "https://example.com/article",
     });
-    expect(resolved.url).toBe(NEWS_FALLBACK_IMAGE);
-    expect(resolved.url).not.toBe(HERO_HOME_IMAGE);
-    expect(resolved.alt.length).toBeGreaterThan(10);
+    expect(resolved).toBeNull();
   });
 
   it("ignore une imageUrl pointant vers la photo hero", () => {
@@ -50,6 +53,6 @@ describe("NEWS_TICKER_ITEMS", () => {
       url: "https://example.com/article",
       imageUrl: HERO_HOME_IMAGE,
     });
-    expect(resolved.url).toBe(NEWS_FALLBACK_IMAGE);
+    expect(resolved?.url).toBe(NEWS_FALLBACK_IMAGE);
   });
 });
