@@ -10,6 +10,7 @@ import {
 import { PRIX_RFP, RFP_SURFACE_TIER_M2 } from "@/lib/rfp";
 import LoiAperContent from "@/components/LoiAperContent";
 import SectionEyebrow from "@/components/SectionEyebrow";
+import HomeFeaturedNewsBanner from "@/components/HomeFeaturedNewsBanner";
 import HomeInstallerPageSections from "@/components/HomeInstallerPageSections";
 import HomeInstallerFaqSection from "@/components/HomeInstallerFaqSection";
 import HomeOwnerPageSections from "@/components/HomeOwnerPageSections";
@@ -28,6 +29,7 @@ export default function HomePageSections() {
       <div className="surface-light">
         {showChooser ? <LoiAperSection /> : null}
       </div>
+      {showChooser ? <HomeFeaturedNewsBanner /> : null}
       <div className="surface-light">
         {showChooser ? <HomeSignupCta /> : null}
       </div>
