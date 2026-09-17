@@ -49,6 +49,11 @@ export default function HeaderNavLinks({ onNavigate }: HeaderNavLinksProps) {
   const ownerLinks = [
     { href: "/verifier", label: t("nav.verifyEligibility"), active: pathname.startsWith("/verifier") },
     { href: "/simulateur", label: t("footer.simulator"), active: pathname.startsWith("/simulateur") },
+    {
+      href: "/appels-offres/nouveau",
+      label: t("nav.deposerProjet"),
+      active: pathname.startsWith("/appels-offres/nouveau"),
+    },
   ] as const;
 
   return (
@@ -78,16 +83,6 @@ export default function HeaderNavLinks({ onNavigate }: HeaderNavLinksProps) {
               {item.label}
             </Link>
           ))}
-          <Link
-            {...drawerLinkProps(
-              "/appels-offres/nouveau",
-              pathname.startsWith("/appels-offres/nouveau"),
-              "btn-mint mobile-nav-cta",
-              "owner",
-            )}
-          >
-            {t("nav.deposerProjet")}
-          </Link>
         </div>
       </div>
     </div>
