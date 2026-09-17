@@ -56,7 +56,7 @@ export default function MobileNavMenu() {
   }
 
   return (
-    <div className="mobile-nav lg:hidden">
+    <div className="mobile-nav">
       <button
         type="button"
         className="header-menu-btn"
@@ -72,39 +72,41 @@ export default function MobileNavMenu() {
         <>
           <button type="button" className="mobile-nav-backdrop" aria-label={t("nav.closeMenu")} onClick={close} />
           <div id={panelId} className="mobile-nav-panel" role="dialog" aria-modal="true" aria-label={t("nav.menu")}>
-            <HeaderNavLinks variant="drawer" onNavigate={close} />
+            <HeaderNavLinks onNavigate={close} />
 
-            <div className="mobile-nav-section">
-              <p className="mobile-nav-section-label">{t("nav.account")}</p>
-              <div className="mobile-nav-links">
-                {authed === null ? (
-                  <span className="mobile-nav-link mobile-nav-link-muted" aria-hidden>
-                    …
-                  </span>
-                ) : authed ? (
-                  <Link href={MON_ESPACE_PATH} className="mobile-nav-link" onClick={close}>
-                    {t("header.mySpace")}
-                  </Link>
-                ) : (
-                  <>
-                    <Link
-                      href={`/login?next=${encodeURIComponent(MON_ESPACE_PATH)}`}
-                      className="mobile-nav-link"
-                      onClick={close}
-                    >
-                      {t("header.signIn")}
+            <div className="mobile-nav-footer-sections">
+              <div className="mobile-nav-section">
+                <p className="mobile-nav-section-label">{t("nav.account")}</p>
+                <div className="mobile-nav-links">
+                  {authed === null ? (
+                    <span className="mobile-nav-link mobile-nav-link-muted" aria-hidden>
+                      …
+                    </span>
+                  ) : authed ? (
+                    <Link href={MON_ESPACE_PATH} className="mobile-nav-link" onClick={close}>
+                      {t("header.mySpace")}
                     </Link>
-                    <Link href="/login?mode=signup&next=/leads" className="btn-solar mobile-nav-cta" onClick={close}>
-                      {t("header.createSpace")}
-                    </Link>
-                  </>
-                )}
+                  ) : (
+                    <>
+                      <Link
+                        href={`/login?next=${encodeURIComponent(MON_ESPACE_PATH)}`}
+                        className="mobile-nav-link"
+                        onClick={close}
+                      >
+                        {t("header.signIn")}
+                      </Link>
+                      <Link href="/login?mode=signup&next=/leads" className="btn-solar mobile-nav-cta" onClick={close}>
+                        {t("header.createSpace")}
+                      </Link>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
 
-            <div className="mobile-nav-section mobile-nav-section-lang">
-              <p className="mobile-nav-section-label">{t("nav.language")}</p>
-              <LanguageSwitcher />
+              <div className="mobile-nav-section mobile-nav-section-lang">
+                <p className="mobile-nav-section-label">{t("nav.language")}</p>
+                <LanguageSwitcher />
+              </div>
             </div>
           </div>
         </>

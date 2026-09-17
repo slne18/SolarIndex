@@ -4,9 +4,9 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import type { Locale } from "@/lib/i18n";
 
-const LOCALES: { code: Locale; flag: string; labelKey: "lang.frFull" | "lang.enFull" }[] = [
-  { code: "fr", flag: "🇫🇷", labelKey: "lang.frFull" },
-  { code: "en", flag: "🇬🇧", labelKey: "lang.enFull" },
+const LOCALES: { code: Locale; flag: string; labelKey: "lang.fr" | "lang.en" }[] = [
+  { code: "fr", flag: "🇫🇷", labelKey: "lang.fr" },
+  { code: "en", flag: "🇬🇧", labelKey: "lang.en" },
 ];
 
 export default function LanguageSwitcher() {
