@@ -20,22 +20,10 @@ export function getStripe(): Stripe {
   return _stripe;
 }
 
-/** Prix Stripe (centimes) selon tier Premium/Standard × surface. */
-export function prixLeadCentimes(lead: Pick<
-  LeadRow,
-  | "surface_m2"
-  | "detection"
-  | "surface_tag_present"
-  | "source_surface"
-  | "score_confiance"
-  | "adresse"
-  | "siren"
-  | "id_parcelle"
-  | "pv_overlap_pct"
-  | "vision_surface_couverte_pct"
-  | "vision_checked_at"
-  | "flag_urgence"
->): number {
+/** Prix Stripe (centimes) selon tier premium / standard. */
+export function prixLeadCentimes(
+  lead: Pick<LeadRow, "surface_m2" | "vision_checked_at" | "created_at">,
+): number {
   return prixLeadCentimesFromRow(lead);
 }
 
