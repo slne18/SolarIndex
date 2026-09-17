@@ -162,12 +162,6 @@ function LeadsCatalog() {
         <CatalogViewToggle view={view} onChange={setCatalogView} />
       </div>
 
-      <p className="guarantee-banner mt-4 rounded-xl border px-4 py-3 text-sm leading-relaxed">
-        <span className="font-semibold text-solar">{t("leads.guaranteeTitle")}</span>
-        {" — "}
-        {t("leads.guaranteeBody")}
-      </p>
-
       {view === "map" ? (
         <div className="card mt-6 p-6">
           <FranceMap

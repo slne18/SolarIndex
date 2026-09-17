@@ -293,7 +293,7 @@ function LeadDetailContent({ id }: { id: string }) {
 
                 {canPurchase ? (
                   <p className="mt-3 text-center text-xs text-slate-500">
-                    {fmt(t("leads.detail.checkoutHint"), { guarantee: t("leads.guaranteeBody") })}
+                    {t("leads.detail.checkoutHint")}
                   </p>
                 ) : null}
 

@@ -1,7 +1,6 @@
 import { Resend } from "resend";
 import { LeadRow } from "./types";
 import { euros, nf, formatCoords } from "./format";
-import { LEAD_REPLACEMENT_GUARANTEE_EMAIL } from "./guarantee";
 import type { ProfilAcheteur } from "./profil-acheteur";
 
 // Envoi d'emails via Resend. Si RESEND_API_KEY est absent, on ne lève pas
@@ -117,9 +116,6 @@ export async function sendLeadDeliveryEmail(
     </table>
     <p style="margin-top:20px;">
       <a href="${appUrl}/mon-espace" style="background:#f59e0b;color:#0f172a;text-decoration:none;padding:10px 18px;border-radius:8px;font-weight:600;">Voir dans mon espace</a>
-    </p>
-    <p style="color:#94a3b8;font-size:12px;margin-top:20px;">
-      ${LEAD_REPLACEMENT_GUARANTEE_EMAIL}
     </p>
   </div>`;
 

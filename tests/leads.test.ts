@@ -80,9 +80,9 @@ function makeLead(overrides: Partial<LeadRow> = {}): LeadRow {
 }
 
 describe("computePrixLead", () => {
-  it("Premium : 150 € forfait", () => {
-    expect(computePrixLead(5000, "premium")).toBe(150);
-    expect(computePrixLead(50_000, "premium")).toBe(150);
+  it("Premium : 99 € forfait", () => {
+    expect(computePrixLead(5000, "premium")).toBe(99);
+    expect(computePrixLead(50_000, "premium")).toBe(99);
   });
   it("Standard : 100 € forfait", () => {
     expect(computePrixLead(5000, "standard")).toBe(100);
@@ -91,21 +91,26 @@ describe("computePrixLead", () => {
 });
 
 describe("leadTier / isLeadPremium", () => {
-  it("Premium si tous critères remplis", () => {
+  it("Premium si photo vérifiée et fiche récente", () => {
     const lead = makeLead({
-      detection: "libre",
-      surface_tag_present: true,
-      source_surface: "cadastre",
-      score_confiance: 0.85,
+      vision_checked_at: "2026-09-01T00:00:00Z",
+      created_at: "2026-08-01T00:00:00Z",
     });
     expect(isLeadPremium(lead)).toBe(true);
     expect(leadTier(lead)).toBe("premium");
-    expect(computePrixLeadFromRow(lead)).toBe(150);
+    expect(computePrixLeadFromRow(lead)).toBe(99);
   });
-  it("Standard si surface OSM seule", () => {
-    const lead = makeLead({ source_surface: "osm", score_confiance: 0.9 });
+  it("Standard sans photo vérifiée", () => {
+    const lead = makeLead({ vision_checked_at: null });
     expect(isLeadPremium(lead)).toBe(false);
     expect(computePrixLeadFromRow(lead)).toBe(100);
+  });
+  it("Standard si fiche de plus de 6 mois", () => {
+    const lead = makeLead({
+      vision_checked_at: "2026-09-01T00:00:00Z",
+      created_at: "2025-01-01T00:00:00Z",
+    });
+    expect(isLeadPremium(lead)).toBe(false);
   });
 });
 

@@ -33,13 +33,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     id: "payment",
     question: "Comment payer et recevoir mes leads ?",
     answer:
-      "Paiement sécurisé par Stripe (carte bancaire). La fiche est débloquée immédiatement dans Mon espace. Un email de confirmation peut être envoyé si la messagerie transactionnelle est configurée. Le Pack Territoire permet de consommer des crédits inclus à la place d'un paiement unitaire.",
-  },
-  {
-    id: "guarantee",
-    question: "Que se passe-t-il si un lead automatisé est déjà conforme APER ?",
-    answer:
-      "Pour les leads automatisés : remplacement gratuit ou remboursement intégral si le parking est déjà recouvert à plus de 50 % d'ombrières photovoltaïques (obligation APER considérée comme satisfaite), au choix de l'acheteur. Contactez-nous sous 48 h avec la preuve (photo, registre, etc.).",
+      "Paiement sécurisé par Stripe (carte bancaire). L'abonnement Accès plateforme débloque l'essentiel du catalogue et les appels d'offres publics. Les leads premium et consultations privées restent à l'achat unitaire.",
   },
   {
     id: "rfp-deposit",

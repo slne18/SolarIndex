@@ -43,27 +43,14 @@ export function isLeadSellable(
 }
 
 export function leadTier(
-  lead: Pick<
-    LeadRow,
-    | "detection"
-    | "surface_tag_present"
-    | "source_surface"
-    | "score_confiance"
-    | "adresse"
-    | "siren"
-    | "id_parcelle"
-    | "pv_overlap_pct"
-    | "vision_surface_couverte_pct"
-    | "vision_checked_at"
-    | "flag_urgence"
-  >,
+  lead: Pick<LeadRow, "vision_checked_at" | "created_at">,
 ): LeadTier {
   return isLeadPremium(lead) ? "premium" : "standard";
 }
 
-// Grille tarifaire par tier (€ TTC / lead, forfait — indépendant de la surface).
+// Grille tarifaire par tier (€ TTC / lead premium — les autres via abonnement plateforme).
 export const PRIX_LEAD = {
-  premium: 150,
+  premium: 99,
   standard: 100,
 } as const;
 
@@ -72,41 +59,13 @@ export function computePrixLead(_surface_m2: number, tier: LeadTier = "standard"
 }
 
 export function computePrixLeadFromRow(
-  lead: Pick<
-    LeadRow,
-    | "surface_m2"
-    | "detection"
-    | "surface_tag_present"
-    | "source_surface"
-    | "score_confiance"
-    | "adresse"
-    | "siren"
-    | "id_parcelle"
-    | "pv_overlap_pct"
-    | "vision_surface_couverte_pct"
-    | "vision_checked_at"
-    | "flag_urgence"
-  >,
+  lead: Pick<LeadRow, "surface_m2" | "vision_checked_at" | "created_at">,
 ): number {
   return computePrixLead(Number(lead.surface_m2), leadTier(lead));
 }
 
 export function prixLeadCentimesFromRow(
-  lead: Pick<
-    LeadRow,
-    | "surface_m2"
-    | "detection"
-    | "surface_tag_present"
-    | "source_surface"
-    | "score_confiance"
-    | "adresse"
-    | "siren"
-    | "id_parcelle"
-    | "pv_overlap_pct"
-    | "vision_surface_couverte_pct"
-    | "vision_checked_at"
-    | "flag_urgence"
-  >,
+  lead: Pick<LeadRow, "surface_m2" | "vision_checked_at" | "created_at">,
 ): number {
   return computePrixLeadFromRow(lead) * 100;
 }

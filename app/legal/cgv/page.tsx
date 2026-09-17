@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import LegalPageShell from "@/components/LegalPageShell";
-import {
-  LEAD_REPLACEMENT_GUARANTEE,
-  LEAD_REPLACEMENT_GUARANTEE_CGV_DETAIL,
-} from "@/lib/guarantee";
 import { PRIX_LEAD } from "@/lib/leads";
 import { MAX_BUYERS_PER_LEAD } from "@/lib/lead-slots";
+import { PRIX_PLATEFORME_MENSUEL } from "@/lib/platform-access";
 import { PRIX_RFP } from "@/lib/rfp";
 import {
   INSTALLER_NO_PERFORMANCE_CLAUSE,
@@ -14,7 +11,6 @@ import {
   RFP_SERVICE_SUMMARY,
   RFP_TOOLS_DISCLAIMER,
 } from "@/lib/rfp-legal";
-import { TERRITOIRE_LEADS_QUOTA, TERRITOIRE_PACK_EUR } from "@/lib/subscription";
 import { CONTACT_EMAIL, SITE_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -44,14 +40,19 @@ export default function CgvPage() {
       <section>
         <h2>2. Produits et tarifs</h2>
         <ul>
-          <li>Lead automatisé Standard : {PRIX_LEAD.standard} € TTC / fiche.</li>
-          <li>Lead automatisé Premium : {PRIX_LEAD.premium} € TTC / fiche.</li>
           <li>
-            Pack Territoire : {TERRITOIRE_PACK_EUR} € TTC pour {TERRITOIRE_LEADS_QUOTA} crédits lead
-            (décomptés au checkout selon les règles affichées).
+            Abonnement Accès plateforme : {PRIX_PLATEFORME_MENSUEL} € TTC / mois (catalogue leads hors
+            premium, appels d&apos;offres publiés sur plateforme officielle).
           </li>
-          <li>Accès installateur — projet &lt; 10 000 m² : {PRIX_RFP.sous_10000} € TTC.</li>
-          <li>Accès installateur — projet ≥ 10 000 m² : {PRIX_RFP.a_partir_10000} € TTC.</li>
+          <li>Lead automatisé premium : {PRIX_LEAD.premium} € TTC / fiche (achat unitaire).</li>
+          <li>
+            Accès installateur — consultation privée, projet &lt; 10 000 m² : {PRIX_RFP.sous_10000} €
+            TTC.
+          </li>
+          <li>
+            Accès installateur — consultation privée, projet ≥ 10 000 m² :{" "}
+            {PRIX_RFP.a_partir_10000} € TTC.
+          </li>
         </ul>
         <p>Les tarifs en vigueur sont ceux affichés sur le site au moment de la commande.</p>
       </section>
@@ -61,8 +62,7 @@ export default function CgvPage() {
         <p>
           La commande est validée après paiement intégral via Stripe. Le déblocage de la fiche ou des
           coordonnées est immédiat dans «&nbsp;Mon espace&nbsp;». Aucun remboursement n&apos;est dû une
-          fois l&apos;information délivrée, sauf application de la garantie prévue à l&apos;article 6
-          (leads automatisés uniquement) ou erreur manifeste imputable à {SITE_NAME}.
+          fois l&apos;information délivrée, sauf erreur manifeste imputable à {SITE_NAME}.
         </p>
       </section>
 
@@ -108,20 +108,8 @@ export default function CgvPage() {
         </ul>
       </section>
 
-      <section>
-        <h2>6. Garantie conformité APER — remplacement ou remboursement (leads automatisés uniquement)</h2>
-        <p>{LEAD_REPLACEMENT_GUARANTEE}</p>
-        <p>{LEAD_REPLACEMENT_GUARANTEE_CGV_DETAIL}</p>
-        <p>
-          Cette garantie porte sur la <strong>conformité factuelle</strong> du parking (recouvrement
-          APER), et non sur l&apos;obtention d&apos;un contrat commercial. Demande à{" "}
-          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> avec éléments de preuve (photo,
-          registre, etc.).
-        </p>
-      </section>
-
       <section id="rfp-installateurs">
-        <h2>7. Accès installateur aux dépôts de projets</h2>
+        <h2>6. Accès installateur aux dépôts de projets</h2>
         <p>L&apos;installateur qui achète l&apos;accès reconnaît que :</p>
         <ul>
           <li>Il achète des coordonnées et des éléments descriptifs, pas un marché attribué.</li>
@@ -148,7 +136,7 @@ export default function CgvPage() {
       </section>
 
       <section id="rfp-deposants">
-        <h2>8. Dépôts de projets (renvoi CGU)</h2>
+        <h2>7. Dépôts de projets (renvoi CGU)</h2>
         <p>
           Les gestionnaires et propriétaires qui déposent gratuitement un projet sont soumis aux{" "}
           <a href="/legal/cgu">Conditions générales d&apos;utilisation (CGU)</a> (absence de garantie
@@ -157,7 +145,7 @@ export default function CgvPage() {
       </section>
 
       <section>
-        <h2>9. Droit de rétractation</h2>
+        <h2>8. Droit de rétractation</h2>
         <p>
           Contenu numérique fourni immédiatement après paiement : le client reconnaît renoncer à son
           droit de rétractation une fois la fiche ou les coordonnées débloquées (art. L221-28 du Code
@@ -166,7 +154,7 @@ export default function CgvPage() {
       </section>
 
       <section>
-        <h2>10. Litiges</h2>
+        <h2>9. Litiges</h2>
         <p>
           Droit français. Tentative de résolution amiable par{" "}
           <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. À défaut, tribunaux compétents du

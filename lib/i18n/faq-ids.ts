@@ -8,7 +8,6 @@ export const FAQ_IDS = [
   "zones",
   "exclusivity",
   "payment",
-  "guarantee",
   "rfp-deposit",
   "rfp-legal",
   "data-sources",

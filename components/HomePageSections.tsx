@@ -1,12 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { PRIX_LEAD } from "@/lib/leads";
-import {
-  TERRITOIRE_LEADS_QUOTA,
-  TERRITOIRE_PACK_DISCOUNT_PCT,
-  TERRITOIRE_PACK_EUR,
-} from "@/lib/subscription";
+import { PRIX_PLATEFORME_MENSUEL } from "@/lib/platform-access";
+import type { PricingStats } from "@/lib/pricing-stats";
 import { PRIX_RFP, RFP_SURFACE_TIER_M2 } from "@/lib/rfp";
 import LoiAperContent from "@/components/LoiAperContent";
 import SectionEyebrow from "@/components/SectionEyebrow";
@@ -60,6 +58,44 @@ function InstallerTarifsSections() {
   const { locale } = useLocale();
   const premiumHref = "/leads?tier=premium";
   const surfaceLabel = RFP_SURFACE_TIER_M2.toLocaleString(locale === "en" ? "en-US" : "fr-FR");
+  const [stats, setStats] = useState<PricingStats | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/pricing-stats");
+        if (!res.ok) return;
+        const data = (await res.json()) as PricingStats;
+        if (!cancelled) setStats(data);
+      } catch {
+        /* ignore — affichage sans % dynamique */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const platformFeatures = [
+    stats
+      ? fmt(t("home.pricingPlatformF1"), {
+          pct: stats.leads_platform_pct,
+          count: stats.leads_platform.toLocaleString(locale === "en" ? "en-US" : "fr-FR"),
+        })
+      : t("home.pricingPlatformF1Fallback"),
+    stats?.rfp_public
+      ? fmt(t("home.pricingPlatformF2"), {
+          count: stats.rfp_public.toLocaleString(locale === "en" ? "en-US" : "fr-FR"),
+        })
+      : t("home.pricingPlatformF2Fallback"),
+    t("home.pricingPlatformF3"),
+    t("home.pricingPlatformF4"),
+  ];
+
+  const premiumCatalogShare = stats
+    ? fmt(t("home.pricingPremiumF4"), { pct: Math.max(0, 100 - stats.leads_platform_pct) })
+    : t("home.pricingPremiumF4Fallback");
 
   return (
     <div className="surface-light border-t border-slate-100">
@@ -74,19 +110,15 @@ function InstallerTarifsSections() {
         <p className="pricing-sublead mx-auto mt-2 max-w-xl text-center text-slate-600">
           {t("home.pricingLeadsLead")}
         </p>
-        <div className="pricing-grid mt-8 md:grid-cols-3">
+        <div className="pricing-grid mt-8 md:grid-cols-2">
           <PricingCard
-            title={t("home.pricingStandardTitle")}
-            price={`${PRIX_LEAD.standard} €`}
-            priceNote={t("home.pricingPerLead")}
-            features={[
-              t("home.pricingStandardF1"),
-              t("home.pricingStandardF2"),
-              t("home.pricingStandardF3"),
-              t("home.pricingStandardF4"),
-            ]}
-            cta={t("home.pricingBrowse")}
-            href="/leads"
+            title={t("home.pricingPlatformTitle")}
+            price={`${PRIX_PLATEFORME_MENSUEL} €`}
+            priceNote={t("home.pricingPerMonth")}
+            features={platformFeatures}
+            cta={t("home.pricingSubscribe")}
+            href="/login?mode=signup&next=/leads"
+            featured
             popularLabel={t("home.pricingPopular")}
           />
           <PricingCard
@@ -97,26 +129,10 @@ function InstallerTarifsSections() {
               t("home.pricingPremiumF1"),
               t("home.pricingPremiumF2"),
               t("home.pricingPremiumF3"),
-              t("home.pricingPremiumF4"),
-              t("home.pricingPremiumF5"),
+              premiumCatalogShare,
             ]}
             cta={t("home.pricingFilterPremium")}
             href={premiumHref}
-            featured
-            popularLabel={t("home.pricingPopular")}
-          />
-          <PricingCard
-            title={t("home.pricingTerritoireTitle")}
-            price={`${TERRITOIRE_PACK_EUR} €`}
-            priceNote={t("home.pricingOneTime")}
-            badge={`−${TERRITOIRE_PACK_DISCOUNT_PCT} %`}
-            features={[
-              fmt(t("home.pricingTerritoireF1"), { quota: TERRITOIRE_LEADS_QUOTA }),
-              t("home.pricingTerritoireF2"),
-              t("home.pricingTerritoireF3"),
-            ]}
-            cta={t("home.pricingBuyPack")}
-            href="/pack-territoire"
             popularLabel={t("home.pricingPopular")}
           />
         </div>
@@ -133,8 +149,9 @@ function InstallerTarifsSections() {
           <PricingCard
             title={fmt(t("home.pricingRfpSmallTitle"), { surface: surfaceLabel })}
             price={`${PRIX_RFP.sous_10000} €`}
-            priceNote={t("home.pricingPerProject")}
+            priceNote={t("home.pricingPerProjectPrivate")}
             features={[
+              t("home.pricingRfpPrivateF1"),
               t("home.pricingRfpF1"),
               t("home.pricingRfpSmallF2"),
               t("home.pricingRfpSmallF3"),
@@ -146,8 +163,9 @@ function InstallerTarifsSections() {
           <PricingCard
             title={fmt(t("home.pricingRfpLargeTitle"), { surface: surfaceLabel })}
             price={`${PRIX_RFP.a_partir_10000} €`}
-            priceNote={t("home.pricingPerProject")}
+            priceNote={t("home.pricingPerProjectPrivate")}
             features={[
+              t("home.pricingRfpPrivateF1"),
               t("home.pricingRfpF1"),
               t("home.pricingRfpLargeF2"),
               t("home.pricingRfpLargeF3"),
@@ -160,7 +178,7 @@ function InstallerTarifsSections() {
         </div>
         <p className="mt-6 text-center text-xs text-slate-500">
           {t("home.pricingLegal")}{" "}
-          <Link href="/legal/cgu" className="text-solar hover:underline">
+          <Link href="/legal/cgv" className="text-solar hover:underline">
             {t("home.pricingLegalLink")}
           </Link>
         </p>

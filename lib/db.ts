@@ -1,4 +1,5 @@
 import { getAdminClient } from "./supabase";
+import { premiumLeadCutoffIso } from "./platform-access";
 import { MAX_BUYERS_PER_LEAD } from "./lead-slots";
 import { PV_OVERLAP_MIN, VISION_COVERAGE_EQUIPE } from "./pv-overlap";
 import { SURFACE_GRAY_LOW_MAX_M2 } from "./surface-thresholds";
@@ -67,10 +68,8 @@ function applyCatalogFilters(query: SupabaseQuery, opts: LeadQueryOptions): Supa
   }
   if (opts.premiumOnly) {
     query = query
-      .eq("detection", "libre")
-      .eq("surface_tag_present", true)
-      .eq("source_surface", "cadastre")
-      .gte("score_confiance", 0.8);
+      .not("vision_checked_at", "is", null)
+      .gte("created_at", premiumLeadCutoffIso());
   }
   if (opts.dirigeantOnly) {
     query = query.or("dirigeant_exploitant.not.is.null,dirigeant_nom.not.is.null");

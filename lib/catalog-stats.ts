@@ -35,6 +35,18 @@ function baseCatalogQuery() {
     .gt("surface_m2", SURFACE_GRAY_LOW_MAX_M2);
 }
 
+/** Compte les leads vendables du catalogue (filtres catalogue standard). */
+export function baseCatalogCountQuery() {
+  return baseCatalogQuery();
+}
+
+/** Leads premium : photo aérienne vérifiée et fiche de moins de 6 mois. */
+export function countPremiumLeadsQuery(createdAfterIso: string) {
+  return baseCatalogQuery()
+    .not("vision_checked_at", "is", null)
+    .gte("created_at", createdAfterIso);
+}
+
 export async function getCatalogStats(): Promise<CatalogStats> {
   const supabase = getAdminClient();
   const urgenceBase = {

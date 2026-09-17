@@ -1,4 +1,5 @@
 import type { LeadRow, PublicLead, SourceSurface, LeadTier } from "./types";
+import { PREMIUM_LEAD_MAX_AGE_MS } from "./platform-access";
 import {
   effectiveLeadScore,
   HUWART_LAW_REF,
@@ -14,30 +15,15 @@ import {
   visionRecouvrementSummary,
 } from "./pv-overlap";
 
-/** Critères objectifs du tier Premium (alignés pipeline + base). */
+/** Lead premium : photo aérienne vérifiée et fiche catalogue de moins de 6 mois. */
 export function isLeadPremium(
-  lead: Pick<
-    LeadRow,
-    | "detection"
-    | "surface_tag_present"
-    | "source_surface"
-    | "score_confiance"
-    | "adresse"
-    | "siren"
-    | "id_parcelle"
-    | "pv_overlap_pct"
-    | "vision_surface_couverte_pct"
-    | "vision_checked_at"
-    | "flag_urgence"
-  >,
+  lead: Pick<LeadRow, "vision_checked_at" | "created_at">,
+  now = Date.now(),
 ): boolean {
-  if (lead.detection !== "libre") return false;
-  if (!lead.surface_tag_present) return false;
-  if (lead.source_surface !== "cadastre") return false;
-  if (effectiveLeadScore(lead) < 0.8) return false;
-  if (!(lead.adresse ?? "").trim()) return false;
-  if (!(lead.siren ?? "").trim() || !(lead.id_parcelle ?? "").trim()) return false;
-  return true;
+  if (!lead.vision_checked_at) return false;
+  const created = new Date(lead.created_at).getTime();
+  if (Number.isNaN(created)) return false;
+  return now - created <= PREMIUM_LEAD_MAX_AGE_MS;
 }
 
 export type ConfidenceFactor = {
@@ -213,6 +199,6 @@ export function tierLabel(tier: LeadTier): string {
 
 export function tierShortDescription(tier: LeadTier): string {
   return tier === "premium"
-    ? "Tous les signaux principaux sont au vert : prospection prioritaire."
-    : "Opportunité réelle, mais au moins un signal demande des vérifications avant de contacter le prospect. Prix réduit.";
+    ? "Photo aérienne vérifiée et fiche récente (< 6 mois) — achat unitaire."
+    : "Inclus dans l'abonnement Accès plateforme.";
 }
