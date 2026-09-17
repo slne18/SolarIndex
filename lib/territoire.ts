@@ -22,6 +22,7 @@ export type TerritoireSummary = {
 import { bboxAroundPoint, haversineKm } from "./verifier/geo";
 
 type TerritoireLeadRow = {
+  created_at: string;
   latitude: number;
   longitude: number;
   departement: string;
@@ -67,7 +68,7 @@ async function fetchSellableLeads(): Promise<TerritoireLeadRow[]> {
     const { data, error } = await supabase
       .from("leads")
       .select(
-        "latitude, longitude, departement, flag_urgence, valeur_chantier_eur, surface_m2, score_confiance, statut, buyers_count, siren, id_parcelle, adresse, detection, pv_overlap_pct, vision_surface_couverte_pct, vision_checked_at, surface_tag_present, source_surface",
+        "created_at, latitude, longitude, departement, flag_urgence, valeur_chantier_eur, surface_m2, score_confiance, statut, buyers_count, siren, id_parcelle, adresse, detection, pv_overlap_pct, vision_surface_couverte_pct, vision_checked_at, surface_tag_present, source_surface",
       )
       .eq("statut", "disponible")
       .lt("buyers_count", MAX_BUYERS_PER_LEAD)
