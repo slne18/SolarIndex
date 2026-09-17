@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     }
 
     const question = body.question?.trim() ?? "";
-    const email = body.email?.trim() || undefined;
+    const email = body.email?.trim() ?? "";
 
     const entry = await createFaqSubmission({ question, senderEmail: email });
     const emailSent = await sendFaqSubmissionAdminEmail(entry);
