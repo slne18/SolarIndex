@@ -1012,7 +1012,7 @@ const fr = {
   "faq.questionPlaceholder": "Ex. : Puis-je filtrer les leads par département avant achat ?",
   "faq.send": "Envoyer ma question",
   "faq.minChars": "10 caractères minimum",
-  "faq.emailLabel": "Votre email (optionnel)",
+  "faq.emailLabel": "Votre email",
   "faq.emailPlaceholder": "Pour vous recontacter si besoin",
   "faq.sending": "Envoi…",
   "faq.sendSuccess":

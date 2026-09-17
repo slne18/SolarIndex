@@ -44,6 +44,13 @@ export function validateFaqAnswer(answer: string): string | null {
   return null;
 }
 
+export function validateFaqEmail(email: string | null | undefined): string | null {
+  const value = email?.trim().toLowerCase() ?? "";
+  if (!value) return "L'adresse email est requise.";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Adresse email invalide.";
+  return null;
+}
+
 function mapPublishedRow(row: FaqEntryRow, locale: Locale): FaqPublishedView | null {
   const question =
     locale === "en" && row.question_en?.trim()
@@ -93,15 +100,14 @@ export async function queryFaqSubmissionQueue(): Promise<FaqEntryRow[]> {
 
 export async function createFaqSubmission(input: {
   question: string;
-  senderEmail?: string | null;
+  senderEmail: string;
 }): Promise<FaqEntryRow> {
   const questionErr = validateFaqQuestion(input.question);
   if (questionErr) throw new Error(questionErr);
 
-  const email = input.senderEmail?.trim().toLowerCase() || null;
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    throw new Error("Adresse email invalide.");
-  }
+  const emailErr = validateFaqEmail(input.senderEmail);
+  if (emailErr) throw new Error(emailErr);
+  const email = input.senderEmail!.trim().toLowerCase();
 
   const { data, error } = await getAdminClient()
     .from("faq_entries")

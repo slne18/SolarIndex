@@ -1007,7 +1007,7 @@ const en: Record<MessageKey, string> = {
   "faq.questionPlaceholder": "e.g. Can I filter leads by department before buying?",
   "faq.send": "Send my question",
   "faq.minChars": "10 characters minimum",
-  "faq.emailLabel": "Your email (optional)",
+  "faq.emailLabel": "Your email",
   "faq.emailPlaceholder": "So we can follow up if needed",
   "faq.sending": "Sending…",
   "faq.sendSuccess":

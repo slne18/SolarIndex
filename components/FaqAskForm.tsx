@@ -11,7 +11,8 @@ export default function FaqAskForm() {
   const [sent, setSent] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const canSend = customQuestion.trim().length >= 10 && !sending;
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(senderEmail.trim());
+  const canSend = customQuestion.trim().length >= 10 && emailOk && !sending;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -25,7 +26,7 @@ export default function FaqAskForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           question: customQuestion.trim(),
-          email: senderEmail.trim() || undefined,
+          email: senderEmail.trim(),
         }),
       });
       const body = (await res.json()) as { error?: string; ok?: boolean };
@@ -75,6 +76,7 @@ export default function FaqAskForm() {
         <span className="text-sm text-slate-600">{t("faq.emailLabel")}</span>
         <input
           type="email"
+          required
           value={senderEmail}
           onChange={(e) => setSenderEmail(e.target.value)}
           className="input mt-1 w-full !border-slate-200 !bg-white !text-slate-900 placeholder:!text-slate-400"
