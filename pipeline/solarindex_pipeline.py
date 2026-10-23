@@ -11,10 +11,10 @@ Dépendances :
 
 Usage :
     # Étape 1 + 4 seulement (rapide) :
-    python solarindex_pipeline.py --dept 33 --output leads_gironde.csv
+    python pipeline/solarindex_pipeline.py --dept 33 --output data/samples/leads_gironde.csv
 
     # Avec enrichissement cadastre + entreprise sur les meilleurs leads :
-    python solarindex_pipeline.py --dept 33 --output leads_gironde.csv --enrich --max-enrich 50
+    python pipeline/solarindex_pipeline.py --dept 33 --output data/samples/leads_gironde.csv --enrich --max-enrich 50
 """
 
 import argparse
@@ -35,9 +35,10 @@ from shapely.ops import transform
 from shapely.strtree import STRtree
 import pyproj
 
-_ROOT = Path(__file__).resolve().parent
-if str(_ROOT) not in sys.path:
-    sys.path.insert(0, str(_ROOT))
+_PIPELINE_ROOT = Path(__file__).resolve().parent
+_REPO_ROOT = _PIPELINE_ROOT.parent
+if str(_PIPELINE_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PIPELINE_ROOT))
 from lib.surface_thresholds import compute_flag_urgence  # noqa: E402
 from lib.majic import majic_to_proprietaire  # noqa: E402
 
@@ -63,7 +64,7 @@ def _load_dotenv(path: str = ".env.local") -> None:
         pass
 
 
-_load_dotenv(str(_ROOT / ".env.local"))
+_load_dotenv(str(_REPO_ROOT / ".env.local"))
 
 # ─── Constantes Métier ─────────────────────────────────────────────────────────
 SURFACE_MIN_M2 = 1_500          # Seuil légal loi APER
@@ -759,7 +760,7 @@ _osm_geom_disk_cache: dict[int, list[tuple[float, float]]] | None = None
 
 
 def _osm_geom_cache_path() -> Path:
-    return _ROOT / "data" / "cache" / "osm_geoms.json"
+    return _REPO_ROOT / "data" / "cache" / "osm_geoms.json"
 
 
 def _load_osm_geom_cache() -> dict[int, list[tuple[float, float]]]:

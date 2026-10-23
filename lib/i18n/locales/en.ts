@@ -490,6 +490,7 @@ const en: Record<MessageKey, string> = {
   "rfp.purchase.networkError": "Network error.",
   "rfp.purchase.loading": "Redirecting…",
   "rfp.purchase.unlock": "Unlock contact details — €{price}",
+  "rfp.purchase.unlockIncluded": "Unlock (included in subscription)",
 
   "rfp.offerType.devis_installation.label": "Standard installation quote",
   "rfp.offerType.devis_installation.short": "Quote",
@@ -601,6 +602,7 @@ const en: Record<MessageKey, string> = {
   "home.pricingPopular": "Popular",
   "home.pricingPerLead": "per lead",
   "home.pricingPerMonth": "per month",
+  "home.pricingFirstMonth": "first month",
   "home.pricingOneTime": "one-time purchase",
   "home.pricingPerProject": "per project access",
   "home.pricingPerProjectPrivate": "per private project access",
@@ -619,7 +621,8 @@ const en: Record<MessageKey, string> = {
   "home.pricingPlatformF2Fallback":
     "Includes tenders published on an official procurement platform",
   "home.pricingPlatformF3": "Browse and unlock records from My space",
-  "home.pricingPlatformF4": "All of France · monthly renewal",
+  "home.pricingPlatformF4": "Then €{price}/month · automatic renewal",
+  "home.pricingPlatformIntro": "−20% first month (€{intro}), then €{price}/month",
   "home.pricingPremiumF1": "Verified aerial photo",
   "home.pricingPremiumF2": "Catalog listing under 6 months old",
   "home.pricingPremiumF3": "Pay per unit — not included in the subscription",
@@ -713,8 +716,14 @@ const en: Record<MessageKey, string> = {
   "account.leadOwner":
     "Track your submitted projects, interested installers and account settings.",
   "account.logout": "Sign out",
+  "account.platformTitle": "Platform access active",
+  "account.platformLead": "Lead catalog (excluding premium) and public tenders included.",
+  "account.platformRenewal": "Renews on {date}",
+  "account.platformCta": "Browse catalog",
+  "account.noPlatform": "No active Platform access subscription.",
+  "account.platformLink": "Subscribe — Platform access",
   "account.packTitle": "Territory pack",
-  "account.packCredits": "{remaining} / {quota} lead credits remaining · Standard or Premium",
+  "account.packCredits": "{remaining} / {quota} lead credits remaining · Premium choice",
   "account.chooseLead": "Choose a lead",
   "account.noPack": "No active pack credits.",
   "account.packLink": "Territory pack — 5 leads",
@@ -964,7 +973,7 @@ const en: Record<MessageKey, string> = {
     "Automated leads rely on public sources (OpenStreetMap, cadastre, SIREN, MAJIC) cross-checked and enriched by our algorithms. Each record shows a confidence index. Submitted tenders are entered directly by the owner or operator, then moderated before publication.",
   "faq.subscription.q": "Is there a subscription?",
   "faq.subscription.a":
-    "No. SolarIndex works on a pay-per-unit basis: you only buy the leads or tender access you need. The Territory Pack is a one-time credit purchase with no automatic renewal.",
+    "Yes. Platform access (€300/month, −20% first month) unlocks most of the lead catalog and tenders published on an official platform. Premium leads and private consultations remain pay-per-unit.",
   "faq.zones.q": "Can I choose my areas?",
   "faq.zones.a":
     "Yes. The leads catalog can be filtered by department, area, confidence index and other criteria before purchase. You only pay for records matching your operating zone.",

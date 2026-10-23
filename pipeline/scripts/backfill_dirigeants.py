@@ -7,7 +7,7 @@ Seuls les leads vendables avec dirigeant_exploitant IS NULL sont retraités
 (critères alignés lib/leads.ts isLeadSellable).
 
 Usage :
-  .venv/bin/python scripts/backfill_dirigeants.py [--limit N] [--dry-run] [--all]
+  .venv/bin/python pipeline/scripts/backfill_dirigeants.py [--limit N] [--dry-run] [--all]
 
 Pré-requis : NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (.env.local)
 """
@@ -21,8 +21,10 @@ from pathlib import Path
 
 import requests
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import ensure_pipeline_on_path  # noqa: E402
+
+ensure_pipeline_on_path()
 
 import solarindex_pipeline as pipe  # noqa: E402 — charge .env.local
 from lib.company_enrichment import enrich_lead_contacts  # noqa: E402

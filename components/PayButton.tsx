@@ -2,18 +2,26 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { getAccessToken } from "@/lib/supabaseBrowser";
+import type { LeadTier } from "@/lib/types";
 
 interface PayButtonProps {
   leadId: string;
   prix: number;
+  tier?: LeadTier;
 }
 
-export default function PayButton({ leadId, prix }: PayButtonProps) {
+interface SubscriptionState {
+  packRemaining: number | null;
+  platformActive: boolean;
+}
+
+export default function PayButton({ leadId, prix, tier = "standard" }: PayButtonProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
-  const [subRemaining, setSubRemaining] = useState<number | null>(null);
+  const [sub, setSub] = useState<SubscriptionState>({ packRemaining: null, platformActive: false });
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
@@ -29,9 +37,10 @@ export default function PayButton({ leadId, prix }: PayButtonProps) {
         });
         if (subRes.ok) {
           const data = await subRes.json();
-          if (data.active && data.remaining > 0) {
-            setSubRemaining(data.remaining);
-          }
+          setSub({
+            packRemaining: data.active && data.remaining > 0 ? data.remaining : null,
+            platformActive: !!data.platform?.active,
+          });
         }
       } catch {
         /* ignore */
@@ -40,6 +49,32 @@ export default function PayButton({ leadId, prix }: PayButtonProps) {
       }
     })();
   }, []);
+
+  async function onSubscribe() {
+    setLoading(true);
+    setMsg(null);
+    try {
+      const token = await getAccessToken();
+      if (!token) {
+        router.push(`/login?next=/checkout/${leadId}`);
+        return;
+      }
+      const res = await fetch("/api/platform-subscribe", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (data.url) {
+        window.location.href = data.url as string;
+        return;
+      }
+      setMsg(data.error || "Impossible de démarrer l'abonnement.");
+    } catch {
+      setMsg("Erreur réseau. Réessayez.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function onPay() {
     setLoading(true);
@@ -58,6 +93,10 @@ export default function PayButton({ leadId, prix }: PayButtonProps) {
 
       if (res.status === 401) {
         router.push(`/login?next=/checkout/${leadId}`);
+        return;
+      }
+      if (res.status === 402 && data.requiresPlatform) {
+        setMsg(data.error || "Abonnement Accès plateforme requis.");
         return;
       }
       if (res.status === 503) {
@@ -88,24 +127,42 @@ export default function PayButton({ leadId, prix }: PayButtonProps) {
     }
   }
 
-  const useCredit = subRemaining != null && subRemaining > 0;
+  const usePackCredit = tier === "premium" && sub.packRemaining != null && sub.packRemaining > 0;
+  const usePlatform = tier === "standard" && sub.platformActive;
 
   let label = `Payer ${prix} €`;
-  if (useCredit) {
-    label = `Utiliser 1 crédit pack (${subRemaining} restant${subRemaining! > 1 ? "s" : ""})`;
+  if (usePlatform) {
+    label = "Débloquer (inclus abonnement)";
+  } else if (usePackCredit) {
+    label = `Utiliser 1 crédit pack (${sub.packRemaining} restant${sub.packRemaining! > 1 ? "s" : ""})`;
+  } else if (tier === "standard" && !sub.platformActive) {
+    label = "S'abonner pour débloquer";
   }
+
+  let hint = "Paiement sécurisé Stripe · Fiche débloquée immédiatement dans Mon espace.";
+  if (usePlatform) {
+    hint = "Lead inclus dans votre abonnement Accès plateforme.";
+  } else if (usePackCredit) {
+    hint = "Lead débloqué immédiatement · décompté de votre Pack Territoire.";
+  } else if (tier === "standard" && !sub.platformActive) {
+    hint = "Les leads standard sont accessibles via l'abonnement Accès plateforme.";
+  }
+
+  const handleClick =
+    tier === "standard" && !sub.platformActive && checked ? onSubscribe : onPay;
 
   return (
     <div>
-      <button onClick={onPay} disabled={loading || !checked} className="btn-solar mt-6 w-full">
+      <button onClick={handleClick} disabled={loading || !checked} className="btn-solar mt-6 w-full">
         {loading ? "Traitement…" : !checked ? "Chargement…" : label}
       </button>
+      {tier === "standard" && !sub.platformActive && checked ? (
+        <Link href="/#tarifs" className="mt-3 block text-center text-sm text-solar underline">
+          Voir l&apos;abonnement Accès plateforme
+        </Link>
+      ) : null}
       {msg && <p className="mt-3 text-center text-sm text-red-300">{msg}</p>}
-      <p className="mt-3 text-center text-xs text-slate-500">
-        {useCredit
-          ? "Lead débloqué immédiatement · décompté de votre Pack Territoire."
-          : "Paiement sécurisé Stripe · Fiche débloquée immédiatement dans Mon espace."}
-      </p>
+      <p className="mt-3 text-center text-xs text-slate-500">{hint}</p>
     </div>
   );
 }

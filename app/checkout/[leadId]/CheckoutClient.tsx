@@ -77,7 +77,7 @@ function CheckoutContent({ leadId }: { leadId: string }) {
             <Row k="Prix du lead" v={`${lead.prix_lead} €`} strong />
           </div>
 
-          <PayButton leadId={lead.id} prix={lead.prix_lead} />
+          <PayButton leadId={lead.id} prix={lead.prix_lead} tier={lead.tier} />
         </div>
       </div>
     </div>

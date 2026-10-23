@@ -1,5 +1,6 @@
 import { getBearerToken } from "@/lib/auth";
 import { getAnonClient } from "@/lib/supabase";
+import { getPlatformAccessStatus } from "@/lib/platform-subscription";
 import { getSubscriptionQuota } from "@/lib/subscription";
 
 export const dynamic = "force-dynamic";
@@ -7,7 +8,7 @@ export const runtime = "nodejs";
 
 const NO_STORE = { "Cache-Control": "no-store, max-age=0" } as const;
 
-// GET /api/subscription — crédits Pack Territoire restants.
+// GET /api/subscription — crédits Pack Territoire + abonnement Accès plateforme.
 export async function GET(req: Request) {
   const token = getBearerToken(req);
   if (!token) {
@@ -19,8 +20,11 @@ export async function GET(req: Request) {
   }
 
   try {
-    const quota = await getSubscriptionQuota(userData.user.id);
-    return Response.json(quota, { headers: NO_STORE });
+    const [quota, platform] = await Promise.all([
+      getSubscriptionQuota(userData.user.id),
+      getPlatformAccessStatus(userData.user.id),
+    ]);
+    return Response.json({ ...quota, platform }, { headers: NO_STORE });
   } catch (e) {
     return Response.json(
       { error: "Échec lecture crédits pack.", details: String(e) },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAccessToken } from "@/lib/supabaseBrowser";
 import { useTranslations } from "@/components/LocaleProvider";
 import type { TypeOffre } from "@/lib/rfp-offer-type";
@@ -8,14 +8,41 @@ import type { TypeOffre } from "@/lib/rfp-offer-type";
 export default function RfpPurchaseButton({
   rfpId,
   prixAcces,
+  isPublicPlatform = false,
 }: {
   rfpId: string;
   prixAcces: number;
+  isPublicPlatform?: boolean;
 }) {
   const t = useTranslations();
   const [typeOffre, setTypeOffre] = useState<TypeOffre>("devis_installation");
   const [dureeContratAns, setDureeContratAns] = useState("15");
   const [loading, setLoading] = useState(false);
+  const [platformActive, setPlatformActive] = useState(false);
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const token = await getAccessToken();
+      if (!token) {
+        setChecked(true);
+        return;
+      }
+      try {
+        const res = await fetch("/api/subscription", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setPlatformActive(!!data.platform?.active);
+        }
+      } catch {
+        /* ignore */
+      } finally {
+        setChecked(true);
+      }
+    })();
+  }, []);
 
   async function onClick() {
     const token = await getAccessToken();
@@ -50,6 +77,10 @@ export default function RfpPurchaseButton({
       const data = await res.json().catch(() => ({}));
       if (res.status === 401) {
         window.location.href = `/login?next=${encodeURIComponent(`/appels-offres/${rfpId}`)}`;
+        return;
+      }
+      if (data.redeemed && data.url) {
+        window.location.href = data.url as string;
         return;
       }
       if (!res.ok || !data.url) {
@@ -122,8 +153,12 @@ export default function RfpPurchaseButton({
         </label>
       ) : null}
 
-      <button type="button" onClick={onClick} disabled={loading} className="btn-solar w-full">
-        {loading ? t("rfp.purchase.loading") : t("rfp.purchase.unlock").replace("{price}", String(prixAcces))}
+      <button type="button" onClick={onClick} disabled={loading || !checked} className="btn-solar w-full">
+        {loading
+          ? t("rfp.purchase.loading")
+          : isPublicPlatform && platformActive
+            ? t("rfp.purchase.unlockIncluded")
+            : t("rfp.purchase.unlock").replace("{price}", String(prixAcces))}
       </button>
     </div>
   );

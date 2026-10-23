@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { PRIX_LEAD } from "@/lib/leads";
-import { PRIX_PLATEFORME_MENSUEL } from "@/lib/platform-access";
+import { PRIX_PLATEFORME_MENSUEL, PRIX_PLATEFORME_PREMIER_MOIS } from "@/lib/platform-access";
+import { getAccessToken } from "@/lib/supabaseBrowser";
 import type { PricingStats } from "@/lib/pricing-stats";
 import { PRIX_RFP, RFP_SURFACE_TIER_M2 } from "@/lib/rfp";
 import LoiAperContent from "@/components/LoiAperContent";
@@ -90,12 +91,38 @@ function InstallerTarifsSections() {
         })
       : t("home.pricingPlatformF2Fallback"),
     t("home.pricingPlatformF3"),
-    t("home.pricingPlatformF4"),
+    fmt(t("home.pricingPlatformF4"), { price: PRIX_PLATEFORME_MENSUEL }),
+    fmt(t("home.pricingPlatformIntro"), {
+      intro: PRIX_PLATEFORME_PREMIER_MOIS,
+      price: PRIX_PLATEFORME_MENSUEL,
+    }),
   ];
 
   const premiumCatalogShare = stats
     ? fmt(t("home.pricingPremiumF4"), { pct: Math.max(0, 100 - stats.leads_platform_pct) })
     : t("home.pricingPremiumF4Fallback");
+
+  async function onSubscribePlatform() {
+    const token = await getAccessToken();
+    if (!token) {
+      window.location.href = `/login?mode=signup&next=${encodeURIComponent("/#tarifs")}`;
+      return;
+    }
+    const res = await fetch("/api/platform-subscribe", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 401) {
+      window.location.href = `/login?next=${encodeURIComponent("/#tarifs")}`;
+      return;
+    }
+    if (data.url) {
+      window.location.href = data.url as string;
+      return;
+    }
+    alert(data.error || "Impossible de démarrer l'abonnement.");
+  }
 
   return (
     <div className="surface-light border-t border-slate-100">
@@ -113,11 +140,11 @@ function InstallerTarifsSections() {
         <div className="pricing-grid mt-8 md:grid-cols-2">
           <PricingCard
             title={t("home.pricingPlatformTitle")}
-            price={`${PRIX_PLATEFORME_MENSUEL} €`}
-            priceNote={t("home.pricingPerMonth")}
+            price={`${PRIX_PLATEFORME_PREMIER_MOIS} €`}
+            priceNote={t("home.pricingFirstMonth")}
             features={platformFeatures}
             cta={t("home.pricingSubscribe")}
-            href="/login?mode=signup&next=/leads"
+            onCtaClick={onSubscribePlatform}
             featured
             popularLabel={t("home.pricingPopular")}
           />
@@ -216,6 +243,7 @@ function PricingCard({
   features,
   cta,
   href,
+  onCtaClick,
   featured = false,
   badge,
   popularLabel,
@@ -225,11 +253,14 @@ function PricingCard({
   priceNote?: string;
   features: string[];
   cta: string;
-  href: string;
+  href?: string;
+  onCtaClick?: () => void;
   featured?: boolean;
   badge?: string;
   popularLabel: string;
 }) {
+  const ctaClass = `pricing-card-cta ${featured ? "btn-solar w-full" : "btn-ghost w-full"}`;
+
   return (
     <article className={`pricing-card ${featured ? "pricing-card-featured" : ""}`}>
       {badge ? <span className="pricing-card-badge">{badge}</span> : null}
@@ -244,12 +275,15 @@ function PricingCard({
           <li key={f}>{f}</li>
         ))}
       </ul>
-      <Link
-        href={href}
-        className={`pricing-card-cta ${featured ? "btn-solar w-full" : "btn-ghost w-full"}`}
-      >
-        {cta}
-      </Link>
+      {onCtaClick ? (
+        <button type="button" onClick={onCtaClick} className={ctaClass}>
+          {cta}
+        </button>
+      ) : (
+        <Link href={href ?? "#"} className={ctaClass}>
+          {cta}
+        </Link>
+      )}
     </article>
   );
 }

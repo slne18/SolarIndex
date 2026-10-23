@@ -8,10 +8,10 @@ ensemble — un seul passage, sans séparation par flag.
 Reprise automatique : relancer la même commande (siren_anciennete_checked_at IS NULL).
 
 Usage :
-  .venv/bin/python scripts/backfill_sirene_anciennete.py
-  .venv/bin/python scripts/backfill_sirene_anciennete.py --estimate-only
-  .venv/bin/python scripts/backfill_sirene_anciennete.py --limit 500 --dry-run
-  .venv/bin/python scripts/backfill_sirene_anciennete.py --all
+  .venv/bin/python pipeline/scripts/backfill_sirene_anciennete.py
+  .venv/bin/python pipeline/scripts/backfill_sirene_anciennete.py --estimate-only
+  .venv/bin/python pipeline/scripts/backfill_sirene_anciennete.py --limit 500 --dry-run
+  .venv/bin/python pipeline/scripts/backfill_sirene_anciennete.py --all
 
 Pré-requis : NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (.env.local)
              Migration 0030_sirene_anciennete.sql appliquée sur Supabase.
@@ -27,8 +27,10 @@ from pathlib import Path
 
 import requests
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import ensure_pipeline_on_path  # noqa: E402
+
+ensure_pipeline_on_path()
 
 import solarindex_pipeline as pipe  # noqa: E402 — charge .env.local
 from lib.lead_sellable import catalog_rest_filters, is_lead_sellable, sellable_rest_filters  # noqa: E402

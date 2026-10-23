@@ -240,7 +240,11 @@ export default function RfpDetailClient({ id }: { id: string }) {
                     <p className="mt-4 text-sm text-emerald-700">Vous avez débloqué ce projet.</p>
                   ) : canPurchase ? (
                     <div className="mt-4">
-                      <RfpPurchaseButton rfpId={rfp.id} prixAcces={rfp.prix_acces} />
+                      <RfpPurchaseButton
+                        rfpId={rfp.id}
+                        prixAcces={rfp.prix_acces}
+                        isPublicPlatform={!!rfp.ao_publie_officiellement}
+                      />
                     </div>
                   ) : (
                     <p className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">

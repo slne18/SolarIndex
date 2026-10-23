@@ -3,8 +3,12 @@ import { getUserProfile } from "@/lib/profile";
 import { canPurchaseLeads } from "@/lib/profile-onboarding";
 import { getAnonClient } from "@/lib/supabase";
 import { getLeadById, userOwnsLead } from "@/lib/db";
-import { afterSubscriptionRedemption } from "@/lib/fulfillment";
-import { isLeadSellable } from "@/lib/leads";
+import { afterSubscriptionRedemption, fulfillLeadPurchase } from "@/lib/fulfillment";
+import { isLeadSellable, leadTier } from "@/lib/leads";
+import {
+  hasActivePlatformAccess,
+  platformLeadStripeRef,
+} from "@/lib/platform-subscription";
 import { isLeadSlotOpen } from "@/lib/lead-slots";
 import { getStripe, isStripeConfigured, prixLeadCentimes } from "@/lib/stripe";
 import { getSubscriptionQuota, redeemSubscriptionLead } from "@/lib/subscription";
@@ -82,8 +86,51 @@ export async function POST(req: Request) {
   }
 
   const appUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+  const tier = leadTier(lead);
 
-  // Crédit Pack Territoire (5 leads, achat unique).
+  // Lead standard : inclus dans l'abonnement Accès plateforme.
+  if (tier === "standard") {
+    if (await hasActivePlatformAccess(user.id)) {
+      try {
+        const ok = await fulfillLeadPurchase({
+          leadId: lead.id,
+          userId: user.id,
+          montantEur: 0,
+          stripeSessionId: platformLeadStripeRef(user.id, lead.id),
+          purchaseType: "platform",
+        });
+        if (!ok) {
+          return Response.json(
+            { error: "Impossible de débloquer ce lead (quota ou indisponibilité)." },
+            { status: 409, headers: NO_STORE },
+          );
+        }
+        await afterSubscriptionRedemption(lead.id, user.id);
+        return Response.json(
+          {
+            redeemed: true,
+            url: `${appUrl}/success?platform=lead&lead=${lead.id}`,
+          },
+          { headers: NO_STORE },
+        );
+      } catch (e) {
+        return Response.json(
+          { error: "Échec du déblocage plateforme.", details: String(e) },
+          { status: 500, headers: NO_STORE },
+        );
+      }
+    }
+    return Response.json(
+      {
+        error:
+          "Ce lead est inclus dans l'abonnement Accès plateforme. Abonnez-vous pour le débloquer.",
+        requiresPlatform: true,
+      },
+      { status: 402, headers: NO_STORE },
+    );
+  }
+
+  // Crédit Pack Territoire (5 leads, achat unique) — leads premium.
   const quota = await getSubscriptionQuota(user.id);
   if (quota.active && quota.remaining > 0 && quota.periodId) {
     try {

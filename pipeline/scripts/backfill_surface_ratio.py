@@ -3,7 +3,7 @@ Recalcule surface_m2, source_surface, flag_urgence et potentiel solaire
 après changement de SURFACE_RATIO_MIN/MAX (ex. passage à 0,3× – 1,5×).
 
 Usage :
-  .venv/bin/python scripts/backfill_surface_ratio.py [--dry-run] [--limit N]
+  .venv/bin/python pipeline/scripts/backfill_surface_ratio.py [--dry-run] [--limit N]
 """
 from __future__ import annotations
 
@@ -14,12 +14,10 @@ from pathlib import Path
 
 import requests
 
-_ROOT = Path(__file__).resolve().parent.parent
-_SCRIPTS = Path(__file__).resolve().parent
-if str(_ROOT) not in sys.path:
-    sys.path.insert(0, str(_ROOT))
-if str(_SCRIPTS) not in sys.path:
-    sys.path.insert(0, str(_SCRIPTS))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import ensure_pipeline_on_path  # noqa: E402
+
+ensure_pipeline_on_path()
 
 from surface_ratio import SURFACE_RATIO_MIN, SURFACE_RATIO_MAX, resolve_surface
 from lib.surface_thresholds import compute_flag_urgence

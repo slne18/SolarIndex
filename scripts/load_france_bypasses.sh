@@ -42,7 +42,7 @@ for DEPT in "${DEPTS[@]}"; do
   CSV="/tmp/leads_${DEPT}_bp.csv"
   PLOG="/tmp/pipe_${DEPT}_bp.log"
   echo "[$i/$total] $DEPT — pipeline (enrich+verify)…" | tee -a "$LOG"
-  if "$PY" solarindex_pipeline.py --dept "$DEPT" --output "$CSV" \
+  if "$PY" pipeline/solarindex_pipeline.py --dept "$DEPT" --output "$CSV" \
         --enrich --max-enrich "$MAX_ENRICH" --verify > "$PLOG" 2>&1; then
     det=$(grep -oE "Détection PV : .*" "$PLOG" | head -1 || echo "")
     nb=$(grep -oE "parkings retenus.*" "$PLOG" | head -1 || echo "")

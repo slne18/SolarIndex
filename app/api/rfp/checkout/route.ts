@@ -6,6 +6,11 @@ import { getRfpById, userOwnsRfp } from "@/lib/rfp-db";
 import { computeRfpAccessPrice } from "@/lib/rfp";
 import { isRfpDeposant } from "@/lib/rfp-withdrawal";
 import { validateRfpOfferInput } from "@/lib/rfp-offer-type";
+import { fulfillRfpPurchase } from "@/lib/fulfillment";
+import {
+  hasActivePlatformAccess,
+  platformRfpStripeRef,
+} from "@/lib/platform-subscription";
 import { getStripe, isStripeConfigured } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
@@ -73,6 +78,31 @@ export async function POST(req: Request) {
   }
 
   const appUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+
+  if (row.ao_publie_officiellement && (await hasActivePlatformAccess(user.id))) {
+    try {
+      const ok = await fulfillRfpPurchase({
+        rfpId,
+        userId: user.id,
+        montantEur: 0,
+        stripeSessionId: platformRfpStripeRef(user.id, rfpId),
+        typeOffre: offer.type_offre,
+        dureeContratAns: offer.type_offre === "tiers_investissement" ? offer.duree_contrat_ans : null,
+      });
+      if (!ok) {
+        return Response.json({ error: "Accès déjà acquis ou projet indisponible." }, { status: 409, headers: NO_STORE });
+      }
+      return Response.json(
+        { redeemed: true, url: `${appUrl}/success?platform=rfp&rfp=${rfpId}` },
+        { headers: NO_STORE },
+      );
+    } catch (e) {
+      return Response.json(
+        { error: "Échec du déblocage plateforme.", details: String(e) },
+        { status: 500, headers: NO_STORE },
+      );
+    }
+  }
 
   const prixAcces = computeRfpAccessPrice(row.surface_estimee_m2);
 

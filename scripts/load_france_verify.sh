@@ -10,7 +10,7 @@ ok=0; fail=0
 for DEPT in "$@"; do
   CSV="/tmp/leads_${DEPT}_verify.csv"
   echo "═══ Département ${DEPT} (verify) ═══"
-  if "$PY" solarindex_pipeline.py --dept "$DEPT" --output "$CSV" --verify > "/tmp/pipe_${DEPT}_v.log" 2>&1; then
+  if "$PY" pipeline/solarindex_pipeline.py --dept "$DEPT" --output "$CSV" --verify > "/tmp/pipe_${DEPT}_v.log" 2>&1; then
     det=$(grep -oE "Détection PV : .*" "/tmp/pipe_${DEPT}_v.log" | head -1 || echo "")
     echo "  pipeline OK — ${det}"
     if [ -f "$CSV" ]; then

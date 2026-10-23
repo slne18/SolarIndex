@@ -3,17 +3,17 @@ Backfill des bypasses 3 (propriétaire MAJIC DGFiP) et 4 (vision ombrières Haik
 sur les leads DÉJÀ en base — sans re-scanner Overpass/cadastre.
 
 Bypass 3 : jointure locale sur majic_proprietaires (Parquet open data pré-chargé).
-  1. .venv/bin/python scripts/load_majic_parquet.py --from-leads
-  2. .venv/bin/python scripts/backfill_bypasses.py --mode proprietaire
+  1. .venv/bin/python pipeline/scripts/load_majic_parquet.py --from-leads
+  2. .venv/bin/python pipeline/scripts/backfill_bypasses.py --mode proprietaire
 
 Réutilise resolve_proprietaire_foncier (pipeline) et apply_vision_result (vision).
 
 Usage :
-  .venv/bin/python scripts/backfill_bypasses.py --mode proprietaire [--limit N] [--dry-run]
-  .venv/bin/python scripts/backfill_bypasses.py --mode proprietaire --refresh
+  .venv/bin/python pipeline/scripts/backfill_bypasses.py --mode proprietaire [--limit N] [--dry-run]
+  .venv/bin/python pipeline/scripts/backfill_bypasses.py --mode proprietaire --refresh
     # Recalcule propriétaire même si déjà renseigné (après multi-parcelle)
-  .venv/bin/python scripts/backfill_bypasses.py --mode vision       [--limit N] [--dry-run]
-  .venv/bin/python scripts/backfill_bypasses.py --mode vision_pct   [--limit N] [--dry-run]
+  .venv/bin/python pipeline/scripts/backfill_bypasses.py --mode vision       [--limit N] [--dry-run]
+  .venv/bin/python pipeline/scripts/backfill_bypasses.py --mode vision_pct   [--limit N] [--dry-run]
 
 Pré-requis :
   majic_proprietaires chargée (load_majic_parquet.py) + migration 0013
@@ -25,6 +25,12 @@ import sys
 import time
 
 import requests
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import ensure_pipeline_on_path  # noqa: E402
+
+ensure_pipeline_on_path()
 
 import solarindex_pipeline as pipe  # déclenche _load_dotenv()
 
@@ -100,7 +106,7 @@ def backfill_proprietaire(limit: int, dry_run: bool, refresh: bool = False) -> N
         sys.exit(1)
     if n_majic == 0:
         print("❌ majic_proprietaires vide — lancez :")
-        print("   .venv/bin/python scripts/load_majic_parquet.py --from-leads")
+        print("   .venv/bin/python pipeline/scripts/load_majic_parquet.py --from-leads")
         sys.exit(1)
     print(f"📚 majic_proprietaires : {n_majic:,} parcelles PM")
 

@@ -1,5 +1,9 @@
 """Tests jointure propriétaire foncier MAJIC DGFiP."""
+import sys
 import unittest
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from lib.majic import (
     build_id_parcelle,

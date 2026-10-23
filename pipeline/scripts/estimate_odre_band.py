@@ -1,8 +1,15 @@
 """Estime les leads avec match ODRÉ dans la bande [0.5×, 1.5×]."""
 import os
+import sys
 from collections import defaultdict
+from pathlib import Path
 
 import requests
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import ensure_pipeline_on_path  # noqa: E402
+
+ensure_pipeline_on_path()
 
 import solarindex_pipeline as pipe
 

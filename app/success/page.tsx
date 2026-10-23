@@ -7,13 +7,23 @@ export const dynamic = "force-dynamic";
 export default function SuccessPage({
   searchParams,
 }: {
-  searchParams: { subscription?: string; pack?: string; session_id?: string; rfp?: string };
+  searchParams: {
+    subscription?: string;
+    pack?: string;
+    platform?: string;
+    session_id?: string;
+    rfp?: string;
+    lead?: string;
+  };
 }) {
   const packWelcome =
     searchParams.pack === "welcome" || searchParams.subscription === "welcome";
+  const platformWelcome = searchParams.platform === "welcome";
+  const platformLeadRedeem = searchParams.platform === "lead";
+  const platformRfpRedeem = searchParams.platform === "rfp";
   const redeemed =
     searchParams.subscription === "1" || searchParams.pack === "1";
-  const rfpPurchase = searchParams.rfp === "1";
+  const rfpPurchase = searchParams.rfp === "1" || platformRfpRedeem;
 
   const analyticsSource = packWelcome
     ? "pack_welcome"
@@ -29,12 +39,26 @@ export default function SuccessPage({
           ✓
         </div>
         <h1 className="mt-6 text-3xl font-bold tracking-tight">
-          {packWelcome ? "Pack Territoire activé" : "Merci pour votre achat"}
+          {platformWelcome
+            ? "Abonnement Accès plateforme activé"
+            : packWelcome
+              ? "Pack Territoire activé"
+              : "Merci pour votre achat"}
         </h1>
         <p className="mt-3 text-slate-400">
-          {packWelcome ? (
+          {platformWelcome ? (
             <>
-              Votre pack est prêt : <strong className="text-white">10 crédits leads</strong>{" "}
+              Votre abonnement est actif. Débloquez l&apos;essentiel du catalogue de leads et les
+              appels d&apos;offres publics depuis <strong className="text-white">Mon espace</strong>.
+            </>
+          ) : platformLeadRedeem ? (
+            <>
+              Lead débloqué via votre abonnement Accès plateforme. Retrouvez la fiche complète dans{" "}
+              <strong className="text-white">Mon espace</strong>.
+            </>
+          ) : packWelcome ? (
+            <>
+              Votre pack est prêt : <strong className="text-white">5 crédits leads premium</strong>{" "}
               à utiliser quand vous voulez. Choisissez un lead disponible dans le catalogue.
             </>
           ) : redeemed ? (
@@ -62,7 +86,7 @@ export default function SuccessPage({
             <Link href="/leads" className="btn-ghost">Parcourir les leads</Link>
           )}
         </div>
-        {!redeemed && !packWelcome && (
+        {!redeemed && !packWelcome && !platformWelcome && !platformLeadRedeem && !platformRfpRedeem && (
           <>
             <SuccessFulfillment sessionId={searchParams.session_id} />
             <p className="mt-6 text-xs text-slate-500">

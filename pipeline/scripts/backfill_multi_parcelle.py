@@ -5,15 +5,15 @@ Recalcule id_parcelle + surface cadastrale via multi-parcelle (polygone OSM).
 Par défaut : catalogue vendable uniquement (~55k leads), pas toute la base (~63k).
 
 Usage :
-  .venv/bin/python scripts/backfill_multi_parcelle.py
-  .venv/bin/python scripts/backfill_multi_parcelle.py --workers 6
-  .venv/bin/python scripts/backfill_multi_parcelle.py --all
+  .venv/bin/python pipeline/scripts/backfill_multi_parcelle.py
+  .venv/bin/python pipeline/scripts/backfill_multi_parcelle.py --workers 6
+  .venv/bin/python pipeline/scripts/backfill_multi_parcelle.py --all
 
 Reprise après crash / Ctrl+C : relance la même commande (offset sauvegardé automatiquement).
-  .venv/bin/python scripts/backfill_multi_parcelle.py --no-resume
+  .venv/bin/python pipeline/scripts/backfill_multi_parcelle.py --no-resume
 
 Premier run sans fichier de progression (ancienne version) : reprendre manuellement.
-  .venv/bin/python scripts/backfill_multi_parcelle.py --workers 6 --offset 4720
+  .venv/bin/python pipeline/scripts/backfill_multi_parcelle.py --workers 6 --offset 4720
 
 Pré-requis :
   NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (.env.local)
@@ -34,9 +34,10 @@ from typing import Any
 
 import requests
 
-_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if _ROOT not in sys.path:
-    sys.path.insert(0, _ROOT)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import REPO_ROOT, ensure_pipeline_on_path  # noqa: E402
+
+ensure_pipeline_on_path()
 
 import solarindex_pipeline as pipe  # noqa: E402
 from lib.lead_sellable import sellable_rest_filters  # noqa: E402
@@ -51,7 +52,7 @@ HEADERS = {
 }
 PAGE = 80
 BACKFILL_GEOM_PAUSE_S = 1.0
-PROGRESS_PATH = Path(_ROOT) / "data" / "cache" / "multi_parcelle_progress.json"
+PROGRESS_PATH = REPO_ROOT / "data" / "cache" / "multi_parcelle_progress.json"
 
 REFRESH_NEVER = "never"
 REFRESH_ON_CHANGE = "on-change"

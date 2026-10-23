@@ -5,7 +5,7 @@ Stratégie : par département, index solaire OSM une fois puis recouvrement géo
 par lead (géométrie parking via Overpass, fallback cercle si absent).
 
 Usage :
-  .venv/bin/python scripts/backfill_pv_overlap.py [--dry-run] [--limit N] [--dept 33]
+  .venv/bin/python pipeline/scripts/backfill_pv_overlap.py [--dry-run] [--limit N] [--dept 33]
 
 Pré-requis : NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (.env.local)
 """
@@ -18,6 +18,13 @@ import time
 from datetime import datetime, timezone
 
 import requests
+
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import ensure_pipeline_on_path  # noqa: E402
+
+ensure_pipeline_on_path()
 
 import solarindex_pipeline as pipe
 

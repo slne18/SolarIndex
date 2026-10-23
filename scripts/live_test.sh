@@ -24,7 +24,7 @@ echo "✅ Serveur prêt (HTTP $READY sur /api/leads)"
 echo
 
 echo "════════ 1) INGESTION (POST /api/ingest) ════════"
-DEFAULT_DEPT=33 node scripts/ingest_csv.mjs leads_gironde.csv http://localhost:3000 || { echo "❌ ingestion KO"; tail -20 "$LOG"; exit 1; }
+DEFAULT_DEPT=33 node scripts/ingest_csv.mjs data/samples/leads_gironde.csv http://localhost:3000 || { echo "❌ ingestion KO"; tail -20 "$LOG"; exit 1; }
 echo
 
 echo "════════ 2) GET /api/leads (tri valeur) ════════"

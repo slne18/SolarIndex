@@ -3,13 +3,13 @@
 //
 // Usage :
 //   node scripts/ingest_csv.mjs [chemin_csv] [url_api]
-//   PIPELINE_INGEST_TOKEN=xxx node scripts/ingest_csv.mjs leads_gironde.csv http://localhost:3000
+//   PIPELINE_INGEST_TOKEN=xxx node scripts/ingest_csv.mjs data/samples/leads_gironde.csv http://localhost:3000
 //
 // Le token est lu depuis PIPELINE_INGEST_TOKEN (ou .env.local).
 
 import { readFileSync } from "node:fs";
 
-const CSV_PATH = process.argv[2] || "leads_gironde.csv";
+const CSV_PATH = process.argv[2] || "data/samples/leads_gironde.csv";
 const BASE_URL = (process.argv[3] || "http://localhost:3000").replace(/\/$/, "");
 const BATCH = 100;
 

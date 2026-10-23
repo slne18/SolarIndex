@@ -1,6 +1,11 @@
 import type Stripe from "stripe";
 import { getStripe } from "./stripe";
 import {
+  activatePlatformProfile,
+  deactivatePlatformProfile,
+  upsertPlatformSubscription,
+} from "./platform-subscription";
+import {
   activateTerritoireProfile,
   deactivateTerritoireProfile,
   TERRITOIRE_LEADS_QUOTA,
@@ -62,7 +67,36 @@ export async function handleTerritoirePackCheckoutCompleted(
   });
 }
 
-/** Legacy — abonnement Stripe récurrent (anciens clients). */
+function subscriptionPlan(sub: Stripe.Subscription): string | null {
+  return sub.metadata?.plan ?? null;
+}
+
+/** Abonnement Accès plateforme (300 €/mois). */
+export async function handlePlatformSubscriptionCheckoutCompleted(
+  session: Stripe.Checkout.Session,
+): Promise<void> {
+  const userId = session.metadata?.userId || session.client_reference_id;
+  const subId =
+    typeof session.subscription === "string"
+      ? session.subscription
+      : session.subscription?.id;
+  if (!userId || !subId) return;
+
+  const sub = await getStripe().subscriptions.retrieve(subId);
+  const { start, end } = periodFromSubscription(sub);
+  const customerId =
+    typeof sub.customer === "string" ? sub.customer : sub.customer?.id ?? null;
+
+  await activatePlatformProfile(userId, customerId);
+  await upsertPlatformSubscription({
+    userId,
+    stripeSubscriptionId: subId,
+    periodStart: start,
+    periodEnd: end,
+  });
+}
+
+/** Legacy — abonnement Stripe récurrent Pack Territoire (anciens clients). */
 export async function handleSubscriptionCheckoutCompleted(
   session: Stripe.Checkout.Session,
 ): Promise<void> {
@@ -74,6 +108,11 @@ export async function handleSubscriptionCheckoutCompleted(
   if (!userId || !subId) return;
 
   const sub = await getStripe().subscriptions.retrieve(subId);
+  if (session.metadata?.plan === "platform" || subscriptionPlan(sub) === "platform") {
+    await handlePlatformSubscriptionCheckoutCompleted(session);
+    return;
+  }
+
   const { start, end } = periodFromSubscription(sub);
   const customerId =
     typeof sub.customer === "string" ? sub.customer : sub.customer?.id ?? null;
@@ -98,6 +137,16 @@ export async function handleInvoicePaid(invoice: Stripe.Invoice): Promise<void> 
   if (!userId) return;
 
   const { start, end } = periodFromSubscription(sub);
+  if (subscriptionPlan(sub) === "platform") {
+    await upsertPlatformSubscription({
+      userId,
+      stripeSubscriptionId: subId,
+      periodStart: start,
+      periodEnd: end,
+    });
+    return;
+  }
+
   await upsertSubscriptionPeriod({
     userId,
     stripeSubscriptionId: subId,
@@ -110,5 +159,9 @@ export async function handleInvoicePaid(invoice: Stripe.Invoice): Promise<void> 
 export async function handleSubscriptionDeleted(sub: Stripe.Subscription): Promise<void> {
   const userId = sub.metadata?.userId;
   if (!userId) return;
+  if (subscriptionPlan(sub) === "platform") {
+    await deactivatePlatformProfile(userId);
+    return;
+  }
   await deactivateTerritoireProfile(userId);
 }

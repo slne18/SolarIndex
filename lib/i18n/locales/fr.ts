@@ -494,6 +494,7 @@ const fr = {
   "rfp.purchase.networkError": "Erreur réseau.",
   "rfp.purchase.loading": "Redirection…",
   "rfp.purchase.unlock": "Débloquer les coordonnées — {price} €",
+  "rfp.purchase.unlockIncluded": "Débloquer (inclus abonnement)",
 
   "rfp.offerType.devis_installation.label": "Devis installation classique",
   "rfp.offerType.devis_installation.short": "Devis",
@@ -605,6 +606,7 @@ const fr = {
   "home.pricingPopular": "Populaire",
   "home.pricingPerLead": "par lead",
   "home.pricingPerMonth": "par mois",
+  "home.pricingFirstMonth": "le 1er mois",
   "home.pricingOneTime": "achat unique",
   "home.pricingPerProject": "par accès projet",
   "home.pricingPerProjectPrivate": "par accès projet privé",
@@ -623,7 +625,8 @@ const fr = {
   "home.pricingPlatformF2Fallback":
     "Inclut les appels d'offres publiés sur une plateforme officielle",
   "home.pricingPlatformF3": "Parcourir et débloquer les fiches depuis Mon espace",
-  "home.pricingPlatformF4": "France entière · renouvellement mensuel",
+  "home.pricingPlatformF4": "Puis {price} €/mois · renouvellement automatique",
+  "home.pricingPlatformIntro": "−20 % le 1er mois ({intro} €), puis {price} €/mois",
   "home.pricingPremiumF1": "Photo aérienne vérifiée",
   "home.pricingPremiumF2": "Fiche catalogue de moins de 6 mois",
   "home.pricingPremiumF3": "Achat unitaire — non inclus dans l'abonnement",
@@ -717,8 +720,14 @@ const fr = {
   "account.leadOwner":
     "Suivez vos projets déposés, les installateurs intéressés et les paramètres de votre compte.",
   "account.logout": "Se déconnecter",
+  "account.platformTitle": "Accès plateforme actif",
+  "account.platformLead": "Catalogue leads (hors premium) et appels d'offres publics inclus.",
+  "account.platformRenewal": "Renouvellement le {date}",
+  "account.platformCta": "Parcourir le catalogue",
+  "account.noPlatform": "Pas d'abonnement Accès plateforme actif.",
+  "account.platformLink": "S'abonner — Accès plateforme",
   "account.packTitle": "Pack Territoire",
-  "account.packCredits": "{remaining} / {quota} crédits leads restants · Standard ou Premium au choix",
+  "account.packCredits": "{remaining} / {quota} crédits leads restants · Premium au choix",
   "account.chooseLead": "Choisir un lead",
   "account.noPack": "Pas de crédits pack actifs.",
   "account.packLink": "Pack Territoire — 5 leads",
@@ -968,7 +977,7 @@ const fr = {
     "Les leads automatisés s'appuient sur des sources publiques (OpenStreetMap, cadastre, SIREN, MAJIC) croisées et enrichies par nos algorithmes. Chaque fiche affiche un indice de confiance. Les appels d'offres déposés sont saisis directement par le propriétaire ou gestionnaire, puis modérés avant publication.",
   "faq.subscription.q": "Y a-t-il un abonnement ?",
   "faq.subscription.a":
-    "Non. SolarIndex fonctionne au paiement à l'unité : vous achetez uniquement les leads ou accès appels d'offres dont vous avez besoin. Le Pack Territoire est un achat unique de crédits, sans renouvellement automatique.",
+    "Oui. L'abonnement Accès plateforme (300 €/mois, −20 % le 1er mois) débloque l'essentiel du catalogue de leads et les appels d'offres publiés sur une plateforme officielle. Les leads premium et consultations privées restent à l'achat unitaire.",
   "faq.zones.q": "Puis-je choisir mes zones ?",
   "faq.zones.a":
     "Oui. Le catalogue de leads se filtre par département, surface, indice de confiance et autres critères avant achat. Vous ne payez que les fiches correspondant à votre zone d'intervention.",

@@ -8,7 +8,7 @@ tri surface_m2 DESC. Reprise automatique si interruption (même filtre).
 Pause 0,5 s entre chaque appel BAN / apicarto / SIREN (ENRICH_API_PAUSE_S).
 
 Usage :
-  .venv/bin/python scripts/backfill_enrich.py [--limit N] [--dry-run] [--estimate-only]
+  .venv/bin/python pipeline/scripts/backfill_enrich.py [--limit N] [--dry-run] [--estimate-only]
 
 Pré-requis : SUPABASE_SERVICE_ROLE_KEY + NEXT_PUBLIC_SUPABASE_URL (.env.local)
 """
@@ -19,6 +19,12 @@ import time
 from datetime import timedelta
 
 import requests
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import ensure_pipeline_on_path  # noqa: E402
+
+ensure_pipeline_on_path()
 
 import solarindex_pipeline as pipe  # déclenche _load_dotenv()
 

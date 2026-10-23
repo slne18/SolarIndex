@@ -9,7 +9,7 @@ ok=0; fail=0
 for DEPT in "$@"; do
   CSV="/tmp/leads_${DEPT}.csv"
   echo "═══ Département ${DEPT} ═══"
-  if "$PY" solarindex_pipeline.py --dept "$DEPT" --output "$CSV" > "/tmp/pipe_${DEPT}.log" 2>&1; then
+  if "$PY" pipeline/solarindex_pipeline.py --dept "$DEPT" --output "$CSV" > "/tmp/pipe_${DEPT}.log" 2>&1; then
     retained=$(grep -oE "[0-9]+ parkings retenus" "/tmp/pipe_${DEPT}.log" | head -1 || echo "?")
     echo "  pipeline OK (${retained})"
     if [ -f "$CSV" ]; then

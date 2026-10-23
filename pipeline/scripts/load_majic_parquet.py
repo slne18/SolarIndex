@@ -6,9 +6,9 @@ Source (France entière, unifié) :
   https://www.data.gouv.fr/datasets/fichiers-des-locaux-et-des-parcelles-des-personnes-morales-version-unifiee
 
 Usage :
-  .venv/bin/python scripts/load_majic_parquet.py --from-leads
-  .venv/bin/python scripts/load_majic_parquet.py --full
-  .venv/bin/python scripts/load_majic_parquet.py --download-only
+  .venv/bin/python pipeline/scripts/load_majic_parquet.py --from-leads
+  .venv/bin/python pipeline/scripts/load_majic_parquet.py --full
+  .venv/bin/python pipeline/scripts/load_majic_parquet.py --download-only
 
 Par défaut (--from-leads) : ne charge que les id_parcelle présents dans leads
 → ~60k lignes, quelques minutes, adapté au backfill SolarIndex.
@@ -29,8 +29,10 @@ from pathlib import Path
 
 import requests
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import REPO_ROOT, ensure_pipeline_on_path  # noqa: E402
+
+ensure_pipeline_on_path()
 
 from lib.majic import (  # noqa: E402
     MAJIC_PARQUET_URL,
@@ -40,7 +42,7 @@ from lib.majic import (  # noqa: E402
     row_to_majic_record,
 )
 
-DATA_DIR = ROOT / "data" / "majic"
+DATA_DIR = REPO_ROOT / "data" / "majic"
 DEFAULT_PARQUET = DATA_DIR / "parcelles_personnes_morales_latest.parquet"
 RECORDS_CACHE = DATA_DIR / "from_leads_records.jsonl"
 BATCH = 250
@@ -90,7 +92,7 @@ def _majic_ids_in_db() -> set[str]:
 
 
 def _load_dotenv() -> None:
-    env = ROOT / ".env.local"
+    env = REPO_ROOT / ".env.local"
     if not env.exists():
         return
     for line in env.read_text().splitlines():

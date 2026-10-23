@@ -1,6 +1,6 @@
 // Ingestion directe CSV → Supabase (sans passer par le serveur Next).
 // Réplique la logique de lib/leads.ts (mapping + région + skip 'vendu').
-//   DEFAULT_DEPT=33 node scripts/ingest_direct.mjs leads_gironde.csv
+//   DEFAULT_DEPT=33 node scripts/ingest_direct.mjs data/samples/leads_gironde.csv
 import { readFileSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 

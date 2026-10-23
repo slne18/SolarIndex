@@ -235,7 +235,7 @@ export async function getAdminDashboard(): Promise<AdminDashboardData> {
     detail: majicLoaded
       ? majicRows > 0
         ? `${majicRows.toLocaleString("fr-FR")} parcelle(s) PM en base — personnes morales uniquement (open data DGFiP).`
-        : "Table majic_proprietaires vide — lancer scripts/load_majic_parquet.py --from-leads."
+        : "Table majic_proprietaires vide — lancer pipeline/scripts/load_majic_parquet.py --from-leads."
       : "Table majic_proprietaires absente — appliquer migration 0013.",
     count: majicRows > 0 ? majicRows : undefined,
   });
@@ -245,7 +245,7 @@ export async function getAdminDashboard(): Promise<AdminDashboardData> {
       id: "majic-backlog",
       severity: "warning",
       title: "Propriétaire foncier — jointure MAJIC en attente",
-      detail: `${majicJoinable.toLocaleString("fr-FR")} lead(s) enrichissable(s) via MAJIC — lancer backfill_bypasses.py --mode proprietaire (ou RPC backfill_proprietaire_from_majic).`,
+      detail: `${majicJoinable.toLocaleString("fr-FR")} lead(s) enrichissable(s) via MAJIC — lancer pipeline/scripts/backfill_bypasses.py --mode proprietaire (ou RPC backfill_proprietaire_from_majic).`,
       count: majicJoinable,
     });
   } else if (majicBacklog > 0 && majicLoaded && majicRows > 0) {
@@ -261,7 +261,7 @@ export async function getAdminDashboard(): Promise<AdminDashboardData> {
       id: "majic-backlog",
       severity: "info",
       title: "Propriétaire foncier en attente",
-      detail: `${majicBacklog.toLocaleString("fr-FR")} lead(s) avec parcelle sans propriétaire PM — charger MAJIC (load_majic_parquet.py) puis backfill --mode proprietaire.`,
+      detail: `${majicBacklog.toLocaleString("fr-FR")} lead(s) avec parcelle sans propriétaire PM — charger MAJIC (pipeline/scripts/load_majic_parquet.py) puis backfill --mode proprietaire.`,
       count: majicBacklog,
     });
   }
@@ -274,7 +274,7 @@ export async function getAdminDashboard(): Promise<AdminDashboardData> {
       id: "vision-backlog",
       severity: "warning",
       title: "Vision ortho urgences incomplète",
-      detail: `${visionBacklog.toLocaleString("fr-FR")} urgence(s) absolue(s) disponible(s) sans analyse photo (% couverture) — relancer backfill_bypasses.py --mode vision (ANTHROPIC_API_KEY).`,
+      detail: `${visionBacklog.toLocaleString("fr-FR")} urgence(s) absolue(s) disponible(s) sans analyse photo (% couverture) — relancer pipeline/scripts/backfill_bypasses.py --mode vision (ANTHROPIC_API_KEY).`,
       count: visionBacklog,
     });
   } else {

@@ -6,7 +6,7 @@ import { sendRfpAccessDeliveryEmail } from "./email-rfp";
 import type { ProfilAcheteur } from "./profil-acheteur";
 import type { TypeOffre } from "./rfp-offer-type";
 
-export type PurchaseType = "unit" | "subscription" | "sample";
+export type PurchaseType = "unit" | "subscription" | "sample" | "platform";
 
 export interface FulfillLeadParams {
   leadId: string;

@@ -30,6 +30,10 @@ interface SubscriptionQuota {
   remaining: number;
   quota: number;
   periodEnd: string | null;
+  platform?: {
+    active: boolean;
+    periodEnd: string | null;
+  };
 }
 
 export default function MonEspaceClient() {
@@ -127,11 +131,39 @@ export default function MonEspaceClient() {
 
       {isInstaller ? (
         <>
-          {sub?.active && (
+          {sub?.platform?.active ? (
             <div className="card mt-8 border-solar/30 p-5">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <div className="text-sm font-semibold text-solar">{t("account.packTitle")}</div>
+                  <div className="text-sm font-semibold text-solar">{t("account.platformTitle")}</div>
+                  <p className="mt-1 text-sm text-slate-400">{t("account.platformLead")}</p>
+                  {sub.platform.periodEnd ? (
+                    <p className="mt-1 text-xs text-slate-500">
+                      {fmt(t("account.platformRenewal"), {
+                        date: new Date(sub.platform.periodEnd).toLocaleDateString("fr-FR"),
+                      })}
+                    </p>
+                  ) : null}
+                </div>
+                <Link href="/leads" className="btn-solar !py-2 text-sm">
+                  {t("account.platformCta")}
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="card mt-8 p-5 text-sm text-slate-400">
+              {t("account.noPlatform")}{" "}
+              <Link href="/#tarifs" className="text-solar underline">
+                {t("account.platformLink")}
+              </Link>
+            </div>
+          )}
+
+          {sub?.active ? (
+            <div className="card mt-4 border-white/10 p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <div className="text-sm font-semibold text-slate-200">{t("account.packTitle")}</div>
                   <p className="mt-1 text-sm text-slate-400">
                     {fmt(t("account.packCredits"), {
                       remaining: sub.remaining,
@@ -139,21 +171,12 @@ export default function MonEspaceClient() {
                     })}
                   </p>
                 </div>
-                <Link href="/leads" className="btn-solar !py-2 text-sm">
+                <Link href="/leads?tier=premium" className="btn-ghost !py-2 text-sm">
                   {t("account.chooseLead")}
                 </Link>
               </div>
             </div>
-          )}
-
-          {!sub?.active && (
-            <div className="card mt-8 p-5 text-sm text-slate-400">
-              {t("account.noPack")}{" "}
-              <Link href="/pack-territoire" className="text-solar underline">
-                {t("account.packLink")}
-              </Link>
-            </div>
-          )}
+          ) : null}
 
           <div className="mt-10 flex flex-wrap items-end justify-between gap-3">
             <div>

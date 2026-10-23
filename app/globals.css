@@ -884,10 +884,6 @@ h3,
     color: rgb(15 23 42);
   }
 
-  .surface-light .guarantee-banner {
-    @apply border-solar/25 bg-solar/[0.08] text-slate-600;
-  }
-
   .surface-light .back-link {
     @apply text-slate-500 hover:text-slate-900;
   }

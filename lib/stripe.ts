@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { prixLeadCentimesFromRow } from "./leads";
+import { PRIX_PLATEFORME_MENSUEL } from "./platform-access";
 import { TERRITOIRE_PACK_EUR } from "./subscription";
 import type { LeadRow } from "./types";
 
@@ -49,4 +50,30 @@ export function territoirePackLineItem(): Stripe.Checkout.SessionCreateParams.Li
 /** @deprecated Pack ponctuel — utiliser territoirePackLineItem. */
 export function territoireSubscriptionLineItem(): Stripe.Checkout.SessionCreateParams.LineItem {
   return territoirePackLineItem();
+}
+
+/** Abonnement Accès plateforme — price ID Stripe ou price_data de secours. */
+export function platformSubscriptionLineItem(): Stripe.Checkout.SessionCreateParams.LineItem {
+  const priceId = process.env.STRIPE_PLATFORM_PRICE_ID;
+  if (priceId) {
+    return { price: priceId, quantity: 1 };
+  }
+  return {
+    quantity: 1,
+    price_data: {
+      currency: "eur",
+      unit_amount: PRIX_PLATEFORME_MENSUEL * 100,
+      recurring: { interval: "month" },
+      product_data: {
+        name: "Accès plateforme SolarIndex",
+        description:
+          "Catalogue leads (hors premium) et appels d'offres publiés sur plateforme officielle",
+      },
+    },
+  };
+}
+
+export function platformIntroCouponId(): string | null {
+  const id = process.env.STRIPE_PLATFORM_INTRO_COUPON_ID?.trim();
+  return id || null;
 }
