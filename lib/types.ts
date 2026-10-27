@@ -101,7 +101,6 @@ export type SourceSurface = "osm" | "cadastre" | "osm_fallback";
 export type PublicLead = Omit<LeadRow, (typeof SENSITIVE_FIELDS)[number]> & {
   tier: LeadTier;
   prix_lead: number;
-  max_buyers: number;
   isOwned?: boolean;
   /** Dirigeant exploitant identifié (sans exposer le nom). */
   has_dirigeant: boolean;

@@ -1,7 +1,6 @@
 import { getAdminClient } from "./supabase";
 import { applyStandardTierFilter } from "./catalog-stats";
 import { premiumLeadCutoffIso } from "./platform-access";
-import { MAX_BUYERS_PER_LEAD } from "./lead-slots";
 import { PV_OVERLAP_MIN, VISION_COVERAGE_EQUIPE } from "./pv-overlap";
 import { SURFACE_GRAY_LOW_MAX_M2 } from "./surface-thresholds";
 import { LeadRow } from "./types";
@@ -57,7 +56,7 @@ function applyCatalogFilters(query: SupabaseQuery, opts: LeadQueryOptions): Supa
   if (opts.statut) {
     query = query.eq("statut", opts.statut);
   } else if (!opts.includeSold) {
-    query = query.eq("statut", "disponible").lt("buyers_count", MAX_BUYERS_PER_LEAD);
+    query = query.eq("statut", "disponible");
   }
   if (typeof opts.surfaceMin === "number" && !Number.isNaN(opts.surfaceMin)) {
     query = query.gte("surface_m2", opts.surfaceMin);
@@ -183,6 +182,20 @@ export async function userOwnsLead(leadId: string, userId: string): Promise<bool
     .maybeSingle();
   if (error) throw error;
   return !!data;
+}
+
+/** Lead IDs among `leadIds` that the user has already paid for (catalog action column). */
+export async function ownedLeadIdsAmong(userId: string, leadIds: string[]): Promise<string[]> {
+  if (leadIds.length === 0) return [];
+  const supabase = getAdminClient();
+  const { data, error } = await supabase
+    .from("purchases")
+    .select("lead_id")
+    .eq("user_id", userId)
+    .eq("statut", "paid")
+    .in("lead_id", leadIds);
+  if (error) throw error;
+  return (data ?? []).map((row) => row.lead_id as string);
 }
 
 // Récupère les leads existants pour un ensemble d'osm_id (pour l'ingestion).

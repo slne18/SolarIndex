@@ -12,7 +12,6 @@ import { getRegion } from "./regions";
 import { isLeadPremium } from "./lead-confidence";
 import { leadCompleteness } from "./lead-completeness";
 import { parseTypeSolutionRecherchee } from "./solution-type";
-import { MAX_BUYERS_PER_LEAD } from "./lead-slots";
 import { isVisionEquippedPct } from "./pv-overlap";
 import {
   SURFACE_URGENCE_M2,
@@ -104,7 +103,6 @@ export function toPublicLead(lead: LeadRow): PublicLead {
   const { pct, hasDirigeant } = leadCompleteness(lead);
   clone.tier = tier;
   clone.prix_lead = computePrixLeadFromRow(lead);
-  clone.max_buyers = MAX_BUYERS_PER_LEAD;
   clone.has_dirigeant = hasDirigeant;
   clone.completude_pct = pct;
   return clone as PublicLead;

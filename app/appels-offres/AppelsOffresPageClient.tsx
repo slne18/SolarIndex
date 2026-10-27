@@ -3,6 +3,8 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { getAccessToken } from "@/lib/supabaseBrowser";
+import { catalogAuthHeaders } from "@/lib/preview-catalog";
 import RfpLegalNotice from "@/components/RfpLegalNotice";
 import { usePersona } from "@/components/PersonaProvider";
 import { showOwnerProjectDeposit } from "@/lib/persona";
@@ -145,6 +147,7 @@ function AppelsOffresCatalog() {
   const showDepositCta = !ready || showOwnerProjectDeposit(persona);
   const listRef = useRef<HTMLDivElement>(null);
   const [rfps, setRfps] = useState<PublicRfp[]>([]);
+  const [ownedRfpIds, setOwnedRfpIds] = useState<string[]>([]);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(0);
@@ -156,14 +159,19 @@ function AppelsOffresCatalog() {
   const fetchRfps = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/rfp?${params.toString()}`);
+      const token = await getAccessToken();
+      const res = await fetch(`/api/rfp?${params.toString()}`, {
+        headers: catalogAuthHeaders(token),
+      });
       const data = await res.json();
       setRfps(data.rfps ?? []);
+      setOwnedRfpIds(data.ownedRfpIds ?? []);
       setTotal(data.total ?? 0);
       setTotalPages(data.totalPages ?? 0);
       setPage(data.page ?? 0);
     } catch {
       setRfps([]);
+      setOwnedRfpIds([]);
       setTotal(0);
     } finally {
       setLoading(false);
@@ -250,7 +258,11 @@ function AppelsOffresCatalog() {
       </div>
 
       <div className="mt-6">
-        {loading ? <p className="text-slate-600">{t("common.loading")}</p> : <RfpTable rfps={rfps} />}
+        {loading ? (
+          <p className="text-slate-600">{t("common.loading")}</p>
+        ) : (
+          <RfpTable rfps={rfps} ownedRfpIds={ownedRfpIds} />
+        )}
       </div>
 
       {totalPages > 1 && (

@@ -1,6 +1,5 @@
 import { getAdminClient } from "./supabase";
 import { VISION_COVERAGE_EQUIPE } from "./pv-overlap";
-import { MAX_BUYERS_PER_LEAD } from "./lead-slots";
 import { SURFACE_GRAY_LOW_MAX_M2 } from "./surface-thresholds";
 import { computePrixLeadFromRow, leadTier } from "./leads";
 import type { LeadRow, LeadTier } from "./types";
@@ -66,7 +65,6 @@ type SeoFilterQuery = any;
 function applySeoFilters(q: SeoFilterQuery, opts: Pick<SeoQueryOpts, "region" | "departement">): SeoFilterQuery {
   let query = q
     .eq("statut", "disponible")
-    .lt("buyers_count", MAX_BUYERS_PER_LEAD)
     .neq("detection", "equipe")
     .or(
       `vision_surface_couverte_pct.is.null,vision_surface_couverte_pct.lte.${VISION_COVERAGE_EQUIPE}`,
@@ -128,7 +126,6 @@ export async function getSeoRegionSlugs(): Promise<string[]> {
       .from("leads")
       .select("region")
       .eq("statut", "disponible")
-      .lt("buyers_count", MAX_BUYERS_PER_LEAD)
       .neq("detection", "equipe")
       .or(
         `vision_surface_couverte_pct.is.null,vision_surface_couverte_pct.lte.${VISION_COVERAGE_EQUIPE}`,
@@ -158,7 +155,6 @@ export async function getSeoDepartementParams(): Promise<
       .from("leads")
       .select("region, departement")
       .eq("statut", "disponible")
-      .lt("buyers_count", MAX_BUYERS_PER_LEAD)
       .neq("detection", "equipe")
       .or(
         `vision_surface_couverte_pct.is.null,vision_surface_couverte_pct.lte.${VISION_COVERAGE_EQUIPE}`,

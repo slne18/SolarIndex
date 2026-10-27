@@ -80,6 +80,18 @@ export async function userOwnsRfp(rfpId: string, userId: string): Promise<boolea
   return !!data;
 }
 
+export async function ownedRfpIdsAmong(userId: string, rfpIds: string[]): Promise<string[]> {
+  if (rfpIds.length === 0) return [];
+  const { data, error } = await getAdminClient()
+    .from("rfp_purchases")
+    .select("rfp_id")
+    .eq("user_id", userId)
+    .eq("statut", "completed")
+    .in("rfp_id", rfpIds);
+  if (error) throw error;
+  return (data ?? []).map((row) => row.rfp_id as string);
+}
+
 export async function createRfpSubmission(
   payload: Omit<RfpSubmissionRow, "id" | "created_at" | "acheteurs_count" | "acheteurs_max" | "deposant_user_id"> & {
     verification_token: string;

@@ -2,7 +2,6 @@ import { getBearerToken } from "@/lib/auth";
 import { getAnonClient, getAdminClient } from "@/lib/supabase";
 import { toOwnedLead } from "@/lib/leads";
 import { LeadRow } from "@/lib/types";
-import { MAX_BUYERS_PER_LEAD } from "@/lib/lead-slots";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -46,6 +45,6 @@ export async function GET(req: Request) {
   const leads = rows
     .map(leadFromPurchase)
     .filter((l): l is LeadRow => l !== null)
-    .map((lead) => ({ ...toOwnedLead(lead), max_buyers: MAX_BUYERS_PER_LEAD }));
+    .map((lead) => toOwnedLead(lead));
   return Response.json({ leads, count: leads.length }, { headers: NO_STORE });
 }

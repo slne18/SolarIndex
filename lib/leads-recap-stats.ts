@@ -1,5 +1,4 @@
 import { getAdminClient } from "./supabase";
-import { MAX_BUYERS_PER_LEAD } from "./lead-slots";
 import { considereCommeEquipeOrFilter } from "./lead-equipped";
 import { VISION_COVERAGE_EQUIPE } from "./pv-overlap";
 import { SURFACE_GRAY_LOW_MAX_M2 } from "./surface-thresholds";
@@ -55,7 +54,6 @@ async function paginateCatalog(): Promise<Map<string, LeadsRecapDeptStat>> {
       .from("leads")
       .select("departement, surface_m2, valeur_chantier_eur")
       .eq("statut", "disponible")
-      .lt("buyers_count", MAX_BUYERS_PER_LEAD)
       .not("siren", "is", null)
       .not("id_parcelle", "is", null)
       .not("adresse", "is", null)

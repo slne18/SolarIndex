@@ -10,12 +10,12 @@ import { tierLabelKey } from "@/lib/i18n/leads-labels";
 import { useTranslations } from "@/components/LocaleProvider";
 import type { LeadRow, PublicLead } from "@/lib/types";
 import SolarSimulator from "@/components/SolarSimulator";
-import PurchaseButton from "@/components/PurchaseButton";
+import PayButton from "@/components/PayButton";
+import CatalogUnlockedBadge from "@/components/CatalogUnlockedBadge";
 import { FlagBadge } from "@/components/LeadTable";
 import LeadTierBadge from "@/components/LeadTierBadge";
 import { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
 import LeadConfidencePanel from "@/components/LeadConfidencePanel";
-import LeadAvailabilityBadge from "@/components/LeadAvailabilityBadge";
 import { catalogAuthHeaders } from "@/lib/preview-catalog";
 import { isLeadSlotOpen } from "@/lib/lead-slots";
 import { formatAperAnnualFine } from "@/lib/aper-fine";
@@ -108,8 +108,7 @@ function LeadDetailContent({ id }: { id: string }) {
   }
 
   const displayPrix = lead.prix_lead;
-  const buyersCount = lead.buyers_count ?? 0;
-  const slotOpen = isLeadSlotOpen({ buyers_count: buyersCount, statut: lead.statut });
+  const slotOpen = isLeadSlotOpen({ statut: lead.statut });
   const displayName = lead.raison_sociale || lead.nom_osm || t("leads.detail.nonCompliantParking");
   const gpsCoords = formatCoords(lead.latitude, lead.longitude);
   const backHref = isOwned || fromMonEspace ? MON_ESPACE_PATH : catalogBackHref;
@@ -127,7 +126,6 @@ function LeadDetailContent({ id }: { id: string }) {
             <FlagBadge flag={lead.flag_urgence} />
             <LeadTierBadge tier={lead.tier} />
             {lead.has_dirigeant ? <LeadDirigeantBadge /> : null}
-            <LeadAvailabilityBadge available={slotOpen} />
           </div>
 
           <p className="mt-3 text-sm text-slate-600">{t("leads.detail.intro")}</p>
@@ -191,16 +189,13 @@ function LeadDetailContent({ id }: { id: string }) {
 
                 {canPurchase ? (
                   <div className="mt-4">
-                    <PurchaseButton
-                      leadId={lead.id}
-                      prix={displayPrix}
-                      tier={lead.tier}
-                      departement={lead.departement}
-                      flag={lead.flag_urgence}
-                      full
-                      disabled={!slotOpen}
-                      disabledReason="sold_out"
-                    />
+                    {!slotOpen ? (
+                      <p className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+                        {t("leads.badge.unavailableTitle")}
+                      </p>
+                    ) : (
+                      <PayButton leadId={lead.id} prix={displayPrix} tier={lead.tier} />
+                    )}
                   </div>
                 ) : (
                   <p className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
@@ -250,12 +245,15 @@ function LeadDetailContent({ id }: { id: string }) {
               </>
             ) : (
               <>
-                <div className="rounded-xl border border-solar/30 bg-amber-50 p-4 text-center text-sm text-slate-700">
-                  {t("leads.detail.purchased")}{" "}
-                  <Link href={MON_ESPACE_PATH} className="text-solar-700 underline">
-                    {t("leads.detail.mySpace")}
-                  </Link>
-                  .
+                <div className="flex flex-col items-center gap-3 rounded-xl border border-emerald-500/30 bg-emerald-50/80 p-4 text-center text-sm text-slate-700">
+                  <CatalogUnlockedBadge />
+                  <p>
+                    {t("leads.detail.purchased")}{" "}
+                    <Link href={MON_ESPACE_PATH} className="text-solar-700 underline">
+                      {t("leads.detail.mySpace")}
+                    </Link>
+                    .
+                  </p>
                 </div>
 
                 <div className="mt-6 border-t border-slate-200 pt-6">

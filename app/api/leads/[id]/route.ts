@@ -2,7 +2,7 @@ import { getUserIdFromRequest } from "@/lib/auth";
 import { getCatalogAccess } from "@/lib/catalog-access";
 import { getLeadById, userOwnsLead } from "@/lib/db";
 import { isLeadSellable, toOwnedLead, toPublicLead } from "@/lib/leads";
-import { isLeadSlotOpen, MAX_BUYERS_PER_LEAD } from "@/lib/lead-slots";
+import { isLeadSlotOpen } from "@/lib/lead-slots";
 import { canPurchaseLeads } from "@/lib/profile-onboarding";
 import { getUserProfile } from "@/lib/profile";
 import { ANONYMOUS_CATALOG_ACCESS } from "@/lib/preview-catalog";
@@ -59,7 +59,7 @@ export async function GET(
   return Response.json(
     {
       lead: isOwned
-        ? { ...toOwnedLead(lead), max_buyers: MAX_BUYERS_PER_LEAD, isOwned: true }
+        ? { ...toOwnedLead(lead), isOwned: true }
         : { ...toPublicLead(lead), isOwned: false },
       is_owned: isOwned,
       can_purchase: canPurchase,

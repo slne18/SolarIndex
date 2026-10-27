@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getAccessToken } from "@/lib/supabaseBrowser";
@@ -10,10 +10,8 @@ import { eurosCompact, nf } from "@/lib/format";
 import { fmt } from "@/lib/i18n/format";
 import { scoreLevelKey } from "@/lib/i18n/leads-labels";
 import { useTranslations } from "@/components/LocaleProvider";
-import LeadAvailabilityBadge from "@/components/LeadAvailabilityBadge";
 import LeadTierBadge from "@/components/LeadTierBadge";
 import { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
-import { isLeadSlotOpen } from "@/lib/lead-slots";
 import { rememberLeadsCatalogReturn } from "@/lib/leads-catalog-return";
 
 /** Badge catalogue : uniquement les urgences absolues (le reste = cas par défaut, sans pastille). */
@@ -27,17 +25,16 @@ export function FlagBadge({ flag }: { flag: string }) {
   );
 }
 
-function StatutCell({ lead }: { lead: PublicLead }) {
-  const available = isLeadSlotOpen({
-    buyers_count: lead.buyers_count ?? 0,
-    statut: lead.statut,
-  });
-  return <LeadAvailabilityBadge available={available} />;
-}
-
-export default function LeadTable({ leads }: { leads: PublicLead[] }) {
+export default function LeadTable({
+  leads,
+  ownedLeadIds = [],
+}: {
+  leads: PublicLead[];
+  ownedLeadIds?: string[];
+}) {
   const t = useTranslations();
   const router = useRouter();
+  const owned = useMemo(() => new Set(ownedLeadIds), [ownedLeadIds]);
   const [platformActive, setPlatformActive] = useState(false);
   const [subChecked, setSubChecked] = useState(false);
 
@@ -65,15 +62,25 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
   }, []);
 
   function actionLabel(lead: PublicLead): string {
+    if (owned.has(lead.id)) return t("leads.table.unlocked");
     if (lead.tier === "premium") {
       return fmt(t("leads.table.viewPremium"), { price: lead.prix_lead });
     }
     if (!subChecked) return t("common.loading");
-    if (platformActive) return t("leads.table.viewIncluded");
+    if (platformActive) return t("leads.table.unlock");
     return fmt(t("leads.table.subscribePlatform"), {
       intro: PRIX_PLATEFORME_PREMIER_MOIS,
       price: PRIX_PLATEFORME_MENSUEL,
     });
+  }
+
+  function actionClass(lead: PublicLead): string {
+    const base = "catalog-table-action";
+    if (owned.has(lead.id)) return `${base} font-semibold text-emerald-600`;
+    if (lead.tier === "standard" && subChecked && platformActive) {
+      return `${base} font-semibold text-solar`;
+    }
+    return base;
   }
 
   function openLead(id: string) {
@@ -104,7 +111,6 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
               <th className="px-4 py-3 text-right">{t("leads.table.projectValue")}</th>
               <th className="px-4 py-3">{t("leads.table.naf")}</th>
               <th className="px-4 py-3">{t("leads.table.score")}</th>
-              <th className="px-4 py-3">{t("leads.table.status")}</th>
               <th className="px-4 py-3 text-right">{t("leads.table.action")}</th>
             </tr>
           </thead>
@@ -151,11 +157,10 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
                     {t(scoreLevelKey(lead.score_confiance))}
                   </span>
                 </td>
-                <td className="px-4 py-3"><StatutCell lead={lead} /></td>
                 <td className="px-4 py-3 text-right">
                   <Link
                     href={`/leads/${lead.id}`}
-                    className="catalog-table-action"
+                    className={actionClass(lead)}
                     onClick={(e) => e.stopPropagation()}
                   >
                     {actionLabel(lead)}

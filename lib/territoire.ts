@@ -1,5 +1,4 @@
 import { getAdminClient } from "./supabase";
-import { MAX_BUYERS_PER_LEAD } from "./lead-slots";
 import { VISION_COVERAGE_EQUIPE } from "./pv-overlap";
 import { leadTier } from "./leads";
 import { SURFACE_GRAY_LOW_MAX_M2 } from "./surface-thresholds";
@@ -46,7 +45,6 @@ type TerritoireLeadRow = {
 function isSellable(row: TerritoireLeadRow): boolean {
   return (
     row.statut === "disponible" &&
-    row.buyers_count < MAX_BUYERS_PER_LEAD &&
     row.siren != null &&
     row.id_parcelle != null &&
     row.adresse != null &&
@@ -71,7 +69,6 @@ async function fetchSellableLeads(): Promise<TerritoireLeadRow[]> {
         "created_at, latitude, longitude, departement, flag_urgence, valeur_chantier_eur, surface_m2, score_confiance, statut, buyers_count, siren, id_parcelle, adresse, detection, pv_overlap_pct, vision_surface_couverte_pct, vision_checked_at, surface_tag_present, source_surface",
       )
       .eq("statut", "disponible")
-      .lt("buyers_count", MAX_BUYERS_PER_LEAD)
       .not("siren", "is", null)
       .not("id_parcelle", "is", null)
       .not("adresse", "is", null)

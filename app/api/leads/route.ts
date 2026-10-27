@@ -1,7 +1,7 @@
 import { getUserIdFromRequest } from "@/lib/auth";
 import { getCatalogAccess } from "@/lib/catalog-access";
 import { getCatalogStats } from "@/lib/catalog-stats";
-import { LeadSort, PAGE_SIZE, queryLeads } from "@/lib/db";
+import { LeadSort, ownedLeadIdsAmong, PAGE_SIZE, queryLeads } from "@/lib/db";
 import { toPublicLead } from "@/lib/leads";
 import { ANONYMOUS_CATALOG_ACCESS } from "@/lib/preview-catalog";
 
@@ -61,9 +61,19 @@ export async function GET(req: Request) {
       getCatalogStats(),
     ]);
 
+    const publicLeads = rows.map(toPublicLead);
+    let ownedLeadIds: string[] = [];
+    if (userId && publicLeads.length > 0) {
+      ownedLeadIds = await ownedLeadIdsAmong(
+        userId,
+        publicLeads.map((l) => l.id),
+      );
+    }
+
     return Response.json(
       {
-        leads: rows.map(toPublicLead),
+        leads: publicLeads,
+        ownedLeadIds,
         page,
         pageSize: PAGE_SIZE,
         total: count,

@@ -2,7 +2,12 @@ import { randomBytes } from "crypto";
 import { getUserIdFromRequest } from "@/lib/auth";
 import { getUserProfile } from "@/lib/profile";
 import { canDepositProject } from "@/lib/profile-onboarding";
-import { queryRfpSubmissions, RFP_PAGE_SIZE, createRfpSubmission } from "@/lib/rfp-db";
+import {
+  createRfpSubmission,
+  ownedRfpIdsAmong,
+  queryRfpSubmissions,
+  RFP_PAGE_SIZE,
+} from "@/lib/rfp-db";
 import { inferGeoFromAddress, toPublicRfp, type RfpStatut } from "@/lib/rfp";
 import { parseTypeSolutionRecherchee } from "@/lib/solution-type";
 import {
@@ -64,6 +69,7 @@ function parseOptionalBool(value: string | null): boolean | undefined {
 
 // GET /api/rfp — catalogue appels d'offres publiés (masqué)
 export async function GET(req: Request) {
+  const userId = await getUserIdFromRequest(req);
   const { searchParams } = new URL(req.url);
   const departement = searchParams.get("departement") || undefined;
   const region = searchParams.get("region") || undefined;
@@ -106,9 +112,18 @@ export async function GET(req: Request) {
     } else if (aperEligible === false) {
       rfps = rfps.filter((r) => !r.solar?.aper_eligible);
     }
+    let ownedRfpIds: string[] = [];
+    if (userId && rfps.length > 0) {
+      ownedRfpIds = await ownedRfpIdsAmong(
+        userId,
+        rfps.map((r) => r.id),
+      );
+    }
+
     return Response.json(
       {
         rfps,
+        ownedRfpIds,
         page,
         pageSize: RFP_PAGE_SIZE,
         total: count,

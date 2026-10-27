@@ -2,7 +2,6 @@ import { getCatalogStats } from "./catalog-stats";
 import { countRfpPendingModeration } from "./rfp-db";
 import { getAdminClient } from "./supabase";
 import { TERRITOIRE_PACK_EUR } from "./subscription";
-import { MAX_BUYERS_PER_LEAD } from "./lead-slots";
 import { DEPT_REGION } from "./regions";
 import { VISION_COVERAGE_EQUIPE } from "./pv-overlap";
 import type { LeadRow } from "./types";
@@ -134,8 +133,7 @@ export async function getAdminDashboard(): Promise<AdminDashboardData> {
     supabase
       .from("leads")
       .select("id", { count: "exact", head: true })
-      .eq("statut", "disponible")
-      .lt("buyers_count", MAX_BUYERS_PER_LEAD),
+      .eq("statut", "disponible"),
     supabase
       .from("purchases")
       .select("user_id")

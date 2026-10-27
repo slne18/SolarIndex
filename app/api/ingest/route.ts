@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     return Response.json({ error: "Aucun lead avec osm_id valide." }, { status: 400 });
   }
 
-  // On ne réécrit jamais un lead déjà complet (3 acheteurs).
+  // On ne réécrit pas les leads retirés manuellement (legacy vendu).
   const osmIds = mapped.map((m) => m.osm_id);
   const existing = await getExistingByOsmIds(osmIds);
   const statutByOsmId = new Map(existing.map((e) => [Number(e.osm_id), e.statut]));
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     if (existingStatut === undefined) {
       inserted++;
       toUpsert.push(lead);
-    } else if (existingStatut === "complet" || existingStatut === "vendu") {
+    } else if (existingStatut === "vendu") {
       skipped++;
     } else {
       updated++;

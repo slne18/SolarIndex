@@ -13,7 +13,6 @@ import { useTranslations } from "@/components/LocaleProvider";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import LeadTierBadge from "@/components/LeadTierBadge";
 import { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
-import LeadAvailabilityBadge from "@/components/LeadAvailabilityBadge";
 import { FlagBadge } from "@/components/LeadTable";
 
 function DemoRow({ label, value }: { label: string; value: string }) {
@@ -97,7 +96,6 @@ export default function LeadDemoFiche() {
               <FlagBadge flag="URGENCE_ABSOLUE" />
               <LeadTierBadge tier="premium" />
               <LeadDirigeantBadge />
-              <LeadAvailabilityBadge available />
             </div>
 
             <div className="px-6 py-5">

@@ -305,9 +305,9 @@ describe("GET /api/leads/[id]", () => {
     expect(json.lead.ville).toBe("Bordeaux");
   });
 
-  it("404 pour un lead complet (3/3 acheteurs)", async () => {
+  it("404 pour un lead hors catalogue (statut complet)", async () => {
     vi.mocked(db.getLeadById).mockResolvedValue(
-      makeLead({ statut: "complet", buyers_count: 3 }),
+      makeLead({ statut: "complet", buyers_count: 12 }),
     );
     vi.mocked(auth.getUserIdFromRequest).mockResolvedValue("user-1");
     const res = await leadGET(new Request("http://x/api/leads/uuid-1"), {
@@ -316,9 +316,9 @@ describe("GET /api/leads/[id]", () => {
     expect(res.status).toBe(404);
   });
 
-  it("visible avec 1/3 acheteurs pour un non-acheteur", async () => {
+  it("visible même après d'autres achats (sans plafond)", async () => {
     vi.mocked(db.getLeadById).mockResolvedValue(
-      makeLead({ buyers_count: 1, acheteur_id: "autre-user" }),
+      makeLead({ buyers_count: 5, acheteur_id: "autre-user" }),
     );
     vi.mocked(auth.getUserIdFromRequest).mockResolvedValue("user-1");
     const res = await leadGET(new Request("http://x/api/leads/uuid-1"), {
@@ -326,8 +326,7 @@ describe("GET /api/leads/[id]", () => {
     });
     const json = await res.json();
     expect(res.status).toBe(200);
-    expect(json.lead.buyers_count).toBe(1);
-    expect(json.lead.max_buyers).toBe(3);
+    expect(json.lead.buyers_count).toBe(5);
   });
 
   it("révèle tout pour l'acheteur du lead", async () => {

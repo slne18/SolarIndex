@@ -27,7 +27,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     id: "exclusivity",
     question: "Un lead est-il exclusif ?",
     answer:
-      "Non. Chaque lead automatisé peut être acheté par jusqu'à 3 installateurs. Les appels d'offres peuvent également être consultés par plusieurs professionnels selon les règles affichées sur la fiche.",
+      "Non. Plusieurs installateurs peuvent acheter le même lead automatisé (sans plafond). Chaque installateur ne peut le débloquer qu'une seule fois. Les appels d'offres peuvent également être consultés par plusieurs professionnels selon les règles affichées sur la fiche.",
   },
   {
     id: "payment",

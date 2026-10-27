@@ -10,6 +10,7 @@ import type { OwnedRfp, PublicRfp } from "@/lib/rfp";
 import { MON_ESPACE_PATH } from "@/lib/paths";
 import RfpLegalNotice from "@/components/RfpLegalNotice";
 import RfpPurchaseButton from "@/components/RfpPurchaseButton";
+import CatalogUnlockedBadge from "@/components/CatalogUnlockedBadge";
 import RfpResponsesList from "@/components/RfpResponsesList";
 import {
   RfpOfficialBadge,
@@ -237,7 +238,13 @@ export default function RfpDetailClient({ id }: { id: string }) {
                   <div className="mt-1 text-3xl font-bold text-solar">{rfp.prix_acces} €</div>
 
                   {isOwned ? (
-                    <p className="mt-4 text-sm text-emerald-700">Vous avez débloqué ce projet.</p>
+                    <div className="mt-4 flex flex-col items-start gap-2 rounded-xl border border-emerald-500/30 bg-emerald-50/80 p-4">
+                      <CatalogUnlockedBadge />
+                      <p className="text-sm text-emerald-800">{t("rfp.detail.alreadyUnlocked")}</p>
+                      <Link href={MON_ESPACE_PATH} className="text-sm text-solar-700 underline">
+                        {t("leads.detail.mySpace")}
+                      </Link>
+                    </div>
                   ) : canPurchase ? (
                     <div className="mt-4">
                       <RfpPurchaseButton

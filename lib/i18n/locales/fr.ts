@@ -318,7 +318,10 @@ const fr = {
   "leads.table.action": "Action",
   "leads.table.viewPremium": "Voir — {price} €",
   "leads.table.viewIncluded": "Voir · inclus abonnement",
+  "leads.table.unlock": "Débloquer",
+  "leads.table.unlocked": "Débloqué",
   "leads.table.subscribePlatform": "S'abonner — {intro} € puis {price} €/mois",
+  "catalog.unlockedBadge": "Débloqué",
   "leads.flag.urgence": "Urgence",
   "leads.flag.toEquip": "À équiper",
 
@@ -484,6 +487,7 @@ const fr = {
   "rfp.hintInstaller":
     "Point d'entrée unique : consultations privées et liens vers dossiers officiels (PLACE, AWS, Megalis…)",
   "rfp.depositProject": "Déposer un projet",
+  "rfp.detail.alreadyUnlocked": "Vous avez débloqué les coordonnées de ce projet.",
   "rfp.detail.signInToPurchase":
     "Connectez-vous ou créez votre espace SolarIndex pour acheter l'accès et débloquer les coordonnées du déposant.",
   "rfp.detail.createSpaceLink": "Créer mon espace",
@@ -501,6 +505,10 @@ const fr = {
   "rfp.purchase.loading": "Redirection…",
   "rfp.purchase.unlock": "Débloquer les coordonnées — {price} €",
   "rfp.purchase.unlockIncluded": "Débloquer (inclus abonnement)",
+  "rfp.table.unlocked": "Débloqué",
+  "rfp.table.unlockIncluded": "Débloquer",
+  "rfp.table.unlockPrice": "Débloquer — {price} €",
+  "rfp.table.officialDce": "DCE officiel ↗",
 
   "rfp.offerType.devis_installation.label": "Devis installation classique",
   "rfp.offerType.devis_installation.short": "Devis",
@@ -995,7 +1003,7 @@ const fr = {
     "Surface, localisation, indice de confiance, exploitant (SIREN et raison sociale), dirigeants lorsque identifiés via open data, propriétaire foncier MAJIC, adresse, parcelle cadastrale et coordonnées GPS. Pas de canal direct (téléphone ou email) : vous prospectez via l'identité légale et la localisation exacte.",
   "faq.exclusivity.q": "Un lead est-il exclusif ?",
   "faq.exclusivity.a":
-    "Non. Chaque lead automatisé peut être acheté par jusqu'à 3 installateurs. Les appels d'offres peuvent également être consultés par plusieurs professionnels selon les règles affichées sur la fiche.",
+    "Non. Plusieurs installateurs peuvent acheter le même lead automatisé (sans plafond). Chaque installateur ne peut le débloquer qu'une seule fois. Les appels d'offres peuvent également être consultés par plusieurs professionnels selon les règles affichées sur la fiche.",
   "faq.payment.q": "Comment payer et recevoir mes leads ?",
   "faq.payment.a":
     "Paiement sécurisé par Stripe (carte bancaire). L'abonnement Accès plateforme débloque l'essentiel du catalogue et les appels d'offres publics. Les leads premium et consultations privées restent à l'achat unitaire.",

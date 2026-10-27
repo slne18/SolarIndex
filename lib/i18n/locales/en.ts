@@ -315,7 +315,10 @@ const en: Record<MessageKey, string> = {
   "leads.table.action": "Action",
   "leads.table.viewPremium": "View — €{price}",
   "leads.table.viewIncluded": "View · included in subscription",
+  "leads.table.unlock": "Unlock",
+  "leads.table.unlocked": "Unlocked",
   "leads.table.subscribePlatform": "Subscribe — €{intro} then €{price}/mo",
+  "catalog.unlockedBadge": "Unlocked",
   "leads.flag.urgence": "Urgent",
   "leads.flag.toEquip": "To equip",
 
@@ -481,6 +484,7 @@ const en: Record<MessageKey, string> = {
   "rfp.hintInstaller":
     "Single entry point: private consultations and links to official dossiers (PLACE, AWS, Megalis…)",
   "rfp.depositProject": "Submit a project",
+  "rfp.detail.alreadyUnlocked": "You have unlocked contact details for this project.",
   "rfp.detail.signInToPurchase":
     "Sign in or create your SolarIndex space to purchase access and unlock the depositor's contact details.",
   "rfp.detail.createSpaceLink": "Create my space",
@@ -498,6 +502,10 @@ const en: Record<MessageKey, string> = {
   "rfp.purchase.loading": "Redirecting…",
   "rfp.purchase.unlock": "Unlock contact details — €{price}",
   "rfp.purchase.unlockIncluded": "Unlock (included in subscription)",
+  "rfp.table.unlocked": "Unlocked",
+  "rfp.table.unlockIncluded": "Unlock",
+  "rfp.table.unlockPrice": "Unlock — €{price}",
+  "rfp.table.officialDce": "Official tender docs ↗",
 
   "rfp.offerType.devis_installation.label": "Standard installation quote",
   "rfp.offerType.devis_installation.short": "Quote",
@@ -992,7 +1000,7 @@ const en: Record<MessageKey, string> = {
     "Area, location, confidence index, operator (SIREN and company name), directors when available via open data, MAJIC landowner, address, cadastral parcel and GPS. No direct phone/email — you prospect via legal identity and exact location.",
   "faq.exclusivity.q": "Is a lead exclusive?",
   "faq.exclusivity.a":
-    "No. Each automated lead can be purchased by up to 3 installers. Tenders may also be viewed by several professionals per the rules on each record.",
+    "No. Several installers can purchase the same automated lead (no cap). Each installer can only unlock it once. Tenders may also be viewed by several professionals per the rules on each record.",
   "faq.payment.q": "How do I pay and receive leads?",
   "faq.payment.a":
     "Secure payment via Stripe (card). The Platform access subscription unlocks most of the catalog and public tenders. Premium leads and private consultations remain pay-per-unit.",

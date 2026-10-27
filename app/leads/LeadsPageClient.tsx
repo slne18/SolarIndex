@@ -26,6 +26,7 @@ function LeadsCatalog() {
   const t = useTranslations();
   const listRef = useRef<HTMLDivElement>(null);
   const [leads, setLeads] = useState<PublicLead[]>([]);
+  const [ownedLeadIds, setOwnedLeadIds] = useState<string[]>([]);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(0);
@@ -58,11 +59,13 @@ function LeadsCatalog() {
       if (!res.ok) {
         setError(data.error || t("leads.loadError"));
         setLeads([]);
+        setOwnedLeadIds([]);
         setTotal(0);
         return;
       }
 
       setLeads(data.leads ?? []);
+      setOwnedLeadIds(data.ownedLeadIds ?? []);
       setTotal(data.total ?? 0);
       setTotalPages(data.totalPages ?? 0);
       setPage(data.page ?? 0);
@@ -188,7 +191,7 @@ function LeadsCatalog() {
             {loading ? (
               <p className="text-slate-600">{t("leads.loadingLeads")}</p>
             ) : (
-              <LeadTable leads={leads} />
+              <LeadTable leads={leads} ownedLeadIds={ownedLeadIds} />
             )}
           </div>
 

@@ -14,6 +14,7 @@ import { resolveRfpSolutionType } from "@/lib/solution-type";
 
 import { MON_ESPACE_PATH } from "@/lib/paths";
 import { DeleteAccountPanel, MyRfpSubmissionsPanel } from "@/components/AccountSettingsPanels";
+import CatalogUnlockedBadge from "@/components/CatalogUnlockedBadge";
 import { useTranslations } from "@/components/LocaleProvider";
 import { fmt } from "@/lib/i18n/format";
 
@@ -206,7 +207,10 @@ export default function MonEspaceClient() {
                 <div key={l.id} className="card p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <div className="font-semibold">{l.raison_sociale || l.nom_osm || "Parking"}</div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-semibold">{l.raison_sociale || l.nom_osm || "Parking"}</span>
+                        <CatalogUnlockedBadge compact />
+                      </div>
                       {l.nom_osm && l.raison_sociale && l.nom_osm !== l.raison_sociale ? (
                         <div className="text-xs text-slate-500">
                           {t("account.siteLabel")} {l.nom_osm}
@@ -278,6 +282,7 @@ export default function MonEspaceClient() {
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-semibold">{r.entreprise}</span>
+                        <CatalogUnlockedBadge compact />
                         <SolutionTypeBadge type={resolveRfpSolutionType(r.type_solution_recherchee)} compact />
                       </div>
                       <div className="mt-1 text-sm text-slate-400">

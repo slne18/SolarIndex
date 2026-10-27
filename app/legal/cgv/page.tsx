@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import LegalPageShell from "@/components/LegalPageShell";
 import { PRIX_LEAD } from "@/lib/leads";
-import { MAX_BUYERS_PER_LEAD } from "@/lib/lead-slots";
 import { PRIX_PLATEFORME_MENSUEL } from "@/lib/platform-access";
 import { PRIX_RFP } from "@/lib/rfp";
 import {
@@ -73,7 +72,8 @@ export default function CgvPage() {
         </p>
         <p>
           Un lead automatisé est une fiche de prospection documentée (données B2B, parcelle, SIREN,
-          etc.). Jusqu&apos;à {MAX_BUYERS_PER_LEAD} installateurs peuvent acquérir le même lead. Un
+          etc.). Plusieurs installateurs peuvent acquérir le même lead automatisé (sans plafond) ; chacun
+          ne peut le débloquer qu&apos;une fois. Un
           accès «&nbsp;appel d&apos;offres&nbsp;» est l&apos;accès aux coordonnées volontairement
           déposées par un gestionnaire ou propriétaire privé — {RFP_SERVICE_SUMMARY}
         </p>
