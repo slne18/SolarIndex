@@ -50,7 +50,7 @@ export function leadTier(
 
 // Grille tarifaire par tier (€ TTC / lead premium — les autres via abonnement plateforme).
 export const PRIX_LEAD = {
-  premium: 99,
+  premium: 50,
   standard: 100,
 } as const;
 

@@ -233,6 +233,27 @@ describe("GET /api/leads", () => {
     );
   });
 
+  it("transmet tier=premium et tier=standard", async () => {
+    vi.mocked(auth.getUserIdFromRequest).mockResolvedValue("user-1");
+    vi.mocked(db.queryLeads).mockResolvedValue({ rows: [], count: 0 });
+    await leadsGET(
+      new Request("http://x/api/leads?tier=premium", {
+        headers: { Authorization: "Bearer token" },
+      }),
+    );
+    expect(db.queryLeads).toHaveBeenCalledWith(
+      expect.objectContaining({ tierFilter: "premium" }),
+    );
+    await leadsGET(
+      new Request("http://x/api/leads?tier=standard", {
+        headers: { Authorization: "Bearer token" },
+      }),
+    );
+    expect(db.queryLeads).toHaveBeenCalledWith(
+      expect.objectContaining({ tierFilter: "standard" }),
+    );
+  });
+
   it("ignore un flag invalide", async () => {
     vi.mocked(auth.getUserIdFromRequest).mockResolvedValue("user-1");
     vi.mocked(db.queryLeads).mockResolvedValue({ rows: [], count: 0 });

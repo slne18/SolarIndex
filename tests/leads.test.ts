@@ -80,9 +80,9 @@ function makeLead(overrides: Partial<LeadRow> = {}): LeadRow {
 }
 
 describe("computePrixLead", () => {
-  it("Premium : 99 € forfait", () => {
-    expect(computePrixLead(5000, "premium")).toBe(99);
-    expect(computePrixLead(50_000, "premium")).toBe(99);
+  it("Premium : 50 € forfait", () => {
+    expect(computePrixLead(5000, "premium")).toBe(50);
+    expect(computePrixLead(50_000, "premium")).toBe(50);
   });
   it("Standard : 100 € forfait", () => {
     expect(computePrixLead(5000, "standard")).toBe(100);
@@ -98,7 +98,7 @@ describe("leadTier / isLeadPremium", () => {
     });
     expect(isLeadPremium(lead)).toBe(true);
     expect(leadTier(lead)).toBe("premium");
-    expect(computePrixLeadFromRow(lead)).toBe(99);
+    expect(computePrixLeadFromRow(lead)).toBe(50);
   });
   it("Standard sans photo vérifiée", () => {
     const lead = makeLead({ vision_checked_at: null });

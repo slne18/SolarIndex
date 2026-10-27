@@ -32,7 +32,7 @@ Les **phases A–F** (backend, Stripe, vitrine, auth, admin, ingest pipeline) so
 | Sujet | Comportement actuel |
 |--------|---------------------|
 | **Abonnement plateforme** | **300 €/mois** (1er mois **240 €** avec coupon Stripe) — catalogue leads **standard** + appels d’offres **publics** |
-| **Lead premium** | **99 €/lead** — photo vérifiée (`vision_checked_at`) + fiche **< 6 mois** |
+| **Lead premium** | **50 €/lead** — photo vérifiée (`vision_checked_at`) + fiche **< 6 mois** |
 | **Lead standard** | Inclus dans l’abonnement (déblocage sans paiement unitaire si abonné actif) |
 | **AO privés** | Tarifs dédiés (400 / 550 € selon type) |
 | **Garantie remplacement** | **Retirée** (UI, CGV, emails) |
@@ -142,7 +142,7 @@ Sections (scroll vertical), contenu i18n :
 
 **6.5 Avantages** — exclusivité, données vérifiables, volume APER, B2B RGPD.
 
-**6.6 Tarifs** — **alignés sur le code** : carte abonnement plateforme (300 €/mois, intro −20 %), lead premium (99 €), AO ; stats dynamiques (% débloqué). Pas de garantie remplacement.
+**6.6 Tarifs** — **alignés sur le code** : carte abonnement plateforme (300 €/mois, intro −20 %), lead premium (50 €), AO ; stats dynamiques (% débloqué). Pas de garantie remplacement.
 
 **6.7 Footer** — légal, sources OSM / open data, RGPD.
 

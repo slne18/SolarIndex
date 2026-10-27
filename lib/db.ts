@@ -1,4 +1,5 @@
 import { getAdminClient } from "./supabase";
+import { applyStandardTierFilter } from "./catalog-stats";
 import { premiumLeadCutoffIso } from "./platform-access";
 import { MAX_BUYERS_PER_LEAD } from "./lead-slots";
 import { PV_OVERLAP_MIN, VISION_COVERAGE_EQUIPE } from "./pv-overlap";
@@ -21,8 +22,8 @@ export interface LeadQueryOptions {
   pageSize?: number;
   // Masquer aussi les leads "à vérifier" (doute sur un équipement existant).
   hideAverifier?: boolean;
-  /** Filtre tier Premium (critères pipeline stricts). */
-  premiumOnly?: boolean;
+  /** Filtre tier catalogue : premium (unitaire) ou standard (abonnement). */
+  tierFilter?: "premium" | "standard";
   /** Uniquement les leads avec dirigeant exploitant identifié. */
   dirigeantOnly?: boolean;
   /** Inclure les leads vendus (admin). Par défaut : catalogue = disponibles uniquement. */
@@ -66,10 +67,12 @@ function applyCatalogFilters(query: SupabaseQuery, opts: LeadQueryOptions): Supa
   if (opts.hideAverifier) {
     query = query.eq("detection", "libre");
   }
-  if (opts.premiumOnly) {
+  if (opts.tierFilter === "premium") {
     query = query
       .not("vision_checked_at", "is", null)
       .gte("created_at", premiumLeadCutoffIso());
+  } else if (opts.tierFilter === "standard") {
+    query = applyStandardTierFilter(query, premiumLeadCutoffIso());
   }
   if (opts.dirigeantOnly) {
     query = query.or("dirigeant_exploitant.not.is.null,dirigeant_nom.not.is.null");
@@ -128,7 +131,7 @@ export async function queryLeads(
   const page = opts.page ?? 0;
   const sort = opts.sort ?? "valeur";
 
-  const useTierSort = !opts.hideAverifier && !opts.premiumOnly;
+  const useTierSort = !opts.hideAverifier && !opts.tierFilter;
 
   if (!useTierSort) {
     let query = applyCatalogFilters(supabase.from("leads").select("*", { count: "exact" }), opts);

@@ -91,7 +91,6 @@ function InstallerTarifsSections() {
         })
       : t("home.pricingPlatformF2Fallback"),
     t("home.pricingPlatformF3"),
-    fmt(t("home.pricingPlatformF4"), { price: PRIX_PLATEFORME_MENSUEL }),
     fmt(t("home.pricingPlatformIntro"), {
       intro: PRIX_PLATEFORME_PREMIER_MOIS,
       price: PRIX_PLATEFORME_MENSUEL,

@@ -15,8 +15,8 @@ describe("platform pricing constants", () => {
     expect(PRIX_PLATEFORME_PREMIER_MOIS).toBe(240);
   });
 
-  it("lead premium à 99 €", () => {
-    expect(PRIX_LEAD.premium).toBe(99);
+  it("lead premium à 50 €", () => {
+    expect(PRIX_LEAD.premium).toBe(50);
   });
 
   it("fenêtre premium ~6 mois", () => {

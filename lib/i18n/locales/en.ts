@@ -206,8 +206,9 @@ const en: Record<MessageKey, string> = {
   "home.installerHow.step1Text": "Browse the catalog of parking lots detected as non-compliant with the APER law.",
   "home.installerHow.step2Title": "Analyze its potential",
   "home.installerHow.step2Text": "Area, confidence index, photovoltaic potential estimate by zone.",
-  "home.installerHow.step3Title": "Buy only the projects you want",
-  "home.installerHow.step3Text": "Pay per unit, no subscription. You only pay for what you want to pursue.",
+  "home.installerHow.step3Title": "Unlock the projects you want",
+  "home.installerHow.step3Text":
+    "Platform subscription for the standard catalog and public tenders. Premium leads and private consultations are pay-per-unit.",
   "home.installerHow.step4Title": "Contact the decision-maker",
   "home.installerHow.step4Text":
     "For an automated lead: manager or company name. For a submitted tender: full decision-maker contact details. Then start your sales outreach.",
@@ -285,8 +286,10 @@ const en: Record<MessageKey, string> = {
   "leads.filter.urgence": "Absolute urgency",
   "leads.filter.toEquip": "To equip",
   "leads.filter.allTiers": "All tiers",
+  "leads.filter.standardOnly": "Included in subscription",
   "leads.filter.premiumOnly": "Premium only",
-  "leads.filter.premiumTitle": "Premium = verified aerial photo and listing under 6 months old",
+  "leads.filter.tierTitle":
+    "Standard = included in Platform subscription · Premium = verified photo and listing under 6 months (pay per unit)",
   "leads.filter.directorAll": "Director: all",
   "leads.filter.directorIdentified": "Director identified",
   "leads.filter.directorTitle": "Operating director identified via SIREN open data",
@@ -621,8 +624,8 @@ const en: Record<MessageKey, string> = {
   "home.pricingPlatformF2Fallback":
     "Includes tenders published on an official procurement platform",
   "home.pricingPlatformF3": "Browse and unlock records from My space",
-  "home.pricingPlatformF4": "Then €{price}/month · automatic renewal",
-  "home.pricingPlatformIntro": "−20% first month (€{intro}), then €{price}/month",
+  "home.pricingPlatformIntro":
+    "−20% first month (€{intro}), then €{price}/month — automatic renewal",
   "home.pricingPremiumF1": "Verified aerial photo",
   "home.pricingPremiumF2": "Catalog listing under 6 months old",
   "home.pricingPremiumF3": "Pay per unit — not included in the subscription",

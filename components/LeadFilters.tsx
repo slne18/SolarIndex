@@ -128,9 +128,10 @@ export default function LeadFilters({ lockedDepartement }: { lockedDepartement?:
         className={selectCls}
         value={params.get("tier") ?? ""}
         onChange={(e) => update("tier", e.target.value)}
-        title={t("leads.filter.premiumTitle")}
+        title={t("leads.filter.tierTitle")}
       >
         <option value="">{t("leads.filter.allTiers")}</option>
+        <option value="standard">{t("leads.filter.standardOnly")}</option>
         <option value="premium">{t("leads.filter.premiumOnly")}</option>
       </select>
 

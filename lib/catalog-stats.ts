@@ -47,6 +47,14 @@ export function countPremiumLeadsQuery(createdAfterIso: string) {
     .gte("created_at", createdAfterIso);
 }
 
+/** Leads standard : inclus dans l'abonnement plateforme (inverse du premium). */
+export function applyStandardTierFilter<T extends { or: (filters: string) => T }>(
+  query: T,
+  createdBeforeIso: string,
+): T {
+  return query.or(`vision_checked_at.is.null,created_at.lt."${createdBeforeIso}"`);
+}
+
 export async function getCatalogStats(): Promise<CatalogStats> {
   const supabase = getAdminClient();
   const urgenceBase = {

@@ -208,9 +208,9 @@ const fr = {
   "home.installerHow.step2Title": "Analysez son potentiel",
   "home.installerHow.step2Text":
     "Surface, indice de confiance, estimation de potentiel photovoltaïque par zone.",
-  "home.installerHow.step3Title": "Achetez uniquement les projets qui vous intéressent",
+  "home.installerHow.step3Title": "Débloquez les projets qui vous intéressent",
   "home.installerHow.step3Text":
-    "Paiement à l'unité, aucun abonnement. Vous ne payez que ce que vous voulez exploiter.",
+    "Abonnement Accès plateforme pour le catalogue standard et les appels d'offres publics. Leads premium et consultations privées à l'achat unitaire.",
   "home.installerHow.step4Title": "Contactez le décideur",
   "home.installerHow.step4Text":
     "Pour un lead automatisé : nom du gestionnaire ou de l'entreprise. Pour un appel d'offres déposé : coordonnées complètes du décideur. Lancez ensuite votre démarche commerciale.",
@@ -289,8 +289,10 @@ const fr = {
   "leads.filter.urgence": "Urgence absolue",
   "leads.filter.toEquip": "À équiper",
   "leads.filter.allTiers": "Tous les tiers",
+  "leads.filter.standardOnly": "Inclus abonnement",
   "leads.filter.premiumOnly": "Premium uniquement",
-  "leads.filter.premiumTitle": "Premium = photo aérienne vérifiée et fiche de moins de 6 mois",
+  "leads.filter.tierTitle":
+    "Standard = inclus dans l'abonnement Accès plateforme · Premium = photo vérifiée et fiche < 6 mois (achat unitaire)",
   "leads.filter.directorAll": "Dirigeant : tous",
   "leads.filter.directorIdentified": "Dirigeant identifié",
   "leads.filter.directorTitle": "Dirigeant exploitant identifié via open data SIREN",
@@ -625,8 +627,8 @@ const fr = {
   "home.pricingPlatformF2Fallback":
     "Inclut les appels d'offres publiés sur une plateforme officielle",
   "home.pricingPlatformF3": "Parcourir et débloquer les fiches depuis Mon espace",
-  "home.pricingPlatformF4": "Puis {price} €/mois · renouvellement automatique",
-  "home.pricingPlatformIntro": "−20 % le 1er mois ({intro} €), puis {price} €/mois",
+  "home.pricingPlatformIntro":
+    "−20 % le 1er mois ({intro} €), puis {price} €/mois — renouvellement automatique",
   "home.pricingPremiumF1": "Photo aérienne vérifiée",
   "home.pricingPremiumF2": "Fiche catalogue de moins de 6 mois",
   "home.pricingPremiumF3": "Achat unitaire — non inclus dans l'abonnement",

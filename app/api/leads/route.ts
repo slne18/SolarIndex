@@ -37,7 +37,9 @@ export async function GET(req: Request) {
   const sort = VALID_SORTS.includes(sortRaw) ? sortRaw : "valeur";
 
   const hideAverifier = searchParams.get("fiabilite") === "verifies";
-  const premiumOnly = searchParams.get("tier") === "premium";
+  const tierRaw = searchParams.get("tier");
+  const tierFilter =
+    tierRaw === "premium" ? "premium" : tierRaw === "standard" ? "standard" : undefined;
   const dirigeantOnly = searchParams.get("dirigeant") === "1";
 
   const pageRaw = Number(searchParams.get("page") || "0");
@@ -55,7 +57,7 @@ export async function GET(req: Request) {
         sort,
         page,
         hideAverifier,
-        premiumOnly,
+        tierFilter,
         dirigeantOnly,
       }),
       getCatalogStats(),
