@@ -920,6 +920,14 @@ h3,
     @apply border-slate-100 hover:bg-slate-50;
   }
 
+  .lead-dirigeant-badge {
+    @apply bg-violet-500/20 text-violet-100 ring-1 ring-violet-400/45;
+  }
+
+  .surface-light .lead-dirigeant-badge {
+    @apply bg-violet-100 text-violet-900 ring-violet-300;
+  }
+
   .surface-light .pricing-headline {
     @apply text-slate-900;
   }

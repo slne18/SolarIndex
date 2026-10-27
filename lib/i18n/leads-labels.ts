@@ -11,13 +11,24 @@ export function tierLabelKey(tier: "premium" | "standard"): MessageKey {
   return tier === "premium" ? "leads.tier.premium" : "leads.tier.standard";
 }
 
-export type ConfidenceFactorId = "solar" | "surfacing" | "cadastral" | "regulatory" | "registry";
+export type ConfidenceFactorId =
+  | "solar"
+  | "aper_conformity"
+  | "surfacing"
+  | "cadastral"
+  | "siren_stability"
+  | "completeness"
+  | "regulatory"
+  | "registry";
 
 export function confidenceFactorLabelKey(id: ConfidenceFactorId): MessageKey {
   const map: Record<ConfidenceFactorId, MessageKey> = {
     solar: "leads.confidence.solar",
+    aper_conformity: "leads.confidence.aperConformity",
     surfacing: "leads.confidence.surfacing",
     cadastral: "leads.confidence.cadastral",
+    siren_stability: "leads.confidence.sirenStability",
+    completeness: "leads.confidence.completeness",
     regulatory: "leads.confidence.regulatory",
     registry: "leads.confidence.registry",
   };

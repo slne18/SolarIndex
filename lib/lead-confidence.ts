@@ -7,6 +7,11 @@ import {
   isHuwartScorePenaltyLead,
 } from "./huwart-law";
 import {
+  hasSirenStabilityData,
+  isSirenEntrepriseActive,
+  sirenAncienneteAnnees,
+} from "./sirene-stability";
+import {
   formatVisionCoveragePct,
   isUrgenceAbsolueLead,
   isVisionEquippedPct,
@@ -33,7 +38,15 @@ export type ConfidenceFactor = {
   detail: string;
 };
 
-export type ConfidenceFactorId = "solar" | "surfacing" | "cadastral" | "regulatory" | "registry";
+export type ConfidenceFactorId =
+  | "solar"
+  | "aper_conformity"
+  | "surfacing"
+  | "cadastral"
+  | "siren_stability"
+  | "completeness"
+  | "regulatory"
+  | "registry";
 
 const PHOTO_RESERVEE_URGENCES =
   " Photo aérienne non analysée (réservée aux urgences).";
@@ -77,6 +90,26 @@ function equipementSolaireDetail(
   return detail;
 }
 
+/** Équipement + Huwart : une seule explication lorsque le score est pénalisé. */
+function mergedAperConformityDetail(solarDetail: string): string {
+  return [
+    solarDetail,
+    `${HUWART_LAW_REF} : l'obligation de 50 % peut être remplie par un mix panneaux (min. 17,5 % de la surface) + végétalisation équivalente. Ce parking peut donc déjà être partiellement ou totalement conforme via une solution non détectable automatiquement (végétalisation, mix, ombrière non cartographiée).`,
+    "Le score de confiance est abaissé en conséquence : nos signaux cartographiques et photo restent incertains, et le besoin commercial en ombrière PV peut être plus faible qu'il n'y paraît.",
+  ].join("\n\n");
+}
+
+function regulatoryDetailOnlyPenteAbf(
+  lead: Pick<LeadRow, "derogation_pente" | "derogation_abf">,
+): string | null {
+  const parts: string[] = [];
+  if (lead.derogation_pente || lead.derogation_abf) {
+    parts.push("Pente forte et/ou zone ABF : démarches supplémentaires possibles.");
+  }
+  if (parts.length === 0) return null;
+  return parts.join(" ");
+}
+
 /** Détail lisible des signaux qui composent le score / le tier. */
 export function confidenceFactors(
   lead: Pick<
@@ -95,6 +128,10 @@ export function confidenceFactors(
     | "vision_surface_couverte_pct"
     | "vision_ortho_date"
     | "flag_urgence"
+    | "siren_date_creation"
+    | "siren_etat_administratif"
+    | "siren_anciennete_checked_at"
+    | "completude_pct"
   >,
 ): ConfidenceFactor[] {
   const src = lead.source_surface as SourceSurface | null;
@@ -113,13 +150,69 @@ export function confidenceFactors(
       !visionEquipped &&
       overlapRatio < PV_OVERLAP_MIN;
 
-  return [
-    {
+  const huwartPenalty = isHuwartScorePenaltyLead(lead);
+  const mergeSolarHuwart = huwartPenalty;
+  const solarDetail = equipementSolaireDetail(
+    lead,
+    isUrgence,
+    overlap,
+    visionPct,
+    visionEquipped,
+  );
+
+  const factors: ConfidenceFactor[] = [];
+
+  if (mergeSolarHuwart) {
+    factors.push({
+      id: "aper_conformity",
+      ok: false,
+      label: "Conformité APER & équipement",
+      detail: mergedAperConformityDetail(solarDetail),
+    });
+  } else {
+    factors.push({
       id: "solar",
       ok: equipementOk,
       label: "Équipement solaire",
-      detail: equipementSolaireDetail(lead, isUrgence, overlap, visionPct, visionEquipped),
-    },
+      detail: solarDetail,
+    });
+  }
+
+  if (typeof lead.completude_pct === "number") {
+    const pct = lead.completude_pct;
+    const levelLabel =
+      pct >= 85 ? "élevée" : pct >= 65 ? "bonne" : pct >= 45 ? "moyenne" : "partielle";
+    factors.push({
+      id: "completeness",
+      ok: pct >= 65,
+      label: "Complétude documentaire",
+      detail: `${pct} % — niveau ${levelLabel}. Part des champs B2B renseignés (SIREN, parcelle, adresse, NAF, dirigeants, propriétaire foncier…) ; hors téléphone et email.`,
+    });
+  }
+
+  if (hasSirenStabilityData(lead)) {
+    const years = sirenAncienneteAnnees(lead.siren_date_creation);
+    const active = isSirenEntrepriseActive(lead.siren_etat_administratif);
+    if (years != null) {
+      let detail: string;
+      if (active === false) {
+        detail =
+          "État administratif SIRENE : entreprise cessée — vérifier l'exploitant actuel du parking avant prospection.";
+      } else if (active === true) {
+        detail = `Entreprise active · immatriculée depuis ${years} ans (registre SIRENE).`;
+      } else {
+        detail = `Entreprise immatriculée depuis ${years} ans (registre SIRENE).`;
+      }
+      factors.push({
+        id: "siren_stability",
+        ok: active !== false,
+        label: "Ancienneté exploitant (SIREN)",
+        detail,
+      });
+    }
+  }
+
+  factors.push(
     {
       id: "surfacing",
       ok: !!lead.surface_tag_present,
@@ -141,22 +234,41 @@ export function confidenceFactors(
             ? "Le cadastre et la carte ne concordent pas assez : on conserve la surface issue de la carte."
             : "Pas de surface cadastrale utilisable : seule la mesure sur la carte OpenStreetMap fait foi.",
     },
-    {
+  );
+
+  const penteAbfDetail = mergeSolarHuwart
+    ? regulatoryDetailOnlyPenteAbf(lead)
+    : regulatoryDetail(lead);
+  const regulatoryOk =
+    !lead.derogation_pente && !lead.derogation_abf && !huwartPenalty;
+
+  if (penteAbfDetail !== null) {
+    factors.push({
       id: "regulatory",
-      ok: !lead.derogation_pente && !lead.derogation_abf && !isHuwartScorePenaltyLead(lead),
+      ok: regulatoryOk,
+      label: "Réglementaire",
+      detail: penteAbfDetail,
+    });
+  } else if (!mergeSolarHuwart) {
+    factors.push({
+      id: "regulatory",
+      ok: regulatoryOk,
       label: "Réglementaire",
       detail: regulatoryDetail(lead),
-    },
-    {
-      id: "registry",
-      ok: registryCount === 0,
-      label: "Registre PV communal (ODRÉ)",
-      detail:
-        registryCount > 0
-          ? `${registryCount} installation${registryCount > 1 ? "s" : ""} photovoltaïque${registryCount > 1 ? "s" : ""} de puissance comparable recensée${registryCount > 1 ? "s" : ""} dans la commune. Signal communal uniquement — sans lien établi avec ce parking précis.`
-          : "Aucune installation comparable recensée dans la commune (registre ODRÉ).",
-    },
-  ];
+    });
+  }
+
+  factors.push({
+    id: "registry",
+    ok: registryCount === 0,
+    label: "Registre PV communal (ODRÉ)",
+    detail:
+      registryCount > 0
+        ? `${registryCount} installation${registryCount > 1 ? "s" : ""} photovoltaïque${registryCount > 1 ? "s" : ""} de puissance comparable recensée${registryCount > 1 ? "s" : ""} dans la commune. Signal communal uniquement — sans lien établi avec ce parking précis.`
+        : "Aucune installation comparable recensée dans la commune (registre ODRÉ).",
+  });
+
+  return factors;
 }
 
 function regulatoryDetail(

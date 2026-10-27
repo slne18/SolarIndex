@@ -22,6 +22,12 @@ describe("resolveNavBackTarget", () => {
     });
   });
 
+  it("fiche lead (UUID) : retour navigateur natif", () => {
+    expect(
+      resolveNavBackTarget("/leads/550e8400-e29b-41d4-a716-446655440000"),
+    ).toBeNull();
+  });
+
   it("catalogue installateur → hub installer", () => {
     expect(resolveNavBackTarget("/leads")).toEqual({ kind: "persona", persona: "installer" });
     expect(resolveNavBackTarget("/appels-offres")).toEqual({ kind: "persona", persona: "installer" });

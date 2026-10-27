@@ -56,7 +56,6 @@ export default function LeadFilters({ lockedDepartement }: { lockedDepartement?:
     !!params.get("surface_min") ||
     !!params.get("flag") ||
     !!params.get("tier") ||
-    !!params.get("fiabilite") ||
     !!params.get("naf") ||
     params.get("dirigeant") === "1" ||
     (params.get("sort") && params.get("sort") !== "valeur");
@@ -143,16 +142,6 @@ export default function LeadFilters({ lockedDepartement }: { lockedDepartement?:
       >
         <option value="">{t("leads.filter.directorAll")}</option>
         <option value="1">{t("leads.filter.directorIdentified")}</option>
-      </select>
-
-      <select
-        className={selectCls}
-        value={params.get("fiabilite") ?? ""}
-        onChange={(e) => update("fiabilite", e.target.value)}
-        title={t("leads.filter.reliabilityTitle")}
-      >
-        <option value="">{t("leads.filter.reliabilityAll")}</option>
-        <option value="verifies">{t("leads.filter.reliabilityVerified")}</option>
       </select>
 
       <input

@@ -6,29 +6,14 @@ import { useSearchParams } from "next/navigation";
 import { getAccessToken } from "@/lib/supabaseBrowser";
 import { euros, eurosCompact, formatCoords, nf, openStreetMapUrl } from "@/lib/format";
 import { fmt } from "@/lib/i18n/format";
-import { scoreLevelKey, tierLabelKey } from "@/lib/i18n/leads-labels";
+import { tierLabelKey } from "@/lib/i18n/leads-labels";
 import { useTranslations } from "@/components/LocaleProvider";
-import {
-  displayRecouvrementSourceLine,
-  displayRecouvrementSummary,
-  formatVisionOrthoDate,
-  isUrgenceAbsolueLead,
-} from "@/lib/pv-overlap";
-import { effectiveLeadScore, isHuwartPartialComplianceLead } from "@/lib/huwart-law";
-import {
-  canopyCoverageLabel,
-  isCanopyPhotoSignal,
-} from "@/lib/lead-canopy-display";
-import { resolveLeadSolutionType } from "@/lib/solution-type";
-import LeadCanopyBadge from "@/components/LeadCanopyBadge";
-import LeadSirenStabilityBadge from "@/components/LeadSirenStabilityBadge";
-import SolutionTypeBadge from "@/components/SolutionTypeBadge";
 import type { LeadRow, PublicLead } from "@/lib/types";
 import SolarSimulator from "@/components/SolarSimulator";
 import PurchaseButton from "@/components/PurchaseButton";
 import { FlagBadge } from "@/components/LeadTable";
 import LeadTierBadge from "@/components/LeadTierBadge";
-import LeadCompletenessBadge, { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
+import { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
 import LeadConfidencePanel from "@/components/LeadConfidencePanel";
 import LeadAvailabilityBadge from "@/components/LeadAvailabilityBadge";
 import { catalogAuthHeaders } from "@/lib/preview-catalog";
@@ -36,6 +21,7 @@ import { isLeadSlotOpen } from "@/lib/lead-slots";
 import { formatAperAnnualFine } from "@/lib/aper-fine";
 import { useSolarAnalytics, trackLeadView } from "@/lib/analytics";
 import { MON_ESPACE_PATH } from "@/lib/paths";
+import { readLeadsCatalogReturn } from "@/lib/leads-catalog-return";
 
 type DetailLead = PublicLead & Partial<LeadRow>;
 
@@ -61,6 +47,11 @@ function LeadDetailContent({ id }: { id: string }) {
   const [authed, setAuthed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [catalogBackHref, setCatalogBackHref] = useState("/leads?view=list");
+
+  useEffect(() => {
+    setCatalogBackHref(readLeadsCatalogReturn());
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -119,23 +110,10 @@ function LeadDetailContent({ id }: { id: string }) {
   const displayPrix = lead.prix_lead;
   const buyersCount = lead.buyers_count ?? 0;
   const slotOpen = isLeadSlotOpen({ buyers_count: buyersCount, statut: lead.statut });
-  const isUrgence = isUrgenceAbsolueLead(lead);
-  const recouvrement = displayRecouvrementSummary(lead);
-  const recouvrementSource = displayRecouvrementSourceLine(lead);
   const displayName = lead.raison_sociale || lead.nom_osm || t("leads.detail.nonCompliantParking");
   const gpsCoords = formatCoords(lead.latitude, lead.longitude);
-  const backHref = isOwned || fromMonEspace ? MON_ESPACE_PATH : "/leads";
+  const backHref = isOwned || fromMonEspace ? MON_ESPACE_PATH : catalogBackHref;
   const backLabel = isOwned || fromMonEspace ? t("leads.detail.backSpace") : t("leads.detail.allLeads");
-  const scoreText = fmt(t("leads.detail.confidence"), {
-    score: effectiveLeadScore(lead).toFixed(2),
-    level: t(scoreLevelKey(effectiveLeadScore(lead))),
-  });
-  const showHuwartNotice = isHuwartPartialComplianceLead(lead);
-  const showCanopySuspectNotice =
-    isCanopyPhotoSignal(lead) && !!lead.vision_flag && !showHuwartNotice;
-  const canopyPctLabel = canopyCoverageLabel(lead);
-  const solutionType = resolveLeadSolutionType(lead);
-
   return (
     <div className="surface-light min-h-[50vh]">
     <div className="container-x lead-detail-page py-10">
@@ -149,16 +127,7 @@ function LeadDetailContent({ id }: { id: string }) {
             <FlagBadge flag={lead.flag_urgence} />
             <LeadTierBadge tier={lead.tier} />
             {lead.has_dirigeant ? <LeadDirigeantBadge /> : null}
-            {"completude_pct" in lead && typeof lead.completude_pct === "number" ? (
-              <LeadCompletenessBadge pct={lead.completude_pct} />
-            ) : null}
             <LeadAvailabilityBadge available={slotOpen} />
-            <LeadCanopyBadge lead={lead} compact light />
-            <LeadSirenStabilityBadge lead={lead} compact light />
-            <SolutionTypeBadge type={solutionType} compact showAudience light />
-            <span className="text-xs text-slate-500" title={t("leads.detail.confidenceHint")}>
-              {scoreText}
-            </span>
           </div>
 
           <p className="mt-3 text-sm text-slate-600">{t("leads.detail.intro")}</p>
@@ -173,49 +142,16 @@ function LeadDetailContent({ id }: { id: string }) {
             {lead.ville || t("leads.detail.location")} · {lead.region ?? ""} ({lead.departement})
           </p>
 
-          <div className="card mt-6 grid grid-cols-2 gap-px overflow-hidden bg-slate-200 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="card mt-6 grid grid-cols-2 gap-px overflow-hidden bg-slate-200 sm:grid-cols-2 lg:grid-cols-4">
             <Fact label={t("leads.detail.factSurface")} value={`${nf(lead.surface_m2)} m²`} />
             <Fact label={t("leads.detail.factSolar")} value={`${nf(lead.surface_solaire_m2)} m²`} />
             <Fact label={t("leads.detail.factPower")} value={`${nf(lead.puissance_kwc)} kWc`} />
-            <Fact
-              label={t("leads.detail.factCoverage")}
-              value={recouvrement.short}
-              title={recouvrement.detail}
-              subtitle={
-                isUrgence && lead.vision_ortho_date
-                  ? formatVisionOrthoDate(lead.vision_ortho_date) ?? undefined
-                  : undefined
-              }
-            />
             <Fact
               label={t("leads.detail.factProjectValue")}
               value={eurosCompact(lead.valeur_chantier_eur)}
               highlight
             />
           </div>
-
-          <p className="mt-2 text-xs text-slate-500">
-            {recouvrement.detail}
-            {recouvrementSource ? ` ${recouvrementSource}` : ""}
-          </p>
-
-          {showHuwartNotice ? (
-            <div className="card mt-4 border-emerald-200 bg-emerald-50 p-5 text-sm leading-relaxed text-slate-700">
-              <div className="font-semibold text-emerald-800">{t("leads.detail.huwartTitle")}</div>
-              <p className="mt-2">{t("leads.detail.huwartBody")}</p>
-            </div>
-          ) : null}
-
-          {showCanopySuspectNotice ? (
-            <div className="card mt-4 border-sky-200 bg-sky-50 p-5 text-sm leading-relaxed text-slate-700">
-              <div className="font-semibold text-sky-800">{t("leads.detail.canopySuspectTitle")}</div>
-              <p className="mt-2">
-                {canopyPctLabel
-                  ? fmt(t("leads.detail.canopySuspectBodyWithPct"), { pct: canopyPctLabel })
-                  : t("leads.detail.canopySuspectBodyNoPct")}
-              </p>
-            </div>
-          ) : null}
 
           <h2 className="mt-10 text-lg font-semibold text-slate-900">{t("leads.detail.simulatorTitle")}</h2>
           <p className="mb-3 text-sm text-slate-600">{t("leads.detail.simulatorLead")}</p>

@@ -11,7 +11,7 @@ import {
 import { getRegion } from "./regions";
 import { isLeadPremium } from "./lead-confidence";
 import { leadCompleteness } from "./lead-completeness";
-import { resolveLeadSolutionType, parseTypeSolutionRecherchee } from "./solution-type";
+import { parseTypeSolutionRecherchee } from "./solution-type";
 import { MAX_BUYERS_PER_LEAD } from "./lead-slots";
 import { isVisionEquippedPct } from "./pv-overlap";
 import {
@@ -107,7 +107,6 @@ export function toPublicLead(lead: LeadRow): PublicLead {
   clone.max_buyers = MAX_BUYERS_PER_LEAD;
   clone.has_dirigeant = hasDirigeant;
   clone.completude_pct = pct;
-  clone.type_solution_recherchee = resolveLeadSolutionType(lead);
   return clone as PublicLead;
 }
 
@@ -120,7 +119,7 @@ export function toOwnedLead(lead: LeadRow): LeadRow & {
 } {
   const tier = leadTier(lead);
   const { pct, hasDirigeant } = leadCompleteness(lead);
-  return { ...lead, tier, prix_lead: computePrixLeadFromRow(lead), has_dirigeant: hasDirigeant, completude_pct: pct, type_solution_recherchee: resolveLeadSolutionType(lead) };
+  return { ...lead, tier, prix_lead: computePrixLeadFromRow(lead), has_dirigeant: hasDirigeant, completude_pct: pct };
 }
 
 // Transforme une ligne brute du pipeline Python en ligne insérable dans `leads`.

@@ -36,7 +36,6 @@ export async function GET(req: Request) {
   const sortRaw = (searchParams.get("sort") || "valeur") as LeadSort;
   const sort = VALID_SORTS.includes(sortRaw) ? sortRaw : "valeur";
 
-  const hideAverifier = searchParams.get("fiabilite") === "verifies";
   const tierRaw = searchParams.get("tier");
   const tierFilter =
     tierRaw === "premium" ? "premium" : tierRaw === "standard" ? "standard" : undefined;
@@ -56,7 +55,6 @@ export async function GET(req: Request) {
         surfaceMin,
         sort,
         page,
-        hideAverifier,
         tierFilter,
         dirigeantOnly,
       }),

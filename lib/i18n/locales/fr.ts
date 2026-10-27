@@ -287,7 +287,7 @@ const fr = {
   "leads.filter.surface20000": "≥ 20 000 m²",
   "leads.filter.allFlags": "Tous les flags",
   "leads.filter.urgence": "Urgence absolue",
-  "leads.filter.toEquip": "À équiper",
+  "leads.filter.toEquip": "Hors urgence absolue",
   "leads.filter.allTiers": "Tous les tiers",
   "leads.filter.standardOnly": "Inclus abonnement",
   "leads.filter.premiumOnly": "Premium uniquement",
@@ -296,9 +296,6 @@ const fr = {
   "leads.filter.directorAll": "Dirigeant : tous",
   "leads.filter.directorIdentified": "Dirigeant identifié",
   "leads.filter.directorTitle": "Dirigeant exploitant identifié via open data SIREN",
-  "leads.filter.reliabilityAll": "Fiabilité : tous",
-  "leads.filter.reliabilityVerified": "Sans doute PV (vérifiés)",
-  "leads.filter.reliabilityTitle": "Détection de panneaux solaires existants",
   "leads.filter.nafPlaceholder": "Code NAF",
   "leads.filter.clear": "Effacer filtres",
   "leads.filter.sort": "Trier :",
@@ -307,7 +304,7 @@ const fr = {
   "leads.filter.sortDate": "Date d'ajout ↓",
 
   "leads.table.noResults": "Aucun lead ne correspond à ces filtres.",
-  "leads.table.flag": "Flag",
+  "leads.table.flag": "Urgence",
   "leads.table.city": "Ville (Dépt)",
   "leads.table.tier": "Tier",
   "leads.table.signals": "Signaux",
@@ -319,7 +316,9 @@ const fr = {
   "leads.table.scoreTitle": "Qualité des sources Open Data — voir fiche lead",
   "leads.table.status": "Statut",
   "leads.table.action": "Action",
-  "leads.table.view": "Voir — {price} €",
+  "leads.table.viewPremium": "Voir — {price} €",
+  "leads.table.viewIncluded": "Voir · inclus abonnement",
+  "leads.table.subscribePlatform": "S'abonner — {intro} € puis {price} €/mois",
   "leads.flag.urgence": "Urgence",
   "leads.flag.toEquip": "À équiper",
 
@@ -374,13 +373,16 @@ const fr = {
   "leads.demo.previewLead":
     "Aperçu d'une fiche réelle après achat — toutes les valeurs ci-dessous sont fictives.",
   "leads.demo.siteOsm": "Site OSM :",
-  "leads.demo.confidence": "Confiance {score} · {level}",
-  "leads.demo.confidenceTitle": "Indice de confiance (extrait)",
-  "leads.demo.factor1.label": "Revêtement du parking",
+  "leads.demo.factorSolar.detail":
+    "Recouvrement estimé : {coverage} de la surface parking — aucun panneau significatif repéré sur la géométrie OSM.",
   "leads.demo.factor1.detail": "Asphalte ou béton confirmé sur OpenStreetMap.",
-  "leads.demo.factor2.label": "Surface cadastrale",
   "leads.demo.factor2.detail": "Surface officielle IGN retenue pour le calcul APER.",
-  "leads.demo.factor3.label": "Registre PV communal (ODRÉ)",
+  "leads.demo.completenessLevelHigh": "élevée",
+  "leads.demo.completenessLevelGood": "bonne",
+  "leads.demo.completenessLevelMid": "moyenne",
+  "leads.demo.completenessLevelLow": "partielle",
+  "leads.demo.completenessDetail":
+    "{pct} % — niveau {level}. Part des champs B2B renseignés (SIREN, parcelle, adresse, NAF, dirigeants, propriétaire foncier…) ; hors téléphone et email.",
   "leads.demo.purchaseTitle": "Ce que vous recevez à l'achat",
   "leads.demo.purchaseLead":
     "Exemple des champs débloqués sur une vraie fiche — identité entreprise, parcelle et GPS (données fictives).",
@@ -395,7 +397,6 @@ const fr = {
   "leads.demo.factSurface": "Surface parking",
   "leads.demo.factSolar": "Surface solaire",
   "leads.demo.factPower": "Puissance",
-  "leads.demo.factCoverage": "Recouvrement",
   "leads.demo.factProjectValue": "Valeur chantier",
   "leads.demo.footer":
     "Fiche illustrative — données entièrement fictives. Chaque lead livré cible une entreprise (personne morale), jamais un particulier.",
@@ -468,8 +469,11 @@ const fr = {
   "leads.confidence.intro":
     "Score synthétique {score} · {level} — il résume la qualité des sources Open Data, pas votre probabilité de signature. Un score élevé = moins de temps perdu en vérifications préalables.",
   "leads.confidence.solar": "Équipement solaire",
+  "leads.confidence.aperConformity": "Conformité APER & équipement",
   "leads.confidence.surfacing": "Revêtement du parking",
   "leads.confidence.cadastral": "Surface cadastrale",
+  "leads.confidence.sirenStability": "Ancienneté exploitant (SIREN)",
+  "leads.confidence.completeness": "Complétude documentaire",
   "leads.confidence.regulatory": "Réglementaire",
   "leads.confidence.registry": "Registre PV communal (ODRÉ)",
 

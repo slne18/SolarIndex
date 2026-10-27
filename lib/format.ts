@@ -35,7 +35,7 @@ export function eurosCompact(n: number | null | undefined): string {
 
 export function flagLabel(flag: string): { label: string; urgence: boolean } {
   const urgence = flag === "URGENCE_ABSOLUE";
-  return { label: urgence ? "Urgence absolue" : "À équiper", urgence };
+  return { label: urgence ? "Urgence absolue" : "", urgence };
 }
 
 export function scoreLabel(score: number | null | undefined): string {

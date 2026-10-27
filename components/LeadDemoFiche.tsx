@@ -3,11 +3,17 @@
 import { eurosCompact, nf } from "@/lib/format";
 import { DEMO_FICHE } from "@/lib/demo-fiche";
 import { fmt } from "@/lib/i18n/format";
-import { scoreLevelKey } from "@/lib/i18n/leads-labels";
+import {
+  confidenceFactorLabelKey,
+  scoreLevelKey,
+  tierLabelKey,
+  type ConfidenceFactorId,
+} from "@/lib/i18n/leads-labels";
 import { useTranslations } from "@/components/LocaleProvider";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import LeadTierBadge from "@/components/LeadTierBadge";
-import LeadCompletenessBadge, { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
+import { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
+import LeadAvailabilityBadge from "@/components/LeadAvailabilityBadge";
 import { FlagBadge } from "@/components/LeadTable";
 
 function DemoRow({ label, value }: { label: string; value: string }) {
@@ -31,44 +37,54 @@ function Fact({
   return (
     <div className={`lead-demo-fact p-4 ${highlight ? "lead-demo-fact-highlight" : ""}`}>
       <div className="text-xs uppercase tracking-wide text-slate-500">{label}</div>
-      <div className={`lead-demo-fact-value mt-1 text-lg font-bold`}>{value}</div>
+      <div className="lead-demo-fact-value mt-1 text-lg font-bold">{value}</div>
     </div>
-  );
-}
-
-function DemoFactorIcon({ kind }: { kind: "ok" | "info" }) {
-  if (kind === "ok") {
-    return (
-      <span
-        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/20 text-xs font-bold text-accent"
-        aria-hidden
-      >
-        ✓
-      </span>
-    );
-  }
-  return (
-    <span
-      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sky-500/15 text-[10px] font-bold text-sky-300"
-      aria-hidden
-      title="Information indicative"
-    >
-      i
-    </span>
   );
 }
 
 export default function LeadDemoFiche() {
   const t = useTranslations();
+
+  function completudeLevelLabel(pct: number): string {
+    if (pct >= 85) return t("leads.demo.completenessLevelHigh");
+    if (pct >= 65) return t("leads.demo.completenessLevelGood");
+    if (pct >= 45) return t("leads.demo.completenessLevelMid");
+    return t("leads.demo.completenessLevelLow");
+  }
   const dirigeantExploitant = `${DEMO_FICHE.dirigeant_exploitant} · ${DEMO_FICHE.dirigeant_exploitant_qualite}`;
   const dirigeantProprio = `${DEMO_FICHE.dirigeant_proprietaire} · ${DEMO_FICHE.dirigeant_proprietaire_qualite}`;
-  const score = DEMO_FICHE.score_confiance.toFixed(2);
-  const level = t(scoreLevelKey(DEMO_FICHE.score_confiance));
+  const score = DEMO_FICHE.score_confiance;
+  const pct = DEMO_FICHE.completude_pct;
 
-  const demoFactors = [
-    { kind: "ok" as const, label: t("leads.demo.factor1.label"), detail: t("leads.demo.factor1.detail") },
-    { kind: "ok" as const, label: t("leads.demo.factor2.label"), detail: t("leads.demo.factor2.detail") },
-    { kind: "info" as const, label: t("leads.demo.factor3.label"), detail: DEMO_FICHE.odre_communal },
+  const demoFactors: { id: ConfidenceFactorId; ok: boolean; detail: string }[] = [
+    {
+      id: "solar",
+      ok: true,
+      detail: fmt(t("leads.demo.factorSolar.detail"), { coverage: DEMO_FICHE.recouvrement }),
+    },
+    {
+      id: "surfacing",
+      ok: true,
+      detail: t("leads.demo.factor1.detail"),
+    },
+    {
+      id: "cadastral",
+      ok: true,
+      detail: t("leads.demo.factor2.detail"),
+    },
+    {
+      id: "completeness",
+      ok: pct >= 65,
+      detail: fmt(t("leads.demo.completenessDetail"), {
+        pct,
+        level: completudeLevelLabel(pct),
+      }),
+    },
+    {
+      id: "registry",
+      ok: true,
+      detail: DEMO_FICHE.odre_communal,
+    },
   ];
 
   return (
@@ -81,10 +97,7 @@ export default function LeadDemoFiche() {
               <FlagBadge flag="URGENCE_ABSOLUE" />
               <LeadTierBadge tier="premium" />
               <LeadDirigeantBadge />
-              <LeadCompletenessBadge pct={DEMO_FICHE.completude_pct} />
-              <span className="text-xs text-slate-500">
-                {fmt(t("leads.demo.confidence"), { score, level })}
-              </span>
+              <LeadAvailabilityBadge available />
             </div>
 
             <div className="px-6 py-5">
@@ -98,11 +111,10 @@ export default function LeadDemoFiche() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-px bg-white/[0.04] sm:grid-cols-3 lg:grid-cols-5">
+            <div className="grid grid-cols-2 gap-px bg-white/[0.04] sm:grid-cols-2 lg:grid-cols-4">
               <Fact label={t("leads.demo.factSurface")} value={`${nf(DEMO_FICHE.surface_m2)} m²`} />
               <Fact label={t("leads.demo.factSolar")} value={`${nf(DEMO_FICHE.surface_solaire_m2)} m²`} />
               <Fact label={t("leads.demo.factPower")} value={`${nf(DEMO_FICHE.puissance_kwc)} kWc`} />
-              <Fact label={t("leads.demo.factCoverage")} value={DEMO_FICHE.recouvrement} />
               <Fact
                 label={t("leads.demo.factProjectValue")}
                 value={eurosCompact(DEMO_FICHE.valeur_chantier_eur)}
@@ -112,18 +124,45 @@ export default function LeadDemoFiche() {
           </div>
 
           <div className="card mt-6 p-6">
-            <div className="lead-demo-confidence font-semibold text-slate-200">{t("leads.demo.confidenceTitle")}</div>
-            <ul className="mt-4 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h3 className="lead-demo-confidence text-lg font-semibold text-slate-200">
+                {t("leads.confidence.title")}
+              </h3>
+              <LeadTierBadge tier="premium" />
+            </div>
+            <p className="mt-2 text-sm text-slate-400">
+              {fmt(t("leads.confidence.intro"), {
+                score: score.toFixed(2),
+                level: t(scoreLevelKey(score)),
+              })}
+            </p>
+            <ul className="mt-5 space-y-3">
               {demoFactors.map((f) => (
-                <li key={f.label} className="flex gap-3 text-sm">
-                  <DemoFactorIcon kind={f.kind} />
+                <li key={f.id} className="flex gap-3 text-sm">
+                  <span
+                    className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                      f.ok ? "bg-emerald-500/20 text-emerald-300" : "bg-amber-500/20 text-amber-200"
+                    }`}
+                    aria-hidden
+                  >
+                    {f.ok ? "✓" : "!"}
+                  </span>
                   <div>
-                    <div className="lead-demo-factor-label font-medium text-slate-200">{f.label}</div>
-                    <div className="text-slate-400">{f.detail}</div>
+                    <div className="lead-demo-factor-label font-medium text-slate-200">
+                      {t(confidenceFactorLabelKey(f.id))}
+                    </div>
+                    <div className="whitespace-pre-line text-slate-400">{f.detail}</div>
                   </div>
                 </li>
               ))}
             </ul>
+            <div className="mt-5 rounded-lg border border-white/10 bg-white/[0.04] p-4 text-xs text-slate-400">
+              <p>
+                <strong className="text-slate-200">{t(tierLabelKey("premium"))}</strong>
+                {" — "}
+                {t("leads.tier.premiumDesc")}
+              </p>
+            </div>
           </div>
         </div>
 

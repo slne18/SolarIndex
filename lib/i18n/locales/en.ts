@@ -284,7 +284,7 @@ const en: Record<MessageKey, string> = {
   "leads.filter.surface20000": "≥ 20,000 m²",
   "leads.filter.allFlags": "All flags",
   "leads.filter.urgence": "Absolute urgency",
-  "leads.filter.toEquip": "To equip",
+  "leads.filter.toEquip": "Exclude absolute urgency",
   "leads.filter.allTiers": "All tiers",
   "leads.filter.standardOnly": "Included in subscription",
   "leads.filter.premiumOnly": "Premium only",
@@ -293,9 +293,6 @@ const en: Record<MessageKey, string> = {
   "leads.filter.directorAll": "Director: all",
   "leads.filter.directorIdentified": "Director identified",
   "leads.filter.directorTitle": "Operating director identified via SIREN open data",
-  "leads.filter.reliabilityAll": "Reliability: all",
-  "leads.filter.reliabilityVerified": "No PV doubt (verified)",
-  "leads.filter.reliabilityTitle": "Detection of existing solar panels",
   "leads.filter.nafPlaceholder": "NAF code",
   "leads.filter.clear": "Clear filters",
   "leads.filter.sort": "Sort:",
@@ -304,7 +301,7 @@ const en: Record<MessageKey, string> = {
   "leads.filter.sortDate": "Date added ↓",
 
   "leads.table.noResults": "No leads match these filters.",
-  "leads.table.flag": "Flag",
+  "leads.table.flag": "Urgency",
   "leads.table.city": "City (Dept)",
   "leads.table.tier": "Tier",
   "leads.table.signals": "Signals",
@@ -316,7 +313,9 @@ const en: Record<MessageKey, string> = {
   "leads.table.scoreTitle": "Open Data source quality — see lead record",
   "leads.table.status": "Status",
   "leads.table.action": "Action",
-  "leads.table.view": "View — €{price}",
+  "leads.table.viewPremium": "View — €{price}",
+  "leads.table.viewIncluded": "View · included in subscription",
+  "leads.table.subscribePlatform": "Subscribe — €{intro} then €{price}/mo",
   "leads.flag.urgence": "Urgent",
   "leads.flag.toEquip": "To equip",
 
@@ -371,13 +370,16 @@ const en: Record<MessageKey, string> = {
   "leads.demo.previewLead":
     "Preview of a real record after purchase — all values below are fictional.",
   "leads.demo.siteOsm": "OSM site:",
-  "leads.demo.confidence": "Confidence {score} · {level}",
-  "leads.demo.confidenceTitle": "Confidence index (extract)",
-  "leads.demo.factor1.label": "Parking surfacing",
+  "leads.demo.factorSolar.detail":
+    "Estimated overlap: {coverage} of parking area — no significant panels detected on OSM geometry.",
   "leads.demo.factor1.detail": "Asphalt or concrete confirmed on OpenStreetMap.",
-  "leads.demo.factor2.label": "Cadastral area",
   "leads.demo.factor2.detail": "Official IGN area used for APER calculation.",
-  "leads.demo.factor3.label": "Municipal PV registry (ODRÉ)",
+  "leads.demo.completenessLevelHigh": "high",
+  "leads.demo.completenessLevelGood": "good",
+  "leads.demo.completenessLevelMid": "moderate",
+  "leads.demo.completenessLevelLow": "partial",
+  "leads.demo.completenessDetail":
+    "{pct}% — {level} level. Share of B2B fields filled (SIREN, parcel, address, NAF, directors, landowner…) — excludes phone and email.",
   "leads.demo.purchaseTitle": "What you receive on purchase",
   "leads.demo.purchaseLead":
     "Example of unlocked fields on a real record — company identity, parcel and GPS (fictional data).",
@@ -392,7 +394,6 @@ const en: Record<MessageKey, string> = {
   "leads.demo.factSurface": "Parking area",
   "leads.demo.factSolar": "Solar area",
   "leads.demo.factPower": "Capacity",
-  "leads.demo.factCoverage": "Coverage",
   "leads.demo.factProjectValue": "Project value",
   "leads.demo.footer":
     "Illustrative record — entirely fictional data. Each delivered lead targets a company (legal entity), never an individual.",
@@ -465,8 +466,11 @@ const en: Record<MessageKey, string> = {
   "leads.confidence.intro":
     "Composite score {score} · {level} — summarizes Open Data source quality, not your closing probability. High score = less time spent on pre-checks.",
   "leads.confidence.solar": "Solar equipment",
+  "leads.confidence.aperConformity": "APER compliance & equipment",
   "leads.confidence.surfacing": "Parking surfacing",
   "leads.confidence.cadastral": "Cadastral area",
+  "leads.confidence.sirenStability": "Operator tenure (SIREN registry)",
+  "leads.confidence.completeness": "Document completeness",
   "leads.confidence.regulatory": "Regulatory",
   "leads.confidence.registry": "Municipal PV registry (ODRÉ)",
 

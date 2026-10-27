@@ -20,8 +20,6 @@ export interface LeadQueryOptions {
   sort?: LeadSort;
   page?: number; // 0-indexed
   pageSize?: number;
-  // Masquer aussi les leads "à vérifier" (doute sur un équipement existant).
-  hideAverifier?: boolean;
   /** Filtre tier catalogue : premium (unitaire) ou standard (abonnement). */
   tierFilter?: "premium" | "standard";
   /** Uniquement les leads avec dirigeant exploitant identifié. */
@@ -63,9 +61,6 @@ function applyCatalogFilters(query: SupabaseQuery, opts: LeadQueryOptions): Supa
   }
   if (typeof opts.surfaceMin === "number" && !Number.isNaN(opts.surfaceMin)) {
     query = query.gte("surface_m2", opts.surfaceMin);
-  }
-  if (opts.hideAverifier) {
-    query = query.eq("detection", "libre");
   }
   if (opts.tierFilter === "premium") {
     query = query
@@ -131,7 +126,7 @@ export async function queryLeads(
   const page = opts.page ?? 0;
   const sort = opts.sort ?? "valeur";
 
-  const useTierSort = !opts.hideAverifier && !opts.tierFilter;
+  const useTierSort = !opts.tierFilter;
 
   if (!useTierSort) {
     let query = applyCatalogFilters(supabase.from("leads").select("*", { count: "exact" }), opts);

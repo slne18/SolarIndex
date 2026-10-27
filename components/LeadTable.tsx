@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { getAccessToken } from "@/lib/supabaseBrowser";
+import { PRIX_PLATEFORME_MENSUEL, PRIX_PLATEFORME_PREMIER_MOIS } from "@/lib/platform-access";
 import type { PublicLead } from "@/lib/types";
 import { eurosCompact, nf } from "@/lib/format";
 import { fmt } from "@/lib/i18n/format";
@@ -9,23 +12,17 @@ import { scoreLevelKey } from "@/lib/i18n/leads-labels";
 import { useTranslations } from "@/components/LocaleProvider";
 import LeadAvailabilityBadge from "@/components/LeadAvailabilityBadge";
 import LeadTierBadge from "@/components/LeadTierBadge";
-import LeadCompletenessBadge, { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
-import LeadCanopyBadge from "@/components/LeadCanopyBadge";
-import LeadSirenStabilityBadge from "@/components/LeadSirenStabilityBadge";
-import SolutionTypeBadge from "@/components/SolutionTypeBadge";
-import { resolveLeadSolutionType } from "@/lib/solution-type";
+import { LeadDirigeantBadge } from "@/components/LeadCompletenessBadge";
 import { isLeadSlotOpen } from "@/lib/lead-slots";
+import { rememberLeadsCatalogReturn } from "@/lib/leads-catalog-return";
 
+/** Badge catalogue : uniquement les urgences absolues (le reste = cas par défaut, sans pastille). */
 export function FlagBadge({ flag }: { flag: string }) {
   const t = useTranslations();
-  const urgence = flag === "URGENCE_ABSOLUE";
+  if (flag !== "URGENCE_ABSOLUE") return null;
   return (
-    <span
-      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
-        urgence ? "bg-red-500/15 text-red-300" : "bg-amber-500/15 text-amber-300"
-      }`}
-    >
-      {urgence ? `🔴 ${t("leads.flag.urgence")}` : `🟡 ${t("leads.flag.toEquip")}`}
+    <span className="inline-flex items-center gap-1 rounded-full bg-red-500/15 px-2.5 py-1 text-xs font-semibold text-red-300">
+      🔴 {t("leads.flag.urgence")}
     </span>
   );
 }
@@ -41,8 +38,46 @@ function StatutCell({ lead }: { lead: PublicLead }) {
 export default function LeadTable({ leads }: { leads: PublicLead[] }) {
   const t = useTranslations();
   const router = useRouter();
+  const [platformActive, setPlatformActive] = useState(false);
+  const [subChecked, setSubChecked] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const token = await getAccessToken();
+      if (!token) {
+        setSubChecked(true);
+        return;
+      }
+      try {
+        const res = await fetch("/api/subscription", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setPlatformActive(!!data.platform?.active);
+        }
+      } catch {
+        /* ignore */
+      } finally {
+        setSubChecked(true);
+      }
+    })();
+  }, []);
+
+  function actionLabel(lead: PublicLead): string {
+    if (lead.tier === "premium") {
+      return fmt(t("leads.table.viewPremium"), { price: lead.prix_lead });
+    }
+    if (!subChecked) return t("common.loading");
+    if (platformActive) return t("leads.table.viewIncluded");
+    return fmt(t("leads.table.subscribePlatform"), {
+      intro: PRIX_PLATEFORME_PREMIER_MOIS,
+      price: PRIX_PLATEFORME_MENSUEL,
+    });
+  }
 
   function openLead(id: string) {
+    rememberLeadsCatalogReturn();
     router.push(`/leads/${id}`);
   }
 
@@ -102,12 +137,6 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-1.5">
                     {lead.has_dirigeant ? <LeadDirigeantBadge compact /> : null}
-                    <LeadCompletenessBadge pct={lead.completude_pct} compact />
-                    <LeadCanopyBadge lead={lead} compact />
-                    <LeadSirenStabilityBadge lead={lead} compact />
-                    {resolveLeadSolutionType(lead) !== "pv_pur" ? (
-                      <SolutionTypeBadge type={resolveLeadSolutionType(lead)} compact />
-                    ) : null}
                   </div>
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums">{nf(lead.surface_m2)} m²</td>
@@ -129,7 +158,7 @@ export default function LeadTable({ leads }: { leads: PublicLead[] }) {
                     className="catalog-table-action"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {fmt(t("leads.table.view"), { price: lead.prix_lead })}
+                    {actionLabel(lead)}
                   </Link>
                 </td>
               </tr>

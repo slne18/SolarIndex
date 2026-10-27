@@ -184,7 +184,10 @@ export async function POST(req: Request) {
             unit_amount: montantCentimes,
             product_data: {
               name: `Lead SolarIndex — ${lead.ville || "Parking"} (${lead.departement})`,
-              description: `${Math.round(lead.surface_m2)} m² · ${lead.flag_urgence === "URGENCE_ABSOLUE" ? "Urgence absolue" : "À équiper"}`,
+              description:
+                lead.flag_urgence === "URGENCE_ABSOLUE"
+                  ? `${Math.round(lead.surface_m2)} m² · Urgence absolue`
+                  : `${Math.round(lead.surface_m2)} m²`,
             },
           },
         },
