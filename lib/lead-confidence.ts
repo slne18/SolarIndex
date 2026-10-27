@@ -111,29 +111,31 @@ function regulatoryDetailOnlyPenteAbf(
 }
 
 /** Détail lisible des signaux qui composent le score / le tier. */
-export function confidenceFactors(
-  lead: Pick<
-    LeadRow,
-    | "detection"
-    | "surface_tag_present"
-    | "source_surface"
-    | "surface_cadastrale_m2"
-    | "score_confiance"
-    | "vision_checked_at"
-    | "vision_flag"
-    | "derogation_pente"
-    | "derogation_abf"
-    | "pv_overlap_pct"
-    | "pv_registry_count"
-    | "vision_surface_couverte_pct"
-    | "vision_ortho_date"
-    | "flag_urgence"
-    | "siren_date_creation"
-    | "siren_etat_administratif"
-    | "siren_anciennete_checked_at"
-    | "completude_pct"
-  >,
-): ConfidenceFactor[] {
+type ConfidenceFactorsInput = Pick<
+  LeadRow,
+  | "detection"
+  | "surface_tag_present"
+  | "source_surface"
+  | "surface_cadastrale_m2"
+  | "score_confiance"
+  | "vision_checked_at"
+  | "vision_flag"
+  | "derogation_pente"
+  | "derogation_abf"
+  | "pv_overlap_pct"
+  | "pv_registry_count"
+  | "vision_surface_couverte_pct"
+  | "vision_ortho_date"
+  | "flag_urgence"
+  | "siren_date_creation"
+  | "siren_etat_administratif"
+  | "siren_anciennete_checked_at"
+> & {
+  /** Calculé à la volée pour l'API (pas une colonne Supabase). */
+  completude_pct?: number;
+};
+
+export function confidenceFactors(lead: ConfidenceFactorsInput): ConfidenceFactor[] {
   const src = lead.source_surface as SourceSurface | null;
   const isUrgence = isUrgenceAbsolueLead(lead);
   const overlap = isUrgence ? visionRecouvrementSummary(lead) : pvOverlapSummary(lead);
