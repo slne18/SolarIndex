@@ -928,6 +928,10 @@ h3,
     @apply bg-violet-100 text-violet-900 ring-violet-300;
   }
 
+  .surface-light .lead-tier-badge-standard {
+    @apply bg-emerald-100 text-emerald-800 ring-emerald-300;
+  }
+
   .surface-light .pricing-headline {
     @apply text-slate-900;
   }

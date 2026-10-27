@@ -127,13 +127,16 @@ type ConfidenceFactorsInput = Pick<
   | "vision_surface_couverte_pct"
   | "vision_ortho_date"
   | "flag_urgence"
-  | "siren_date_creation"
-  | "siren_etat_administratif"
-  | "siren_anciennete_checked_at"
-> & {
-  /** Calculé à la volée pour l'API (pas une colonne Supabase). */
-  completude_pct?: number;
-};
+> &
+  Partial<
+    Pick<
+      LeadRow,
+      "siren_date_creation" | "siren_etat_administratif" | "siren_anciennete_checked_at"
+    >
+  > & {
+    /** Calculé à la volée pour l'API (pas une colonne Supabase). */
+    completude_pct?: number;
+  };
 
 export function confidenceFactors(lead: ConfidenceFactorsInput): ConfidenceFactor[] {
   const src = lead.source_surface as SourceSurface | null;

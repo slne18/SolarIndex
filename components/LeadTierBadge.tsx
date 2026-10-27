@@ -20,11 +20,12 @@ export default function LeadTierBadge({
       className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
         premium
           ? "bg-solar/15 text-solar ring-1 ring-solar/30"
-          : "bg-white/10 text-slate-300"
+          : "lead-tier-badge-standard bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/35"
       }`}
       title={t(descriptionKey)}
     >
-      {premium ? "★" : "○"} {t(tierLabelKey(tier))}
+      {premium ? "★ " : null}
+      {t(tierLabelKey(tier))}
       {!compact && premium ? (
         <span className="hidden sm:inline">{t("leads.tier.premiumVerified")}</span>
       ) : null}
